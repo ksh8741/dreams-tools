@@ -1119,6 +1119,37 @@ html.broadcastOverlay.broadcastVertical .rankOverlay{
   75%{opacity:1}
   100%{opacity:0;transform:translateY(-3px)}
 }
+
+/* v26 individual-player vertical ranking */
+html.broadcastOverlay.broadcastVertical .rankOverlay{width:340px!important}
+html.broadcastOverlay.broadcastVertical .rankRow{
+  height:46px!important;
+  grid-template-columns:38px minmax(0,1fr) 44px 44px 50px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols{
+  grid-template-columns:38px minmax(0,1fr) 44px 44px 50px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankIdentity{
+  grid-template-columns:30px minmax(0,1fr)!important;
+  gap:7px!important;
+  padding:0 7px 0 6px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankAvatar,
+html.broadcastOverlay.broadcastVertical .rankAvatarEmpty{
+  width:27px!important;height:27px!important;border-radius:5px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankName{
+  font-size:14px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankPos{
+  font-size:17px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankValue strong{
+  font-size:14px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankScore strong{
+  font-size:18px!important;
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -1609,35 +1640,37 @@ function renderScore(){
 const RANK_TEAM_COLORS=['#ff426f','#00c8ff','#8d63ff','#ffb020'];
 let previousRankOrder=[];
 
-function teamRankData(){
+function playerRankData(){
   if(!cur)return [];
-  const rows=[];
+  const rows=P.map(p=>{
+    const team=Math.floor((p.position-1)/cur.players_per_team)+1;
+    const a=totals(p);
+    return{
+      id:p.id,
+      team,
+      player:p,
+      name:(p.nickname||('PLAYER '+p.position)).slice(0,4),
+      kill:n(a.raw),
+      death:n(a.minus),
+      score:n(a.score),
+      position:n(p.position)
+    };
+  });
+  rows.sort((a,b)=>b.score-a.score||b.kill-a.kill||a.position-b.position);
+  return rows;
+}
+
+function teamKillTotals(){
+  const out=[];
   for(let team=1;team<=cur.team_count;team++){
     const ps=teamPlayers(team);
-    let kill=0,death=0,score=0,chicken=0;
-    ps.forEach(p=>{
-      const a=totals(p);
-      kill+=n(a.raw);
-      score+=n(a.score);
-      death+=n(a.minus);
-    });
-    RO.filter(r=>r.chicken_team===team).forEach(r=>{
-      chicken++;
-      score+=getTeamMap(r,team)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills);
-    });
-    const cap=ps[0]||{};
-    rows.push({
+    out.push({
       team,
-      cap,
-      name:(cap.nickname||('TEAM '+team)).slice(0,4),
-      kill,
-      death,
-      score,
-      chicken
+      name:(ps[0]?.nickname||('TEAM '+team)).slice(0,4),
+      kill:ps.reduce((sum,p)=>sum+n(totals(p).raw),0)
     });
   }
-  rows.sort((a,b)=>b.score-a.score||b.kill-a.kill||b.chicken-a.chicken||a.team-b.team);
-  return rows;
+  return out;
 }
 
 function rankAvatarHtml(cap){
@@ -1658,11 +1691,11 @@ function renderVerticalRanking(animate=true){
     captureStage.appendChild(box);
   }
 
-  const rows=teamRankData();
-  const nowOrder=rows.map(x=>x.team);
-  const oldPositions=new Map(previousRankOrder.map((team,i)=>[team,i]));
+  const rows=playerRankData();
+  const nowOrder=rows.map(x=>String(x.id));
+  const oldPositions=new Map(previousRankOrder.map((id,i)=>[String(id),i]));
 
-  const totals=[...rows].sort((a,b)=>a.team-b.team).map(x=>{
+  const totals=teamKillTotals().map(x=>{
     const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
     return '<div class="rankTotal" style="--team-color:'+c+'">'+
       '<span class="rankTotalName">'+e(x.name)+'</span>'+
@@ -1673,17 +1706,17 @@ function renderVerticalRanking(animate=true){
   const timeTxt=timerText();
   const body=rows.map((x,i)=>{
     const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
-    const old=oldPositions.has(x.team)?oldPositions.get(x.team):i;
+    const old=oldPositions.has(String(x.id))?oldPositions.get(String(x.id)):i;
     const diff=old-i;
     const move=animate&&previousRankOrder.length&&diff!==0
       ? '<span class="rankMove '+(diff>0?'up':'down')+'">'+(diff>0?'▲':'▼')+Math.abs(diff)+'</span>'
       : '';
-    return '<div class="rankRow '+(i===0?'rankFirst ':'')+(move?'rankChanged':'')+'" data-rank-team="'+x.team+'" style="--team-color:'+c+'">'+
+    return '<div class="rankRow '+(i===0?'rankFirst ':'')+(move?'rankChanged':'')+'" data-rank-player="'+x.id+'" style="--team-color:'+c+'">'+
       move+
       '<div class="rankPos">'+(i+1)+'</div>'+
-      '<div class="rankIdentity">'+rankAvatarHtml(x.cap)+'<div class="rankName">'+e(x.name)+'</div></div>'+
+      '<div class="rankIdentity">'+rankAvatarHtml(x.player)+'<div class="rankName">'+e(x.name)+'</div></div>'+
       '<div class="rankValue"><small>KILL</small><strong>'+x.kill+'</strong></div>'+
-      '<div class="rankValue rankDeath"><small>DEATH</small><strong>'+x.death+'</strong></div>'+
+      '<div class="rankValue rankDeath"><small>DEATH</small><strong>'+(x.death?'-'+x.death:'0')+'</strong></div>'+
       '<div class="rankValue rankScore"><small>SCORE</small><strong>'+x.score+'</strong></div>'+
     '</div>';
   }).join('');
@@ -1691,10 +1724,10 @@ function renderVerticalRanking(animate=true){
   box.style.setProperty('--rank-count',Math.max(1,cur.team_count));
   box.innerHTML=
     '<div class="rankHeader">'+
-      '<div class="rankHeaderTop"><span class="rankTitle">LIVE TEAM RANKING</span><span class="rankTimer">'+(timeTxt?e(timeTxt):'')+'</span></div>'+
+      '<div class="rankHeaderTop"><span class="rankTitle">LIVE PLAYER RANKING</span><span class="rankTimer">'+(timeTxt?e(timeTxt):'')+'</span></div>'+
       '<div class="rankTotals">'+totals+'</div>'+
     '</div>'+
-    '<div class="rankCols"><div>RANK</div><div>TEAM</div><div>KILL</div><div>DEATH</div><div>SCORE</div></div>'+
+    '<div class="rankCols"><div>RANK</div><div>PLAYER</div><div>KILL</div><div>DEATH</div><div>SCORE</div></div>'+
     '<div class="rankRows">'+body+'</div>';
 
   previousRankOrder=nowOrder;
