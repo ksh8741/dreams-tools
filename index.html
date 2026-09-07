@@ -900,201 +900,225 @@ html.broadcastOverlay.broadcastVertical .scoreStatusRow .statusCenter{
 /* horizontal overlay is intentionally identical to the normal scoreboard */
 html.broadcastOverlay.broadcastHorizontal .scoreFrame{transform:none!important}
 
-/* v25 PUBG tournament broadcast skin */
-html.broadcastOverlay{
-  --pubg-navy:#10233f;
-  --pubg-blue:#17365d;
-  --pubg-gold:#f0b92e;
-  --pubg-cream:#f4f0df;
-  --pubg-paper:#ece9da;
-  --pubg-ink:#111b29;
+/* v25 vertical live ranking HUD */
+html.broadcastOverlay.broadcastVertical .scoreFrame{
+  display:none!important;
 }
-html.broadcastOverlay .scoreFrame{
-  border-radius:0!important;
-  overflow:hidden!important;
-  background:var(--pubg-paper)!important;
-  border:2px solid var(--pubg-navy)!important;
-  box-shadow:none!important;
+html.broadcastOverlay.broadcastVertical #captureStage{
+  padding:0!important;
+  background:transparent!important;
 }
-html.broadcastOverlay .totalBar{
-  position:relative!important;
-  border:0!important;
-  border-radius:0!important;
-  background:linear-gradient(90deg,var(--pubg-navy),#0c1a2e)!important;
-  color:#fff!important;
-  letter-spacing:.5px!important;
-  text-transform:uppercase;
+.rankOverlay{
+  display:none;
 }
-html.broadcastOverlay .totalBar:before{
-  content:"MATCH";
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  display:block!important;
+  width:330px;
+  background:#0d131a;
+  color:#fff;
+  border:1px solid #29343f;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,.22);
+  font-family:"Nanum Square Round","Noto Sans KR",system-ui,sans-serif!important;
+}
+.rankHeader{
+  background:linear-gradient(180deg,#141c25,#0f151d);
+  border-bottom:1px solid #2b3742;
+  padding:10px 10px 9px;
+}
+.rankHeaderTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+.rankTitle{
+  font-size:11px;
+  letter-spacing:1.2px;
+  font-weight:900;
+  color:#aeb8c2;
+}
+.rankTimer{
+  font-size:11px;
+  font-weight:900;
+  color:#dbe4ec;
+  font-variant-numeric:tabular-nums;
+}
+.rankTotals{
+  display:grid;
+  grid-template-columns:repeat(var(--rank-count,2),1fr);
+  gap:5px;
+}
+.rankTotal{
+  min-width:0;
+  height:31px;
+  border-radius:7px;
+  background:#17212b;
+  border:1px solid #2b3742;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  padding:0 5px;
+  position:relative;
+  overflow:hidden;
+}
+.rankTotal:before{
+  content:"";
   position:absolute;
   left:0;top:0;bottom:0;
-  display:flex;align-items:center;
-  padding:0 10px;
-  background:var(--pubg-gold);
-  color:var(--pubg-navy);
-  font-size:9px;
-  font-weight:1000;
-  letter-spacing:.8px;
+  width:4px;
+  background:var(--team-color);
 }
-html.broadcastOverlay .goalBadge{
-  border-radius:0!important;
-  background:var(--pubg-gold)!important;
-  color:var(--pubg-navy)!important;
-  border:0!important;
-  box-shadow:none!important;
-}
-html.broadcastOverlay .scoreStatusRow{
-  border:0!important;
-  border-radius:0!important;
-  background:#17365d!important;
-  color:#fff!important;
-}
-html.broadcastOverlay .scoreStatusRow .statusCenter{
-  border-radius:0!important;
-  background:transparent!important;
-  color:#fff!important;
-  border:0!important;
-  font-weight:900!important;
-}
-html.broadcastOverlay .team{
-  border-color:#c9c7bb!important;
-  border-radius:0!important;
-  background:var(--pubg-paper)!important;
-}
-html.broadcastOverlay .teamSummary{
-  background:var(--pubg-navy)!important;
-  color:#fff!important;
-  border-radius:0!important;
-  border:0!important;
-  font-weight:950!important;
-}
-html.broadcastOverlay .teamSummary .chickenMini{
-  color:var(--pubg-gold)!important;
-}
-html.broadcastOverlay .slot{
-  border-color:#d2d0c5!important;
-  background:linear-gradient(90deg,#f4f1e5,#e8e5d8)!important;
-  border-radius:0!important;
-}
-html.broadcastOverlay .slot:nth-child(even){
-  background:linear-gradient(90deg,#ebe8dc,#dedbcf)!important;
-}
-html.broadcastOverlay .avatar{
-  border-radius:2px!important;
-  border:1px solid #a8a697!important;
-  box-shadow:none!important;
-}
-html.broadcastOverlay .name{
-  color:var(--pubg-ink)!important;
-  font-weight:1000!important;
-  letter-spacing:-.3px!important;
-}
-html.broadcastOverlay .detail{
-  color:var(--pubg-navy)!important;
-  font-weight:1000!important;
-}
-html.broadcastOverlay .killFlash{
-  border-radius:0!important;
-}
-
-/* vertical = reference-like leaderboard */
-html.broadcastOverlay.broadcastVertical .scoreFrame{
-  width:286px!important;
-  min-width:286px!important;
-  max-width:286px!important;
-  border-width:2px!important;
-}
-html.broadcastOverlay.broadcastVertical .totalBar{
-  width:286px!important;min-width:286px!important;max-width:286px!important;
-  min-height:54px!important;
-  padding:7px 12px 7px 58px!important;
-  justify-content:center!important;
-  font-size:18px!important;
-}
-html.broadcastOverlay.broadcastVertical .totalBar:before{
-  content:"PUBG";
-  width:48px;
-  justify-content:center;
-  padding:0!important;
-  font-size:11px!important;
-}
-html.broadcastOverlay.broadcastVertical .scoreStatusRow{
-  width:286px!important;min-width:286px!important;max-width:286px!important;
-  height:25px!important;
-  border-top:1px solid rgba(255,255,255,.18)!important;
-}
-html.broadcastOverlay.broadcastVertical .scoreStatusRow:before{
-  content:"RANK   TEAM                         KILLS";
-  width:100%;
-  padding:0 8px;
-  font-size:8px;
-  letter-spacing:.55px;
-  color:#d9e3ef;
+.rankTotalName{
+  max-width:48px;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:clip;
+  font-size:11px;
   font-weight:900;
+  color:#cbd4dc;
 }
-html.broadcastOverlay.broadcastVertical .scoreStatusRow>*{display:none!important}
-html.broadcastOverlay.broadcastVertical .score{
-  width:286px!important;min-width:286px!important;max-width:286px!important;
+.rankTotalKill{
+  font-size:15px;
+  line-height:1;
+  font-weight:950;
+  color:#fff;
+  font-variant-numeric:tabular-nums;
 }
-html.broadcastOverlay.broadcastVertical .team{
-  position:relative!important;
-  width:286px!important;min-width:286px!important;max-width:286px!important;
-  display:grid!important;
-  grid-template-columns:46px 1fr!important;
-  border:0!important;
-  border-bottom:2px solid var(--pubg-navy)!important;
+.rankCols{
+  height:24px;
+  display:grid;
+  grid-template-columns:38px minmax(0,1fr) 46px 46px 52px;
+  align-items:center;
+  background:#111922;
+  border-bottom:1px solid #2b3742;
+  color:#73808b;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.8px;
+  text-align:center;
 }
-html.broadcastOverlay.broadcastVertical .teamSummary{
-  grid-column:1 / -1!important;
-  min-height:27px!important;
-  height:27px!important;
-  padding:0 8px 0 47px!important;
-  justify-content:space-between!important;
-  font-size:11px!important;
-  position:relative!important;
+.rankCols div:nth-child(2){text-align:left;padding-left:10px}
+.rankRows{
+  position:relative;
+  background:#0e151d;
 }
-html.broadcastOverlay.broadcastVertical .teamSummary:before{
-  content:attr(data-rank);
+.rankRow{
+  height:55px;
+  display:grid;
+  grid-template-columns:38px minmax(0,1fr) 46px 46px 52px;
+  align-items:center;
+  background:#131c25;
+  border-bottom:1px solid #26313b;
+  transition:background .22s ease, transform .42s cubic-bezier(.2,.8,.2,1);
+  position:relative;
+  will-change:transform;
 }
-html.broadcastOverlay.broadcastVertical .slot{
-  grid-column:1 / -1!important;
-  min-height:39px!important;
-  height:39px!important;
-  padding:3px 8px!important;
-  grid-template-columns:28px minmax(0,1fr)!important;
+.rankRow:nth-child(even){
+  background:#101820;
 }
-html.broadcastOverlay.broadcastVertical .avatar{
-  width:26px!important;height:26px!important;
+.rankRow:last-child{border-bottom:0}
+.rankRow.rankFirst{
+  background:linear-gradient(90deg,#171f28,#111820);
 }
-html.broadcastOverlay.broadcastVertical .playerInline{
-  grid-template-columns:minmax(0,1fr) 76px!important;
-  gap:4px!important;
+.rankRow.rankChanged{
+  animation:rankPulse .8s ease-out;
 }
-html.broadcastOverlay.broadcastVertical .name{
-  width:auto!important;min-width:0!important;max-width:none!important;
-  font-size:13px!important;
+@keyframes rankPulse{
+  0%{box-shadow:inset 0 0 0 1px rgba(255,255,255,0)}
+  22%{box-shadow:inset 0 0 0 1px var(--team-color),0 0 18px color-mix(in srgb,var(--team-color) 35%, transparent)}
+  100%{box-shadow:inset 0 0 0 1px rgba(255,255,255,0)}
 }
-html.broadcastOverlay.broadcastVertical .detail{
-  text-align:right!important;
-  font-size:13px!important;
+.rankPos{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  font-weight:950;
+  color:#b4bec8;
+  font-variant-numeric:tabular-nums;
 }
-
-/* horizontal uses same PUBG palette while preserving its original geometry */
-html.broadcastOverlay.broadcastHorizontal .scoreFrame{
-  border-radius:0!important;
+.rankFirst .rankPos{
+  color:#ffd36b;
 }
-
-html.broadcastOverlay.broadcastVertical .team:before{
-  position:absolute;left:0;top:0;width:38px;height:27px;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--pubg-gold);color:var(--pubg-navy);
-  font-size:11px;font-weight:1000;z-index:3;
+.rankIdentity{
+  height:100%;
+  min-width:0;
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr);
+  gap:8px;
+  align-items:center;
+  padding:0 8px 0 7px;
+  border-left:5px solid var(--team-color);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--team-color) 19%, transparent),transparent 70%);
 }
-html.broadcastOverlay.broadcastVertical .team:nth-child(1):before{content:"1"}
-html.broadcastOverlay.broadcastVertical .team:nth-child(2):before{content:"2"}
-html.broadcastOverlay.broadcastVertical .team:nth-child(3):before{content:"3"}
-html.broadcastOverlay.broadcastVertical .team:nth-child(4):before{content:"4"}
+.rankAvatar{
+  width:31px;
+  height:31px;
+  border-radius:6px;
+  object-fit:cover;
+  border:1px solid rgba(255,255,255,.14);
+  background:#28333d;
+}
+.rankAvatarEmpty{
+  width:31px;height:31px;border-radius:6px;background:#28333d;
+}
+.rankName{
+  min-width:0;
+  font-size:15px;
+  font-weight:950;
+  color:#f3f6f8;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:clip;
+  letter-spacing:-.3px;
+}
+.rankValue{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-variant-numeric:tabular-nums;
+}
+.rankValue small{
+  display:none;
+}
+.rankValue strong{
+  font-size:15px;
+  font-weight:950;
+  color:#dbe4ec;
+}
+.rankDeath strong{
+  color:#ff8c9d;
+}
+.rankScore{
+  background:#18232e;
+}
+.rankScore strong{
+  font-size:20px;
+  color:#fff;
+}
+.rankMove{
+  position:absolute;
+  left:26px;
+  top:4px;
+  font-size:8px;
+  font-weight:950;
+  opacity:0;
+  animation:moveBadge .9s ease-out forwards;
+}
+.rankMove.up{color:#5ff0ba}
+.rankMove.down{color:#ff7d92}
+@keyframes moveBadge{
+  0%{opacity:0;transform:translateY(3px)}
+  18%{opacity:1;transform:translateY(0)}
+  75%{opacity:1}
+  100%{opacity:0;transform:translateY(-3px)}
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -1255,6 +1279,7 @@ function refreshScoreTextOnly(){
   const main=totalBar.querySelector('.totalMain');
   if(main)main.textContent=center;
   refreshStatusRow();
+  renderVerticalRanking(true);
 }
 function scoreText(a){
   return a.minus>0 ? a.score+'('+a.raw+'-'+a.minus+')' : a.score+'킬';
@@ -1404,6 +1429,7 @@ function refreshTimerBadge(){
   const el=document.getElementById('timerBadge');
   if(el){el.style.display='none';el.textContent='';}
   refreshStatusRow();
+  if(document.documentElement.classList.contains('broadcastVertical'))renderVerticalRanking(false);
 }
 function syncTimerControls(){
   if(!cur)return;
@@ -1555,6 +1581,7 @@ function renderScore(){
       '</div></div>';
   }
   scoreboard.innerHTML=out;
+  renderVerticalRanking(false);
   const mode=scoreViewMode.value||cur.score_mode||'separate';
   const goal=cur.goal_kills??50;
   let center='';
@@ -1578,6 +1605,101 @@ function renderScore(){
   });
   drag();
 }
+
+const RANK_TEAM_COLORS=['#ff426f','#00c8ff','#8d63ff','#ffb020'];
+let previousRankOrder=[];
+
+function teamRankData(){
+  if(!cur)return [];
+  const rows=[];
+  for(let team=1;team<=cur.team_count;team++){
+    const ps=teamPlayers(team);
+    let kill=0,death=0,score=0,chicken=0;
+    ps.forEach(p=>{
+      const a=totals(p);
+      kill+=n(a.raw);
+      score+=n(a.score);
+      death+=n(a.minus);
+    });
+    RO.filter(r=>r.chicken_team===team).forEach(r=>{
+      chicken++;
+      score+=getTeamMap(r,team)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills);
+    });
+    const cap=ps[0]||{};
+    rows.push({
+      team,
+      cap,
+      name:(cap.nickname||('TEAM '+team)).slice(0,4),
+      kill,
+      death,
+      score,
+      chicken
+    });
+  }
+  rows.sort((a,b)=>b.score-a.score||b.kill-a.kill||b.chicken-a.chicken||a.team-b.team);
+  return rows;
+}
+
+function rankAvatarHtml(cap){
+  if(cap?.soop_user_id){
+    return '<img class="rankAvatar" src="'+pic(cap.soop_user_id)+'">';
+  }
+  return '<span class="rankAvatarEmpty"></span>';
+}
+
+function renderVerticalRanking(animate=true){
+  if(!cur||!captureStage)return;
+
+  let box=document.getElementById('rankOverlay');
+  if(!box){
+    box=document.createElement('div');
+    box.id='rankOverlay';
+    box.className='rankOverlay';
+    captureStage.appendChild(box);
+  }
+
+  const rows=teamRankData();
+  const nowOrder=rows.map(x=>x.team);
+  const oldPositions=new Map(previousRankOrder.map((team,i)=>[team,i]));
+
+  const totals=[...rows].sort((a,b)=>a.team-b.team).map(x=>{
+    const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
+    return '<div class="rankTotal" style="--team-color:'+c+'">'+
+      '<span class="rankTotalName">'+e(x.name)+'</span>'+
+      '<span class="rankTotalKill">'+x.kill+'</span>'+
+    '</div>';
+  }).join('');
+
+  const timeTxt=timerText();
+  const body=rows.map((x,i)=>{
+    const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
+    const old=oldPositions.has(x.team)?oldPositions.get(x.team):i;
+    const diff=old-i;
+    const move=animate&&previousRankOrder.length&&diff!==0
+      ? '<span class="rankMove '+(diff>0?'up':'down')+'">'+(diff>0?'▲':'▼')+Math.abs(diff)+'</span>'
+      : '';
+    return '<div class="rankRow '+(i===0?'rankFirst ':'')+(move?'rankChanged':'')+'" data-rank-team="'+x.team+'" style="--team-color:'+c+'">'+
+      move+
+      '<div class="rankPos">'+(i+1)+'</div>'+
+      '<div class="rankIdentity">'+rankAvatarHtml(x.cap)+'<div class="rankName">'+e(x.name)+'</div></div>'+
+      '<div class="rankValue"><small>KILL</small><strong>'+x.kill+'</strong></div>'+
+      '<div class="rankValue rankDeath"><small>DEATH</small><strong>'+x.death+'</strong></div>'+
+      '<div class="rankValue rankScore"><small>SCORE</small><strong>'+x.score+'</strong></div>'+
+    '</div>';
+  }).join('');
+
+  box.style.setProperty('--rank-count',Math.max(1,cur.team_count));
+  box.innerHTML=
+    '<div class="rankHeader">'+
+      '<div class="rankHeaderTop"><span class="rankTitle">LIVE TEAM RANKING</span><span class="rankTimer">'+(timeTxt?e(timeTxt):'')+'</span></div>'+
+      '<div class="rankTotals">'+totals+'</div>'+
+    '</div>'+
+    '<div class="rankCols"><div>RANK</div><div>TEAM</div><div>KILL</div><div>DEATH</div><div>SCORE</div></div>'+
+    '<div class="rankRows">'+body+'</div>';
+
+  previousRankOrder=nowOrder;
+}
+
 function drag(){document.querySelectorAll('.slot').forEach(s=>{s.ondragstart=a=>{if(a.target.closest('input')){a.preventDefault();return}dragId=s.dataset.slot;s.classList.add('dragging');ghost=document.createElement('div');ghost.className='ghost';ghost.textContent=(P.find(p=>p.id===dragId)?.nickname||'PLAYER');document.body.appendChild(ghost);document.addEventListener('dragover',moveGhost)};s.ondragover=a=>{if(!dragId||dragId===s.dataset.slot)return;a.preventDefault();document.querySelectorAll('.slot.over').forEach(x=>x!==s&&x.classList.remove('over'));s.classList.add('over')};s.ondragleave=()=>s.classList.remove('over');s.ondrop=async a=>{a.preventDefault();let b=s.dataset.slot;if(b!==dragId)await swap(dragId,b);endDrag();editing=false;load()};s.ondragend=endDrag})}function moveGhost(a){if(ghost){ghost.style.left=a.clientX+'px';ghost.style.top=a.clientY+'px'}}function endDrag(){dragId=null;document.querySelectorAll('.slot').forEach(x=>x.classList.remove('dragging','over'));document.removeEventListener('dragover',moveGhost);ghost?.remove();ghost=null}async function swap(aid,bid){let a=P.find(x=>x.id===aid),b=P.find(x=>x.id===bid),ap=a.position,bp=b.position;await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:999999})});await q('/pubg_players?id=eq.'+b.id,{method:'PATCH',body:JSON.stringify({position:ap})});await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:bp})})}
 
 const teamMapTimers=new Map(),teamMapDesired=new Map(),teamMapSaving=new Set();
