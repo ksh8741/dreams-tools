@@ -218,7 +218,7 @@ async function load(){
     if(uiLocked())return;
     queueSafeRender();
   }catch(err){console.error('[load]',err)}
-}}
+}
 function st(r,p){return S.find(x=>x.round_id===r&&x.player_id===p)||{kills:0,died:false}}function totals(p){let raw=0,minus=0;RO.forEach(r=>{let s=st(r.id,p.id);raw+=n(s.kills);if(s.died&&!(r.top10&&cur.top10_no_death_penalty))minus+=n(p.death_penalty)});return{raw,minus,score:raw-minus}}
 async function pickProfile(id,name){pickId=id;pickName=name;let r=await fetch('/api/soop-search?nickname='+encodeURIComponent(name)),j=r.ok?await r.json():{results:[]};pt.textContent='SOOP 계정 선택';ph.textContent='“'+name+'” 검색 결과';cands.innerHTML=(j.results||[]).map(a=>'<div class="cand" data-id="'+e(a.user_id)+'"><img src="'+e(a.profile_image)+'"><div><b>'+e(a.nickname||name)+'</b><div class="meta">'+e(a.user_id)+'</div></div><button class="btn">선택</button></div>').join('')||'<div class="empty">검색 결과 없음</div>';document.querySelectorAll('.cand').forEach(x=>x.onclick=()=>bind(x.dataset.id));picker.classList.remove('hidden')}
 async function bind(id){await q('/pubg_players?id=eq.'+pickId,{method:'PATCH',body:JSON.stringify({nickname:pickName,soop_user_id:id,profile_image:pic(id)})});picker.classList.add('hidden');editing=false;load()}noPhoto.onclick=async()=>{await q('/pubg_players?id=eq.'+pickId,{method:'PATCH',body:JSON.stringify({nickname:pickName,soop_user_id:null,profile_image:null})});picker.classList.add('hidden');editing=false;load()};pc.onclick=()=>{picker.classList.add('hidden');editing=false;load()};
