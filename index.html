@@ -329,6 +329,127 @@ main{max-width:1720px!important;padding:12px 16px!important}
 }
 .killUnified .chickenCol{width:28px!important;min-width:28px!important;max-width:28px!important;padding:0 1px!important}
 .killUnified .chickenCheck{width:17px!important;height:17px!important}
+
+/* v18 premium scoreboard + reliable desktop table */
+.scoreStage{
+  position:sticky!important;
+  top:8px!important;
+  z-index:35!important;
+  margin-bottom:12px!important;
+  pointer-events:auto;
+}
+.scorePanel,.scoreFrame{box-shadow:none!important}
+.scoreFrame{filter:none!important}
+.totalBar{
+  min-height:72px!important;
+  font-size:29px!important;
+  border-radius:15px 15px 0 0!important;
+  background:linear-gradient(135deg,#111923 0%,#263343 50%,#111923 100%)!important;
+}
+.score .team{width:214px!important;flex:0 0 214px!important}
+.teamSummary{height:30px!important;font-size:11px!important;gap:6px!important}
+.teamSummary .miniScore{font-size:14px!important}
+.teamSummary .miniChicken{font-size:10px!important;padding:2px 6px!important}
+.slot{grid-template-columns:32px minmax(0,1fr)!important;gap:7px!important;padding:7px 8px!important}
+.playerInline{
+  display:grid!important;
+  grid-template-columns:68px minmax(0,1fr)!important;
+  gap:5px!important;
+  min-width:0!important;
+  align-items:center!important;
+}
+.name{
+  width:68px!important;
+  max-width:68px!important;
+  min-width:68px!important;
+  font-size:16px!important;
+  font-weight:900!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+  white-space:nowrap!important;
+  padding:3px 1px!important;
+}
+.detail{
+  width:auto!important;
+  max-width:none!important;
+  min-width:0!important;
+  font-size:16px!important;
+  font-weight:900!important;
+  text-align:right!important;
+  letter-spacing:-.35px!important;
+  color:#263343!important;
+}
+.detail b{font-size:16px!important}
+.avatar{width:32px!important;height:32px!important}.avatarEmpty{width:32px!important;height:32px!important}
+
+/* Elegant score-change cue: restrained sweep + delta badge */
+.slot.scoreFlash{position:relative;overflow:visible!important;animation:none!important;background:transparent!important;transform:none!important}
+.slot.scoreFlash:before{
+  content:"";position:absolute;inset:3px;border-radius:9px;pointer-events:none;
+  background:linear-gradient(100deg,transparent 0%,rgba(255,255,255,0) 28%,rgba(235,191,105,.22) 45%,rgba(255,255,255,.52) 52%,rgba(235,191,105,.16) 60%,transparent 78%);
+  transform:translateX(-115%);
+  animation:luxSweep .72s cubic-bezier(.22,.75,.25,1);
+  box-shadow:none!important;
+}
+.slot.scoreFlash .avatar{animation:avatarRing .72s ease-out}
+.scoreDelta{
+  position:absolute;right:7px;top:3px;z-index:5;
+  padding:2px 6px;border-radius:999px;
+  background:#16202c;color:#f4d69b;border:1px solid rgba(244,214,155,.38);
+  font-size:10px;font-weight:900;line-height:1.35;
+  box-shadow:0 4px 10px rgba(17,25,35,.14);
+  animation:deltaRise .85s ease-out forwards;
+}
+@keyframes luxSweep{0%{transform:translateX(-115%);opacity:0}18%{opacity:1}100%{transform:translateX(115%);opacity:0}}
+@keyframes avatarRing{0%{box-shadow:0 0 0 0 rgba(223,181,102,.55)}55%{box-shadow:0 0 0 4px rgba(223,181,102,.20)}100%{box-shadow:0 0 0 0 rgba(223,181,102,0)}}
+@keyframes deltaRise{0%{opacity:0;transform:translateY(5px) scale(.94)}25%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-7px) scale(.98)}}
+
+/* 1920x1080: no horizontal scroll; smaller screens scroll instead of crushing */
+.killUnifiedWrap{overflow-x:auto!important}
+.killUnified{width:1616px!important;min-width:1616px!important;max-width:1616px!important;table-layout:fixed!important}
+.killUnified .roundCol{width:40px!important;min-width:40px!important;max-width:40px!important}
+.killUnified .mapCol{width:48px!important;min-width:48px!important;max-width:48px!important}
+.killUnified .playerHead,.killUnified .killCell{width:79px!important;min-width:79px!important;max-width:79px!important}
+.killUnified .chickenCol{width:30px!important;min-width:30px!important;max-width:30px!important}
+.killUnified .mapSelect{
+  width:44px!important;max-width:44px!important;
+  text-align:center!important;text-align-last:center!important;
+  padding:0 1px!important;font-size:11px!important;
+}
+.killCtrl{grid-template-columns:38px 20px!important;gap:4px!important}
+.killSquare{width:36px!important;max-width:36px!important}.killSquare .killInput{width:36px!important;height:36px!important;min-height:36px!important}
+.killUnified th,.killUnified td{font-size:12px!important}
+.killUnified thead .teamNameRow th{font-size:14px!important}
+.killUnified .playerHead{font-size:12px!important}
+
+/* Clean settings deck */
+.settingsPanel{padding:14px!important;background:linear-gradient(180deg,#fff,#fcfbfd)!important}
+.settingsDeck{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:10px}
+.settingCard{
+  min-width:0;border:1px solid #e6e0e6;border-radius:12px;
+  background:linear-gradient(180deg,#fff 0%,#fbfafc 100%);
+  padding:11px;box-shadow:0 4px 14px rgba(52,38,52,.04)
+}
+.settingCardTitle{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;font-size:14px;font-weight:900;color:#313946}
+.settingCardTitle small{font-size:9px;letter-spacing:1.2px;color:#a297a1}
+.scoreSettingsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.settingField{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:800;color:#6d6570}
+.settingField input,.settingField select{
+  width:100%;height:34px;border:1px solid #e1dbe1;border-radius:8px;
+  background:#fff;padding:0 8px;font-size:13px;font-weight:800;color:#303946;outline:none
+}
+.settingField input:focus,.settingField select:focus{border-color:#c9b1bf;box-shadow:0 0 0 2px rgba(201,177,191,.14)}
+.settingToggle{grid-column:1/-1;height:34px;display:flex;align-items:center;gap:7px;border:1px solid #e7e1e6;border-radius:8px;background:#fff;padding:0 9px;font-size:11px;font-weight:800;color:#655f67}
+.timerCleanGrid{display:grid;grid-template-columns:1.25fr .8fr;gap:7px}
+.timerModeField{grid-column:1/-1}
+.timerStartBtn{height:34px;align-self:end;font-size:12px!important}
+.penaltyCard .deathItems{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+.di{height:34px!important;border:1px solid #ebe5ea;border-radius:8px;background:#fff;padding:0 6px!important;display:grid!important;grid-template-columns:minmax(0,1fr) 44px!important;align-items:center!important;gap:5px!important;font-size:11px!important}
+.di input{height:25px!important;border-radius:6px!important}
+@media(max-width:1250px){
+  .settingsDeck{grid-template-columns:1fr!important}
+  .scoreStage{top:4px!important}
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -346,27 +467,35 @@ main{max-width:1720px!important;padding:12px 16px!important}
     <div id="captureStage" class="scoreWrap"><div class="scoreFrame"><div id="totalBar" class="totalBar"></div><div id="scoreboard" class="score"></div></div></div>
   </div>
 </div>
-<div class="panel sec settingsPanel"><div class="sect"><h2>게임 세팅</h2><span class="sub">RULE SET</span></div>
-  <div class="settingsParallel">
-    <div class="settings">
-      <div class="set">목표 킬<input id="goalKills" type="number" min="0" max="9999" value="50"></div>
-      <div class="set">일반 치킨 보너스<input id="ck" type="number" min="0"></div>
-      <div class="set">사녹 치킨 보너스<input id="sk" type="number" min="0"></div>
-      <div class="set"><label><input id="t10" type="checkbox"> 탑텐 시 마이너스 없음</label></div>
-    </div>
-    <div class="timerSettings">
-      <div class="set wide">타이머 방식
-        <select id="timerMode">
+<div class="panel sec settingsPanel">
+  <div class="sect"><h2>게임 세팅</h2><span class="sub">MATCH CONTROL</span></div>
+  <div class="settingsDeck">
+    <section class="settingCard">
+      <div class="settingCardTitle"><span>점수 설정</span><small>SCORE</small></div>
+      <div class="scoreSettingsGrid">
+        <label class="settingField"><span>목표 킬</span><input id="goalKills" type="number" min="0" max="9999" value="50"></label>
+        <label class="settingField"><span>일반 치킨</span><input id="ck" type="number" min="0"></label>
+        <label class="settingField"><span>사녹 치킨</span><input id="sk" type="number" min="0"></label>
+        <label class="settingToggle"><input id="t10" type="checkbox"><span>탑텐 시 데스감점 없음</span></label>
+      </div>
+    </section>
+    <section class="settingCard">
+      <div class="settingCardTitle"><span>타이머</span><small>TIMER</small></div>
+      <div class="timerCleanGrid">
+        <label class="settingField timerModeField"><span>방식</span><select id="timerMode">
           <option value="uptime">설정 시간부터 업타임</option>
           <option value="countdown">설정 시간 카운트다운</option>
           <option value="endtime">종료시간까지 남은 시간</option>
-        </select>
+        </select></label>
+        <label class="settingField" id="timerSecondsWrap"><span>설정 시간 (분)</span><input id="timerMinutes" type="number" min="0" max="14400" value="60"></label>
+        <label class="settingField" id="timerEndWrap"><span>종료 시간</span><input id="timerEndAt" type="datetime-local"></label>
+        <button id="timerStart" class="btn timerStartBtn">시작 / 재시작</button>
       </div>
-      <div class="set" id="timerSecondsWrap">설정 시간 (분)<input id="timerMinutes" type="number" min="0" max="14400" value="60"></div>
-      <div class="set" id="timerEndWrap">종료 시간<input id="timerEndAt" type="datetime-local"></div>
-      <div class="timerActions wide"><button id="timerStart" class="btn">타이머 시작/재시작</button></div>
-    </div>
-    <div class="death settingsDeath"><div class="settingsLabel">선수별 데스당 마이너스</div><div id="deathItems" class="deathItems"></div></div>
+    </section>
+    <section class="settingCard penaltyCard">
+      <div class="settingCardTitle"><span>데스 감점</span><small>PLAYER</small></div>
+      <div id="deathItems" class="deathItems"></div>
+    </section>
   </div>
 </div>
 <div class="panel kill"><div class="sect"><h2>킬 기록</h2><span class="sub">UNIFIED MATCH TABLE</span></div><div class="killUnifiedWrap"><div id="killBoard"></div></div><button id="addRound" class="btn add">추가</button></div>
@@ -408,7 +537,7 @@ let pendingWrites=0;
 let lastLocalEditAt=0;
 let lastAppliedSignature='';
 function touchLocal(){localRevision++;lastLocalEditAt=Date.now()}
-function stateSignature(room,p,ro,s){
+function stateSignature(room,p,ro,s,tm){
   const rp=room?{
     id:room.id,chicken_kills:room.chicken_kills,sanhok_chicken_kills:room.sanhok_chicken_kills,
     top10_no_death_penalty:room.top10_no_death_penalty,goal_kills:room.goal_kills,score_mode:room.score_mode,
@@ -417,7 +546,8 @@ function stateSignature(room,p,ro,s){
   return JSON.stringify([rp,
     p.map(x=>[x.id,x.position,x.nickname,x.soop_user_id,x.death_penalty]),
     ro.map(x=>[x.id,x.round_no,x.map_type,x.map_name,x.chicken_team,x.top10]),
-    s.map(x=>[x.id,x.round_id,x.player_id,x.kills,x.died])
+    s.map(x=>[x.id,x.round_id,x.player_id,x.kills,x.died]),
+    (tm||[]).map(x=>[x.round_id,x.team_no,x.map_name])
   ]);
 }
 function calcTeamScores(){
@@ -441,32 +571,45 @@ function refreshScoreTextOnly(){
   const spans=totalBar.querySelectorAll(':scope > span');
   if(spans[1])spans[1].textContent=center;
 }
+function scoreText(a){
+  return a.minus>0 ? a.score+'('+a.raw+'-'+a.minus+')킬' : a.score+'킬';
+}
 function updatePlayerScoreText(playerId){
   const p=P.find(x=>String(x.id)===String(playerId));if(!p)return;
   const a=totals(p);
   const slot=scoreboard.querySelector('[data-slot="'+CSS.escape(String(playerId))+'"]');
   const detail=slot?.querySelector('.detail');
-  if(detail)detail.innerHTML='<b>'+a.score+'</b> ( '+a.raw+' - '+a.minus+' )';
+  if(detail)detail.textContent=scoreText(a);
 }
-function flashPlayerScore(playerId){
+function flashPlayerScore(playerId,delta){
   const slot=scoreboard.querySelector('[data-slot="'+CSS.escape(String(playerId))+'"]');
   if(!slot)return;
   slot.classList.remove('scoreFlash');
   void slot.offsetWidth;
   slot.classList.add('scoreFlash');
+  const old=slot.querySelector('.scoreDelta');if(old)old.remove();
+  if(delta){
+    const badge=document.createElement('span');badge.className='scoreDelta';
+    badge.textContent=(delta>0?'+':'')+delta;
+    slot.appendChild(badge);
+    setTimeout(()=>badge.remove(),900);
+  }
   clearTimeout(slot._flashTimer);
-  slot._flashTimer=setTimeout(()=>slot.classList.remove('scoreFlash'),1200);
+  slot._flashTimer=setTimeout(()=>slot.classList.remove('scoreFlash'),760);
 }
 
 function updateLocalStat(key,k,d){
   touchLocal();
   const [r,p]=key.split('|');
+  const player=P.find(x=>String(x.id)===String(p));
+  const before=player?totals(player).score:0;
   let o=S.find(x=>String(x.round_id)===String(r)&&String(x.player_id)===String(p));
   if(!o){o={id:null,round_id:r,player_id:p,kills:0,died:false};S.push(o)}
   if(k!==null)o.kills=k;
   if(d!==null)o.died=d;
+  const after=player?totals(player).score:before;
   updatePlayerScoreText(p);
-  flashPlayerScore(p);
+  flashPlayerScore(p,after-before);
   refreshScoreTextOnly();
 }
 function hasEditableFocus(){
@@ -489,29 +632,17 @@ function teamLetter(i){return String.fromCharCode(64+i)}
 function teamPlayers(team){return P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===team)}
 
 const MAPS=['에란겔','미라마','사녹','카라킨','파라모','태이고','데스턴','비켄디','론도'];
-const TEAM_MAP_STORE='dreams_pubg_team_maps_v1';
 let teamMapState={};
 function teamMapKey(roundId,team){return String(roundId)+'|'+String(team)}
-function loadTeamMaps(){
-  try{
-    const all=JSON.parse(localStorage.getItem(TEAM_MAP_STORE)||'{}');
-    teamMapState=all[String(cur?.id)]||{};
-  }catch(_){teamMapState={}}
+function loadTeamMaps(){teamMapState={}}
+function getTeamMap(round,team){return teamMapState[teamMapKey(round.id,team)] || normalizeMapName(round)}
+function setTeamMap(roundId,team,name){teamMapState[teamMapKey(roundId,team)]=name}
+function mergeTeamMapRows(rows){
+  const next={};
+  (rows||[]).forEach(x=>next[teamMapKey(x.round_id,x.team_no)]=x.map_name);
+  teamMapState=next;
 }
-function saveTeamMaps(){
-  try{
-    const all=JSON.parse(localStorage.getItem(TEAM_MAP_STORE)||'{}');
-    all[String(cur?.id)]=teamMapState;
-    localStorage.setItem(TEAM_MAP_STORE,JSON.stringify(all));
-  }catch(_){}
-}
-function getTeamMap(round,team){
-  return teamMapState[teamMapKey(round.id,team)] || normalizeMapName(round);
-}
-function setTeamMap(roundId,team,name){
-  teamMapState[teamMapKey(roundId,team)]=name;
-  saveTeamMaps();
-}
+
 
 function mapTypeFromName(name){return name==='사녹'?'sanhok':'normal'}
 function normalizeMapName(r){
@@ -607,11 +738,11 @@ cb.onclick=async()=>{
 };
 function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team);jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
 async function ensure(){let a=await q('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds',{method:'POST',body:JSON.stringify(x)})}
-async function enter(r){cur=r;loadTeamMaps();lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),5000);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
+async function enter(r){cur=r;loadTeamMaps();lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
 async function load(isPoll=false){
   if(!cur)return;
   const roomId=cur.id,revAtStart=localRevision;
-  if(isPoll && (uiLocked() || pendingWrites>0 || Date.now()-lastLocalEditAt<900))return;
+  if(isPoll && (uiLocked() || pendingWrites>0 || Date.now()-lastLocalEditAt<500))return;
   try{
     let[r,p,ro]=await Promise.all([
       q('/pubg_rooms?id=eq.'+roomId+'&select=*'),
@@ -619,13 +750,17 @@ async function load(isPoll=false){
       q('/pubg_rounds?room_id=eq.'+roomId+'&select=*&order=round_no.asc')
     ]);
     if(!cur || cur.id!==roomId)return;
-    const ss=ro.length?await q('/pubg_round_player_stats?select=*&round_id=in.('+ro.map(x=>x.id).join(',')+')'):[];
-    if(revAtStart!==localRevision || pendingWrites>0 || uiLocked() || Date.now()-lastLocalEditAt<650){
+    const roundIds=ro.map(x=>x.id);
+    let[ss,tm]=await Promise.all([
+      roundIds.length?q('/pubg_round_player_stats?select=*&round_id=in.('+roundIds.join(',')+')'):Promise.resolve([]),
+      roundIds.length?q('/pubg_round_team_state?select=round_id,team_no,map_name,updated_at&round_id=in.('+roundIds.join(',')+')'):Promise.resolve([])
+    ]);
+    if(revAtStart!==localRevision || pendingWrites>0 || uiLocked() || Date.now()-lastLocalEditAt<350){
       pendingRemoteRender=true;return;
     }
-    const sig=stateSignature(r[0]||cur,p,ro,ss);
+    const sig=stateSignature(r[0]||cur,p,ro,ss,tm);
     if(isPoll && sig===lastAppliedSignature)return;
-    cur=r[0]||cur;P=p;RO=ro;S=ss;lastAppliedSignature=sig;
+    cur=r[0]||cur;P=p;RO=ro;S=ss;mergeTeamMapRows(tm);lastAppliedSignature=sig;
     queueSafeRender();
   }catch(err){console.error('[load]',err)}
 }
@@ -651,7 +786,7 @@ function renderScore(){
       ps.map(p=>{let a=totals(p);return '<div class="slot" draggable="true" data-slot="'+p.id+'">'+
       (p.soop_user_id?'<img class="avatar" src="'+pic(p.soop_user_id)+'">':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름 입력">'+
-      '<div class="detail"><b>'+a.score+'</b> ( '+a.raw+' - '+a.minus+' )</div></div></div>'}).join('')+
+      '<div class="detail">'+e(scoreText(a))+'</div></div></div>'}).join('')+
       '</div></div>';
   }
   scoreboard.innerHTML=out;
@@ -674,6 +809,30 @@ function renderScore(){
   drag();
 }
 function drag(){document.querySelectorAll('.slot').forEach(s=>{s.ondragstart=a=>{if(a.target.closest('input')){a.preventDefault();return}dragId=s.dataset.slot;s.classList.add('dragging');ghost=document.createElement('div');ghost.className='ghost';ghost.textContent=(P.find(p=>p.id===dragId)?.nickname||'PLAYER');document.body.appendChild(ghost);document.addEventListener('dragover',moveGhost)};s.ondragover=a=>{if(!dragId||dragId===s.dataset.slot)return;a.preventDefault();document.querySelectorAll('.slot.over').forEach(x=>x!==s&&x.classList.remove('over'));s.classList.add('over')};s.ondragleave=()=>s.classList.remove('over');s.ondrop=async a=>{a.preventDefault();let b=s.dataset.slot;if(b!==dragId)await swap(dragId,b);endDrag();editing=false;load()};s.ondragend=endDrag})}function moveGhost(a){if(ghost){ghost.style.left=a.clientX+'px';ghost.style.top=a.clientY+'px'}}function endDrag(){dragId=null;document.querySelectorAll('.slot').forEach(x=>x.classList.remove('dragging','over'));document.removeEventListener('dragover',moveGhost);ghost?.remove();ghost=null}async function swap(aid,bid){let a=P.find(x=>x.id===aid),b=P.find(x=>x.id===bid),ap=a.position,bp=b.position;await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:999999})});await q('/pubg_players?id=eq.'+b.id,{method:'PATCH',body:JSON.stringify({position:ap})});await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:bp})})}
+
+const teamMapTimers=new Map(),teamMapDesired=new Map(),teamMapSaving=new Set();
+function scheduleTeamMapSave(roundId,team,name){
+  const key=teamMapKey(roundId,team);teamMapDesired.set(key,{roundId,team,name});
+  clearTimeout(teamMapTimers.get(key));
+  teamMapTimers.set(key,setTimeout(()=>flushTeamMapSave(key),70));
+}
+async function flushTeamMapSave(key){
+  if(teamMapSaving.has(key))return;
+  const v=teamMapDesired.get(key);if(!v)return;
+  teamMapDesired.delete(key);teamMapSaving.add(key);pendingWrites++;
+  try{
+    await q('/pubg_round_team_state?on_conflict=round_id,team_no',{
+      method:'POST',
+      headers:{Prefer:'resolution=merge-duplicates'},
+      body:JSON.stringify({round_id:v.roundId,team_no:v.team,map_name:v.name,updated_at:new Date().toISOString()})
+    });
+  }catch(err){console.error('[team map save]',err)}
+  finally{
+    pendingWrites--;teamMapSaving.delete(key);
+    if(teamMapDesired.has(key))setTimeout(()=>flushTeamMapSave(key),0);
+  }
+}
+
 function board(){
   const teamPlayersList=[];
   for(let tt=1;tt<=cur.team_count;tt++)teamPlayersList.push(teamPlayers(tt));
@@ -721,6 +880,7 @@ function board(){
     const rid=x.dataset.map,team=+x.dataset.mapTeam,name=x.value;
     setTeamMap(rid,team,name);
     refreshScoreTextOnly();
+    scheduleTeamMapSave(rid,team,name);
   });
   document.querySelectorAll('[data-chicken]').forEach(x=>x.onchange=()=>{
     touchLocal();
@@ -742,7 +902,7 @@ function board(){
     const v=Math.max(0,n(inp.value)+(btn.dataset.dir==='1'?1:-1));
     inp.value=v;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.focus();
   });
-  lastAppliedSignature=stateSignature(cur,P,RO,S);
+  
 }
 const statSaveTimers=new Map(),statDesired=new Map(),statSaving=new Set();
 function scheduleStatSave(key,k,d){
@@ -764,13 +924,14 @@ async function flushStatSave(key){
 }
 async function saveStat(key,k,d){
   let[r,p]=key.split('|'),o=S.find(x=>String(x.round_id)===String(r)&&String(x.player_id)===String(p));
-  if(o?.id){
-    let z={};if(k!==null)z.kills=k;if(d!==null)z.died=d;
-    await q('/pubg_round_player_stats?id=eq.'+o.id,{method:'PATCH',body:JSON.stringify(z)});
-  }else{
-    const body={round_id:r,player_id:p,kills:k??o?.kills??0,died:d??o?.died??false};
-    const created=await q('/pubg_round_player_stats',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(body)});
-    if(Array.isArray(created)&&created[0]){if(o)Object.assign(o,created[0]);else S.push(created[0])}
+  const body={round_id:r,player_id:p,kills:k!==null?k:(o?.kills??0),died:d!==null?d:(o?.died??false)};
+  const created=await q('/pubg_round_player_stats?on_conflict=round_id,player_id',{
+    method:'POST',
+    headers:{Prefer:'resolution=merge-duplicates,return=representation'},
+    body:JSON.stringify(body)
+  });
+  if(Array.isArray(created)&&created[0]){
+    if(o)Object.assign(o,created[0]);else S.push(created[0]);
   }
 }
 const roundPatchTimers=new Map(),roundPatchDesired=new Map(),roundPatchSaving=new Set();
@@ -882,6 +1043,15 @@ if(pipScore)pipScore.onclick=async()=>{
   }catch(e){console.error('[PiP]',e)}
 };
 
+
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='hidden'){
+    [...statDesired.keys()].forEach(k=>flushStatSave(k));
+    [...teamMapDesired.keys()].forEach(k=>flushTeamMapSave(k));
+    [...roundPatchDesired.keys()].forEach(k=>flushRoundPatch(k));
+  }
+});
 
 rooms();setInterval(()=>{if(!cur && !hasEditableFocus())rooms()},5000);
 </script></body></html>
