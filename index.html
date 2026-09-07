@@ -268,6 +268,67 @@ main{max-width:1720px!important;padding:12px 16px!important}
   .timerSettings{grid-template-columns:minmax(180px,1.2fr) minmax(150px,.8fr) minmax(180px,1fr)!important;overflow-x:auto}
   .scorePanel{max-width:100%}
 }
+
+/* v17 scoreboard polish + change pulse */
+.scorePanel{padding:8px!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.scorePanel .sect{max-width:max-content;margin:0 auto 7px}
+.scoreFrame{border-radius:16px;overflow:hidden;box-shadow:0 18px 45px rgba(26,31,40,.18),0 2px 8px rgba(26,31,40,.08)}
+.totalBar{
+  min-height:64px!important;
+  padding:10px 110px!important;
+  background:linear-gradient(135deg,#161d27 0%,#242f3d 55%,#151c25 100%)!important;
+  border:0!important;
+  border-radius:16px 16px 0 0!important;
+  font-size:24px!important;
+  letter-spacing:.2px!important;
+  text-shadow:0 1px 0 #0008;
+}
+.totalBar .goalBadge{left:12px!important;font-size:12px!important;padding:7px 11px!important;background:linear-gradient(135deg,#ffe79d,#f6c86d)!important;color:#3a2a09!important}
+.totalBar .timerBadge{right:12px!important;font-size:12px!important;padding:7px 11px!important;background:#ffffff16!important;border:1px solid #ffffff24!important;backdrop-filter:blur(5px)}
+.score .team{
+  width:210px!important;flex:0 0 210px!important;
+  border-color:#d9dee5!important;
+  background:linear-gradient(180deg,#fff 0%,#fbfcfe 100%)!important;
+}
+.teamSummary{
+  height:34px;display:flex;align-items:center;justify-content:center;gap:7px;
+  border-bottom:1px solid #e8ebef;background:linear-gradient(180deg,#fafbfc,#f4f6f8);
+  font-size:12px;font-weight:900;color:#3d4855;
+}
+.teamSummary .miniScore{font-size:16px;color:#17212d;font-weight:950}
+.teamSummary .miniChicken{font-size:11px;color:#8a5b1f;background:#fff4d7;border:1px solid #f1dcaa;border-radius:999px;padding:2px 7px}
+.slot.scoreFlash{
+  position:relative;
+  animation:scoreFlash 1.15s cubic-bezier(.2,.8,.2,1);
+  z-index:2;
+}
+.slot.scoreFlash:before{
+  content:"";position:absolute;inset:2px;border-radius:9px;
+  box-shadow:0 0 0 2px rgba(255,183,82,.85),0 0 22px rgba(255,173,55,.55);
+  pointer-events:none;
+  animation:scoreGlow 1.15s ease-out;
+}
+.slot.scoreFlash .detail b{color:#d66a00!important;transform:scale(1.16);display:inline-block;transition:.2s}
+@keyframes scoreFlash{
+  0%{background:#fff}
+  18%{background:#fff1c7;transform:translateY(-1px) scale(1.012)}
+  48%{background:#fff8e7}
+  100%{background:transparent;transform:none}
+}
+@keyframes scoreGlow{0%{opacity:0;transform:scale(.94)}20%{opacity:1}100%{opacity:0;transform:scale(1.04)}}
+
+/* compact map and chicken widths */
+.killUnified .mapCol{width:52px!important;min-width:52px!important;max-width:52px!important}
+.killUnified .mapSelect{
+  width:48px!important;max-width:48px!important;
+  padding:0 2px!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+  font-size:11px!important;
+}
+.killUnified .chickenCol{width:28px!important;min-width:28px!important;max-width:28px!important;padding:0 1px!important}
+.killUnified .chickenCheck{width:17px!important;height:17px!important}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -280,7 +341,7 @@ main{max-width:1720px!important;padding:12px 16px!important}
       <label><input id="chromaOn" type="checkbox"> 크로마키</label>
       <input id="chromaColor" type="color" value="#00ff00" title="크로마키 색상">
       <select id="scoreViewMode"><option value="auto">총스코어 자동</option><option value="separate">팀별</option><option value="2v2">A+B vs C+D</option></select>
-      <button id="popupScore" class="btn">팝업</button><button id="pipScore" class="btn">PiP</button>
+      <button id="pipScore" class="btn">팝업</button>
     </div></div>
     <div id="captureStage" class="scoreWrap"><div class="scoreFrame"><div id="totalBar" class="totalBar"></div><div id="scoreboard" class="score"></div></div></div>
   </div>
@@ -332,8 +393,7 @@ main{max-width:1720px!important;padding:12px 16px!important}
 <script>
 const B='https://llqikrcqavwfbuajykig.supabase.co/rest/v1',K='sb_publishable_aLPzJI_jQLlywmoQsiLRtw_ElX_aslF',H={'apikey':K,'Authorization':'Bearer '+K,'Content-Type':'application/json'},n=x=>Math.max(0,parseInt(x)||0),e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let cur,pick,P=[],RO=[],S=[],poll,editing=false,pickId=null,pickName='',dragId=null,ghost=null;
 const chromaOn=document.getElementById('chromaOn'),chromaColor=document.getElementById('chromaColor'),
-scoreViewMode=document.getElementById('scoreViewMode'),popupScore=document.getElementById('popupScore'),
-pipScore=document.getElementById('pipScore'),captureStage=document.getElementById('captureStage'),
+scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),captureStage=document.getElementById('captureStage'),
 totalBar=document.getElementById('totalBar'),scoreboard=document.getElementById('scoreboard'),
 killBoard=document.getElementById('killBoard'),
 goalKills=document.getElementById('goalKills'),timerMode=document.getElementById('timerMode'),
@@ -365,7 +425,7 @@ function calcTeamScores(){
   for(let tt=1;tt<=cur.team_count;tt++){
     let score=0;
     teamPlayers(tt).forEach(p=>score+=totals(p).score);
-    RO.filter(r=>r.chicken_team===tt).forEach(r=>score+=r.map_type==='sanhok'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills));
+    RO.filter(r=>r.chicken_team===tt).forEach(r=>score+=getTeamMap(r,tt)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills));
     scores.push(score);
   }
   return scores;
@@ -388,6 +448,16 @@ function updatePlayerScoreText(playerId){
   const detail=slot?.querySelector('.detail');
   if(detail)detail.innerHTML='<b>'+a.score+'</b> ( '+a.raw+' - '+a.minus+' )';
 }
+function flashPlayerScore(playerId){
+  const slot=scoreboard.querySelector('[data-slot="'+CSS.escape(String(playerId))+'"]');
+  if(!slot)return;
+  slot.classList.remove('scoreFlash');
+  void slot.offsetWidth;
+  slot.classList.add('scoreFlash');
+  clearTimeout(slot._flashTimer);
+  slot._flashTimer=setTimeout(()=>slot.classList.remove('scoreFlash'),1200);
+}
+
 function updateLocalStat(key,k,d){
   touchLocal();
   const [r,p]=key.split('|');
@@ -396,6 +466,7 @@ function updateLocalStat(key,k,d){
   if(k!==null)o.kills=k;
   if(d!==null)o.died=d;
   updatePlayerScoreText(p);
+  flashPlayerScore(p);
   refreshScoreTextOnly();
 }
 function hasEditableFocus(){
@@ -418,6 +489,30 @@ function teamLetter(i){return String.fromCharCode(64+i)}
 function teamPlayers(team){return P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===team)}
 
 const MAPS=['에란겔','미라마','사녹','카라킨','파라모','태이고','데스턴','비켄디','론도'];
+const TEAM_MAP_STORE='dreams_pubg_team_maps_v1';
+let teamMapState={};
+function teamMapKey(roundId,team){return String(roundId)+'|'+String(team)}
+function loadTeamMaps(){
+  try{
+    const all=JSON.parse(localStorage.getItem(TEAM_MAP_STORE)||'{}');
+    teamMapState=all[String(cur?.id)]||{};
+  }catch(_){teamMapState={}}
+}
+function saveTeamMaps(){
+  try{
+    const all=JSON.parse(localStorage.getItem(TEAM_MAP_STORE)||'{}');
+    all[String(cur?.id)]=teamMapState;
+    localStorage.setItem(TEAM_MAP_STORE,JSON.stringify(all));
+  }catch(_){}
+}
+function getTeamMap(round,team){
+  return teamMapState[teamMapKey(round.id,team)] || normalizeMapName(round);
+}
+function setTeamMap(roundId,team,name){
+  teamMapState[teamMapKey(roundId,team)]=name;
+  saveTeamMaps();
+}
+
 function mapTypeFromName(name){return name==='사녹'?'sanhok':'normal'}
 function normalizeMapName(r){
   if(r.map_name)return r.map_name;
@@ -512,7 +607,7 @@ cb.onclick=async()=>{
 };
 function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team);jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
 async function ensure(){let a=await q('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds',{method:'POST',body:JSON.stringify(x)})}
-async function enter(r){cur=r;lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),5000);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
+async function enter(r){cur=r;loadTeamMaps();lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),5000);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
 async function load(isPoll=false){
   if(!cur)return;
   const roomId=cur.id,revAtStart=localRevision;
@@ -550,14 +645,14 @@ function renderScore(){
   for(let t=1;t<=cur.team_count;t++){
     let ps=P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===t),teamScore=0,ch=0;
     ps.forEach(p=>teamScore+=totals(p).score);
-    RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=r.map_type==='sanhok'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
+    RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
     teamScores.push(teamScore);
-    out+='<div class="team"><div class="total">'+teamScore+'</div><div class="plist">'+
+    out+='<div class="team"><div class="teamSummary"><span>'+e(captainName(t))+'</span><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span></div><div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot" draggable="true" data-slot="'+p.id+'">'+
       (p.soop_user_id?'<img class="avatar" src="'+pic(p.soop_user_id)+'">':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름 입력">'+
       '<div class="detail"><b>'+a.score+'</b> ( '+a.raw+' - '+a.minus+' )</div></div></div>'}).join('')+
-      '</div><div class="chicken">'+(ch?'🍗 × '+ch:'')+'</div></div>';
+      '</div></div>';
   }
   scoreboard.innerHTML=out;
   const mode=(scoreViewMode.value!=='auto'?scoreViewMode.value:(cur.score_mode||'separate'));
@@ -599,8 +694,8 @@ function board(){
   RO.forEach(r=>{
     body+='<tr><td class="roundCol">'+r.round_no+'</td>';
     for(let tt=1;tt<=cur.team_count;tt++){
-      const ps=teamPlayersList[tt-1],mapName=normalizeMapName(r);
-      body+='<td class="mapCol"><select class="mapSelect" data-map="'+r.id+'">'+
+      const ps=teamPlayersList[tt-1],mapName=getTeamMap(r,tt);
+      body+='<td class="mapCol"><select class="mapSelect" data-map="'+r.id+'" data-map-team="'+tt+'">'+
         MAPS.map(name=>'<option value="'+e(name)+'" '+(name===mapName?'selected':'')+'>'+e(name)+'</option>').join('')+
       '</select></td>';
       ps.forEach(p=>{
@@ -623,10 +718,9 @@ function board(){
 
   document.querySelectorAll('[data-map]').forEach(x=>x.onchange=()=>{
     touchLocal();
-    const rid=x.dataset.map,name=x.value,type=mapTypeFromName(name);
-    const r=RO.find(r=>String(r.id)===String(rid));if(r){r.map_name=name;r.map_type=type}
+    const rid=x.dataset.map,team=+x.dataset.mapTeam,name=x.value;
+    setTeamMap(rid,team,name);
     refreshScoreTextOnly();
-    scheduleRoundPatch(rid,{map_name:name,map_type:type},true);
   });
   document.querySelectorAll('[data-chicken]').forEach(x=>x.onchange=()=>{
     touchLocal();
@@ -756,30 +850,38 @@ function applyChroma(){
 }
 if(chromaOn)chromaOn.onchange=applyChroma;if(chromaColor)chromaColor.oninput=applyChroma;
 if(scoreViewMode)scoreViewMode.onchange=()=>{if(cur)renderScore()};
-if(popupScore)popupScore.onclick=()=>{
-  if(!cur)return;
-  const u=new URL(location.href);u.searchParams.set('scoreonly','1');u.searchParams.set('room',cur.id);
-  window.open(u.toString(),'dreams_score','popup=yes,width=760,height=430,resizable=yes,scrollbars=no');
-};
 if(pipScore)pipScore.onclick=async()=>{
   if(!cur)return;
-  if('documentPictureInPicture' in window){
-    try{
-      const pip=await documentPictureInPicture.requestWindow({width:760,height:430});
-      const style=[...document.querySelectorAll('style')].map(x=>x.textContent).join('\\n');
-      pip.document.head.innerHTML='<style>'+style+'body{margin:0;background:transparent}.scoreWrap{overflow:visible;padding:0}.score{gap:0}</style>';
-      pip.document.body.innerHTML='<div id="pipStage"></div>';
-      const sync=()=>{const node=document.querySelector('#captureStage .scoreFrame');if(node)pip.document.getElementById('pipStage').innerHTML=node.outerHTML};
-      sync();const ob=new MutationObserver(sync);ob.observe(captureStage,{childList:true,subtree:true,characterData:true,attributes:true});
-      pip.addEventListener('pagehide',()=>ob.disconnect());
-    }catch(e){popupScore?.click()}
-  }else popupScore?.click()
+  if(!('documentPictureInPicture' in window))return alert('이 브라우저는 현황판 팝업을 지원하지 않습니다.');
+  try{
+    const node=document.querySelector('#captureStage .scoreFrame');if(!node)return;
+    const rect=node.getBoundingClientRect();
+    const targetW=Math.ceil(rect.width+60),targetH=Math.ceil(rect.height+60);
+    const pip=await documentPictureInPicture.requestWindow({width:targetW,height:targetH});
+    const style=[...document.querySelectorAll('style')].map(x=>x.textContent).join('\n');
+    const chroma=chromaOn?.checked?(chromaColor?.value||'#00ff00'):'transparent';
+    pip.document.head.innerHTML='<style>'+style+
+      'html,body{margin:0!important;padding:0!important;width:100%;height:100%;overflow:hidden!important;background:'+chroma+'!important}'+
+      '#pipPad{box-sizing:border-box;padding:30px;width:max-content;height:max-content;min-width:100%;min-height:100%;display:flex;align-items:flex-start;justify-content:flex-start}'+
+      '.scoreFrame{margin:0!important}'+
+      '</style>';
+    pip.document.body.innerHTML='<div id="pipPad"></div>';
+    const sync=()=>{
+      const src=document.querySelector('#captureStage .scoreFrame'),dst=pip.document.getElementById('pipPad');
+      if(src&&dst)dst.innerHTML=src.outerHTML;
+      pip.document.body.style.background=chromaOn?.checked?(chromaColor?.value||'#00ff00'):'transparent';
+    };
+    sync();
+    const ob=new MutationObserver(sync);ob.observe(captureStage,{childList:true,subtree:true,characterData:true,attributes:true});
+    const colorSync=()=>sync();
+    chromaOn?.addEventListener('change',colorSync);chromaColor?.addEventListener('input',colorSync);
+    pip.addEventListener('pagehide',()=>{
+      ob.disconnect();
+      chromaOn?.removeEventListener('change',colorSync);chromaColor?.removeEventListener('input',colorSync);
+    });
+  }catch(e){console.error('[PiP]',e)}
 };
-if(new URLSearchParams(location.search).get('scoreonly')==='1'){
-  document.documentElement.classList.add('overlayOnly');
-  const rid=new URLSearchParams(location.search).get('room');
-  (async()=>{let r=(await q('/pubg_rooms?id=eq.'+encodeURIComponent(rid)+'&select=*'))[0];if(r){await enterRoom(r);document.documentElement.classList.add('overlayOnly')}})();
-}
+
 
 rooms();setInterval(()=>{if(!cur && !hasEditableFocus())rooms()},5000);
 </script></body></html>
