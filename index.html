@@ -177,6 +177,40 @@ linear-gradient(180deg,#fffafd 0%,#f7fbff 55%,#f7f8fb 100%)!important}
 .killUnified .deathBtn{appearance:none;-webkit-appearance:none;width:18px!important;height:18px!important;margin:0!important;border:1px solid #d9cbd4!important;border-radius:5px!important;background:#fff!important;position:relative!important;cursor:pointer!important}
 .killUnified .deathBtn:checked{background:#2f3947!important;border-color:#2f3947!important}
 .killUnified .deathBtn:checked:after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:900;line-height:1}
+
+/* v15 vertical control stack */
+.killCtrl{
+  display:grid!important;
+  grid-template-columns:minmax(34px,1fr) 20px!important;
+  gap:4px!important;
+  align-items:center!important;
+  width:100%!important;
+  height:100%!important;
+}
+.killSquare{
+  aspect-ratio:1/1!important;
+  width:100%!important;
+  max-width:36px!important;
+  justify-self:center!important;
+}
+.killSideStack{
+  display:grid!important;
+  grid-template-rows:18px 18px 18px!important;
+  gap:3px!important;
+  align-items:center!important;
+  justify-items:center!important;
+}
+.killUnified .ctrlBtn{
+  width:18px!important;
+  height:18px!important;
+  padding:0!important;
+  border-radius:5px!important;
+}
+.killUnified .deathBtn{
+  width:18px!important;
+  height:18px!important;
+  margin:0!important;
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -489,9 +523,11 @@ function board(){
         const s=st(r.id,p.id),key=r.id+'|'+p.id;
         body+='<td class="killCell"><div class="killCtrl">'+
           '<div class="killSquare"><input class="killInput" data-k="'+key+'" type="number" min="0" value="'+n(s.kills)+'"></div>'+
-          '<button type="button" class="ctrlBtn" data-step="'+key+'" data-dir="1" title="킬 +1">+</button>'+
-          '<button type="button" class="ctrlBtn" data-step="'+key+'" data-dir="-1" title="킬 -1">−</button>'+
-          '<input class="deathBtn" data-d="'+key+'" type="checkbox" '+(s.died?'checked':'')+' title="데스 체크">'+
+          '<div class="killSideStack">'+
+            '<button type="button" class="ctrlBtn" data-step="'+key+'" data-dir="1" title="킬 +1">+</button>'+
+            '<button type="button" class="ctrlBtn" data-step="'+key+'" data-dir="-1" title="킬 -1">−</button>'+
+            '<input class="deathBtn" data-d="'+key+'" type="checkbox" '+(s.died?'checked':'')+' title="데스 체크">'+
+          '</div>'+
           '</div></td>';
       });
       body+='<td class="chickenCol"><input class="chickenCheck" data-chicken="'+r.id+'" data-team="'+tt+'" type="checkbox" '+(r.chicken_team===tt?'checked':'')+'></td>';
