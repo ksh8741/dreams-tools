@@ -645,6 +645,155 @@ html.broadcastOverlay .scoreStage{position:static!important;margin:0!important;d
 html.broadcastOverlay .scorePanel{padding:0!important;margin:0!important;border:0!important;background:transparent!important}
 html.broadcastOverlay .scoreWrap{overflow:visible!important;max-width:none!important;margin:0!important}
 html.broadcastOverlay .scoreFrame{margin:0!important}
+
+/* v22 broadcast readability + vivid motion */
+.scoreFrame{
+  width:var(--score-width,808px)!important;
+  min-width:var(--score-width,808px)!important;
+  max-width:var(--score-width,808px)!important;
+  border:1px solid #273140!important;
+  border-radius:14px!important;
+  overflow:hidden!important;
+}
+.score{
+  width:var(--score-width,808px)!important;
+  min-width:var(--score-width,808px)!important;
+  max-width:var(--score-width,808px)!important;
+}
+.score .team{
+  width:202px!important;flex:0 0 202px!important;
+  border:0!important;border-right:1px solid #cfd6df!important;
+}
+.score .team:last-child{border-right:0!important}
+.totalBar{
+  width:var(--score-width,808px)!important;
+  min-width:var(--score-width,808px)!important;
+  max-width:var(--score-width,808px)!important;
+  min-height:58px!important;
+  padding:8px 72px!important;
+  border-radius:0!important;
+  background:linear-gradient(180deg,#111925,#192433)!important;
+  border:0!important;
+  border-bottom:1px solid #334052!important;
+  font-size:24px!important;
+}
+.totalMain{
+  max-width:650px!important;
+  font-size:24px!important;
+  font-weight:950!important;
+  letter-spacing:-.4px!important;
+  text-shadow:0 1px 1px rgba(0,0,0,.35)!important;
+}
+.scoreStatusRow{
+  height:32px;
+  width:var(--score-width,808px);
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  background:linear-gradient(180deg,#f8fafc,#eef2f6);
+  border-bottom:1px solid #d5dce5;
+  color:#26313e;
+  font-weight:900;
+}
+.scoreStatusRow .statusLeft{justify-self:start;padding-left:10px;font-size:12px}
+.scoreStatusRow .statusCenter{
+  justify-self:center;
+  display:flex;align-items:center;gap:6px;
+  padding:4px 10px;border-radius:999px;
+  background:#17212d;color:#f7f9fc;
+  border:1px solid #2d3947;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
+  font-size:13px;letter-spacing:.3px
+}
+.scoreStatusRow .statusRight{justify-self:end;padding-right:10px;font-size:12px}
+.goalBadge{
+  position:absolute!important;
+  left:10px!important;top:50%!important;transform:translateY(-50%)!important;
+  min-width:44px!important;height:32px!important;padding:0 10px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  border-radius:8px!important;
+  background:linear-gradient(180deg,#e8edf2,#cfd7df)!important;
+  color:#16202b!important;
+  border:1px solid #ffffffaa!important;
+  box-shadow:inset 0 0 0 1px #aeb9c5,0 3px 8px rgba(0,0,0,.14)!important;
+  font-size:14px!important;font-weight:950!important
+}
+.goalBadge:before{content:none!important}
+.timerBadge{display:none!important}
+.teamSummary{
+  height:30px!important;
+  border-bottom:1px solid #d8dee6!important;
+  background:#f5f7fa!important;
+}
+.teamSummary .miniScore{font-size:15px!important}
+.teamSummary .miniChicken{font-size:11px!important}
+.slot{
+  min-height:50px!important;
+  border-top:1px solid #dfe5ec!important;
+  background:#fff!important
+}
+.slot:first-child{border-top:0!important}
+.avatar,.avatarEmpty{width:30px!important;height:30px!important}
+.playerInline{grid-template-columns:68px minmax(0,1fr)!important}
+.name,.detail{
+  font-size:15px!important;
+  font-weight:950!important;
+  color:#17212d!important
+}
+.detail{letter-spacing:-.25px!important}
+
+/* vivid per-player colors */
+.slot[data-accent="0"]{--player-accent:#00d69f}
+.slot[data-accent="1"]{--player-accent:#2f8cff}
+.slot[data-accent="2"]{--player-accent:#8b5cff}
+.slot[data-accent="3"]{--player-accent:#ff4f8b}
+.slot[data-accent="4"]{--player-accent:#ff9f1c}
+.slot[data-accent="5"]{--player-accent:#9bdc28}
+.slot[data-accent="6"]{--player-accent:#00c8e8}
+.slot[data-accent="7"]{--player-accent:#6f5cff}
+.slot[data-accent="8"]{--player-accent:#ff6b4a}
+.slot[data-accent="9"]{--player-accent:#e2c534}
+.slot[data-accent="10"]{--player-accent:#20c07a}
+.slot[data-accent="11"]{--player-accent:#4f7cff}
+.slot[data-accent="12"]{--player-accent:#b45cff}
+.slot[data-accent="13"]{--player-accent:#ff6da8}
+.slot[data-accent="14"]{--player-accent:#ffb340}
+.slot[data-accent="15"]{--player-accent:#65c93f}
+.slot.scoreFlash:before{
+  box-shadow:
+    0 0 0 2px var(--player-accent),
+    0 0 10px color-mix(in srgb,var(--player-accent) 75%, transparent),
+    0 0 22px color-mix(in srgb,var(--player-accent) 35%, transparent)!important;
+  animation:vividOutline .9s ease-out forwards!important;
+}
+.scoreDelta{
+  font-size:13px!important;
+  min-width:31px!important;
+  padding:4px 8px!important;
+  background:#0e141b!important;
+  color:var(--player-accent)!important;
+  border:1px solid var(--player-accent)!important;
+  text-shadow:0 0 7px color-mix(in srgb,var(--player-accent) 55%, transparent)!important;
+}
+@keyframes vividOutline{
+  0%{opacity:0;transform:scale(.985)}
+  15%{opacity:1}
+  65%{opacity:1}
+  100%{opacity:0;transform:scale(1.008)}
+}
+
+/* smaller overlay output */
+html.broadcastOverlay .scoreFrame,
+html.broadcastOverlay .score,
+html.broadcastOverlay .totalBar,
+html.broadcastOverlay .scoreStatusRow{
+  transform-origin:top left!important;
+}
+html.broadcastOverlay #roomView{width:max-content!important}
+html.broadcastOverlay .scorePanel{width:max-content!important}
+html.broadcastOverlay .scoreStage{width:max-content!important}
+html.broadcastOverlay body{width:max-content!important;height:max-content!important}
+html.broadcastOverlay .scoreFrame{font-smoothing:antialiased;-webkit-font-smoothing:antialiased;transform:scale(.9)!important}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -741,6 +890,7 @@ timerStart=document.getElementById('timerStart'),timerSecondsWrap=document.getEl
 timerEndWrap=document.getElementById('timerEndWrap');
 let timerTick=null;
 let renderQueued=false;
+let remoteFlashQueue=[];
 let pendingRemoteRender=false;
 let localRevision=0;
 let pendingWrites=0;
@@ -777,17 +927,19 @@ function refreshScoreTextOnly(){
   summaries.forEach((el,i)=>{
     const scoreEl=el.querySelector('.miniScore'),chEl=el.querySelector('.miniChicken');
     if(scoreEl)scoreEl.textContent=scores[i]??0;
-    if(chEl){
-      const ch=RO.filter(r=>r.chicken_team===i+1).length;
-      chEl.textContent='🍗 '+ch;
-    }
+    if(chEl)chEl.textContent='🍗 '+RO.filter(r=>r.chicken_team===i+1).length;
   });
-  const mode=scoreViewMode?.value||cur.score_mode||'separate';
   let center='';
-  if(mode==='2v2'&&cur.team_count===4)center=captainName(1)+' '+((scores[0]||0)+(scores[1]||0))+' : '+((scores[2]||0)+(scores[3]||0))+' '+captainName(3);
-  else center=scores.map((s,i)=>captainName(i+1)+' '+s).join('  ·  ');
+  if(cur.team_count===2){
+    center=captainName(1)+' '+(scores[0]||0)+' : '+(scores[1]||0)+' '+captainName(2);
+  }else{
+    const mode=scoreViewMode?.value||cur.score_mode||'separate';
+    if(mode==='2v2'&&cur.team_count===4)center=captainName(1)+' '+((scores[0]||0)+(scores[1]||0))+' : '+((scores[2]||0)+(scores[3]||0))+' '+captainName(3);
+    else center=scores.map((s,i)=>captainName(i+1)+' '+s).join('  ·  ');
+  }
   const main=totalBar.querySelector('.totalMain');
   if(main)main.textContent=center;
+  refreshStatusRow();
 }
 function scoreText(a){
   return a.minus>0 ? a.score+'('+a.raw+'-'+a.minus+')' : a.score+'킬';
@@ -852,7 +1004,7 @@ function teamPlayers(team){return P.filter(p=>Math.floor((p.position-1)/cur.play
 
 function applyScoreWidth(){
   if(!cur)return;
-  const w=Math.max(214,cur.team_count*214);
+  const w=Math.max(202,cur.team_count*202);
   document.documentElement.style.setProperty('--score-width',w+'px');
 }
 function overlayUrlForRoom(){
@@ -915,12 +1067,27 @@ function timerText(){
   const elapsed=Math.max(0,(now-started)/1000);
   return cur.timer_mode==='uptime'?fmtClock(base+elapsed):fmtClock(base-elapsed);
 }
+
+function refreshStatusRow(){
+  const row=document.getElementById('scoreStatusRow');if(!row||!cur)return;
+  const left=row.querySelector('.statusLeft'),center=row.querySelector('.statusCenter'),right=row.querySelector('.statusRight');
+  const tt=timerText();
+  if(cur.team_count===2){
+    if(left)left.textContent='🍗 '+RO.filter(r=>r.chicken_team===1).length;
+    if(right)right.textContent='🍗 '+RO.filter(r=>r.chicken_team===2).length;
+  }else{
+    if(left)left.textContent='';
+    if(right)right.textContent='';
+  }
+  if(center){
+    if(tt){center.style.display='flex';center.textContent='◷ '+tt}
+    else{center.style.display='none';center.textContent=''}
+  }
+}
 function refreshTimerBadge(){
   const el=document.getElementById('timerBadge');
-  if(!el)return;
-  const txt=timerText();
-  if(!txt){el.style.display='none';el.textContent='';}
-  else{el.style.display='';el.textContent=txt;}
+  if(el){el.style.display='none';el.textContent='';}
+  refreshStatusRow();
 }
 function syncTimerControls(){
   if(!cur)return;
@@ -976,11 +1143,11 @@ cb.onclick=async()=>{
 };
 function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team);jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
 async function ensure(){let a=await q('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds',{method:'POST',body:JSON.stringify(x)})}
-async function enter(r){cur=r;applyScoreWidth();loadTeamMaps();loadStatCache();lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
+async function enter(r){cur=r;applyScoreWidth();loadTeamMaps();loadStatCache();lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),document.documentElement.classList.contains('broadcastOverlay')?800:1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
 async function load(isPoll=false){
   if(!cur)return;
-  const roomId=cur.id,revAtStart=localRevision;
-  if(isPoll && (uiLocked() || pendingWrites>0 || Date.now()-lastLocalEditAt<500))return;
+  const roomId=cur.id,revAtStart=localRevision,isOverlay=document.documentElement.classList.contains('broadcastOverlay');
+  if(isPoll && !isOverlay && (uiLocked() || pendingWrites>0 || Date.now()-lastLocalEditAt<500))return;
   try{
     let[r,p,ro]=await Promise.all([
       q('/pubg_rooms?id=eq.'+roomId+'&select=*'),
@@ -993,14 +1160,37 @@ async function load(isPoll=false){
       roundIds.length?q('/pubg_round_player_stats?select=*&round_id=in.('+roundIds.join(',')+')'):Promise.resolve([]),
       roundIds.length?q('/pubg_round_team_state?select=round_id,team_no,map_name,updated_at&round_id=in.('+roundIds.join(',')+')'):Promise.resolve([])
     ]);
-    if(revAtStart!==localRevision || pendingWrites>0 || uiLocked() || Date.now()-lastLocalEditAt<350){
+    if(!isOverlay && (revAtStart!==localRevision || pendingWrites>0 || uiLocked() || Date.now()-lastLocalEditAt<350)){
       pendingRemoteRender=true;return;
     }
+
+    const oldTotals=new Map();
+    P.forEach(pl=>oldTotals.set(String(pl.id),totals(pl).score));
+
     const sig=stateSignature(r[0]||cur,p,ro,ss,tm);
     if(isPoll && sig===lastAppliedSignature)return;
     cur=r[0]||cur;P=p;RO=ro;S=ss;mergeTeamMapRows(tm);reconcileStatCache();lastAppliedSignature=sig;
+
+    remoteFlashQueue=[];
+    P.forEach(pl=>{
+      const before=oldTotals.get(String(pl.id));
+      const after=totals(pl).score;
+      if(before!==undefined && after!==before)remoteFlashQueue.push([pl.id,after-before]);
+    });
+
     queueSafeRender();
-  }catch(err){console.error('[load]',err)}
+    requestAnimationFrame(()=>{
+      if(remoteFlashQueue.length){
+        const qf=[...remoteFlashQueue];remoteFlashQueue=[];
+        qf.forEach(([pid,d])=>flashPlayerScore(pid,d));
+      }
+    });
+  }catch(err){
+    console.error('[load]',err);
+    if(document.documentElement.classList.contains('broadcastOverlay')){
+      setTimeout(()=>load(true),700);
+    }
+  }
 }
 function st(r,p){return S.find(x=>x.round_id===r&&x.player_id===p)||{kills:0,died:false}}function totals(p){let raw=0,minus=0;RO.forEach(r=>{let s=st(r.id,p.id);raw+=n(s.kills);if(s.died&&!(r.top10&&cur.top10_no_death_penalty))minus+=n(p.death_penalty)});return{raw,minus,score:raw-minus}}
 async function pickProfile(id,name){
@@ -1033,6 +1223,7 @@ async function saveName(x){
 }
 function renderScore(){
   applyScoreWidth();
+  if(scoreViewMode)scoreViewMode.style.display=cur.team_count===2?'none':'';
   ck.value=cur.chicken_kills;sk.value=cur.sanhok_chicken_kills;t10.checked=cur.top10_no_death_penalty;
   let teamScores=[],out='';
   for(let t=1;t<=cur.team_count;t++){
@@ -1040,7 +1231,7 @@ function renderScore(){
     ps.forEach(p=>teamScore+=totals(p).score);
     RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
     teamScores.push(teamScore);
-    out+='<div class="team"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span></div><div class="plist">'+
+    out+='<div class="team">'+(cur.team_count>=3?'<div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span></div>':'')+'<div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<img class="avatar" src="'+pic(p.soop_user_id)+'">':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름 입력">'+
@@ -1051,14 +1242,18 @@ function renderScore(){
   const mode=scoreViewMode.value||cur.score_mode||'separate';
   const goal=cur.goal_kills??50;
   let center='';
-  if(mode==='2v2' && cur.team_count===4){
+  if(cur.team_count===2){
+    center=captainName(1)+' '+(teamScores[0]||0)+' : '+(teamScores[1]||0)+' '+captainName(2);
+  }else if(mode==='2v2' && cur.team_count===4){
     const left=(teamScores[0]||0)+(teamScores[1]||0),right=(teamScores[2]||0)+(teamScores[3]||0);
     center=captainName(1)+' '+left+' : '+right+' '+captainName(3);
   }else{
     center=teamScores.map((s,i)=>captainName(i+1)+' '+s).join('  ·  ');
   }
-  const tt=timerText();
-  totalBar.innerHTML='<span class="goalBadge">'+goal+'</span><span class="totalMain">'+e(center)+'</span>'+(tt?'<span id="timerBadge" class="timerBadge">'+tt+'</span>':'');
+  totalBar.innerHTML='<span class="goalBadge">'+goal+'</span><span class="totalMain">'+e(center)+'</span>';
+  const oldStatus=document.getElementById('scoreStatusRow');if(oldStatus)oldStatus.remove();
+  totalBar.insertAdjacentHTML('afterend','<div id="scoreStatusRow" class="scoreStatusRow"><span class="statusLeft"></span><span class="statusCenter"></span><span class="statusRight"></span></div>');
+  refreshStatusRow();
   deathItems.innerHTML=P.map(p=>'<div class="di"><span>'+e(p.nickname||'PLAYER '+p.position)+'</span><input data-death="'+p.id+'" type="number" value="'+n(p.death_penalty)+'"></div>').join('');
   document.querySelectorAll('[data-name]').forEach(x=>{x.onfocus=()=>editing=true;x.onkeydown=a=>{if(a.key==='Enter'){a.preventDefault();x.blur()}};x.onblur=()=>saveName(x)});
   document.querySelectorAll('[data-death]').forEach(x=>{
@@ -1336,13 +1531,13 @@ if(pipScore)pipScore.onclick=async()=>{
   try{
     const node=document.querySelector('#captureStage .scoreFrame');if(!node)return;
     const rect=node.getBoundingClientRect();
-    const targetW=Math.ceil(rect.width+60),targetH=Math.ceil(rect.height+60);
+    const targetW=Math.ceil(rect.width+40),targetH=Math.ceil(rect.height+40);
     const pip=await documentPictureInPicture.requestWindow({width:targetW,height:targetH});
     const style=[...document.querySelectorAll('style')].map(x=>x.textContent).join('\n');
     const chroma=chromaOn?.checked?(chromaColor?.value||'#00ff00'):'transparent';
     pip.document.head.innerHTML='<style>'+style+
       'html,body{margin:0!important;padding:0!important;width:100%;height:100%;overflow:hidden!important;background:'+chroma+'!important}'+
-      '#pipPad{box-sizing:border-box;padding:30px;width:max-content;height:max-content;min-width:100%;min-height:100%;display:flex;align-items:flex-start;justify-content:flex-start}'+
+      '#pipPad{box-sizing:border-box;padding:20px;width:max-content;height:max-content;min-width:100%;min-height:100%;display:flex;align-items:flex-start;justify-content:flex-start}'+
       '.scoreFrame{margin:0!important}'+
       '</style>';
     pip.document.body.innerHTML='<div id="pipPad"></div>';
@@ -1376,6 +1571,7 @@ document.addEventListener('visibilitychange',()=>{
 const overlayRoomId=new URLSearchParams(location.search).get('overlay');
 if(overlayRoomId){
   document.documentElement.classList.add('broadcastOverlay');
+      document.documentElement.style.setProperty('--overlay-scale','0.9');
   (async()=>{
     try{
       const rr=await q('/pubg_rooms?id=eq.'+encodeURIComponent(overlayRoomId)+'&select=*');
@@ -1386,5 +1582,12 @@ if(overlayRoomId){
   rooms();
 }
 setInterval(()=>{if(!cur && !hasEditableFocus() && !overlayRoomId)rooms()},5000);
+
+window.addEventListener('online',()=>{if(cur)load(true)});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cur)load(true)});
+if(overlayRoomId){
+  setInterval(()=>{if(cur)load(true)},3000);
+}
+
 
 </script></body></html>
