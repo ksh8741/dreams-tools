@@ -552,6 +552,99 @@ main{max-width:1720px!important;padding:12px 16px!important}
 .team:nth-child(2){--team-accent:#7b6bd6}   /* royal violet */
 .team:nth-child(3){--team-accent:#c98a2e}   /* champagne amber */
 .team:nth-child(4){--team-accent:#bf5f7a}   /* muted rose */
+
+/* v21 scoreboard header lock + broadcast overlay */
+.scoreFrame{
+  width:var(--score-width,856px)!important;
+  min-width:var(--score-width,856px)!important;
+  max-width:var(--score-width,856px)!important;
+}
+.score{
+  width:var(--score-width,856px)!important;
+  min-width:var(--score-width,856px)!important;
+  max-width:var(--score-width,856px)!important;
+}
+.totalBar{
+  width:var(--score-width,856px)!important;
+  min-width:var(--score-width,856px)!important;
+  max-width:var(--score-width,856px)!important;
+  box-sizing:border-box!important;
+}
+.totalBar .goalBadge{
+  min-width:52px!important;
+  padding:7px 12px!important;
+  background:linear-gradient(135deg,#172632,#223f4a)!important;
+  color:#e5f6ed!important;
+  border:1px solid rgba(122,214,169,.42)!important;
+  box-shadow:inset 0 0 18px rgba(58,153,110,.10),0 4px 14px rgba(0,0,0,.15)!important;
+  font-size:14px!important;
+  letter-spacing:.1px!important;
+}
+.totalBar .goalBadge:before{content:"◎";margin-right:5px;color:#7dd4a7;font-size:13px}
+.totalBar .timerBadge{
+  min-width:86px!important;
+  text-align:center!important;
+  padding:8px 12px!important;
+  background:linear-gradient(135deg,#252b38,#313848)!important;
+  border:1px solid rgba(181,193,218,.24)!important;
+  color:#f6f8fb!important;
+  font-size:15px!important;
+  font-weight:950!important;
+  letter-spacing:.5px!important;
+  box-shadow:inset 0 0 16px rgba(255,255,255,.025),0 4px 14px rgba(0,0,0,.15)!important;
+}
+.totalBar .timerBadge:before{content:"◷";margin-right:6px;color:#a9b9d8;font-size:13px}
+.overlayUrlBtn{border-color:#cfd8e2!important;background:#f8fbfd!important}
+.overlayUrlModal{width:min(620px,94vw)!important}
+.overlayUrlRow{display:grid;grid-template-columns:minmax(0,1fr) 74px;gap:8px}
+.overlayUrlRow input{width:100%;height:40px;border:1px solid #dce3ea;border-radius:9px;padding:0 11px;background:#f8fafc;color:#27323d;font-size:12px;font-weight:700}
+.overlayGuide{margin-top:9px;padding:9px 11px;border-radius:8px;background:#f5f7fa;color:#6b7682;font-size:11px}
+
+/* 16 distinct premium player accents */
+.slot[data-accent="0"]{--player-accent:#1d9a83}
+.slot[data-accent="1"]{--player-accent:#4d86c6}
+.slot[data-accent="2"]{--player-accent:#8b6ec8}
+.slot[data-accent="3"]{--player-accent:#b45f7a}
+.slot[data-accent="4"]{--player-accent:#b4772f}
+.slot[data-accent="5"]{--player-accent:#6d8d3f}
+.slot[data-accent="6"]{--player-accent:#2b8c9f}
+.slot[data-accent="7"]{--player-accent:#6958b5}
+.slot[data-accent="8"]{--player-accent:#a55a4d}
+.slot[data-accent="9"]{--player-accent:#8f7a34}
+.slot[data-accent="10"]{--player-accent:#3f7b69}
+.slot[data-accent="11"]{--player-accent:#486ea8}
+.slot[data-accent="12"]{--player-accent:#7a5f96}
+.slot[data-accent="13"]{--player-accent:#9e6375}
+.slot[data-accent="14"]{--player-accent:#9a6a3a}
+.slot[data-accent="15"]{--player-accent:#587b42}
+.slot.scoreFlash:before{
+  box-shadow:0 0 0 2px var(--player-accent,#1d9a83),
+             0 0 12px color-mix(in srgb,var(--player-accent,#1d9a83) 30%, transparent)!important;
+}
+.slot .scoreDelta{
+  background:color-mix(in srgb,var(--player-accent,#1d9a83) 20%, #111820)!important;
+  color:color-mix(in srgb,var(--player-accent,#1d9a83) 72%, white)!important;
+  border-color:var(--player-accent,#1d9a83)!important;
+}
+
+/* overlay URL mode */
+html.broadcastOverlay,html.broadcastOverlay body{
+  margin:0!important;padding:0!important;background:transparent!important;overflow:hidden!important;
+}
+html.broadcastOverlay header,
+html.broadcastOverlay #lobby,
+html.broadcastOverlay #roomView>.top,
+html.broadcastOverlay .settingsPanel,
+html.broadcastOverlay .kill,
+html.broadcastOverlay .scorePanel>.sect{
+  display:none!important;
+}
+html.broadcastOverlay main{max-width:none!important;margin:0!important;padding:0!important}
+html.broadcastOverlay #roomView{display:block!important}
+html.broadcastOverlay .scoreStage{position:static!important;margin:0!important;display:block!important}
+html.broadcastOverlay .scorePanel{padding:0!important;margin:0!important;border:0!important;background:transparent!important}
+html.broadcastOverlay .scoreWrap{overflow:visible!important;max-width:none!important;margin:0!important}
+html.broadcastOverlay .scoreFrame{margin:0!important}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -564,7 +657,7 @@ main{max-width:1720px!important;padding:12px 16px!important}
       <label><input id="chromaOn" type="checkbox"> 크로마키</label>
       <input id="chromaColor" type="color" value="#00ff00" title="크로마키 색상">
       <select id="scoreViewMode"><option value="separate">팀별</option><option value="2v2">A+B vs C+D</option></select>
-      <button id="pipScore" class="btn">팝업</button>
+      <button id="pipScore" class="btn">팝업</button><button id="overlayUrlBtn" class="btn overlayUrlBtn">방송 URL</button>
     </div></div>
     <div id="captureStage" class="scoreWrap"><div class="scoreFrame"><div id="totalBar" class="totalBar"></div><div id="scoreboard" class="score"></div></div></div>
   </div>
@@ -621,11 +714,25 @@ main{max-width:1720px!important;padding:12px 16px!important}
 <div id="ce" class="err"></div><div class="actions"><button id="cc" class="btn">취소</button><button id="cb" class="btn primary">생성</button></div></div></div>
 
 <div id="joinOv" class="overlay hidden"><div class="modal"><h2 id="jt"></h2><div id="jm" class="meta"></div><div id="jpf" class="field"><label>비밀번호</label><input id="jp" type="password"></div><div id="je" class="err"></div><div class="actions"><button id="jc" class="btn">취소</button><button id="jb" class="btn primary">입장</button></div></div></div>
+
+<div id="overlayUrlOv" class="overlay hidden">
+  <div class="modal overlayUrlModal">
+    <h2>방송 오버레이 URL</h2>
+    <div class="meta" style="margin-bottom:10px">OBS · 브라우저 소스에 아래 주소를 그대로 붙여넣으세요.</div>
+    <div class="overlayUrlRow">
+      <input id="overlayUrlInput" readonly>
+      <button id="overlayCopyBtn" class="btn primary">복사</button>
+    </div>
+    <div class="overlayGuide">권장 크기: 현황판 실제 크기 그대로 · 배경 투명 · 자동 실시간 동기화</div>
+    <div class="actions"><button id="overlayCloseBtn" class="btn">닫기</button></div>
+  </div>
+</div>
+
 <div id="picker" class="overlay hidden"><div class="modal"><h2 id="pt">SOOP 계정 선택</h2><div id="ph" class="meta"></div><div id="cands"></div><div class="actions"><button id="noPhoto" class="btn">사진 없이 사용</button><button id="pc" class="btn">취소</button></div></div></div>
 <script>
 const B='https://llqikrcqavwfbuajykig.supabase.co/rest/v1',K='sb_publishable_aLPzJI_jQLlywmoQsiLRtw_ElX_aslF',H={'apikey':K,'Authorization':'Bearer '+K,'Content-Type':'application/json'},n=x=>Math.max(0,parseInt(x)||0),e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let cur,pick,P=[],RO=[],S=[],poll,editing=false,pickId=null,pickName='',dragId=null,ghost=null;
 const chromaOn=document.getElementById('chromaOn'),chromaColor=document.getElementById('chromaColor'),
-scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),captureStage=document.getElementById('captureStage'),
+scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),overlayUrlBtn=document.getElementById('overlayUrlBtn'),overlayUrlOv=document.getElementById('overlayUrlOv'),overlayUrlInput=document.getElementById('overlayUrlInput'),overlayCopyBtn=document.getElementById('overlayCopyBtn'),overlayCloseBtn=document.getElementById('overlayCloseBtn'),captureStage=document.getElementById('captureStage'),
 totalBar=document.getElementById('totalBar'),scoreboard=document.getElementById('scoreboard'),
 killBoard=document.getElementById('killBoard'),
 goalKills=document.getElementById('goalKills'),timerMode=document.getElementById('timerMode'),
@@ -743,6 +850,21 @@ async function q(p,o={}){const m=(o.method||'GET').toUpperCase();if(m!=='GET')o=
 function teamLetter(i){return String.fromCharCode(64+i)}
 function teamPlayers(team){return P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===team)}
 
+function applyScoreWidth(){
+  if(!cur)return;
+  const w=Math.max(214,cur.team_count*214);
+  document.documentElement.style.setProperty('--score-width',w+'px');
+}
+function overlayUrlForRoom(){
+  if(!cur)return '';
+  const u=new URL(location.href);
+  u.search='';
+  u.hash='';
+  u.searchParams.set('overlay',String(cur.id));
+  return u.toString();
+}
+
+
 const MAPS=['에란겔','미라마','사녹','카라킨','파라모','태이고','데스턴','비켄디','론도'];
 let teamMapState={};
 function teamMapKey(roundId,team){return String(roundId)+'|'+String(team)}
@@ -798,7 +920,7 @@ function refreshTimerBadge(){
   if(!el)return;
   const txt=timerText();
   if(!txt){el.style.display='none';el.textContent='';}
-  else{el.style.display='';el.textContent='⏱ '+txt;}
+  else{el.style.display='';el.textContent=txt;}
 }
 function syncTimerControls(){
   if(!cur)return;
@@ -854,7 +976,7 @@ cb.onclick=async()=>{
 };
 function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team);jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
 async function ensure(){let a=await q('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds',{method:'POST',body:JSON.stringify(x)})}
-async function enter(r){cur=r;loadTeamMaps();loadStatCache();lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
+async function enter(r){cur=r;applyScoreWidth();loadTeamMaps();loadStatCache();lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
 async function load(isPoll=false){
   if(!cur)return;
   const roomId=cur.id,revAtStart=localRevision;
@@ -910,6 +1032,7 @@ async function saveName(x){
   }
 }
 function renderScore(){
+  applyScoreWidth();
   ck.value=cur.chicken_kills;sk.value=cur.sanhok_chicken_kills;t10.checked=cur.top10_no_death_penalty;
   let teamScores=[],out='';
   for(let t=1;t<=cur.team_count;t++){
@@ -918,7 +1041,7 @@ function renderScore(){
     RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
     teamScores.push(teamScore);
     out+='<div class="team"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span></div><div class="plist">'+
-      ps.map(p=>{let a=totals(p);return '<div class="slot" draggable="true" data-slot="'+p.id+'">'+
+      ps.map(p=>{let a=totals(p);return '<div class="slot" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<img class="avatar" src="'+pic(p.soop_user_id)+'">':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름 입력">'+
       '<div class="detail">'+e(scoreText(a))+'</div></div></div>'}).join('')+
@@ -935,7 +1058,7 @@ function renderScore(){
     center=teamScores.map((s,i)=>captainName(i+1)+' '+s).join('  ·  ');
   }
   const tt=timerText();
-  totalBar.innerHTML='<span class="goalBadge">'+goal+'</span><span class="totalMain">'+e(center)+'</span>'+(tt?'<span id="timerBadge" class="timerBadge">⏱ '+tt+'</span>':'');
+  totalBar.innerHTML='<span class="goalBadge">'+goal+'</span><span class="totalMain">'+e(center)+'</span>'+(tt?'<span id="timerBadge" class="timerBadge">'+tt+'</span>':'');
   deathItems.innerHTML=P.map(p=>'<div class="di"><span>'+e(p.nickname||'PLAYER '+p.position)+'</span><input data-death="'+p.id+'" type="number" value="'+n(p.death_penalty)+'"></div>').join('');
   document.querySelectorAll('[data-name]').forEach(x=>{x.onfocus=()=>editing=true;x.onkeydown=a=>{if(a.key==='Enter'){a.preventDefault();x.blur()}};x.onblur=()=>saveName(x)});
   document.querySelectorAll('[data-death]').forEach(x=>{
@@ -1193,6 +1316,20 @@ if(scoreViewMode)scoreViewMode.onchange=()=>{
   touchLocal();cur.score_mode=scoreViewMode.value;renderScore();
   q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({score_mode:scoreViewMode.value})}).catch(console.error);
 };
+
+if(overlayUrlBtn)overlayUrlBtn.onclick=()=>{
+  if(!cur)return;
+  overlayUrlInput.value=overlayUrlForRoom();
+  overlayUrlOv.classList.remove('hidden');
+  overlayUrlInput.select();
+};
+if(overlayCloseBtn)overlayCloseBtn.onclick=()=>overlayUrlOv.classList.add('hidden');
+if(overlayCopyBtn)overlayCopyBtn.onclick=async()=>{
+  const v=overlayUrlInput.value;
+  try{await navigator.clipboard.writeText(v);overlayCopyBtn.textContent='복사됨';setTimeout(()=>overlayCopyBtn.textContent='복사',1000)}
+  catch(_){overlayUrlInput.select();document.execCommand('copy')}
+};
+
 if(pipScore)pipScore.onclick=async()=>{
   if(!cur)return;
   if(!('documentPictureInPicture' in window))return alert('이 브라우저는 현황판 팝업을 지원하지 않습니다.');
@@ -1235,5 +1372,19 @@ document.addEventListener('visibilitychange',()=>{
   }
 });
 
-rooms();setInterval(()=>{if(!cur && !hasEditableFocus())rooms()},5000);
+
+const overlayRoomId=new URLSearchParams(location.search).get('overlay');
+if(overlayRoomId){
+  document.documentElement.classList.add('broadcastOverlay');
+  (async()=>{
+    try{
+      const rr=await q('/pubg_rooms?id=eq.'+encodeURIComponent(overlayRoomId)+'&select=*');
+      if(rr?.[0])await enter(rr[0]);
+    }catch(err){console.error('[overlay]',err)}
+  })();
+}else{
+  rooms();
+}
+setInterval(()=>{if(!cur && !hasEditableFocus() && !overlayRoomId)rooms()},5000);
+
 </script></body></html>
