@@ -1230,6 +1230,99 @@ html.broadcastOverlay.broadcastVertical .rankAvatar,
 html.broadcastOverlay.broadcastVertical .rankAvatarEmpty{
   border-radius:0!important;
 }
+
+/* v28 requested vertical ranking refinements */
+html.broadcastOverlay.broadcastVertical body{padding-left:8px!important}
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  width:268px!important;
+  margin-left:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankHeader{
+  padding:7px 5px 7px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankHeaderTop{
+  margin-bottom:6px!important;
+  min-height:16px!important;
+  justify-content:flex-end!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTitle{display:none!important}
+html.broadcastOverlay.broadcastVertical .rankTimer{
+  font-size:12px!important;
+  letter-spacing:.4px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotals{gap:3px!important}
+html.broadcastOverlay.broadcastVertical .rankTotal{
+  position:relative!important;
+  isolation:isolate!important;
+  background:#151e27!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalProgress{
+  position:absolute!important;
+  z-index:-1!important;
+  left:0!important;top:0!important;bottom:0!important;
+  width:var(--progress,0%)!important;
+  background:var(--team-color)!important;
+  opacity:.58!important;
+  transition:width .55s cubic-bezier(.2,.8,.2,1)!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotal:after{
+  content:"";
+  position:absolute;inset:0;
+  z-index:-1;
+  background:linear-gradient(90deg,rgba(255,255,255,.06),transparent 62%);
+  pointer-events:none;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalInfo{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:center;
+  gap:5px;
+  font-size:10px;font-weight:900;color:#fff;
+  white-space:nowrap;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalSwap{
+  animation:rankTotalSwap .38s ease both;
+}
+@keyframes rankTotalSwap{
+  0%{opacity:0;transform:translateY(4px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRow{
+  grid-template-columns:31px 107px 34px 36px 40px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankScore{
+  padding-right:5px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankAvatar,
+html.broadcastOverlay.broadcastVertical .rankAvatarEmpty{
+  border-radius:50%!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRow.killChanged{
+  animation:rankKillFlash .72s cubic-bezier(.2,.8,.2,1);
+}
+html.broadcastOverlay.broadcastVertical .rankRow.killChanged:after{
+  content:attr(data-kill-delta);
+  position:absolute;
+  right:75px;
+  top:4px;
+  z-index:4;
+  font-size:12px;
+  font-weight:950;
+  color:#fff;
+  text-shadow:0 1px 4px #000;
+  animation:rankKillDelta .8s ease-out forwards;
+}
+@keyframes rankKillFlash{
+  0%{box-shadow:inset 0 0 0 1px transparent}
+  22%{box-shadow:inset 0 0 0 2px var(--team-color),0 0 14px color-mix(in srgb,var(--team-color) 72%,transparent)}
+  100%{box-shadow:inset 0 0 0 1px transparent}
+}
+@keyframes rankKillDelta{
+  0%{opacity:0;transform:translateY(5px) scale(.88)}
+  18%{opacity:1;transform:translateY(0) scale(1.12)}
+  70%{opacity:1}
+  100%{opacity:0;transform:translateY(-8px) scale(1)}
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -1719,6 +1812,9 @@ function renderScore(){
 
 const RANK_TEAM_COLORS=['#ff426f','#00c8ff','#8d63ff','#ffb020'];
 let previousRankOrder=[];
+let previousRankStats=new Map();
+let rankInfoMode=false;
+setInterval(()=>{rankInfoMode=!rankInfoMode;if(cur)renderVerticalRanking(false)},5000);
 
 function playerRankData(){
   if(!cur)return [];
@@ -1747,7 +1843,8 @@ function teamKillTotals(){
     out.push({
       team,
       name:(ps[0]?.nickname||('TEAM '+team)).slice(0,4),
-      kill:ps.reduce((sum,p)=>sum+n(totals(p).raw),0)
+      kill:ps.reduce((sum,p)=>sum+n(totals(p).raw),0),
+      chicken:RO.filter(r=>r.chicken_team===team).length
     });
   }
   return out;
@@ -1779,10 +1876,11 @@ function renderVerticalRanking(animate=true){
   const totals=teamKillTotals().map(x=>{
     const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
     const progress=Math.max(0,Math.min(100,(x.kill/goal)*100));
-    return '<div class="rankTotal" style="--team-color:'+c+'">'+
-      '<span class="rankTotalProgress" style="--progress:'+progress+'%"></span>'+
-      '<span class="rankTotalName">'+e(x.name)+'</span>'+
-      '<span class="rankTotalKill">'+x.kill+'</span>'+
+    const center=rankInfoMode
+      ? '<span class="rankTotalInfo rankTotalSwap">🍗 '+x.chicken+' · '+x.kill+'/'+goal+'</span>'
+      : '<span class="rankTotalName rankTotalSwap">'+e(x.name)+'</span><span class="rankTotalKill rankTotalSwap">'+x.kill+'</span>';
+    return '<div class="rankTotal" style="--team-color:'+c+';--progress:'+progress+'%">'+
+      '<span class="rankTotalProgress"></span>'+center+
     '</div>';
   }).join('');
 
@@ -1794,7 +1892,11 @@ function renderVerticalRanking(animate=true){
     const move=animate&&previousRankOrder.length&&diff!==0
       ? '<span class="rankMove '+(diff>0?'up':'down')+'">'+(diff>0?'▲':'▼')+Math.abs(diff)+'</span>'
       : '';
-    return '<div class="rankRow '+(i===0?'rankFirst ':'')+(move?'rankChanged':'')+'" data-rank-player="'+x.id+'" style="--team-color:'+c+'">'+
+    const prevStat=previousRankStats.get(String(x.id));
+    const killDelta=animate&&prevStat ? x.kill-prevStat.kill : 0;
+    const killChanged=killDelta!==0;
+    const deltaText=killDelta>0?'+'+killDelta:String(killDelta);
+    return '<div class="rankRow '+(i===0?'rankFirst ':'')+(move?'rankChanged ':'')+(killChanged?'killChanged':'')+'" data-kill-delta="'+(killChanged?deltaText:'')+'" data-rank-player="'+x.id+'" style="--team-color:'+c+'">'+
       move+
       '<div class="rankPos">'+(i+1)+'</div>'+
       '<div class="rankIdentity">'+rankAvatarHtml(x.player)+'<div class="rankName">'+e(x.name)+'</div></div>'+
@@ -1807,13 +1909,14 @@ function renderVerticalRanking(animate=true){
   box.style.setProperty('--rank-count',Math.max(1,cur.team_count));
   box.innerHTML=
     '<div class="rankHeader">'+
-      '<div class="rankHeaderTop"><span class="rankTitle">LIVE PLAYER RANKING</span><span class="rankTimer">'+(timeTxt?e(timeTxt):'')+'</span></div>'+
+      '<div class="rankHeaderTop"><span class="rankTimer">'+(timeTxt?e(timeTxt):'')+'</span></div>'+
       '<div class="rankTotals">'+totals+'</div>'+
     '</div>'+
     '<div class="rankCols"><div>RANK</div><div>PLAYER</div><div>KILL</div><div>DEATH</div><div>SCORE</div></div>'+
     '<div class="rankRows">'+body+'</div>';
 
   previousRankOrder=nowOrder;
+  previousRankStats=new Map(rows.map(x=>[String(x.id),{kill:x.kill,death:x.death,score:x.score}]));
 }
 
 function drag(){document.querySelectorAll('.slot').forEach(s=>{s.ondragstart=a=>{if(a.target.closest('input')){a.preventDefault();return}dragId=s.dataset.slot;s.classList.add('dragging');ghost=document.createElement('div');ghost.className='ghost';ghost.textContent=(P.find(p=>p.id===dragId)?.nickname||'PLAYER');document.body.appendChild(ghost);document.addEventListener('dragover',moveGhost)};s.ondragover=a=>{if(!dragId||dragId===s.dataset.slot)return;a.preventDefault();document.querySelectorAll('.slot.over').forEach(x=>x!==s&&x.classList.remove('over'));s.classList.add('over')};s.ondragleave=()=>s.classList.remove('over');s.ondrop=async a=>{a.preventDefault();let b=s.dataset.slot;if(b!==dragId)await swap(dragId,b);endDrag();editing=false;load()};s.ondragend=endDrag})}function moveGhost(a){if(ghost){ghost.style.left=a.clientX+'px';ghost.style.top=a.clientY+'px'}}function endDrag(){dragId=null;document.querySelectorAll('.slot').forEach(x=>x.classList.remove('dragging','over'));document.removeEventListener('dragover',moveGhost);ghost?.remove();ghost=null}async function swap(aid,bid){let a=P.find(x=>x.id===aid),b=P.find(x=>x.id===bid),ap=a.position,bp=b.position;await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:999999})});await q('/pubg_players?id=eq.'+b.id,{method:'PATCH',body:JSON.stringify({position:ap})});await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:bp})})}
