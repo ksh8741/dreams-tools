@@ -211,14 +211,71 @@ linear-gradient(180deg,#fffafd 0%,#f7fbff 55%,#f7f8fb 100%)!important}
   height:18px!important;
   margin:0!important;
 }
+
+/* v16 stability + fixed-layout luxury rebuild */
+body,button,input,select{font-size:14px!important}
+main{max-width:1720px!important;padding:12px 16px!important}
+.meta,.sub{font-size:11px!important}
+.sect h2{font-size:19px!important}
+.scoreStage{display:flex;justify-content:center;align-items:flex-start;margin:0 auto 10px}
+.scorePanel{display:inline-block;width:auto;max-width:100%;padding:10px!important}
+.scorePanel .sect{min-width:0}
+.scoreWrap{display:block;width:max-content;max-width:calc(100vw - 52px);overflow-x:auto!important;margin:0 auto}
+.scoreFrame{display:inline-block;width:max-content}
+.score{width:max-content;min-width:0!important}
+.score .team{width:210px!important;flex:0 0 210px!important}
+.total{font-size:27px!important}
+.name{font-size:15px!important}
+.detail{font-size:10px!important;width:58px!important}
+.detail b{font-size:13px!important}
+.settingsPanel{margin-bottom:10px;padding:12px!important}
+.settingsParallel{display:grid;grid-template-columns:minmax(420px,.9fr) minmax(360px,.75fr) minmax(420px,1.1fr);gap:12px;align-items:start}
+.settings{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}
+.timerSettings{grid-template-columns:1.3fr .8fr .9fr!important;gap:7px!important;margin:0!important}
+.settings .set,.timerSettings .set{font-size:12px!important;font-weight:800!important;padding:8px!important}
+.settings input,.timerSettings input,.timerSettings select{font-size:13px!important;height:34px!important}
+.settingsDeath{margin:0!important;padding:0!important;border-top:0!important}
+.settingsLabel{font-size:12px;font-weight:900;margin:0 0 6px}
+.deathItems{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
+.di{font-size:11px!important}
+.di input{height:30px!important;font-size:12px!important}
+
+/* Unified kill table must NEVER squeeze responsively. It scrolls instead. */
+.killUnifiedWrap{overflow-x:auto!important;overflow-y:hidden!important;width:100%}
+.killUnified{width:max-content!important;min-width:max-content!important;table-layout:fixed!important;font-size:12px!important}
+.killUnified .roundCol{width:44px!important;min-width:44px!important;max-width:44px!important}
+.killUnified .mapCol{width:82px!important;min-width:82px!important;max-width:82px!important}
+.killUnified .chickenCol{width:24px!important;min-width:24px!important;max-width:24px!important;padding:0 1px!important}
+.killUnified .playerHead,.killUnified .killCell{width:88px!important;min-width:88px!important;max-width:88px!important}
+.killUnified th,.killUnified td{height:42px!important;font-size:12px!important}
+.killUnified thead .teamNameRow th{height:40px!important;font-size:15px!important}
+.killUnified thead .colHeadRow th{height:36px!important;font-size:12px!important}
+.killUnified .playerHead{font-size:12px!important}
+.killCtrl{grid-template-columns:42px 21px!important;gap:5px!important;justify-content:center!important}
+.killSquare{width:38px!important;max-width:38px!important}
+.killSquare .killInput{width:38px!important;height:38px!important;min-height:38px!important;font-size:15px!important}
+.killSideStack{grid-template-rows:20px 20px 20px!important;gap:2px!important}
+.killUnified .ctrlBtn,.killUnified .deathBtn{width:20px!important;height:20px!important;font-size:14px!important}
+.killUnified .mapSelect{font-size:12px!important;height:32px!important;padding:0 3px!important}
+.killUnified .chickenCheck{width:15px!important;height:15px!important}
+.killUnified .roundCol{font-size:12px!important}
+.add{font-size:13px!important;height:36px!important}
+
+/* Stop old mobile rules from crushing controls. */
+@media(max-width:1050px){
+  .settingsParallel{grid-template-columns:1fr!important}
+  .settings{grid-template-columns:repeat(4,minmax(120px,1fr))!important;overflow-x:auto}
+  .timerSettings{grid-template-columns:minmax(180px,1.2fr) minmax(150px,.8fr) minmax(180px,1fr)!important;overflow-x:auto}
+  .scorePanel{max-width:100%}
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
 <section id="lobby"><div class="top"><div class="title"><h1>배틀그라운드</h1><p>DREAMS MATCH ROOM</p></div><div><button id="refresh" class="btn">새로고침</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>팀 구성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
 <section id="roomView" class="hidden">
 <div class="top"><div><h1 id="insideTitle" style="margin:0;font-size:20px"></h1><div id="insideMeta" class="meta"></div></div><button id="back" class="btn">← 방 목록</button></div>
-<div class="grid">
-  <div class="panel sec">
+<div class="scoreStage">
+  <div class="panel sec scorePanel">
     <div class="sect"><h2>킬 현황</h2><div class="captureTools">
       <label><input id="chromaOn" type="checkbox"> 크로마키</label>
       <input id="chromaColor" type="color" value="#00ff00" title="크로마키 색상">
@@ -227,26 +284,29 @@ linear-gradient(180deg,#fffafd 0%,#f7fbff 55%,#f7f8fb 100%)!important}
     </div></div>
     <div id="captureStage" class="scoreWrap"><div class="scoreFrame"><div id="totalBar" class="totalBar"></div><div id="scoreboard" class="score"></div></div></div>
   </div>
-  <div class="panel sec"><div class="sect"><h2>게임 세팅</h2><span class="sub">RULE SET</span></div>
-<div class="settings">
-  <div class="set">목표 킬<input id="goalKills" type="number" min="0" max="9999" value="50"></div>
-  <div class="set">일반 치킨 보너스<input id="ck" type="number" min="0"></div>
-  <div class="set">사녹 치킨 보너스<input id="sk" type="number" min="0"></div>
-  <div class="set"><label><input id="t10" type="checkbox"> 탑텐 시 마이너스 없음</label></div>
 </div>
-<div class="timerSettings">
-  <div class="set wide">타이머 방식
-    <select id="timerMode">
-      <option value="uptime">설정 시간부터 업타임</option>
-      <option value="countdown">설정 시간 카운트다운</option>
-      <option value="endtime">종료시간까지 남은 시간</option>
-    </select>
+<div class="panel sec settingsPanel"><div class="sect"><h2>게임 세팅</h2><span class="sub">RULE SET</span></div>
+  <div class="settingsParallel">
+    <div class="settings">
+      <div class="set">목표 킬<input id="goalKills" type="number" min="0" max="9999" value="50"></div>
+      <div class="set">일반 치킨 보너스<input id="ck" type="number" min="0"></div>
+      <div class="set">사녹 치킨 보너스<input id="sk" type="number" min="0"></div>
+      <div class="set"><label><input id="t10" type="checkbox"> 탑텐 시 마이너스 없음</label></div>
+    </div>
+    <div class="timerSettings">
+      <div class="set wide">타이머 방식
+        <select id="timerMode">
+          <option value="uptime">설정 시간부터 업타임</option>
+          <option value="countdown">설정 시간 카운트다운</option>
+          <option value="endtime">종료시간까지 남은 시간</option>
+        </select>
+      </div>
+      <div class="set" id="timerSecondsWrap">설정 시간 (분)<input id="timerMinutes" type="number" min="0" max="14400" value="60"></div>
+      <div class="set" id="timerEndWrap">종료 시간<input id="timerEndAt" type="datetime-local"></div>
+      <div class="timerActions wide"><button id="timerStart" class="btn">타이머 시작/재시작</button></div>
+    </div>
+    <div class="death settingsDeath"><div class="settingsLabel">선수별 데스당 마이너스</div><div id="deathItems" class="deathItems"></div></div>
   </div>
-  <div class="set" id="timerSecondsWrap">설정 시간 (분)<input id="timerMinutes" type="number" min="0" max="14400" value="60"></div>
-  <div class="set" id="timerEndWrap">종료 시간<input id="timerEndAt" type="datetime-local"></div>
-  <div class="timerActions wide"><button id="timerStart" class="btn">타이머 시작/재시작</button></div>
-</div>
-<div class="death"><div style="font-size:9px;margin-bottom:4px">선수별 데스당 마이너스</div><div id="deathItems" class="deathItems"></div></div></div>
 </div>
 <div class="panel kill"><div class="sect"><h2>킬 기록</h2><span class="sub">UNIFIED MATCH TABLE</span></div><div class="killUnifiedWrap"><div id="killBoard"></div></div><button id="addRound" class="btn add">추가</button></div>
 </section>
@@ -283,6 +343,23 @@ timerEndWrap=document.getElementById('timerEndWrap');
 let timerTick=null;
 let renderQueued=false;
 let pendingRemoteRender=false;
+let localRevision=0;
+let pendingWrites=0;
+let lastLocalEditAt=0;
+let lastAppliedSignature='';
+function touchLocal(){localRevision++;lastLocalEditAt=Date.now()}
+function stateSignature(room,p,ro,s){
+  const rp=room?{
+    id:room.id,chicken_kills:room.chicken_kills,sanhok_chicken_kills:room.sanhok_chicken_kills,
+    top10_no_death_penalty:room.top10_no_death_penalty,goal_kills:room.goal_kills,score_mode:room.score_mode,
+    timer_mode:room.timer_mode,timer_seconds:room.timer_seconds,timer_started_at:room.timer_started_at,timer_end_at:room.timer_end_at
+  }:null;
+  return JSON.stringify([rp,
+    p.map(x=>[x.id,x.position,x.nickname,x.soop_user_id,x.death_penalty]),
+    ro.map(x=>[x.id,x.round_no,x.map_type,x.map_name,x.chicken_team,x.top10]),
+    s.map(x=>[x.id,x.round_id,x.player_id,x.kills,x.died])
+  ]);
+}
 function calcTeamScores(){
   const scores=[];
   for(let tt=1;tt<=cur.team_count;tt++){
@@ -312,6 +389,7 @@ function updatePlayerScoreText(playerId){
   if(detail)detail.innerHTML='<b>'+a.score+'</b> ( '+a.raw+' - '+a.minus+' )';
 }
 function updateLocalStat(key,k,d){
+  touchLocal();
   const [r,p]=key.split('|');
   let o=S.find(x=>String(x.round_id)===String(r)&&String(x.player_id)===String(p));
   if(!o){o={id:null,round_id:r,player_id:p,kills:0,died:false};S.push(o)}
@@ -406,9 +484,9 @@ document.addEventListener('focusout',ev=>{
   setTimeout(()=>{
     if(!hasEditableFocus() && picker.classList.contains('hidden')){
       editing=false;
-      if(cur){
-        if(pendingRemoteRender){pendingRemoteRender=false;queueSafeRender()}
-        else load();
+      if(cur && pendingRemoteRender && pendingWrites===0 && Date.now()-lastLocalEditAt>700){
+        pendingRemoteRender=false;
+        load(true);
       }
     }
   },180);
@@ -434,10 +512,11 @@ cb.onclick=async()=>{
 };
 function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team);jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
 async function ensure(){let a=await q('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds',{method:'POST',body:JSON.stringify(x)})}
-async function enter(r){cur=r;lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(load,2500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
-async function load(){
+async function enter(r){cur=r;lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),5000);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
+async function load(isPoll=false){
   if(!cur)return;
-  const roomId=cur.id;
+  const roomId=cur.id,revAtStart=localRevision;
+  if(isPoll && (uiLocked() || pendingWrites>0 || Date.now()-lastLocalEditAt<900))return;
   try{
     let[r,p,ro]=await Promise.all([
       q('/pubg_rooms?id=eq.'+roomId+'&select=*'),
@@ -445,9 +524,13 @@ async function load(){
       q('/pubg_rounds?room_id=eq.'+roomId+'&select=*&order=round_no.asc')
     ]);
     if(!cur || cur.id!==roomId)return;
-    cur=r[0]||cur;P=p;RO=ro;
-    S=RO.length?await q('/pubg_round_player_stats?select=*&round_id=in.('+RO.map(x=>x.id).join(',')+')'):[];
-    if(uiLocked()){ pendingRemoteRender=true; return; }
+    const ss=ro.length?await q('/pubg_round_player_stats?select=*&round_id=in.('+ro.map(x=>x.id).join(',')+')'):[];
+    if(revAtStart!==localRevision || pendingWrites>0 || uiLocked() || Date.now()-lastLocalEditAt<650){
+      pendingRemoteRender=true;return;
+    }
+    const sig=stateSignature(r[0]||cur,p,ro,ss);
+    if(isPoll && sig===lastAppliedSignature)return;
+    cur=r[0]||cur;P=p;RO=ro;S=ss;lastAppliedSignature=sig;
     queueSafeRender();
   }catch(err){console.error('[load]',err)}
 }
@@ -455,6 +538,7 @@ function st(r,p){return S.find(x=>x.round_id===r&&x.player_id===p)||{kills:0,die
 async function pickProfile(id,name){pickId=id;pickName=name;let r=await fetch('/api/soop-search?nickname='+encodeURIComponent(name)),j=r.ok?await r.json():{results:[]};pt.textContent='SOOP 계정 선택';ph.textContent='“'+name+'” 검색 결과';cands.innerHTML=(j.results||[]).map(a=>'<div class="cand" data-id="'+e(a.user_id)+'"><img src="'+e(a.profile_image)+'"><div><b>'+e(a.nickname||name)+'</b><div class="meta">'+e(a.user_id)+'</div></div><button class="btn">선택</button></div>').join('')||'<div class="empty">검색 결과 없음</div>';document.querySelectorAll('.cand').forEach(x=>x.onclick=()=>bind(x.dataset.id));picker.classList.remove('hidden')}
 async function bind(id){await q('/pubg_players?id=eq.'+pickId,{method:'PATCH',body:JSON.stringify({nickname:pickName,soop_user_id:id,profile_image:pic(id)})});picker.classList.add('hidden');editing=false;load()}noPhoto.onclick=async()=>{await q('/pubg_players?id=eq.'+pickId,{method:'PATCH',body:JSON.stringify({nickname:pickName,soop_user_id:null,profile_image:null})});picker.classList.add('hidden');editing=false;load()};pc.onclick=()=>{picker.classList.add('hidden');editing=false;load()};
 async function saveName(x){
+  touchLocal();
   let name=x.value.trim(),id=x.dataset.name;
   await q('/pubg_players?id=eq.'+id,{method:'PATCH',body:JSON.stringify({nickname:name,soop_user_id:null,profile_image:null})});
   if(name)await pickProfile(id,name);
@@ -489,7 +573,7 @@ function renderScore(){
   deathItems.innerHTML=P.map(p=>'<div class="di"><span>'+e(p.nickname||'PLAYER '+p.position)+'</span><input data-death="'+p.id+'" type="number" value="'+n(p.death_penalty)+'"></div>').join('');
   document.querySelectorAll('[data-name]').forEach(x=>{x.onfocus=()=>editing=true;x.onkeydown=a=>{if(a.key==='Enter'){a.preventDefault();x.blur()}};x.onblur=()=>saveName(x)});
   document.querySelectorAll('[data-death]').forEach(x=>{
-    x.oninput=()=>{const p=P.find(p=>String(p.id)===String(x.dataset.death));if(p){p.death_penalty=n(x.value);updatePlayerScoreText(p.id)}refreshScoreTextOnly()};
+    x.oninput=()=>{touchLocal();const p=P.find(p=>String(p.id)===String(x.dataset.death));if(p){p.death_penalty=n(x.value);updatePlayerScoreText(p.id)}refreshScoreTextOnly()};
     x.onchange=()=>q('/pubg_players?id=eq.'+x.dataset.death,{method:'PATCH',body:JSON.stringify({death_penalty:n(x.value)})}).catch(console.error)
   });
   drag();
@@ -538,19 +622,19 @@ function board(){
   killBoard.innerHTML='<table class="killUnified"><thead>'+teamHeader+colHeader+'</thead><tbody>'+body+'</tbody></table>';
 
   document.querySelectorAll('[data-map]').forEach(x=>x.onchange=()=>{
-    const r=RO.find(r=>String(r.id)===String(x.dataset.map));if(r){r.map_name=x.value;r.map_type=mapTypeFromName(x.value)}
+    touchLocal();
+    const rid=x.dataset.map,name=x.value,type=mapTypeFromName(name);
+    const r=RO.find(r=>String(r.id)===String(rid));if(r){r.map_name=name;r.map_type=type}
     refreshScoreTextOnly();
-    q('/pubg_rounds?id=eq.'+x.dataset.map,{method:'PATCH',body:JSON.stringify({map_name:x.value,map_type:mapTypeFromName(x.value)})}).catch(async()=>{
-      // Fallback for schemas without map_name column.
-      q('/pubg_rounds?id=eq.'+x.dataset.map,{method:'PATCH',body:JSON.stringify({map_type:mapTypeFromName(x.value)})}).catch(console.error)
-    })
+    scheduleRoundPatch(rid,{map_name:name,map_type:type},true);
   });
   document.querySelectorAll('[data-chicken]').forEach(x=>x.onchange=()=>{
+    touchLocal();
     const rid=x.dataset.chicken,team=x.checked?+x.dataset.team:null;
     const r=RO.find(r=>String(r.id)===String(rid));if(r)r.chicken_team=team;
     document.querySelectorAll('[data-chicken="'+rid+'"]').forEach(y=>{if(y!==x)y.checked=false});
     refreshScoreTextOnly();
-    q('/pubg_rounds?id=eq.'+rid,{method:'PATCH',body:JSON.stringify({chicken_team:team})}).catch(console.error)
+    scheduleRoundPatch(rid,{chicken_team:team},false);
   });
   document.querySelectorAll('[data-k]').forEach(x=>{
     x.oninput=()=>{const v=n(x.value);updateLocalStat(x.dataset.k,v,null);scheduleStatSave(x.dataset.k,v,null)}
@@ -564,14 +648,59 @@ function board(){
     const v=Math.max(0,n(inp.value)+(btn.dataset.dir==='1'?1:-1));
     inp.value=v;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.focus();
   });
+  lastAppliedSignature=stateSignature(cur,P,RO,S);
 }
-const statSaveTimers=new Map();
+const statSaveTimers=new Map(),statDesired=new Map(),statSaving=new Set();
 function scheduleStatSave(key,k,d){
+  const prev=statDesired.get(key)||{};
+  statDesired.set(key,{k:k!==null?k:prev.k??null,d:d!==null?d:prev.d??null});
   clearTimeout(statSaveTimers.get(key));
-  statSaveTimers.set(key,setTimeout(()=>{
-    statSaveTimers.delete(key);
-    saveStat(key,k,d).catch(console.error);
-  },160));
+  statSaveTimers.set(key,setTimeout(()=>flushStatSave(key),180));
+}
+async function flushStatSave(key){
+  if(statSaving.has(key))return;
+  const desired=statDesired.get(key);if(!desired)return;
+  statDesired.delete(key);statSaving.add(key);pendingWrites++;
+  try{await saveStat(key,desired.k,desired.d)}
+  catch(err){console.error('[stat save]',err)}
+  finally{
+    pendingWrites--;statSaving.delete(key);
+    if(statDesired.has(key))setTimeout(()=>flushStatSave(key),0);
+  }
+}
+async function saveStat(key,k,d){
+  let[r,p]=key.split('|'),o=S.find(x=>String(x.round_id)===String(r)&&String(x.player_id)===String(p));
+  if(o?.id){
+    let z={};if(k!==null)z.kills=k;if(d!==null)z.died=d;
+    await q('/pubg_round_player_stats?id=eq.'+o.id,{method:'PATCH',body:JSON.stringify(z)});
+  }else{
+    const body={round_id:r,player_id:p,kills:k??o?.kills??0,died:d??o?.died??false};
+    const created=await q('/pubg_round_player_stats',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(body)});
+    if(Array.isArray(created)&&created[0]){if(o)Object.assign(o,created[0]);else S.push(created[0])}
+  }
+}
+const roundPatchTimers=new Map(),roundPatchDesired=new Map(),roundPatchSaving=new Set();
+function scheduleRoundPatch(id,patch,mapFallback){
+  roundPatchDesired.set(id,{...(roundPatchDesired.get(id)||{}),...patch,_mapFallback:mapFallback||false});
+  clearTimeout(roundPatchTimers.get(id));
+  roundPatchTimers.set(id,setTimeout(()=>flushRoundPatch(id),180));
+}
+async function flushRoundPatch(id){
+  if(roundPatchSaving.has(id))return;
+  const patch=roundPatchDesired.get(id);if(!patch)return;
+  roundPatchDesired.delete(id);roundPatchSaving.add(id);pendingWrites++;
+  const fallback=patch._mapFallback;delete patch._mapFallback;
+  try{
+    await q('/pubg_rounds?id=eq.'+id,{method:'PATCH',body:JSON.stringify(patch)});
+  }catch(err){
+    if(fallback && Object.prototype.hasOwnProperty.call(patch,'map_name')){
+      const p2={...patch};delete p2.map_name;
+      try{await q('/pubg_rounds?id=eq.'+id,{method:'PATCH',body:JSON.stringify(p2)})}catch(e){console.error('[round save]',e)}
+    }else console.error('[round save]',err)
+  }finally{
+    pendingWrites--;roundPatchSaving.delete(id);
+    if(roundPatchDesired.has(id))setTimeout(()=>flushRoundPatch(id),0);
+  }
 }
 async function saveStat(key,k,d){
   let[r,p]=key.split('|'),o=S.find(x=>String(x.round_id)===String(r)&&String(x.player_id)===String(p));
@@ -586,14 +715,14 @@ async function saveStat(key,k,d){
     }
   }
 }
-ck.oninput=()=>{cur.chicken_kills=n(ck.value);refreshScoreTextOnly()};
+ck.oninput=()=>{touchLocal();cur.chicken_kills=n(ck.value);refreshScoreTextOnly()};
 ck.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({chicken_kills:n(ck.value)})}).catch(console.error);
-sk.oninput=()=>{cur.sanhok_chicken_kills=n(sk.value);refreshScoreTextOnly()};
+sk.oninput=()=>{touchLocal();cur.sanhok_chicken_kills=n(sk.value);refreshScoreTextOnly()};
 sk.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({sanhok_chicken_kills:n(sk.value)})}).catch(console.error);
-t10.onchange=()=>{cur.top10_no_death_penalty=t10.checked;refreshScoreTextOnly();q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({top10_no_death_penalty:t10.checked})}).catch(console.error)};
+t10.onchange=()=>{touchLocal();cur.top10_no_death_penalty=t10.checked;refreshScoreTextOnly();q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({top10_no_death_penalty:t10.checked})}).catch(console.error)};
 if(goalKills){
   goalKills.oninput=()=>{
-    if(!cur)return;cur.goal_kills=n(goalKills.value);
+    if(!cur)return;touchLocal();cur.goal_kills=n(goalKills.value);
     const b=totalBar.querySelector('.goalBadge');if(b)b.textContent='목표 '+cur.goal_kills;
   };
   goalKills.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({goal_kills:n(goalKills.value)})}).catch(console.error);
