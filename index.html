@@ -1150,6 +1150,86 @@ html.broadcastOverlay.broadcastVertical .rankValue strong{
 html.broadcastOverlay.broadcastVertical .rankScore strong{
   font-size:18px!important;
 }
+
+/* v27 compact square vertical ranking + goal progress */
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  width:278px!important;
+  border-radius:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankHeader{
+  border-radius:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotal{
+  border-radius:0!important;
+  height:30px!important;
+  padding:0 4px!important;
+  background:#18212a!important;
+  overflow:hidden!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotal:before{
+  width:3px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalProgress{
+  position:absolute;
+  left:3px;top:0;bottom:0;
+  width:var(--progress,0%);
+  background:color-mix(in srgb,var(--team-color) 52%, #17212b);
+  opacity:.9;
+  z-index:0;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalName,
+html.broadcastOverlay.broadcastVertical .rankTotalKill{
+  position:relative;
+  z-index:1;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalName{
+  max-width:40px!important;
+  font-size:10px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalKill{
+  font-size:14px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols{
+  grid-template-columns:32px 108px 36px 38px 42px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRow{
+  height:44px!important;
+  grid-template-columns:32px 108px 36px 38px 42px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankIdentity{
+  grid-template-columns:27px 1fr!important;
+  gap:6px!important;
+  padding:0 5px!important;
+  border-left-width:4px!important;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--team-color) 10%, #151d25),#151d25 72%)!important;
+}
+html.broadcastOverlay.broadcastVertical .rankName{
+  font-size:13px!important;
+  max-width:62px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankAvatar,
+html.broadcastOverlay.broadcastVertical .rankAvatarEmpty{
+  width:25px!important;
+  height:25px!important;
+  border-radius:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankPos{
+  font-size:16px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankValue strong{
+  font-size:13px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankScore strong{
+  font-size:17px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRow,
+html.broadcastOverlay.broadcastVertical .rankHeader,
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankTotal,
+html.broadcastOverlay.broadcastVertical .rankAvatar,
+html.broadcastOverlay.broadcastVertical .rankAvatarEmpty{
+  border-radius:0!important;
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -1695,9 +1775,12 @@ function renderVerticalRanking(animate=true){
   const nowOrder=rows.map(x=>String(x.id));
   const oldPositions=new Map(previousRankOrder.map((id,i)=>[String(id),i]));
 
+  const goal=Math.max(1,n(cur.goal_kills||50));
   const totals=teamKillTotals().map(x=>{
     const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
+    const progress=Math.max(0,Math.min(100,(x.kill/goal)*100));
     return '<div class="rankTotal" style="--team-color:'+c+'">'+
+      '<span class="rankTotalProgress" style="--progress:'+progress+'%"></span>'+
       '<span class="rankTotalName">'+e(x.name)+'</span>'+
       '<span class="rankTotalKill">'+x.kill+'</span>'+
     '</div>';
