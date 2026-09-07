@@ -28,6 +28,38 @@
 
 input:focus,select:focus,textarea:focus{outline:none}
 .name:focus{box-shadow:inset 0 0 0 1px #9eabb7!important}
+
+/* v11 kill-record grid cleanup */
+.kill{overflow:hidden}
+.board{display:grid;grid-template-columns:38px minmax(0,1fr);gap:0;align-items:start}
+.rounds{border:1px solid #d8dee5;border-right:0;border-radius:8px 0 0 8px;overflow:hidden;background:#fff}
+.roundHead,.roundCell{height:34px!important;min-height:34px!important;display:flex!important;align-items:center!important;justify-content:center!important;border:0!important;border-bottom:1px solid #e3e8ed!important;font-size:10px!important;font-weight:850!important;line-height:1!important}
+.roundHead{background:#151c23!important;color:#fff!important}
+.roundCell:last-child{border-bottom:0!important}
+.teamboards{display:grid;gap:0!important;min-width:0;border-radius:0 8px 8px 0;overflow:hidden}
+.teamBlock{min-width:0;border:1px solid #d8dee5!important;border-left:0!important;border-radius:0!important;overflow:hidden;background:#fff}
+.teamBlock+.teamBlock{border-left:0!important}
+.teamBlockTitle{height:34px!important;min-height:34px!important;background:#151c23!important;color:#fff!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0 5px!important;font-size:10px!important;font-weight:950!important;border:0!important;line-height:1}
+.tbl{width:100%!important;border-collapse:collapse!important;border-spacing:0!important;table-layout:fixed!important;font-size:10px!important}
+.tbl th,.tbl td{height:34px!important;min-height:34px!important;padding:0 4px!important;border:0!important;border-right:1px solid #e3e8ed!important;border-bottom:1px solid #e3e8ed!important;text-align:center!important;vertical-align:middle!important;overflow:hidden!important}
+.tbl th{background:#f4f6f8!important;color:#495665!important;font-size:9px!important;font-weight:900!important}
+.tbl tr:last-child td{border-bottom:0!important}
+.tbl th:last-child,.tbl td:last-child{border-right:0!important}
+.tbl th:nth-child(1),.tbl td:nth-child(1){width:48px!important}
+.tbl th:nth-child(2),.tbl td:nth-child(2){width:34px!important}
+.tbl input[type=number]{appearance:textfield!important;-moz-appearance:textfield!important;width:100%!important;min-width:0!important;height:26px!important;margin:0!important;padding:0 4px!important;border:1px solid transparent!important;border-radius:5px!important;background:transparent!important;text-align:center!important;font-size:11px!important;font-weight:900!important;color:#14202b!important;outline:none!important}
+.tbl input[type=number]::-webkit-outer-spin-button,.tbl input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0!important}
+.tbl input[type=number]:hover{background:#f3f6f8!important;border-color:#dfe5ea!important}
+.tbl input[type=number]:focus{background:#fff!important;border-color:#9aa8b5!important;box-shadow:0 0 0 2px #aab6c222!important}
+.tbl select{appearance:none!important;-webkit-appearance:none!important;width:100%!important;height:26px!important;margin:0!important;padding:0 16px 0 4px!important;border:1px solid transparent!important;border-radius:5px!important;background-color:transparent!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2367747d' stroke-width='1.4'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 4px center!important;text-align:center!important;font-size:9px!important;font-weight:850!important;color:#4c5965!important;outline:none!important}
+.tbl select:hover,.tbl select:focus{background-color:#f3f6f8!important;border-color:#dfe5ea!important}
+.tbl input[type=checkbox]{appearance:none!important;-webkit-appearance:none!important;width:15px!important;height:15px!important;margin:0!important;border:1px solid #b9c3cc!important;border-radius:4px!important;background:#fff!important;vertical-align:middle!important;cursor:pointer!important;position:relative!important}
+.tbl input[type=checkbox]:checked{background:#151c23!important;border-color:#151c23!important}
+.tbl input[type=checkbox]:checked:after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:950;line-height:1}
+.tbl td{white-space:nowrap!important}
+.tbl td > input[data-k]{display:inline-block!important;vertical-align:middle!important}
+.tbl td > input[data-d]{margin-left:2px!important}
+.add{height:32px!important;margin-top:6px!important;border-style:dashed!important;background:#fafbfc!important}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -121,12 +153,20 @@ function refreshScoreTextOnly(){
   const spans=totalBar.querySelectorAll(':scope > span');
   if(spans[1])spans[1].textContent=center;
 }
+function updatePlayerScoreText(playerId){
+  const p=P.find(x=>String(x.id)===String(playerId));if(!p)return;
+  const a=totals(p);
+  const slot=scoreboard.querySelector('[data-slot="'+CSS.escape(String(playerId))+'"]');
+  const detail=slot?.querySelector('.detail');
+  if(detail)detail.innerHTML='<b>'+a.score+'</b> ( '+a.raw+' - '+a.minus+' )';
+}
 function updateLocalStat(key,k,d){
   const [r,p]=key.split('|');
   let o=S.find(x=>String(x.round_id)===String(r)&&String(x.player_id)===String(p));
   if(!o){o={id:null,round_id:r,player_id:p,kills:0,died:false};S.push(o)}
   if(k!==null)o.kills=k;
   if(d!==null)o.died=d;
+  updatePlayerScoreText(p);
   refreshScoreTextOnly();
 }
 function hasEditableFocus(){
@@ -290,7 +330,7 @@ function renderScore(){
   deathItems.innerHTML=P.map(p=>'<div class="di"><span>'+e(p.nickname||'PLAYER '+p.position)+'</span><input data-death="'+p.id+'" type="number" value="'+n(p.death_penalty)+'"></div>').join('');
   document.querySelectorAll('[data-name]').forEach(x=>{x.onfocus=()=>editing=true;x.onkeydown=a=>{if(a.key==='Enter'){a.preventDefault();x.blur()}};x.onblur=()=>saveName(x)});
   document.querySelectorAll('[data-death]').forEach(x=>{
-    x.oninput=()=>{const p=P.find(p=>String(p.id)===String(x.dataset.death));if(p)p.death_penalty=n(x.value);refreshScoreTextOnly()};
+    x.oninput=()=>{const p=P.find(p=>String(p.id)===String(x.dataset.death));if(p){p.death_penalty=n(x.value);updatePlayerScoreText(p.id)}refreshScoreTextOnly()};
     x.onchange=()=>q('/pubg_players?id=eq.'+x.dataset.death,{method:'PATCH',body:JSON.stringify({death_penalty:n(x.value)})}).catch(console.error)
   });
   drag();
@@ -319,11 +359,39 @@ function board(){
     refreshScoreTextOnly();
     q('/pubg_rounds?id=eq.'+rid,{method:'PATCH',body:JSON.stringify({chicken_team:team})}).catch(console.error)
   });
-  document.querySelectorAll('[data-k]').forEach(x=>x.oninput=()=>updateLocalStat(x.dataset.k,n(x.value),null));
-  document.querySelectorAll('[data-k]').forEach(x=>x.onchange=()=>saveStat(x.dataset.k,n(x.value),null).catch(console.error));
-  document.querySelectorAll('[data-d]').forEach(x=>x.onchange=()=>{updateLocalStat(x.dataset.d,null,x.checked);saveStat(x.dataset.d,null,x.checked).catch(console.error)})
+  document.querySelectorAll('[data-k]').forEach(x=>{
+    x.oninput=()=>{
+      const v=n(x.value);
+      updateLocalStat(x.dataset.k,v,null);
+      scheduleStatSave(x.dataset.k,v,null);
+    };
+  });
+  document.querySelectorAll('[data-d]').forEach(x=>x.oninput=()=>{
+    updateLocalStat(x.dataset.d,null,x.checked);
+    scheduleStatSave(x.dataset.d,null,x.checked);
+  })
 }
-async function saveStat(key,k,d){let[r,p]=key.split('|'),o=S.find(x=>x.round_id===r&&x.player_id===p);if(o){let z={};if(k!==null)z.kills=k;if(d!==null)z.died=d;await q('/pubg_round_player_stats?id=eq.'+o.id,{method:'PATCH',body:JSON.stringify(z)})}else await q('/pubg_round_player_stats',{method:'POST',body:JSON.stringify({round_id:r,player_id:p,kills:k??0,died:d??false})})}
+const statSaveTimers=new Map();
+function scheduleStatSave(key,k,d){
+  clearTimeout(statSaveTimers.get(key));
+  statSaveTimers.set(key,setTimeout(()=>{
+    statSaveTimers.delete(key);
+    saveStat(key,k,d).catch(console.error);
+  },160));
+}
+async function saveStat(key,k,d){
+  let[r,p]=key.split('|'),o=S.find(x=>String(x.round_id)===String(r)&&String(x.player_id)===String(p));
+  if(o?.id){
+    let z={};if(k!==null)z.kills=k;if(d!==null)z.died=d;
+    await q('/pubg_round_player_stats?id=eq.'+o.id,{method:'PATCH',body:JSON.stringify(z)});
+  }else{
+    const body={round_id:r,player_id:p,kills:k??o?.kills??0,died:d??o?.died??false};
+    const created=await q('/pubg_round_player_stats',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(body)});
+    if(Array.isArray(created)&&created[0]){
+      if(o)Object.assign(o,created[0]);else S.push(created[0]);
+    }
+  }
+}
 ck.oninput=()=>{cur.chicken_kills=n(ck.value);refreshScoreTextOnly()};
 ck.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({chicken_kills:n(ck.value)})}).catch(console.error);
 sk.oninput=()=>{cur.sanhok_chicken_kills=n(sk.value);refreshScoreTextOnly()};
