@@ -99,6 +99,36 @@ timerStart=document.getElementById('timerStart'),timerSecondsWrap=document.getEl
 timerEndWrap=document.getElementById('timerEndWrap');
 let timerTick=null;
 let renderQueued=false;
+let pendingRemoteRender=false;
+function calcTeamScores(){
+  const scores=[];
+  for(let tt=1;tt<=cur.team_count;tt++){
+    let score=0;
+    teamPlayers(tt).forEach(p=>score+=totals(p).score);
+    RO.filter(r=>r.chicken_team===tt).forEach(r=>score+=r.map_type==='sanhok'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills));
+    scores.push(score);
+  }
+  return scores;
+}
+function refreshScoreTextOnly(){
+  if(!cur)return;
+  const scores=calcTeamScores(), teams=[...scoreboard.querySelectorAll('.team .total')];
+  teams.forEach((el,i)=>{if(i<scores.length)el.textContent=scores[i]});
+  const mode=(scoreViewMode?.value&&scoreViewMode.value!=='auto')?scoreViewMode.value:(cur.score_mode||'separate');
+  let center='';
+  if(mode==='2v2'&&cur.team_count===4)center=captainName(1)+' '+((scores[0]||0)+(scores[1]||0))+' : '+((scores[2]||0)+(scores[3]||0))+' '+captainName(3);
+  else center=scores.map((s,i)=>captainName(i+1)+' '+s).join('  ·  ');
+  const spans=totalBar.querySelectorAll(':scope > span');
+  if(spans[1])spans[1].textContent=center;
+}
+function updateLocalStat(key,k,d){
+  const [r,p]=key.split('|');
+  let o=S.find(x=>String(x.round_id)===String(r)&&String(x.player_id)===String(p));
+  if(!o){o={id:null,round_id:r,player_id:p,kills:0,died:false};S.push(o)}
+  if(k!==null)o.kills=k;
+  if(d!==null)o.died=d;
+  refreshScoreTextOnly();
+}
 function hasEditableFocus(){
   const a=document.activeElement;
   return !!(a && a!==document.body && a.matches && a.matches('input, select, textarea, [contenteditable="true"]'));
@@ -177,7 +207,10 @@ document.addEventListener('focusout',ev=>{
   setTimeout(()=>{
     if(!hasEditableFocus() && picker.classList.contains('hidden')){
       editing=false;
-      if(cur)load();
+      if(cur){
+        if(pendingRemoteRender){pendingRemoteRender=false;queueSafeRender()}
+        else load();
+      }
     }
   },180);
 });
@@ -215,7 +248,7 @@ async function load(){
     if(!cur || cur.id!==roomId)return;
     cur=r[0]||cur;P=p;RO=ro;
     S=RO.length?await q('/pubg_round_player_stats?select=*&round_id=in.('+RO.map(x=>x.id).join(',')+')'):[];
-    if(uiLocked())return;
+    if(uiLocked()){ pendingRemoteRender=true; return; }
     queueSafeRender();
   }catch(err){console.error('[load]',err)}
 }
@@ -256,7 +289,10 @@ function renderScore(){
   totalBar.innerHTML='<span class="goalBadge">목표 '+goal+'</span><span>'+e(center)+'</span><span id="timerBadge" class="timerBadge">⏱ '+timerText()+'</span>';
   deathItems.innerHTML=P.map(p=>'<div class="di"><span>'+e(p.nickname||'PLAYER '+p.position)+'</span><input data-death="'+p.id+'" type="number" value="'+n(p.death_penalty)+'"></div>').join('');
   document.querySelectorAll('[data-name]').forEach(x=>{x.onfocus=()=>editing=true;x.onkeydown=a=>{if(a.key==='Enter'){a.preventDefault();x.blur()}};x.onblur=()=>saveName(x)});
-  document.querySelectorAll('[data-death]').forEach(x=>x.onchange=()=>q('/pubg_players?id=eq.'+x.dataset.death,{method:'PATCH',body:JSON.stringify({death_penalty:n(x.value)})}));
+  document.querySelectorAll('[data-death]').forEach(x=>{
+    x.oninput=()=>{const p=P.find(p=>String(p.id)===String(x.dataset.death));if(p)p.death_penalty=n(x.value);refreshScoreTextOnly()};
+    x.onchange=()=>q('/pubg_players?id=eq.'+x.dataset.death,{method:'PATCH',body:JSON.stringify({death_penalty:n(x.value)})}).catch(console.error)
+  });
   drag();
 }
 function drag(){document.querySelectorAll('.slot').forEach(s=>{s.ondragstart=a=>{if(a.target.closest('input')){a.preventDefault();return}dragId=s.dataset.slot;s.classList.add('dragging');ghost=document.createElement('div');ghost.className='ghost';ghost.textContent=(P.find(p=>p.id===dragId)?.nickname||'PLAYER');document.body.appendChild(ghost);document.addEventListener('dragover',moveGhost)};s.ondragover=a=>{if(!dragId||dragId===s.dataset.slot)return;a.preventDefault();document.querySelectorAll('.slot.over').forEach(x=>x!==s&&x.classList.remove('over'));s.classList.add('over')};s.ondragleave=()=>s.classList.remove('over');s.ondrop=async a=>{a.preventDefault();let b=s.dataset.slot;if(b!==dragId)await swap(dragId,b);endDrag();editing=false;load()};s.ondragend=endDrag})}function moveGhost(a){if(ghost){ghost.style.left=a.clientX+'px';ghost.style.top=a.clientY+'px'}}function endDrag(){dragId=null;document.querySelectorAll('.slot').forEach(x=>x.classList.remove('dragging','over'));document.removeEventListener('dragover',moveGhost);ghost?.remove();ghost=null}async function swap(aid,bid){let a=P.find(x=>x.id===aid),b=P.find(x=>x.id===bid),ap=a.position,bp=b.position;await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:999999})});await q('/pubg_players?id=eq.'+b.id,{method:'PATCH',body:JSON.stringify({position:ap})});await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:bp})})}
@@ -272,14 +308,34 @@ function board(){
     ps.map(p=>{let s=st(r.id,p.id);return '<td><input data-k="'+r.id+'|'+p.id+'" type="number" value="'+n(s.kills)+'"> <input data-d="'+r.id+'|'+p.id+'" type="checkbox" '+(s.died?'checked':'')+'>☠</td>'}).join('')+'</tr>').join('')+'</tbody></table>';
     killBoard.appendChild(d)
   }
-  document.querySelectorAll('[data-map]').forEach(x=>x.onchange=()=>q('/pubg_rounds?id=eq.'+x.dataset.map,{method:'PATCH',body:JSON.stringify({map_type:x.value})}));
-  document.querySelectorAll('[data-chicken]').forEach(x=>x.onchange=()=>q('/pubg_rounds?id=eq.'+x.dataset.chicken,{method:'PATCH',body:JSON.stringify({chicken_team:x.checked?+x.dataset.team:null})}));
-  document.querySelectorAll('[data-k]').forEach(x=>x.onchange=()=>saveStat(x.dataset.k,n(x.value),null));
-  document.querySelectorAll('[data-d]').forEach(x=>x.onchange=()=>saveStat(x.dataset.d,null,x.checked))
+  document.querySelectorAll('[data-map]').forEach(x=>x.onchange=()=>{
+    const r=RO.find(r=>String(r.id)===String(x.dataset.map));if(r)r.map_type=x.value;refreshScoreTextOnly();
+    q('/pubg_rounds?id=eq.'+x.dataset.map,{method:'PATCH',body:JSON.stringify({map_type:x.value})}).catch(console.error)
+  });
+  document.querySelectorAll('[data-chicken]').forEach(x=>x.onchange=()=>{
+    const rid=x.dataset.chicken,team=x.checked?+x.dataset.team:null;
+    const r=RO.find(r=>String(r.id)===String(rid));if(r)r.chicken_team=team;
+    document.querySelectorAll('[data-chicken="'+rid+'"]').forEach(y=>{if(y!==x)y.checked=false});
+    refreshScoreTextOnly();
+    q('/pubg_rounds?id=eq.'+rid,{method:'PATCH',body:JSON.stringify({chicken_team:team})}).catch(console.error)
+  });
+  document.querySelectorAll('[data-k]').forEach(x=>x.oninput=()=>updateLocalStat(x.dataset.k,n(x.value),null));
+  document.querySelectorAll('[data-k]').forEach(x=>x.onchange=()=>saveStat(x.dataset.k,n(x.value),null).catch(console.error));
+  document.querySelectorAll('[data-d]').forEach(x=>x.onchange=()=>{updateLocalStat(x.dataset.d,null,x.checked);saveStat(x.dataset.d,null,x.checked).catch(console.error)})
 }
 async function saveStat(key,k,d){let[r,p]=key.split('|'),o=S.find(x=>x.round_id===r&&x.player_id===p);if(o){let z={};if(k!==null)z.kills=k;if(d!==null)z.died=d;await q('/pubg_round_player_stats?id=eq.'+o.id,{method:'PATCH',body:JSON.stringify(z)})}else await q('/pubg_round_player_stats',{method:'POST',body:JSON.stringify({round_id:r,player_id:p,kills:k??0,died:d??false})})}
-ck.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({chicken_kills:n(ck.value)})});sk.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({sanhok_chicken_kills:n(sk.value)})});t10.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({top10_no_death_penalty:t10.checked})});
-if(goalKills)goalKills.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({goal_kills:n(goalKills.value)})}).then(load);
+ck.oninput=()=>{cur.chicken_kills=n(ck.value);refreshScoreTextOnly()};
+ck.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({chicken_kills:n(ck.value)})}).catch(console.error);
+sk.oninput=()=>{cur.sanhok_chicken_kills=n(sk.value);refreshScoreTextOnly()};
+sk.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({sanhok_chicken_kills:n(sk.value)})}).catch(console.error);
+t10.onchange=()=>{cur.top10_no_death_penalty=t10.checked;refreshScoreTextOnly();q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({top10_no_death_penalty:t10.checked})}).catch(console.error)};
+if(goalKills){
+  goalKills.oninput=()=>{
+    if(!cur)return;cur.goal_kills=n(goalKills.value);
+    const b=totalBar.querySelector('.goalBadge');if(b)b.textContent='목표 '+cur.goal_kills;
+  };
+  goalKills.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({goal_kills:n(goalKills.value)})}).catch(console.error);
+}
 if(timerMode)timerMode.onchange=()=>{
   const end=timerMode.value==='endtime';
   if(timerSecondsWrap)timerSecondsWrap.style.display=end?'none':'block';
