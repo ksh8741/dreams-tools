@@ -899,6 +899,202 @@ html.broadcastOverlay.broadcastVertical .scoreStatusRow .statusCenter{
 
 /* horizontal overlay is intentionally identical to the normal scoreboard */
 html.broadcastOverlay.broadcastHorizontal .scoreFrame{transform:none!important}
+
+/* v25 PUBG tournament broadcast skin */
+html.broadcastOverlay{
+  --pubg-navy:#10233f;
+  --pubg-blue:#17365d;
+  --pubg-gold:#f0b92e;
+  --pubg-cream:#f4f0df;
+  --pubg-paper:#ece9da;
+  --pubg-ink:#111b29;
+}
+html.broadcastOverlay .scoreFrame{
+  border-radius:0!important;
+  overflow:hidden!important;
+  background:var(--pubg-paper)!important;
+  border:2px solid var(--pubg-navy)!important;
+  box-shadow:none!important;
+}
+html.broadcastOverlay .totalBar{
+  position:relative!important;
+  border:0!important;
+  border-radius:0!important;
+  background:linear-gradient(90deg,var(--pubg-navy),#0c1a2e)!important;
+  color:#fff!important;
+  letter-spacing:.5px!important;
+  text-transform:uppercase;
+}
+html.broadcastOverlay .totalBar:before{
+  content:"MATCH";
+  position:absolute;
+  left:0;top:0;bottom:0;
+  display:flex;align-items:center;
+  padding:0 10px;
+  background:var(--pubg-gold);
+  color:var(--pubg-navy);
+  font-size:9px;
+  font-weight:1000;
+  letter-spacing:.8px;
+}
+html.broadcastOverlay .goalBadge{
+  border-radius:0!important;
+  background:var(--pubg-gold)!important;
+  color:var(--pubg-navy)!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html.broadcastOverlay .scoreStatusRow{
+  border:0!important;
+  border-radius:0!important;
+  background:#17365d!important;
+  color:#fff!important;
+}
+html.broadcastOverlay .scoreStatusRow .statusCenter{
+  border-radius:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  border:0!important;
+  font-weight:900!important;
+}
+html.broadcastOverlay .team{
+  border-color:#c9c7bb!important;
+  border-radius:0!important;
+  background:var(--pubg-paper)!important;
+}
+html.broadcastOverlay .teamSummary{
+  background:var(--pubg-navy)!important;
+  color:#fff!important;
+  border-radius:0!important;
+  border:0!important;
+  font-weight:950!important;
+}
+html.broadcastOverlay .teamSummary .chickenMini{
+  color:var(--pubg-gold)!important;
+}
+html.broadcastOverlay .slot{
+  border-color:#d2d0c5!important;
+  background:linear-gradient(90deg,#f4f1e5,#e8e5d8)!important;
+  border-radius:0!important;
+}
+html.broadcastOverlay .slot:nth-child(even){
+  background:linear-gradient(90deg,#ebe8dc,#dedbcf)!important;
+}
+html.broadcastOverlay .avatar{
+  border-radius:2px!important;
+  border:1px solid #a8a697!important;
+  box-shadow:none!important;
+}
+html.broadcastOverlay .name{
+  color:var(--pubg-ink)!important;
+  font-weight:1000!important;
+  letter-spacing:-.3px!important;
+}
+html.broadcastOverlay .detail{
+  color:var(--pubg-navy)!important;
+  font-weight:1000!important;
+}
+html.broadcastOverlay .killFlash{
+  border-radius:0!important;
+}
+
+/* vertical = reference-like leaderboard */
+html.broadcastOverlay.broadcastVertical .scoreFrame{
+  width:286px!important;
+  min-width:286px!important;
+  max-width:286px!important;
+  border-width:2px!important;
+}
+html.broadcastOverlay.broadcastVertical .totalBar{
+  width:286px!important;min-width:286px!important;max-width:286px!important;
+  min-height:54px!important;
+  padding:7px 12px 7px 58px!important;
+  justify-content:center!important;
+  font-size:18px!important;
+}
+html.broadcastOverlay.broadcastVertical .totalBar:before{
+  content:"PUBG";
+  width:48px;
+  justify-content:center;
+  padding:0!important;
+  font-size:11px!important;
+}
+html.broadcastOverlay.broadcastVertical .scoreStatusRow{
+  width:286px!important;min-width:286px!important;max-width:286px!important;
+  height:25px!important;
+  border-top:1px solid rgba(255,255,255,.18)!important;
+}
+html.broadcastOverlay.broadcastVertical .scoreStatusRow:before{
+  content:"RANK   TEAM                         KILLS";
+  width:100%;
+  padding:0 8px;
+  font-size:8px;
+  letter-spacing:.55px;
+  color:#d9e3ef;
+  font-weight:900;
+}
+html.broadcastOverlay.broadcastVertical .scoreStatusRow>*{display:none!important}
+html.broadcastOverlay.broadcastVertical .score{
+  width:286px!important;min-width:286px!important;max-width:286px!important;
+}
+html.broadcastOverlay.broadcastVertical .team{
+  position:relative!important;
+  width:286px!important;min-width:286px!important;max-width:286px!important;
+  display:grid!important;
+  grid-template-columns:46px 1fr!important;
+  border:0!important;
+  border-bottom:2px solid var(--pubg-navy)!important;
+}
+html.broadcastOverlay.broadcastVertical .teamSummary{
+  grid-column:1 / -1!important;
+  min-height:27px!important;
+  height:27px!important;
+  padding:0 8px 0 47px!important;
+  justify-content:space-between!important;
+  font-size:11px!important;
+  position:relative!important;
+}
+html.broadcastOverlay.broadcastVertical .teamSummary:before{
+  content:attr(data-rank);
+}
+html.broadcastOverlay.broadcastVertical .slot{
+  grid-column:1 / -1!important;
+  min-height:39px!important;
+  height:39px!important;
+  padding:3px 8px!important;
+  grid-template-columns:28px minmax(0,1fr)!important;
+}
+html.broadcastOverlay.broadcastVertical .avatar{
+  width:26px!important;height:26px!important;
+}
+html.broadcastOverlay.broadcastVertical .playerInline{
+  grid-template-columns:minmax(0,1fr) 76px!important;
+  gap:4px!important;
+}
+html.broadcastOverlay.broadcastVertical .name{
+  width:auto!important;min-width:0!important;max-width:none!important;
+  font-size:13px!important;
+}
+html.broadcastOverlay.broadcastVertical .detail{
+  text-align:right!important;
+  font-size:13px!important;
+}
+
+/* horizontal uses same PUBG palette while preserving its original geometry */
+html.broadcastOverlay.broadcastHorizontal .scoreFrame{
+  border-radius:0!important;
+}
+
+html.broadcastOverlay.broadcastVertical .team:before{
+  position:absolute;left:0;top:0;width:38px;height:27px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--pubg-gold);color:var(--pubg-navy);
+  font-size:11px;font-weight:1000;z-index:3;
+}
+html.broadcastOverlay.broadcastVertical .team:nth-child(1):before{content:"1"}
+html.broadcastOverlay.broadcastVertical .team:nth-child(2):before{content:"2"}
+html.broadcastOverlay.broadcastVertical .team:nth-child(3):before{content:"3"}
+html.broadcastOverlay.broadcastVertical .team:nth-child(4):before{content:"4"}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
