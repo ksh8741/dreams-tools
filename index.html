@@ -813,6 +813,92 @@ html.broadcastOverlay .scoreFrame{
 }
 
 
+
+/* v24 dual broadcast layouts */
+.overlayChoice{
+  border:1px solid #e1e7ed;
+  border-radius:11px;
+  padding:11px;
+  background:linear-gradient(180deg,#fff,#f8fafc);
+  margin-top:9px;
+}
+.overlayChoiceHead{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:8px;color:#27313d
+}
+.overlayChoiceHead b{font-size:13px}
+.overlayChoiceHead span{font-size:10px;color:#87929e}
+
+/* vertical broadcast: same visual language/data, stacked teams */
+html.broadcastOverlay.broadcastVertical .scoreFrame{
+  width:300px!important;
+  min-width:300px!important;
+  max-width:300px!important;
+}
+html.broadcastOverlay.broadcastVertical .score,
+html.broadcastOverlay.broadcastVertical .totalBar,
+html.broadcastOverlay.broadcastVertical .scoreStatusRow{
+  width:300px!important;
+  min-width:300px!important;
+  max-width:300px!important;
+}
+html.broadcastOverlay.broadcastVertical .totalBar{
+  min-height:62px!important;
+  padding:8px 58px!important;
+  font-size:20px!important;
+}
+html.broadcastOverlay.broadcastVertical .totalMain{
+  max-width:185px!important;
+  font-size:20px!important;
+}
+html.broadcastOverlay.broadcastVertical .goalBadge{
+  left:9px!important;
+  min-width:42px!important;
+  padding:6px 8px!important;
+  font-size:13px!important;
+}
+html.broadcastOverlay.broadcastVertical .score{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+}
+html.broadcastOverlay.broadcastVertical .team{
+  width:300px!important;
+  min-width:300px!important;
+  max-width:300px!important;
+  flex:0 0 auto!important;
+  margin-left:0!important;
+  border-right:0!important;
+  border-bottom:1px solid #cfd6df!important;
+}
+html.broadcastOverlay.broadcastVertical .team:last-child{border-bottom:0!important}
+html.broadcastOverlay.broadcastVertical .teamSummary{
+  height:31px!important;
+}
+html.broadcastOverlay.broadcastVertical .slot{
+  min-height:48px!important;
+  grid-template-columns:32px minmax(0,1fr)!important;
+  padding:6px 9px!important;
+}
+html.broadcastOverlay.broadcastVertical .playerInline{
+  grid-template-columns:88px minmax(0,1fr)!important;
+}
+html.broadcastOverlay.broadcastVertical .name{
+  width:88px!important;min-width:88px!important;max-width:88px!important;
+  font-size:15px!important;
+}
+html.broadcastOverlay.broadcastVertical .detail{
+  font-size:15px!important;
+}
+html.broadcastOverlay.broadcastVertical .scoreStatusRow{
+  height:30px!important;
+}
+html.broadcastOverlay.broadcastVertical .scoreStatusRow .statusCenter{
+  font-size:12px!important;padding:3px 9px!important;
+}
+
+/* horizontal overlay is intentionally identical to the normal scoreboard */
+html.broadcastOverlay.broadcastHorizontal .scoreFrame{transform:none!important}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -886,12 +972,26 @@ html.broadcastOverlay .scoreFrame{
 <div id="overlayUrlOv" class="overlay hidden">
   <div class="modal overlayUrlModal">
     <h2>방송 오버레이 URL</h2>
-    <div class="meta" style="margin-bottom:10px">OBS · 브라우저 소스에 아래 주소를 그대로 붙여넣으세요.</div>
-    <div class="overlayUrlRow">
-      <input id="overlayUrlInput" readonly>
-      <button id="overlayCopyBtn" class="btn primary">복사</button>
+    <div class="meta" style="margin-bottom:12px">OBS · 브라우저 소스에 원하는 레이아웃 주소를 붙여넣으세요.</div>
+
+    <div class="overlayChoice">
+      <div class="overlayChoiceHead"><b>가로형 HUD</b><span>상단 중앙 배치용</span></div>
+      <div class="overlayUrlRow">
+        <input id="overlayHorizontalInput" readonly>
+        <button id="overlayHorizontalCopy" class="btn primary">복사</button>
+      </div>
+      <div class="overlayGuide">기존 현황판과 100% 동일한 형태 · 좌측 캠 유지에 적합</div>
     </div>
-    <div class="overlayGuide">권장 크기: 현황판 실제 크기 그대로 · 배경 투명 · 자동 실시간 동기화</div>
+
+    <div class="overlayChoice">
+      <div class="overlayChoiceHead"><b>세로형 HUD</b><span>좌측 세로 배치용</span></div>
+      <div class="overlayUrlRow">
+        <input id="overlayVerticalInput" readonly>
+        <button id="overlayVerticalCopy" class="btn primary">복사</button>
+      </div>
+      <div class="overlayGuide">같은 데이터/애니메이션 · 팀을 아래로 직렬 배치</div>
+    </div>
+
     <div class="actions"><button id="overlayCloseBtn" class="btn">닫기</button></div>
   </div>
 </div>
@@ -900,7 +1000,7 @@ html.broadcastOverlay .scoreFrame{
 <script>
 const B='https://llqikrcqavwfbuajykig.supabase.co/rest/v1',K='sb_publishable_aLPzJI_jQLlywmoQsiLRtw_ElX_aslF',H={'apikey':K,'Authorization':'Bearer '+K,'Content-Type':'application/json'},n=x=>Math.max(0,parseInt(x)||0),e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let cur,pick,P=[],RO=[],S=[],poll,editing=false,pickId=null,pickName='',dragId=null,ghost=null;
 const chromaOn=document.getElementById('chromaOn'),chromaColor=document.getElementById('chromaColor'),
-scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),overlayUrlBtn=document.getElementById('overlayUrlBtn'),overlayUrlOv=document.getElementById('overlayUrlOv'),overlayUrlInput=document.getElementById('overlayUrlInput'),overlayCopyBtn=document.getElementById('overlayCopyBtn'),overlayCloseBtn=document.getElementById('overlayCloseBtn'),captureStage=document.getElementById('captureStage'),
+scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),overlayUrlBtn=document.getElementById('overlayUrlBtn'),overlayUrlOv=document.getElementById('overlayUrlOv'),overlayHorizontalInput=document.getElementById('overlayHorizontalInput'),overlayHorizontalCopy=document.getElementById('overlayHorizontalCopy'),overlayVerticalInput=document.getElementById('overlayVerticalInput'),overlayVerticalCopy=document.getElementById('overlayVerticalCopy'),overlayCloseBtn=document.getElementById('overlayCloseBtn'),captureStage=document.getElementById('captureStage'),
 totalBar=document.getElementById('totalBar'),scoreboard=document.getElementById('scoreboard'),
 killBoard=document.getElementById('killBoard'),
 goalKills=document.getElementById('goalKills'),timerMode=document.getElementById('timerMode'),
@@ -1026,12 +1126,13 @@ function applyScoreWidth(){
   const w=Math.max(202,cur.team_count*202);
   document.documentElement.style.setProperty('--score-width',w+'px');
 }
-function overlayUrlForRoom(){
+function overlayUrlForRoom(layout='horizontal'){
   if(!cur)return '';
   const u=new URL(location.href);
   u.search='';
   u.hash='';
   u.searchParams.set('overlay',String(cur.id));
+  u.searchParams.set('layout',layout);
   return u.toString();
 }
 
@@ -1533,16 +1634,23 @@ if(scoreViewMode)scoreViewMode.onchange=()=>{
 
 if(overlayUrlBtn)overlayUrlBtn.onclick=()=>{
   if(!cur)return;
-  overlayUrlInput.value=overlayUrlForRoom();
+  overlayHorizontalInput.value=overlayUrlForRoom('horizontal');
+  overlayVerticalInput.value=overlayUrlForRoom('vertical');
   overlayUrlOv.classList.remove('hidden');
-  overlayUrlInput.select();
 };
 if(overlayCloseBtn)overlayCloseBtn.onclick=()=>overlayUrlOv.classList.add('hidden');
-if(overlayCopyBtn)overlayCopyBtn.onclick=async()=>{
-  const v=overlayUrlInput.value;
-  try{await navigator.clipboard.writeText(v);overlayCopyBtn.textContent='복사됨';setTimeout(()=>overlayCopyBtn.textContent='복사',1000)}
-  catch(_){overlayUrlInput.select();document.execCommand('copy')}
-};
+async function copyOverlayUrl(input,button){
+  const v=input.value;
+  try{
+    await navigator.clipboard.writeText(v);
+    button.textContent='복사됨';
+    setTimeout(()=>button.textContent='복사',1000);
+  }catch(_){
+    input.select();document.execCommand('copy');
+  }
+}
+if(overlayHorizontalCopy)overlayHorizontalCopy.onclick=()=>copyOverlayUrl(overlayHorizontalInput,overlayHorizontalCopy);
+if(overlayVerticalCopy)overlayVerticalCopy.onclick=()=>copyOverlayUrl(overlayVerticalInput,overlayVerticalCopy);
 
 if(pipScore)pipScore.onclick=async()=>{
   if(!cur)return;
@@ -1586,9 +1694,11 @@ document.addEventListener('visibilitychange',()=>{
 });
 
 
-const overlayRoomId=new URLSearchParams(location.search).get('overlay');
+const overlayParams=new URLSearchParams(location.search);
+const overlayRoomId=overlayParams.get('overlay');
+const overlayLayout=overlayParams.get('layout')==='vertical'?'vertical':'horizontal';
 if(overlayRoomId){
-  document.documentElement.classList.add('broadcastOverlay');
+  document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal');
   (async()=>{
     try{
       const rr=await q('/pubg_rooms?id=eq.'+encodeURIComponent(overlayRoomId)+'&select=*');
