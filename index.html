@@ -1323,6 +1323,106 @@ html.broadcastOverlay.broadcastVertical .rankRow.killChanged:after{
   70%{opacity:1}
   100%{opacity:0;transform:translateY(-8px) scale(1)}
 }
+
+/* v29 vertical overlay stability + compact layout */
+html.broadcastOverlay.broadcastVertical body{
+  padding-left:6px!important;
+  width:max-content!important;
+  min-height:900px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  width:252px!important;
+  height:900px!important;
+  min-height:900px!important;
+  position:relative!important;
+  overflow:hidden!important;
+}
+html.broadcastOverlay.broadcastVertical .rankOverlay:after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:2px;
+  background:#5a6978;
+  box-shadow:0 -1px 0 rgba(255,255,255,.08);
+}
+html.broadcastOverlay.broadcastVertical .rankHeader{
+  padding:5px 4px 6px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankHeaderTop{
+  min-height:0!important;
+  margin:0 0 5px!important;
+  justify-content:flex-end!important;
+}
+html.broadcastOverlay.broadcastVertical .rankHeaderTop:empty{
+  display:none!important;
+  margin:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTimer{
+  font-size:12px!important;
+  line-height:16px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotals{
+  gap:3px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotal{
+  height:31px!important;
+  padding:0 4px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalName{
+  max-width:42px!important;
+  font-size:12px!important;
+  font-weight:950!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalKill{
+  font-size:16px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalInfo{
+  font-size:12px!important;
+  font-weight:950!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalSwap{
+  animation:rankTotalFade .22s ease both!important;
+}
+@keyframes rankTotalFade{
+  from{opacity:.15}
+  to{opacity:1}
+}
+html.broadcastOverlay.broadcastVertical .rankTotalProgress{
+  left:0!important;
+  opacity:.64!important;
+  transition:width 1.05s cubic-bezier(.2,.82,.2,1)!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRow{
+  grid-template-columns:31px 104px 34px 35px 43px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols{
+  width:247px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRow{
+  width:247px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols div:nth-child(2){
+  padding-left:6px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankScore{
+  padding-right:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRow.killChanged{
+  animation:rankKillFlash 1.15s cubic-bezier(.2,.8,.2,1)!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRow.killChanged:after{
+  right:47px!important;
+  top:3px!important;
+  font-size:13px!important;
+  animation:rankKillDelta 1.05s ease-out forwards!important;
+}
+@keyframes rankKillFlash{
+  0%{box-shadow:inset 0 0 0 0 transparent}
+  16%{box-shadow:inset 0 0 0 2px var(--team-color),0 0 15px color-mix(in srgb,var(--team-color) 72%,transparent)}
+  70%{box-shadow:inset 0 0 0 2px var(--team-color),0 0 10px color-mix(in srgb,var(--team-color) 45%,transparent)}
+  100%{box-shadow:inset 0 0 0 0 transparent}
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -1633,7 +1733,10 @@ function refreshTimerBadge(){
   const el=document.getElementById('timerBadge');
   if(el){el.style.display='none';el.textContent='';}
   refreshStatusRow();
-  if(document.documentElement.classList.contains('broadcastVertical'))renderVerticalRanking(false);
+  if(document.documentElement.classList.contains('broadcastVertical')){
+    const rt=document.querySelector('#rankOverlay .rankTimer');
+    if(rt)rt.textContent=timerText()||'';
+  }
 }
 function syncTimerControls(){
   if(!cur)return;
@@ -1689,7 +1792,7 @@ cb.onclick=async()=>{
 };
 function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team);jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
 async function ensure(){let a=await q('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds',{method:'POST',body:JSON.stringify(x)})}
-async function enter(r){cur=r;applyScoreWidth();loadTeamMaps();loadStatCache();lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),document.documentElement.classList.contains('broadcastOverlay')?800:1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
+async function enter(r){cur=r;applyScoreWidth();loadTeamMaps();loadStatCache();lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),document.documentElement.classList.contains('broadcastOverlay')?1250:1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
 async function load(isPoll=false){
   if(!cur)return;
   const roomId=cur.id,revAtStart=localRevision,isOverlay=document.documentElement.classList.contains('broadcastOverlay');
@@ -1725,12 +1828,15 @@ async function load(isPoll=false){
     });
 
     queueSafeRender();
-    requestAnimationFrame(()=>{
+    setTimeout(()=>{
       if(remoteFlashQueue.length){
         const qf=[...remoteFlashQueue];remoteFlashQueue=[];
-        qf.forEach(([pid,d])=>flashPlayerScore(pid,d));
+        qf.forEach(([pid,d])=>{
+          flashPlayerScore(pid,d);
+          if(document.documentElement.classList.contains('broadcastVertical'))animateVerticalKillChange(pid,d);
+        });
       }
-    });
+    },80);
   }catch(err){
     console.error('[load]',err);
     if(document.documentElement.classList.contains('broadcastOverlay')){
@@ -1813,8 +1919,12 @@ function renderScore(){
 const RANK_TEAM_COLORS=['#ff426f','#00c8ff','#8d63ff','#ffb020'];
 let previousRankOrder=[];
 let previousRankStats=new Map();
+let previousTeamKills=new Map();
 let rankInfoMode=false;
-setInterval(()=>{rankInfoMode=!rankInfoMode;if(cur)renderVerticalRanking(false)},5000);
+setInterval(()=>{
+  rankInfoMode=!rankInfoMode;
+  if(cur&&document.documentElement.classList.contains('broadcastVertical'))updateRankTotalLabels();
+},5000);
 
 function playerRankData(){
   if(!cur)return [];
@@ -1857,6 +1967,39 @@ function rankAvatarHtml(cap){
   return '<span class="rankAvatarEmpty"></span>';
 }
 
+
+function updateRankTotalLabels(){
+  const box=document.getElementById('rankOverlay');if(!box||!cur)return;
+  const goal=Math.max(1,n(cur.goal_kills||50));
+  const teamData=teamKillTotals();
+  teamData.forEach(x=>{
+    const el=box.querySelector('.rankTotal[data-rank-total-team="'+x.team+'"]');
+    if(!el)return;
+    const label=rankInfoMode
+      ? '🍗 '+x.chicken+' · '+x.kill+'/'+goal
+      : x.name+' '+x.kill;
+    const old=el.querySelector('.rankTotalLabel');
+    if(old){
+      old.classList.remove('rankTotalSwap');
+      void old.offsetWidth;
+      old.textContent=label;
+      old.classList.add('rankTotalSwap');
+    }
+  });
+}
+
+function animateVerticalKillChange(playerId,delta){
+  if(!delta)return;
+  const row=document.querySelector('#rankOverlay [data-rank-player="'+CSS.escape(String(playerId))+'"]');
+  if(!row)return;
+  row.classList.remove('killChanged');
+  row.setAttribute('data-kill-delta',(delta>0?'+':'')+delta);
+  void row.offsetWidth;
+  row.classList.add('killChanged');
+  clearTimeout(row._killFxTimer);
+  row._killFxTimer=setTimeout(()=>row.classList.remove('killChanged'),1180);
+}
+
 function renderVerticalRanking(animate=true){
   if(!cur||!captureStage)return;
 
@@ -1873,14 +2016,16 @@ function renderVerticalRanking(animate=true){
   const oldPositions=new Map(previousRankOrder.map((id,i)=>[String(id),i]));
 
   const goal=Math.max(1,n(cur.goal_kills||50));
-  const totals=teamKillTotals().map(x=>{
+  const teamTotals=teamKillTotals();
+  const totals=teamTotals.map(x=>{
     const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
     const progress=Math.max(0,Math.min(100,(x.kill/goal)*100));
-    const center=rankInfoMode
-      ? '<span class="rankTotalInfo rankTotalSwap">🍗 '+x.chicken+' · '+x.kill+'/'+goal+'</span>'
-      : '<span class="rankTotalName rankTotalSwap">'+e(x.name)+'</span><span class="rankTotalKill rankTotalSwap">'+x.kill+'</span>';
-    return '<div class="rankTotal" style="--team-color:'+c+';--progress:'+progress+'%">'+
-      '<span class="rankTotalProgress"></span>'+center+
+    const prevKill=previousTeamKills.has(x.team)?previousTeamKills.get(x.team):x.kill;
+    const prevProgress=Math.max(0,Math.min(100,(prevKill/goal)*100));
+    const label=rankInfoMode ? '🍗 '+x.chicken+' · '+x.kill+'/'+goal : x.name+' '+x.kill;
+    return '<div class="rankTotal" data-rank-total-team="'+x.team+'" data-progress="'+progress+'" style="--team-color:'+c+'">'+
+      '<span class="rankTotalProgress" style="width:'+prevProgress+'%"></span>'+
+      '<span class="rankTotalInfo rankTotalLabel">'+e(label)+'</span>'+
     '</div>';
   }).join('');
 
@@ -1894,9 +2039,7 @@ function renderVerticalRanking(animate=true){
       : '';
     const prevStat=previousRankStats.get(String(x.id));
     const killDelta=animate&&prevStat ? x.kill-prevStat.kill : 0;
-    const killChanged=killDelta!==0;
-    const deltaText=killDelta>0?'+'+killDelta:String(killDelta);
-    return '<div class="rankRow '+(i===0?'rankFirst ':'')+(move?'rankChanged ':'')+(killChanged?'killChanged':'')+'" data-kill-delta="'+(killChanged?deltaText:'')+'" data-rank-player="'+x.id+'" style="--team-color:'+c+'">'+
+    return '<div class="rankRow '+(i===0?'rankFirst ':'')+(move?'rankChanged':'')+'" data-rank-player="'+x.id+'" data-pending-kill-delta="'+killDelta+'" style="--team-color:'+c+'">'+
       move+
       '<div class="rankPos">'+(i+1)+'</div>'+
       '<div class="rankIdentity">'+rankAvatarHtml(x.player)+'<div class="rankName">'+e(x.name)+'</div></div>'+
@@ -1909,14 +2052,28 @@ function renderVerticalRanking(animate=true){
   box.style.setProperty('--rank-count',Math.max(1,cur.team_count));
   box.innerHTML=
     '<div class="rankHeader">'+
-      '<div class="rankHeaderTop"><span class="rankTimer">'+(timeTxt?e(timeTxt):'')+'</span></div>'+
+      (timeTxt?'<div class="rankHeaderTop"><span class="rankTimer">'+e(timeTxt)+'</span></div>':'')+
       '<div class="rankTotals">'+totals+'</div>'+
     '</div>'+
-    '<div class="rankCols"><div>RANK</div><div>PLAYER</div><div>KILL</div><div>DEATH</div><div>SCORE</div></div>'+
+    '<div class="rankCols"><div>RANK</div><div>PLAYER</div><div>K</div><div>D</div><div>SCORE</div></div>'+
     '<div class="rankRows">'+body+'</div>';
+
+  requestAnimationFrame(()=>{
+    box.querySelectorAll('.rankTotal').forEach(el=>{
+      const bar=el.querySelector('.rankTotalProgress');
+      if(bar)bar.style.width=(parseFloat(el.dataset.progress)||0)+'%';
+    });
+    if(animate){
+      box.querySelectorAll('[data-pending-kill-delta]').forEach(row=>{
+        const d=parseInt(row.dataset.pendingKillDelta||'0',10);
+        if(d)animateVerticalKillChange(row.dataset.rankPlayer,d);
+      });
+    }
+  });
 
   previousRankOrder=nowOrder;
   previousRankStats=new Map(rows.map(x=>[String(x.id),{kill:x.kill,death:x.death,score:x.score}]));
+  previousTeamKills=new Map(teamTotals.map(x=>[x.team,x.kill]));
 }
 
 function drag(){document.querySelectorAll('.slot').forEach(s=>{s.ondragstart=a=>{if(a.target.closest('input')){a.preventDefault();return}dragId=s.dataset.slot;s.classList.add('dragging');ghost=document.createElement('div');ghost.className='ghost';ghost.textContent=(P.find(p=>p.id===dragId)?.nickname||'PLAYER');document.body.appendChild(ghost);document.addEventListener('dragover',moveGhost)};s.ondragover=a=>{if(!dragId||dragId===s.dataset.slot)return;a.preventDefault();document.querySelectorAll('.slot.over').forEach(x=>x!==s&&x.classList.remove('over'));s.classList.add('over')};s.ondragleave=()=>s.classList.remove('over');s.ondrop=async a=>{a.preventDefault();let b=s.dataset.slot;if(b!==dragId)await swap(dragId,b);endDrag();editing=false;load()};s.ondragend=endDrag})}function moveGhost(a){if(ghost){ghost.style.left=a.clientX+'px';ghost.style.top=a.clientY+'px'}}function endDrag(){dragId=null;document.querySelectorAll('.slot').forEach(x=>x.classList.remove('dragging','over'));document.removeEventListener('dragover',moveGhost);ghost?.remove();ghost=null}async function swap(aid,bid){let a=P.find(x=>x.id===aid),b=P.find(x=>x.id===bid),ap=a.position,bp=b.position;await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:999999})});await q('/pubg_players?id=eq.'+b.id,{method:'PATCH',body:JSON.stringify({position:ap})});await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:bp})})}
