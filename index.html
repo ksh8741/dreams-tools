@@ -1423,6 +1423,134 @@ html.broadcastOverlay.broadcastVertical .rankRow.killChanged:after{
   70%{box-shadow:inset 0 0 0 2px var(--team-color),0 0 10px color-mix(in srgb,var(--team-color) 45%,transparent)}
   100%{box-shadow:inset 0 0 0 0 transparent}
 }
+
+/* v30 vertical overlay fixes */
+html.broadcastOverlay.broadcastVertical body{
+  padding-left:4px!important;
+  min-height:960px!important;
+  background:transparent!important;
+}
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  width:252px!important;
+  height:960px!important;
+  min-height:960px!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+html.broadcastOverlay.broadcastVertical .rankHeader,
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRows{
+  background:#0d131a!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRows{
+  border-left:1px solid #29343f!important;
+  border-right:1px solid #29343f!important;
+}
+html.broadcastOverlay.broadcastVertical .rankHeader{
+  border:1px solid #29343f!important;
+  border-bottom:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols{
+  border-left:1px solid #29343f!important;
+  border-right:1px solid #29343f!important;
+}
+html.broadcastOverlay.broadcastVertical .rankOverlay:after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:2px;
+  background:#5a6978;
+  box-shadow:0 -1px 0 rgba(255,255,255,.08);
+}
+html.broadcastOverlay.broadcastVertical .rankRow{
+  height:42px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankIdentity{
+  height:42px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankValue{
+  height:42px!important;
+}
+
+/* Total boxes: gauge mode */
+html.broadcastOverlay.broadcastVertical .rankTotal{
+  overflow:hidden!important;
+  position:relative!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalProgress{
+  position:absolute!important;
+  left:0!important;top:0!important;bottom:0!important;
+  width:var(--progress,0%)!important;
+  background:var(--team-color)!important;
+  opacity:.70!important;
+  transition:none!important;
+  z-index:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotal.gaugeAnimate .rankTotalProgress{
+  animation:rankGaugeFill 1.15s cubic-bezier(.2,.82,.2,1) forwards!important;
+}
+@keyframes rankGaugeFill{
+  from{width:0}
+  to{width:var(--progress,0%)}
+}
+html.broadcastOverlay.broadcastVertical .rankTotalLabel{
+  position:relative!important;
+  z-index:2!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalModeFade{
+  animation:rankModeFade .24s ease both!important;
+}
+@keyframes rankModeFade{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+/* Kill animation: glow full row + delta near player/name, never in D cell */
+html.broadcastOverlay.broadcastVertical .rankRow.killChanged{
+  z-index:4!important;
+  animation:rankKillGlow 1.15s ease-out!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRow.killChanged:before{
+  content:"";
+  position:absolute;
+  inset:1px;
+  pointer-events:none;
+  box-shadow:
+    inset 0 0 0 2px var(--team-color),
+    0 0 10px var(--team-color),
+    0 0 22px color-mix(in srgb,var(--team-color) 60%,transparent);
+  animation:rankKillBorder 1.15s ease-out forwards;
+}
+html.broadcastOverlay.broadcastVertical .rankRow.killChanged:after{
+  content:attr(data-kill-delta);
+  position:absolute!important;
+  left:116px!important;
+  right:auto!important;
+  top:3px!important;
+  z-index:8!important;
+  padding:1px 4px!important;
+  border:1px solid var(--team-color)!important;
+  background:#0a1016!important;
+  color:var(--team-color)!important;
+  font-size:13px!important;
+  font-weight:950!important;
+  line-height:16px!important;
+  text-shadow:0 0 7px var(--team-color)!important;
+  box-shadow:0 0 10px color-mix(in srgb,var(--team-color) 65%,transparent)!important;
+  animation:rankKillDelta 1.0s ease-out forwards!important;
+}
+@keyframes rankKillGlow{
+  0%,100%{background:inherit}
+  25%{background:color-mix(in srgb,var(--team-color) 13%,#111820)}
+}
+@keyframes rankKillBorder{
+  0%{opacity:0}
+  15%{opacity:1}
+  72%{opacity:1}
+  100%{opacity:0}
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -1625,6 +1753,7 @@ function updateLocalStat(key,k,d){
   const after=player?totals(player).score:before;
   updatePlayerScoreText(p);
   flashPlayerScore(p,after-before);
+  if(document.documentElement.classList.contains('broadcastVertical')&&after!==before)setTimeout(()=>animateVerticalKillChange(p,after-before),40);
   refreshScoreTextOnly();
 }
 function hasEditableFocus(){
@@ -1921,10 +2050,18 @@ let previousRankOrder=[];
 let previousRankStats=new Map();
 let previousTeamKills=new Map();
 let rankInfoMode=false;
-setInterval(()=>{
-  rankInfoMode=!rankInfoMode;
-  if(cur&&document.documentElement.classList.contains('broadcastVertical'))updateRankTotalLabels();
-},5000);
+let rankModeTimer=null;
+
+function restartRankModeCycle(){
+  if(rankModeTimer)clearInterval(rankModeTimer);
+  rankInfoMode=false;
+  applyRankTotalMode(true);
+  rankModeTimer=setInterval(()=>{
+    rankInfoMode=!rankInfoMode;
+    applyRankTotalMode(!rankInfoMode);
+  },8000);
+}
+
 
 function playerRankData(){
   if(!cur)return [];
@@ -1968,22 +2105,33 @@ function rankAvatarHtml(cap){
 }
 
 
-function updateRankTotalLabels(){
+function applyRankTotalMode(animateGauge=false){
   const box=document.getElementById('rankOverlay');if(!box||!cur)return;
   const goal=Math.max(1,n(cur.goal_kills||50));
-  const teamData=teamKillTotals();
-  teamData.forEach(x=>{
+  teamKillTotals().forEach(x=>{
     const el=box.querySelector('.rankTotal[data-rank-total-team="'+x.team+'"]');
     if(!el)return;
-    const label=rankInfoMode
-      ? '🍗 '+x.chicken+' · '+x.kill+'/'+goal
-      : x.name+' '+x.kill;
-    const old=el.querySelector('.rankTotalLabel');
-    if(old){
-      old.classList.remove('rankTotalSwap');
-      void old.offsetWidth;
-      old.textContent=label;
-      old.classList.add('rankTotalSwap');
+    const progress=Math.max(0,Math.min(100,(x.kill/goal)*100));
+    el.style.setProperty('--progress',progress+'%');
+    el.classList.remove('gaugeAnimate');
+    const label=el.querySelector('.rankTotalLabel');
+    if(rankInfoMode){
+      if(label){
+        label.textContent='🍗 '+x.chicken+' · '+x.kill+'/'+goal;
+        label.classList.remove('rankTotalModeFade');void label.offsetWidth;label.classList.add('rankTotalModeFade');
+      }
+      const bar=el.querySelector('.rankTotalProgress');if(bar)bar.style.width=progress+'%';
+    }else{
+      if(label){
+        label.textContent=x.name+' '+x.kill;
+        label.classList.remove('rankTotalModeFade');void label.offsetWidth;label.classList.add('rankTotalModeFade');
+      }
+      if(animateGauge){
+        void el.offsetWidth;
+        el.classList.add('gaugeAnimate');
+      }else{
+        const bar=el.querySelector('.rankTotalProgress');if(bar)bar.style.width=progress+'%';
+      }
     }
   });
 }
@@ -2020,11 +2168,9 @@ function renderVerticalRanking(animate=true){
   const totals=teamTotals.map(x=>{
     const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
     const progress=Math.max(0,Math.min(100,(x.kill/goal)*100));
-    const prevKill=previousTeamKills.has(x.team)?previousTeamKills.get(x.team):x.kill;
-    const prevProgress=Math.max(0,Math.min(100,(prevKill/goal)*100));
     const label=rankInfoMode ? '🍗 '+x.chicken+' · '+x.kill+'/'+goal : x.name+' '+x.kill;
-    return '<div class="rankTotal" data-rank-total-team="'+x.team+'" data-progress="'+progress+'" style="--team-color:'+c+'">'+
-      '<span class="rankTotalProgress" style="width:'+prevProgress+'%"></span>'+
+    return '<div class="rankTotal" data-rank-total-team="'+x.team+'" style="--team-color:'+c+';--progress:'+progress+'%">'+
+      '<span class="rankTotalProgress"></span>'+
       '<span class="rankTotalInfo rankTotalLabel">'+e(label)+'</span>'+
     '</div>';
   }).join('');
@@ -2059,10 +2205,7 @@ function renderVerticalRanking(animate=true){
     '<div class="rankRows">'+body+'</div>';
 
   requestAnimationFrame(()=>{
-    box.querySelectorAll('.rankTotal').forEach(el=>{
-      const bar=el.querySelector('.rankTotalProgress');
-      if(bar)bar.style.width=(parseFloat(el.dataset.progress)||0)+'%';
-    });
+    applyRankTotalMode(false);
     if(animate){
       box.querySelectorAll('[data-pending-kill-delta]').forEach(row=>{
         const d=parseInt(row.dataset.pendingKillDelta||'0',10);
@@ -2074,6 +2217,7 @@ function renderVerticalRanking(animate=true){
   previousRankOrder=nowOrder;
   previousRankStats=new Map(rows.map(x=>[String(x.id),{kill:x.kill,death:x.death,score:x.score}]));
   previousTeamKills=new Map(teamTotals.map(x=>[x.team,x.kill]));
+  if(!rankModeTimer && document.documentElement.classList.contains('broadcastVertical'))restartRankModeCycle();
 }
 
 function drag(){document.querySelectorAll('.slot').forEach(s=>{s.ondragstart=a=>{if(a.target.closest('input')){a.preventDefault();return}dragId=s.dataset.slot;s.classList.add('dragging');ghost=document.createElement('div');ghost.className='ghost';ghost.textContent=(P.find(p=>p.id===dragId)?.nickname||'PLAYER');document.body.appendChild(ghost);document.addEventListener('dragover',moveGhost)};s.ondragover=a=>{if(!dragId||dragId===s.dataset.slot)return;a.preventDefault();document.querySelectorAll('.slot.over').forEach(x=>x!==s&&x.classList.remove('over'));s.classList.add('over')};s.ondragleave=()=>s.classList.remove('over');s.ondrop=async a=>{a.preventDefault();let b=s.dataset.slot;if(b!==dragId)await swap(dragId,b);endDrag();editing=false;load()};s.ondragend=endDrag})}function moveGhost(a){if(ghost){ghost.style.left=a.clientX+'px';ghost.style.top=a.clientY+'px'}}function endDrag(){dragId=null;document.querySelectorAll('.slot').forEach(x=>x.classList.remove('dragging','over'));document.removeEventListener('dragover',moveGhost);ghost?.remove();ghost=null}async function swap(aid,bid){let a=P.find(x=>x.id===aid),b=P.find(x=>x.id===bid),ap=a.position,bp=b.position;await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:999999})});await q('/pubg_players?id=eq.'+b.id,{method:'PATCH',body:JSON.stringify({position:ap})});await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:bp})})}
