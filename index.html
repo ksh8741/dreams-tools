@@ -537,6 +537,21 @@ main{max-width:1720px!important;padding:12px 16px!important}
 @media(min-width:1700px){
   .killUnified{width:1608px!important;min-width:1608px!important;max-width:1608px!important}
 }
+
+/* v20 team-color score flash */
+.slot.scoreFlash:before{
+  box-shadow:0 0 0 2px var(--team-accent,rgba(33,185,131,.92)),
+             0 0 12px color-mix(in srgb,var(--team-accent,rgba(33,185,131,.92)) 28%, transparent)!important;
+}
+.scoreDelta{
+  background:color-mix(in srgb,var(--team-accent,#1fb983) 22%, #0f171e)!important;
+  color:color-mix(in srgb,var(--team-accent,#1fb983) 72%, white)!important;
+  border-color:var(--team-accent,#1fb983)!important;
+}
+.team:nth-child(1){--team-accent:#1fa88a}   /* jade teal */
+.team:nth-child(2){--team-accent:#7b6bd6}   /* royal violet */
+.team:nth-child(3){--team-accent:#c98a2e}   /* champagne amber */
+.team:nth-child(4){--team-accent:#bf5f7a}   /* muted rose */
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -668,7 +683,7 @@ function refreshScoreTextOnly(){
   if(main)main.textContent=center;
 }
 function scoreText(a){
-  return a.minus>0 ? a.score+' ('+a.raw+' - '+a.minus+')' : a.score+'킬';
+  return a.minus>0 ? a.score+'('+a.raw+'-'+a.minus+')' : a.score+'킬';
 }
 function updatePlayerScoreText(playerId){
   const p=P.find(x=>String(x.id)===String(playerId));if(!p)return;
@@ -757,7 +772,7 @@ function pic(id){return 'https://stimg.sooplive.com/LOGO/'+id.slice(0,2)+'/'+id+
 function captainName(team){
   const p=teamPlayers(team)[0];
   const raw=(p?.nickname||teamLetter(team));
-  return raw.slice(0,4)+'팀';
+  return raw.slice(0,2)+'팀';
 }
 function pad2(v){return String(Math.max(0,Math.floor(v))).padStart(2,'0')}
 function fmtClock(sec){
