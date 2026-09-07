@@ -60,6 +60,60 @@ input:focus,select:focus,textarea:focus{outline:none}
 .tbl td > input[data-k]{display:inline-block!important;vertical-align:middle!important}
 .tbl td > input[data-d]{margin-left:2px!important}
 .add{height:32px!important;margin-top:6px!important;border-style:dashed!important;background:#fafbfc!important}
+
+/* v12 cute polish + alignment */
+:root{
+  --ink:#263241;--soft:#fff9fc;--pink:#ffd9e8;--pink2:#fff0f6;
+  --lav:#e9e2ff;--mint:#dcf7ef;--yellow:#fff2c7;--line:#e7dfe8;
+}
+body{background:linear-gradient(180deg,#fffafd 0,#f7fbff 42%,#f8fafc 100%)!important;color:var(--ink)!important}
+header{background:#25303c!important;box-shadow:0 2px 0 #ffd7e7!important}
+.brand:before{content:"⚾ ✦ "!important}
+.nav .on{border-bottom-color:#ff9fc2!important}
+.panel{border-color:#eadfe6!important;box-shadow:0 5px 18px #8d71840d!important}
+.btn{border-color:#e7dce4!important;border-radius:9px!important}.btn:hover{background:#fff5f9!important}
+.primary{background:#303b49!important;border-color:#303b49!important}
+.sect h2:before{content:"✦ ";color:#f08caf}
+.totalBar{background:linear-gradient(90deg,#303b49,#25303c)!important;border-color:#303b49!important}
+.totalBar .goalBadge{background:#ffe9a9!important}
+.totalBar .timerBadge{background:#495669!important}
+.team{width:184px!important;flex-basis:184px!important;border-color:#d8dfe7!important;background:#fff!important}
+.total{background:linear-gradient(180deg,#fff8fb,#fff)!important}
+.slot{grid-template-columns:30px minmax(0,1fr)!important;gap:6px!important;padding:7px 6px!important}
+.avatar{width:30px!important;height:30px!important;box-shadow:0 0 0 2px #fff,0 0 0 3px #f4c7da}
+.avatarEmpty{width:30px!important;height:30px!important}
+.playerInline{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:3px!important;align-items:center!important;min-width:0!important}
+.name{min-width:0!important;width:100%!important;font-size:12.5px!important;letter-spacing:-.25px!important;overflow:visible!important;text-overflow:clip!important}
+.detail{font-size:8.5px!important;letter-spacing:-.35px!important;color:#788492!important;max-width:68px!important}
+.detail b{font-size:11px!important}
+.chicken{background:#fffaf1!important}
+.kill{border-color:#eadfe6!important}
+.rounds{border-color:#e2d8e1!important;background:#fff!important}
+.roundTeamHead,.roundHead,.teamBlockTitle{background:#303b49!important;color:#fff!important}
+.roundTeamHead{height:34px;min-height:34px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid #4a5663;font-size:9px;font-weight:900}
+.roundHead{background:#f8f4f7!important;color:#6f6270!important;border-bottom:1px solid #e3dbe2!important}
+.roundCell:nth-child(odd){background:#fffafd}
+.teamBlock{border-color:#e2d8e1!important}
+.teamBlockTitle{background:linear-gradient(90deg,#3a4655,#303b49)!important;letter-spacing:.4px}
+.tbl th{background:#faf5f8!important;color:#665d68!important;border-color:#e8e0e6!important}
+.tbl td{border-color:#ece5ea!important}
+.tbl tbody tr:nth-child(even) td{background:#fffafd}
+.tbl input[type=number]{background:#fff!important;border:1px solid #eee5eb!important;border-radius:7px!important}
+.tbl input[type=number]:hover{background:#fff7fb!important;border-color:#e7cbd8!important}
+.tbl input[type=number]:focus{border-color:#ef9fbe!important;box-shadow:0 0 0 2px #ffd6e644!important}
+.tbl select{
+  background-color:#fff!important;
+  border:1px solid #eee5eb!important;
+  border-radius:7px!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5' fill='none' stroke='%23d1789b' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;
+  background-position:right 5px center!important;
+  background-size:12px 12px!important;
+  padding-right:20px!important;
+}
+.tbl select:hover,.tbl select:focus{background-color:#fff7fb!important;border-color:#e7cbd8!important}
+.tbl input[type=checkbox]{border-color:#d6c8d2!important}
+.tbl input[type=checkbox]:checked{background:#f08caf!important;border-color:#f08caf!important}
+.add{background:#fff8fb!important;border-color:#e6ccd8!important;color:#a15875!important}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -337,14 +391,14 @@ function renderScore(){
 }
 function drag(){document.querySelectorAll('.slot').forEach(s=>{s.ondragstart=a=>{if(a.target.closest('input')){a.preventDefault();return}dragId=s.dataset.slot;s.classList.add('dragging');ghost=document.createElement('div');ghost.className='ghost';ghost.textContent=(P.find(p=>p.id===dragId)?.nickname||'PLAYER');document.body.appendChild(ghost);document.addEventListener('dragover',moveGhost)};s.ondragover=a=>{if(!dragId||dragId===s.dataset.slot)return;a.preventDefault();document.querySelectorAll('.slot.over').forEach(x=>x!==s&&x.classList.remove('over'));s.classList.add('over')};s.ondragleave=()=>s.classList.remove('over');s.ondrop=async a=>{a.preventDefault();let b=s.dataset.slot;if(b!==dragId)await swap(dragId,b);endDrag();editing=false;load()};s.ondragend=endDrag})}function moveGhost(a){if(ghost){ghost.style.left=a.clientX+'px';ghost.style.top=a.clientY+'px'}}function endDrag(){dragId=null;document.querySelectorAll('.slot').forEach(x=>x.classList.remove('dragging','over'));document.removeEventListener('dragover',moveGhost);ghost?.remove();ghost=null}async function swap(aid,bid){let a=P.find(x=>x.id===aid),b=P.find(x=>x.id===bid),ap=a.position,bp=b.position;await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:999999})});await q('/pubg_players?id=eq.'+b.id,{method:'PATCH',body:JSON.stringify({position:ap})});await q('/pubg_players?id=eq.'+a.id,{method:'PATCH',body:JSON.stringify({position:bp})})}
 function board(){
-  roundCol.innerHTML='<div class="roundHead">#</div>'+RO.map(r=>'<div class="roundCell">'+r.round_no+'</div>').join('');
+  roundCol.innerHTML='<div class="roundTeamHead">ROUND</div><div class="roundHead">판</div>'+RO.map(r=>'<div class="roundCell">'+r.round_no+'</div>').join('');
   killBoard.style.gridTemplateColumns='repeat('+cur.team_count+',minmax(0,1fr))';
   killBoard.innerHTML='';
   for(let t=1;t<=cur.team_count;t++){
     let ps=P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===t),d=document.createElement('div');d.className='teamBlock';
     d.innerHTML='<div class="teamBlockTitle">'+teamLetter(t)+' TEAM</div><table class="tbl"><thead><tr><th>MAP</th><th>🍗</th>'+
     ps.map(p=>'<th>'+e(p.nickname||'PLAYER')+'</th>').join('')+'</tr></thead><tbody>'+
-    RO.map(r=>'<tr><td><select data-map="'+r.id+'"><option value="normal" '+(r.map_type==='normal'?'selected':'')+'>일</option><option value="sanhok" '+(r.map_type==='sanhok'?'selected':'')+'>사</option></select></td><td><input data-chicken="'+r.id+'" data-team="'+t+'" type="checkbox" '+(r.chicken_team===t?'checked':'')+'></td>'+
+    RO.map(r=>'<tr><td><select data-map="'+r.id+'"><option value="normal" '+(r.map_type==='normal'?'selected':'')+'>일반</option><option value="sanhok" '+(r.map_type==='sanhok'?'selected':'')+'>사녹</option></select></td><td><input data-chicken="'+r.id+'" data-team="'+t+'" type="checkbox" '+(r.chicken_team===t?'checked':'')+'></td>'+
     ps.map(p=>{let s=st(r.id,p.id);return '<td><input data-k="'+r.id+'|'+p.id+'" type="number" value="'+n(s.kills)+'"> <input data-d="'+r.id+'|'+p.id+'" type="checkbox" '+(s.died?'checked':'')+'>☠</td>'}).join('')+'</tr>').join('')+'</tbody></table>';
     killBoard.appendChild(d)
   }
