@@ -1551,6 +1551,114 @@ html.broadcastOverlay.broadcastVertical .rankRow.killChanged:after{
   72%{opacity:1}
   100%{opacity:0}
 }
+
+/* v31 header alignment + stronger kill FX + simplified team-color totals */
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRow{
+  grid-template-columns:31px 104px 34px 35px 43px!important;
+  width:247px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols{
+  padding:0!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols>div,
+html.broadcastOverlay.broadcastVertical .rankRow>div{
+  box-sizing:border-box!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols div:nth-child(1),
+html.broadcastOverlay.broadcastVertical .rankCols div:nth-child(3),
+html.broadcastOverlay.broadcastVertical .rankCols div:nth-child(4),
+html.broadcastOverlay.broadcastVertical .rankCols div:nth-child(5){
+  text-align:center!important;
+  padding:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols div:nth-child(2){
+  text-align:left!important;
+  padding-left:6px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotal{
+  position:relative!important;
+  overflow:hidden!important;
+  background:#151e27!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalProgress{
+  display:none!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotal:before{
+  content:"";
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  bottom:0!important;
+  width:5px!important;
+  background:var(--team-color)!important;
+  opacity:1!important;
+  z-index:2!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalLabel{
+  position:relative!important;
+  z-index:3!important;
+  font-size:13px!important;
+  font-weight:950!important;
+  color:#fff!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalModeFade{
+  animation:rankModeFade .2s ease both!important;
+}
+@keyframes rankModeFade{
+  from{opacity:.25}
+  to{opacity:1}
+}
+
+/* stronger, unmistakable kill animation */
+html.broadcastOverlay.broadcastVertical .rankRow.killChanged{
+  z-index:6!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRow.killChanged:before{
+  content:"";
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  border:2px solid var(--team-color)!important;
+  box-shadow:
+    inset 0 0 14px color-mix(in srgb,var(--team-color) 35%,transparent),
+    0 0 10px var(--team-color),
+    0 0 26px color-mix(in srgb,var(--team-color) 75%,transparent)!important;
+  animation:rankKillBorderStrong 1.35s ease-out forwards!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRow.killChanged:after{
+  content:attr(data-kill-delta);
+  position:absolute!important;
+  left:109px!important;
+  top:2px!important;
+  z-index:9!important;
+  min-width:27px!important;
+  padding:2px 5px!important;
+  border:2px solid var(--team-color)!important;
+  background:#070b10!important;
+  color:#fff!important;
+  font-size:14px!important;
+  font-weight:1000!important;
+  line-height:17px!important;
+  text-align:center!important;
+  text-shadow:0 0 8px var(--team-color)!important;
+  box-shadow:0 0 14px var(--team-color)!important;
+  animation:rankKillDeltaStrong 1.2s ease-out forwards!important;
+}
+@keyframes rankKillBorderStrong{
+  0%{opacity:0;transform:scale(.985)}
+  12%{opacity:1;transform:scale(1.012)}
+  68%{opacity:1;transform:scale(1)}
+  100%{opacity:0}
+}
+@keyframes rankKillDeltaStrong{
+  0%{opacity:0;transform:translateY(5px) scale(.8)}
+  15%{opacity:1;transform:translateY(0) scale(1.2)}
+  70%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-8px) scale(.96)}
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -2049,16 +2157,20 @@ const RANK_TEAM_COLORS=['#ff426f','#00c8ff','#8d63ff','#ffb020'];
 let previousRankOrder=[];
 let previousRankStats=new Map();
 let previousTeamKills=new Map();
-let rankInfoMode=false;
+let rankDisplayPhase=0;
 let rankModeTimer=null;
 
+function rankHasVersusPhase(){
+  return !!cur && cur.team_count===4 && (cur.score_mode==='2v2' || scoreViewMode?.value==='2v2');
+}
 function restartRankModeCycle(){
   if(rankModeTimer)clearInterval(rankModeTimer);
-  rankInfoMode=false;
-  applyRankTotalMode(true);
+  rankDisplayPhase=0;
+  applyRankTotalMode();
   rankModeTimer=setInterval(()=>{
-    rankInfoMode=!rankInfoMode;
-    applyRankTotalMode(!rankInfoMode);
+    const maxPhase=rankHasVersusPhase()?3:2;
+    rankDisplayPhase=(rankDisplayPhase+1)%maxPhase;
+    applyRankTotalMode();
   },8000);
 }
 
@@ -2089,7 +2201,7 @@ function teamKillTotals(){
     const ps=teamPlayers(team);
     out.push({
       team,
-      name:(ps[0]?.nickname||('TEAM '+team)).slice(0,4),
+      name:(ps[0]?.nickname||('TEAM '+team)).slice(0,2),
       kill:ps.reduce((sum,p)=>sum+n(totals(p).raw),0),
       chicken:RO.filter(r=>r.chicken_team===team).length
     });
@@ -2105,35 +2217,34 @@ function rankAvatarHtml(cap){
 }
 
 
-function applyRankTotalMode(animateGauge=false){
+function applyRankTotalMode(){
   const box=document.getElementById('rankOverlay');if(!box||!cur)return;
-  const goal=Math.max(1,n(cur.goal_kills||50));
-  teamKillTotals().forEach(x=>{
-    const el=box.querySelector('.rankTotal[data-rank-total-team="'+x.team+'"]');
-    if(!el)return;
-    const progress=Math.max(0,Math.min(100,(x.kill/goal)*100));
-    el.style.setProperty('--progress',progress+'%');
-    el.classList.remove('gaugeAnimate');
-    const label=el.querySelector('.rankTotalLabel');
-    if(rankInfoMode){
-      if(label){
-        label.textContent='🍗 '+x.chicken+' · '+x.kill+'/'+goal;
-        label.classList.remove('rankTotalModeFade');void label.offsetWidth;label.classList.add('rankTotalModeFade');
-      }
-      const bar=el.querySelector('.rankTotalProgress');if(bar)bar.style.width=progress+'%';
-    }else{
-      if(label){
-        label.textContent=x.name+' '+x.kill;
-        label.classList.remove('rankTotalModeFade');void label.offsetWidth;label.classList.add('rankTotalModeFade');
-      }
-      if(animateGauge){
-        void el.offsetWidth;
-        el.classList.add('gaugeAnimate');
-      }else{
-        const bar=el.querySelector('.rankTotalProgress');if(bar)bar.style.width=progress+'%';
-      }
-    }
-  });
+  const teamData=teamKillTotals();
+  const totalsWrap=box.querySelector('.rankTotals');if(!totalsWrap)return;
+
+  if(rankDisplayPhase===2 && rankHasVersusPhase()){
+    const byTeam=new Map(teamData.map(x=>[x.team,x]));
+    const a=byTeam.get(1),b=byTeam.get(2),c=byTeam.get(3),d=byTeam.get(4);
+    const left=(a?.kill||0)+(b?.kill||0);
+    const right=(c?.kill||0)+(d?.kill||0);
+    const ca=RANK_TEAM_COLORS[0],cc=RANK_TEAM_COLORS[2];
+    totalsWrap.style.setProperty('--rank-count','2');
+    totalsWrap.innerHTML=
+      '<div class="rankTotal" style="--team-color:'+ca+'"><span class="rankTotalInfo rankTotalLabel">AB '+left+'</span></div>'+
+      '<div class="rankTotal" style="--team-color:'+cc+'"><span class="rankTotalInfo rankTotalLabel">CD '+right+'</span></div>';
+    return;
+  }
+
+  totalsWrap.style.setProperty('--rank-count',Math.max(1,cur.team_count));
+  totalsWrap.innerHTML=teamData.map(x=>{
+    const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
+    const label=rankDisplayPhase===1
+      ? '🍗 '+x.chicken
+      : '현재킬 '+x.kill;
+    return '<div class="rankTotal" data-rank-total-team="'+x.team+'" style="--team-color:'+c+'">'+
+      '<span class="rankTotalInfo rankTotalLabel rankTotalModeFade">'+e(label)+'</span>'+
+    '</div>';
+  }).join('');
 }
 
 function animateVerticalKillChange(playerId,delta){
@@ -2163,15 +2274,11 @@ function renderVerticalRanking(animate=true){
   const nowOrder=rows.map(x=>String(x.id));
   const oldPositions=new Map(previousRankOrder.map((id,i)=>[String(id),i]));
 
-  const goal=Math.max(1,n(cur.goal_kills||50));
   const teamTotals=teamKillTotals();
   const totals=teamTotals.map(x=>{
     const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
-    const progress=Math.max(0,Math.min(100,(x.kill/goal)*100));
-    const label=rankInfoMode ? '🍗 '+x.chicken+' · '+x.kill+'/'+goal : x.name+' '+x.kill;
-    return '<div class="rankTotal" data-rank-total-team="'+x.team+'" style="--team-color:'+c+';--progress:'+progress+'%">'+
-      '<span class="rankTotalProgress"></span>'+
-      '<span class="rankTotalInfo rankTotalLabel">'+e(label)+'</span>'+
+    return '<div class="rankTotal" data-rank-total-team="'+x.team+'" style="--team-color:'+c+'">'+
+      '<span class="rankTotalInfo rankTotalLabel">현재킬 '+x.kill+'</span>'+
     '</div>';
   }).join('');
 
@@ -2205,7 +2312,7 @@ function renderVerticalRanking(animate=true){
     '<div class="rankRows">'+body+'</div>';
 
   requestAnimationFrame(()=>{
-    applyRankTotalMode(false);
+    applyRankTotalMode();
     if(animate){
       box.querySelectorAll('[data-pending-kill-delta]').forEach(row=>{
         const d=parseInt(row.dataset.pendingKillDelta||'0',10);
@@ -2467,6 +2574,7 @@ if(chromaOn)chromaOn.onchange=applyChroma;if(chromaColor)chromaColor.oninput=app
 if(scoreViewMode)scoreViewMode.onchange=()=>{
   if(!cur)return;
   touchLocal();cur.score_mode=scoreViewMode.value;renderScore();
+  if(document.documentElement.classList.contains('broadcastVertical'))restartRankModeCycle();
   q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({score_mode:scoreViewMode.value})}).catch(console.error);
 };
 
