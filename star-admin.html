@@ -2,107 +2,55 @@
 <title>스타 티어 관리자</title><link rel="stylesheet" href="navbar.css">
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f5f7;color:#17191c;font-family:Arial,"Noto Sans KR",sans-serif}
-main{width:min(1200px,calc(100% - 30px));margin:30px auto 70px}h1{font-size:24px;margin:0 0 18px}
-.top{display:flex;gap:8px;flex-wrap:wrap;background:#fff;border:1px solid #ddd;padding:12px;margin-bottom:14px}
+main{width:min(1320px,calc(100% - 30px));margin:30px auto 70px}h1{font-size:24px;margin:0 0 18px}
+.top{display:flex;gap:8px;flex-wrap:wrap;background:#fff;border:1px solid #ddd;padding:12px;margin-bottom:14px;align-items:center}
 input,select,button{height:34px;border:1px solid #ccd1d7;background:#fff;padding:0 10px}button{cursor:pointer;font-weight:800}
-#q{width:210px}.stat{margin-left:auto;align-self:center;font-size:12px;color:#666}
-.row{display:grid;grid-template-columns:55px 80px 160px 100px 1fr 100px;gap:8px;align-items:center;background:#fff;border:1px solid #e0e3e7;border-bottom:0;padding:8px}
-.row:last-child{border-bottom:1px solid #e0e3e7}.race{font-weight:1000;text-align:center}.name{font-weight:900}
+button.danger{color:#b42318;border-color:#e4b4b4}button.primary{background:#111;color:#fff;border-color:#111}
+#q{width:190px}.stat{margin-left:auto;font-size:12px;color:#666}#msg{display:none;margin:0 0 12px;padding:10px 12px;background:#fff;border:1px solid #ddd;font-size:13px}
+.row{display:grid;grid-template-columns:42px 84px 245px 340px minmax(220px,1fr) 185px;gap:9px;align-items:center;background:#fff;border:1px solid #e0e3e7;border-bottom:0;padding:8px}
+.row:last-child{border-bottom:1px solid #e0e3e7}.race{font-weight:1000;text-align:center}.original{font-size:10px;color:#999;margin-bottom:3px}
+.displayEdit{display:flex;gap:4px;align-items:center}.displayEdit input{width:145px;height:28px}.displayEdit button{height:28px;padding:0 7px}
 .soop{display:flex;align-items:center;gap:8px;min-width:0}.soop img{width:36px;height:36px;border-radius:50%;object-fit:cover}
-.muted{font-size:11px;color:#999}.ok{font-size:11px;color:#0a8f4d;font-weight:900}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999}
-.modal.on{display:flex}.box{width:min(620px,calc(100% - 24px));max-height:80vh;overflow:auto;background:#fff;padding:18px}
-.searchbar{display:flex;gap:7px;margin-bottom:12px}.searchbar input{flex:1}
+.muted{font-size:11px;color:#999}.ok{font-size:11px;color:#0a8f4d;font-weight:900}.statuses{display:flex;flex-wrap:wrap;gap:4px 8px}
+.statuses label{font-size:11px;white-space:nowrap;display:flex;align-items:center;gap:3px;cursor:pointer}.statuses input{width:14px;height:14px;margin:0}
+.actions{display:flex;gap:5px;justify-content:flex-end}.actions button{padding:0 7px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999}.modal.on{display:flex}
+.box{width:min(650px,calc(100% - 24px));max-height:82vh;overflow:auto;background:#fff;padding:18px}.searchbar{display:flex;gap:7px;margin-bottom:12px}.searchbar input{flex:1}
 .result{display:flex;align-items:center;gap:10px;padding:9px;border-top:1px solid #eee}.result img{width:48px;height:48px;border-radius:50%;object-fit:cover}.result .txt{flex:1}
-@media(max-width:800px){.row{grid-template-columns:35px 60px 1fr 80px}.soop{grid-column:1/-2}}
+.addGrid{display:grid;grid-template-columns:1fr 130px 100px;gap:8px}.legend{font-size:11px;color:#777;margin-bottom:8px}
+@media(max-width:950px){.row{grid-template-columns:35px 70px 1fr}.statuses,.soop,.actions{grid-column:1/-1}.actions{justify-content:flex-start}}
 </style></head><body>
 <nav id="global-navbar" class="globalNav"><div class="globalNavInner"><a class="globalNavBrand" href="index.html">MUJE</a><div class="globalNavLinks"><a class="globalNavLink" href="pubg.html">배틀그라운드</a><a class="globalNavLink" href="starcraft.html">스타크래프트</a></div></div></nav>
 <main><h1>스타 티어 관리자</h1>
-<div class="top"><input id="sburl" placeholder="Supabase URL"><input id="sbkey" placeholder="Supabase anon key"><button onclick="saveCfg()">연결정보 저장</button><input id="q" placeholder="선수 검색"><select id="tf"><option value="">전체 티어</option><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><button onclick="load()">새로고침</button><button id="loginBtn" onclick="adminLogin()">관리자 로그인</button><span class="stat" id="stat"></span></div>
-<div id="msg" style="display:none;margin:0 0 12px;padding:10px 12px;background:#fff;border:1px solid #ddd;font-size:13px"></div><div id="list"></div></main>
+<div class="top"><input id="sburl" placeholder="Supabase URL"><input id="sbkey" placeholder="Supabase Publishable key"><button onclick="saveCfg()">연결정보 저장</button><input id="q" placeholder="선수 검색"><select id="tf"><option value="">전체 티어</option><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><button onclick="load()">새로고침</button><button id="loginBtn" onclick="adminLogin()">관리자 로그인</button><button class="primary" onclick="openAdd()">+ 선수 추가</button><span class="stat" id="stat"></span></div>
+<div class="legend">상태표시: ⏫ 티어상승임박 · ▲ 최근티어상승 · ⏸ 휴면 · 🔧 수리 · ✦ 신규</div><div id="msg"></div><div id="list"></div></main>
 <div class="modal" id="modal" onclick="if(event.target===this)closeM()"><div class="box"><div class="searchbar"><input id="sq"><button onclick="searchSoop()">SOOP 검색</button><button onclick="closeM()">닫기</button></div><div id="results"></div></div></div>
+<div class="modal" id="addModal" onclick="if(event.target===this)closeAdd()"><div class="box"><h3 style="margin-top:0">선수 추가</h3><div class="addGrid"><input id="addName" placeholder="선수/표시 이름"><select id="addTier"><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><select id="addRace"><option value="T">T</option><option value="Z">Z</option><option value="P">P</option></select></div><div style="margin-top:12px;display:flex;justify-content:flex-end;gap:7px"><button onclick="closeAdd()">취소</button><button class="primary" onclick="createPlayer()">추가</button></div></div></div>
 <script>
 const TIERS=["갓", "킹", "잭", "조커", "스페이드", "0티어", "1티어", "2티어", "3티어", "4티어", "5티어", "6티어", "7티어", "8티어", "베이비"];
-let rows=[],target=null;
-sburl.value=localStorage.star_sburl||'';sbkey.value=localStorage.star_sbkey||'';
+const STATUS=[['soon','⏫','티어상승임박'],['up','▲','최근티어상승'],['idle','⏸','휴면'],['repair','🔧','수리'],['new','✦','신규']];
+let rows=[],target=null;sburl.value=localStorage.star_sburl||'';sbkey.value=localStorage.star_sbkey||'';
 function saveCfg(){localStorage.star_sburl=sburl.value.trim().replace(/\/$/,'');localStorage.star_sbkey=sbkey.value.trim();load()}
 function hdr(extra={}){return Object.assign({'apikey':sbkey.value,'Authorization':'Bearer '+sbkey.value,'Content-Type':'application/json'},extra)}
-async function load(){
- if(!sburl.value||!sbkey.value){list.innerHTML='<div class="muted">Supabase URL과 anon key를 입력해.</div>';return}
- const r=await fetch(sburl.value+'/rest/v1/star_players?select=*&enabled=eq.true&order=sort_order.asc',{headers:hdr()});
- if(!r.ok){list.textContent='DB 읽기 실패: '+await r.text();return} rows=await r.json();render()
-}
-function render(){
- const s=q.value.trim().toLowerCase(),tier=tf.value;
- const a=rows.filter(x=>(!tier||x.tier===tier)&&(!s||(x.player_name+' '+(x.soop_nickname||'')+' '+(x.soop_user_id||'')).toLowerCase().includes(s)));
- stat.textContent='연결 '+rows.filter(x=>x.soop_user_id).length+' / '+rows.length;
- list.innerHTML=a.map(x=>`<div class="row"><div class="race">${x.race}</div><div>${x.tier}</div><div><div class="name">${e(x.player_name)}</div><input id="dn-${x.id}" value="${e(x.display_name||x.soop_nickname||x.player_name)}" placeholder="표시 닉네임" style="width:150px;height:28px;margin-top:4px"><button onclick="saveDisplay(${x.id})" style="height:28px;margin-left:4px">이름저장</button></div><select onchange="changeTier(${x.id},this.value)">${TIERS.map(t=>`<option ${t===x.tier?'selected':''}>${t}</option>`).join('')}</select><div class="soop">${x.soop_profile_image?`<img src="${e(x.soop_profile_image)}">`:''}<div>${x.soop_user_id?`<b>${e(x.soop_nickname||x.soop_user_id)}</b><div class="ok">${e(x.soop_user_id)} · 연결됨</div>`:'<span class="muted">SOOP 미연결</span>'}</div></div><button onclick="openSearch(${x.id})">계정 찾기</button></div>`).join('')
-}
 function e(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function flags(x){return Array.isArray(x.status_flags)?x.status_flags:[]}
+async function load(){if(!sburl.value||!sbkey.value){list.innerHTML='<div class="muted">Supabase URL과 Publishable key를 입력해.</div>';return}const r=await fetch(sburl.value+'/rest/v1/star_players?select=*&enabled=eq.true&order=sort_order.asc',{headers:hdr()});if(!r.ok){list.textContent='DB 읽기 실패: '+await r.text();return}rows=await r.json();render()}
+function statusHtml(x){const f=flags(x);return '<div class="statuses">'+STATUS.map(([key,icon,label])=>`<label><input type="checkbox" ${f.includes(key)?'checked':''} onchange="toggleStatus(${x.id},'${key}',this.checked)"><span>${icon} ${label}</span></label>`).join('')+'</div>'}
+function render(){const s=q.value.trim().toLowerCase(),tier=tf.value;const a=rows.filter(x=>(!tier||x.tier===tier)&&(!s||(x.player_name+' '+(x.display_name||'')+' '+(x.soop_nickname||'')+' '+(x.soop_user_id||'')).toLowerCase().includes(s)));stat.textContent='연결 '+rows.filter(x=>x.soop_user_id).length+' / '+rows.length;list.innerHTML=a.map(x=>`<div class="row"><div class="race">${x.race}</div><select onchange="changeTier(${x.id},this.value)">${TIERS.map(t=>`<option ${t===x.tier?'selected':''}>${t}</option>`).join('')}</select><div><div class="original">원본: ${e(x.player_name)}</div><div class="displayEdit"><input id="dn-${x.id}" value="${e(x.display_name||x.soop_nickname||x.player_name)}"><button onclick="saveDisplay(${x.id})">저장</button></div></div>${statusHtml(x)}<div class="soop">${x.soop_profile_image?`<img src="${e(x.soop_profile_image)}">`:''}<div>${x.soop_user_id?`<b>${e(x.soop_nickname||x.soop_user_id)}</b><div class="ok">${e(x.soop_user_id)} · 연결됨</div>`:'<span class="muted">SOOP 미연결</span>'}</div></div><div class="actions"><button onclick="openSearch(${x.id})">계정 찾기</button><button class="danger" onclick="deletePlayer(${x.id})">삭제</button></div></div>`).join('')}
 q.oninput=render;tf.onchange=render;
 let adminPassword=sessionStorage.getItem('star_admin_password')||'';
-function showMsg(text,ok=false){
- msg.style.display='block'; msg.textContent=text;
- msg.style.borderColor=ok?'#8bd5ad':'#e7a1a1';
- msg.style.color=ok?'#08783f':'#b42318';
-}
+function showMsg(text,ok=false){msg.style.display='block';msg.textContent=text;msg.style.borderColor=ok?'#8bd5ad':'#e7a1a1';msg.style.color=ok?'#08783f':'#b42318'}
 function updateLoginBtn(){loginBtn.textContent=adminPassword?'관리자 로그인됨':'관리자 로그인'}
-function adminLogin(){
- const p=prompt('관리자 비밀번호',adminPassword);
- if(p===null)return;
- adminPassword=p.trim();
- if(adminPassword)sessionStorage.setItem('star_admin_password',adminPassword);
- else sessionStorage.removeItem('star_admin_password');
- updateLoginBtn();
-}
-async function patch(id,data){
- if(!adminPassword){adminLogin();if(!adminPassword)return false}
- let r;
- try{
-   r=await fetch('/api/star-player-update',{
-     method:'POST',
-     headers:{'Content-Type':'application/json'},
-     body:JSON.stringify({password:adminPassword,id,data})
-   });
- }catch(err){showMsg('API 호출 실패: '+err.message);return false}
- const raw=await r.text();
- let j={}; try{j=raw?JSON.parse(raw):{}}catch{}
- if(!r.ok){
-   if(r.status===401){sessionStorage.removeItem('star_admin_password');adminPassword='';updateLoginBtn()}
-   showMsg('저장 실패 ('+r.status+'): '+(j.error||raw||'응답 없음'));
-   return false;
- }
- if(!j.row){
-   showMsg('저장 응답은 성공했지만 변경된 행 데이터가 없습니다.');
-   return false;
- }
- const idx=rows.findIndex(x=>Number(x.id)===Number(id));
- if(idx>=0) rows[idx]={...rows[idx],...j.row};
- render();
- const changed=[];
- if(Object.prototype.hasOwnProperty.call(data,'soop_user_id')) changed.push('SOOP '+(j.row.soop_nickname||j.row.soop_user_id||'')+' 연결');
- if(Object.prototype.hasOwnProperty.call(data,'display_name')) changed.push('표시명 '+(j.row.display_name||'')+' 저장');
- if(Object.prototype.hasOwnProperty.call(data,'tier')) changed.push('티어 '+(j.row.tier||'')+' 저장');
- showMsg((changed.join(' · ')||'저장')+' 완료',true);
- return true
-}
-updateLoginBtn();
-function saveDisplay(id){const el=document.getElementById('dn-'+id);patch(id,{display_name:el.value.trim()})}
-function changeTier(id,tier){patch(id,{tier})}
-function openSearch(id){target=rows.find(x=>x.id===id);sq.value=target.player_name;results.innerHTML='';modal.classList.add('on');searchSoop()}
-function closeM(){modal.classList.remove('on')}
-async function searchSoop(){
- results.innerHTML='검색 중...';
- try{const r=await fetch('/api/soop-search?nickname='+encodeURIComponent(sq.value.trim()),{cache:'no-store'});const j=await r.json();const a=Array.isArray(j)?j:(j.results||j.data||j.users||[]);
- results.innerHTML=a.length?a.map((x,i)=>{const id=x.user_id||x.id||x.userId||'';const nick=x.nickname||x.nick||x.user_nick||id;const img=x.profile_image||x.profile||x.profileImage||'';return `<div class="result">${img?`<img src="${e(img)}">`:''}<div class="txt"><b>${e(nick)}</b><div class="muted">${e(id)}</div></div><button onclick='linkSoop(${JSON.stringify(id)},${JSON.stringify(nick)},${JSON.stringify(img)})'>연결</button></div>`}).join(''):'검색 결과 없음';
- }catch(err){results.textContent='검색 실패: '+err.message}
-}
-async function linkSoop(id,nick,img){
- if(!target)return;
- const data={soop_user_id:id,soop_nickname:nick,soop_profile_image:img};
- if(!target.display_name || target.display_name===target.player_name) data.display_name=nick;
- const ok=await patch(target.id,data);
- if(ok)closeM()
-}
-load();
+function adminLogin(){const p=prompt('관리자 비밀번호',adminPassword);if(p===null)return;adminPassword=p.trim();if(adminPassword)sessionStorage.setItem('star_admin_password',adminPassword);else sessionStorage.removeItem('star_admin_password');updateLoginBtn()}
+async function callAdmin(action,payload={}){if(!adminPassword){adminLogin();if(!adminPassword)return null}let r;try{r=await fetch('/api/star-player-update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:adminPassword,action,...payload})})}catch(err){showMsg('API 호출 실패: '+err.message);return null}const raw=await r.text();let j={};try{j=raw?JSON.parse(raw):{}}catch{}if(!r.ok){if(r.status===401){sessionStorage.removeItem('star_admin_password');adminPassword='';updateLoginBtn()}showMsg('저장 실패 ('+r.status+'): '+(j.error||raw||'응답 없음'));return null}return j}
+async function patch(id,data){const j=await callAdmin('update',{id,data});if(!j||!j.row)return false;const idx=rows.findIndex(x=>Number(x.id)===Number(id));if(idx>=0)rows[idx]={...rows[idx],...j.row};render();showMsg('저장 완료',true);return true}
+function saveDisplay(id){patch(id,{display_name:document.getElementById('dn-'+id).value.trim()})}function changeTier(id,tier){patch(id,{tier})}
+function toggleStatus(id,key,on){const x=rows.find(r=>Number(r.id)===Number(id));if(!x)return;const set=new Set(flags(x));on?set.add(key):set.delete(key);patch(id,{status_flags:[...set]})}
+async function deletePlayer(id){const x=rows.find(r=>Number(r.id)===Number(id));if(!x||!confirm((x.display_name||x.player_name)+' 선수를 티어표에서 삭제할까?'))return;const j=await callAdmin('delete',{id});if(!j)return;rows=rows.filter(r=>Number(r.id)!==Number(id));render();showMsg((x.display_name||x.player_name)+' 삭제 완료',true)}
+function openAdd(){addName.value='';addTier.value='8티어';addRace.value='T';addModal.classList.add('on');setTimeout(()=>addName.focus(),20)}function closeAdd(){addModal.classList.remove('on')}
+async function createPlayer(){const name=addName.value.trim();if(!name)return alert('이름을 입력해');const j=await callAdmin('create',{data:{player_name:name,display_name:name,tier:addTier.value,race:addRace.value,status_flags:[]}});if(!j||!j.row)return;rows.push(j.row);rows.sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));render();closeAdd();showMsg(name+' 추가 완료',true)}
+function openSearch(id){target=rows.find(x=>x.id===id);sq.value=target.player_name;results.innerHTML='';modal.classList.add('on');searchSoop()}function closeM(){modal.classList.remove('on')}
+async function searchSoop(){results.innerHTML='검색 중...';try{const r=await fetch('/api/soop-search?nickname='+encodeURIComponent(sq.value.trim()),{cache:'no-store'});const j=await r.json();const a=Array.isArray(j)?j:(j.results||j.data||j.users||[]);results.innerHTML=a.length?a.map(x=>{const id=x.user_id||x.id||x.userId||'',nick=x.nickname||x.nick||x.user_nick||id,img=x.profile_image||x.profile||x.profileImage||'';return `<div class="result">${img?`<img src="${e(img)}">`:''}<div class="txt"><b>${e(nick)}</b><div class="muted">${e(id)}</div></div><button onclick='linkSoop(${JSON.stringify(id)},${JSON.stringify(nick)},${JSON.stringify(img)})'>연결</button></div>`}).join(''):'검색 결과 없음'}catch(err){results.textContent='검색 실패: '+err.message}}
+async function linkSoop(id,nick,img){if(!target)return;const data={soop_user_id:id,soop_nickname:nick,soop_profile_image:img};if(!target.display_name||target.display_name===target.player_name)data.display_name=nick;const ok=await patch(target.id,data);if(ok){closeM();showMsg('SOOP '+nick+' 연결 완료',true)}}
+updateLoginBtn();load();
 </script><script src="navbar.js"></script></body></html>
