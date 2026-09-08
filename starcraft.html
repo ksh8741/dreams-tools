@@ -16,7 +16,7 @@ body{
   margin:0;background:#f3f4f6;color:#15181c;
   font-family:Inter,Arial,"Noto Sans KR",sans-serif
 }
-main{width:min(1450px,calc(100% - 220px));margin:34px auto 110px}
+main{width:min(1450px,calc(100% - 285px));margin:34px auto 110px}
 .pageTitleWrap{
   display:flex;align-items:flex-end;justify-content:space-between;
   margin:0 0 22px;padding:0 2px 17px;border-bottom:1px solid #d9dde2
@@ -203,19 +203,21 @@ main{width:min(1450px,calc(100% - 220px));margin:34px auto 110px}
 
 /* fixed menu preserved */
 .tierRail{
-  position:fixed;right:22px;top:50%;transform:translateY(-50%);
-  z-index:9000;width:82px;padding:9px 7px 10px;
+  position:fixed;right:16px;top:50%;transform:translateY(-50%);
+  z-index:9000;width:190px;max-height:96vh;overflow-y:auto;
+  padding:10px 9px 11px;
   border:1px solid rgba(218,221,226,.9);border-radius:22px;
-  background:rgba(250,250,251,.86);backdrop-filter:blur(18px);
-  box-shadow:0 18px 55px rgba(21,24,30,.13)
+  background:rgba(250,250,251,.92);backdrop-filter:blur(18px);
+  box-shadow:0 18px 55px rgba(21,24,30,.13);
+  scrollbar-width:thin
 }
 .tierRailTitle{
   height:25px;display:flex;align-items:center;justify-content:center;
   font-size:8px;font-weight:1000;letter-spacing:1.8px;color:#a1a6ad
 }
 .tierJump{
-  position:relative;height:30px;margin:2px 0;padding:0 5px;
-  display:flex;align-items:center;justify-content:center;border-radius:10px;
+  position:relative;height:26px;margin:1px 0;padding:0 7px;
+  display:flex;align-items:center;justify-content:center;border-radius:9px;
   text-decoration:none;background:transparent;color:#666c74;
   font-size:10px;font-weight:900;transition:.15s
 }
@@ -259,7 +261,11 @@ main{width:min(1450px,calc(100% - 220px));margin:34px auto 110px}
 .liveStatusLoading{padding:24px;color:#80868e;font-size:12px;text-align:center}
 .univFilterBox{margin:0 1px 7px;padding:7px 3px 8px;border-bottom:1px solid rgba(205,210,216,.8)}
 .univFilterLabel{text-align:center;font-size:7px;font-weight:1000;letter-spacing:.8px;color:#777e86;margin-bottom:5px}
-.univFilterSelect{width:100%;height:30px;border:1px solid #d7dbe0;border-radius:8px;background:#fff;color:#3c424a;font-size:10px;font-weight:900;padding:0 8px;outline:none;text-overflow:ellipsis}
+.univFilterSelect{
+  width:100%;height:34px;border:1px solid #d7dbe0;border-radius:9px;
+  background:#fff;color:#30363d;font-size:11px;font-weight:900;
+  padding:0 9px;outline:none
+}
 
 
 </style>
@@ -387,7 +393,6 @@ function render(){
 }
 
 function buildRail(){
-  const visibleTiers=TIERS.filter(t=>visibleInTier(players.filter(x=>x.tier===t)));
   const univOptions=
     '<option value="all">전체 대학</option>'+
     '<option value="none">무소속</option>'+
@@ -406,7 +411,7 @@ function buildRail(){
       <div class="univFilterLabel">UNIVERSITY</div>
       <select id="universityFilterSelect" class="univFilterSelect">${univOptions}</select>
     </div>`+
-    visibleTiers.map(t=>`<a class="tierJump" href="#${tierId(t)}">${t}</a>`).join('');
+    TIERS.map(t=>`<a class="tierJump" href="#${tierId(t)}">${t}</a>`).join('');
 
   universityFilterSelect.value=String(universityFilter);
   universityFilterSelect.addEventListener('change',ev=>{
@@ -424,16 +429,28 @@ function buildRail(){
   });
 }
 
-function setupRailObserver(){
-  if(railObserver)railObserver.disconnect();
+function updateActiveTierByScroll(){
   const links=[...document.querySelectorAll('.tierJump')];
   const sections=[...document.querySelectorAll('.tier')];
-  railObserver=new IntersectionObserver(entries=>{
-    const visible=entries.filter(v=>v.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
-    if(!visible)return;
-    links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+visible.target.id));
-  },{rootMargin:'-35% 0px -50% 0px',threshold:[0,.2,.5,.8]});
-  sections.forEach(s=>railObserver.observe(s));
+  if(!links.length||!sections.length)return;
+
+  const anchor=Math.max(110,innerHeight*.28);
+  let current=sections[0];
+
+  for(const s of sections){
+    const r=s.getBoundingClientRect();
+    if(r.top<=anchor)current=s;
+    else break;
+  }
+
+  links.forEach(a=>a.classList.toggle(
+    'active',
+    a.getAttribute('href')==='#'+current.id
+  ));
+}
+
+function setupRailObserver(){
+  updateActiveTierByScroll();
 }
 
 function wirePreview(){
@@ -443,6 +460,17 @@ function wirePreview(){
     p.addEventListener('mouseleave',hidePreview);
   });
 }
+function formatLiveElapsed(startAt){
+  if(!startAt)return '';
+  const ms=Date.now()-new Date(startAt).getTime();
+  if(!Number.isFinite(ms)||ms<0)return '';
+  const total=Math.floor(ms/1000);
+  const h=Math.floor(total/3600);
+  const m=Math.floor((total%3600)/60);
+  if(h>0)return `${h}시간 ${m}분`;
+  return `${m}분`;
+}
+
 function showPreview(ev){
   const card=ev.currentTarget.closest('.playerCard');
   const id=Number(card?.dataset?.playerId||0);
@@ -450,6 +478,7 @@ function showPreview(ev){
   if(!x?._live)return;
 
   livePreviewTitle.textContent=x._liveTitle||x.display_name||x.soop_nickname||x.player_name||'LIVE';
+  livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
   if(x._thumbnail){
     livePreviewImg.src=x._thumbnail;
     livePreviewImg.style.display='block';
@@ -499,68 +528,74 @@ function orderedLiveIds(){
   return [...new Set(ordered)];
 }
 
-async function loadLiveStatusesProgressive(){
-  // IMPORTANT: live checks follow the exact visual order:
-  // top tier -> T/Z/P -> next tier, so the visible top area finishes first.
-  const ids=orderedLiveIds();
-  const chunkSize=12;
+function applyStatusChunk(chunk,status){
+  const set=new Set(chunk);
+  players=players.map(x=>{
+    if(!set.has(x.soop_user_id))return x;
+    const s=status[x.soop_user_id]||{live:false};
+    return {
+      ...x,
+      _liveKnown:true,
+      _live:!!s.live,
+      _liveTitle:s.title||'',
+      _thumbnail:s.thumbnail||'',
+      _bno:s.bno||'',
+      _liveStartedAt:s.started_at||''
+    };
+  });
+}
 
-  // Unknown status is intentionally visible at first so the page appears immediately.
-  players=players.map(x=>({...x,_liveKnown:!x.soop_user_id,_live:false,_liveTitle:'',_thumbnail:'',_bno:''}));
+async function loadLiveStatusesProgressive(){
+  const ids=orderedLiveIds();
+
+  players=players.map(x=>({
+    ...x,
+    _liveKnown:!x.soop_user_id,
+    _live:false,
+    _liveTitle:'',
+    _thumbnail:'',
+    _bno:'',
+    _liveStartedAt:''
+  }));
+
   render();
   buildRail();
 
-  for(let i=0;i<ids.length;i+=chunkSize){
-    const chunk=ids.slice(i,i+chunkSize);
-    const status=await fetchLiveChunk(chunk);
-
-    players=players.map(x=>{
-      if(!chunk.includes(x.soop_user_id))return x;
-      const s=status[x.soop_user_id]||{live:false};
-      return {
-        ...x,
-        _liveKnown:true,
-        _live:!!s.live,
-        _liveTitle:s.title||'',
-        _thumbnail:s.thumbnail||'',
-        _bno:s.bno||''
-      };
-    });
-
-    // Update after every small batch instead of blocking on all 341 people.
+  // 1차: 화면 맨 위에 보이는 선수들을 최우선으로 바로 확정.
+  const first=ids.slice(0,30);
+  if(first.length){
+    const status=await fetchLiveChunk(first);
+    applyStatusChunk(first,status);
     render();
     buildRail();
-
-    // Yield so browser can paint/scroll smoothly between batches.
-    await new Promise(resolve=>setTimeout(resolve,35));
   }
+
+  // 2차: 나머지는 70명 단위로 동시에 조회.
+  // 예전처럼 12~18명 묶음을 수십 번 순차 대기하지 않는다.
+  const rest=ids.slice(first.length);
+  const chunks=[];
+  for(let i=0;i<rest.length;i+=70)chunks.push(rest.slice(i,i+70));
+
+  await Promise.all(chunks.map(async chunk=>{
+    const status=await fetchLiveChunk(chunk);
+    applyStatusChunk(chunk,status);
+    render();
+    buildRail();
+  }));
 }
 
 async function refreshAllLiveStatuses(){
   const ids=orderedLiveIds();
-  const chunkSize=24;
+  const chunks=[];
+  for(let i=0;i<ids.length;i+=70)chunks.push(ids.slice(i,i+70));
 
-  for(let i=0;i<ids.length;i+=chunkSize){
-    const chunk=ids.slice(i,i+chunkSize);
+  await Promise.all(chunks.map(async chunk=>{
     const status=await fetchLiveChunk(chunk);
+    applyStatusChunk(chunk,status);
+  }));
 
-    players=players.map(x=>{
-      if(!chunk.includes(x.soop_user_id))return x;
-      const s=status[x.soop_user_id]||{live:false};
-      return {
-        ...x,
-        _liveKnown:true,
-        _live:!!s.live,
-        _liveTitle:s.title||'',
-        _thumbnail:s.thumbnail||'',
-        _bno:s.bno||''
-      };
-    });
-
-    render();
-    buildRail();
-    await new Promise(resolve=>setTimeout(resolve,35));
-  }
+  render();
+  buildRail();
 }
 
 async function load(){
@@ -582,6 +617,20 @@ async function load(){
   loadLiveStatusesProgressive();
 }
 
+
+document.addEventListener('click',ev=>{
+  const a=ev.target.closest?.('.tierJump');
+  if(!a)return;
+  const id=(a.getAttribute('href')||'').slice(1);
+  const target=document.getElementById(id);
+  if(!target){
+    ev.preventDefault();
+  }
+});
+
+addEventListener('scroll',updateActiveTierByScroll,{passive:true});
+addEventListener('resize',updateActiveTierByScroll,{passive:true});
+
 load();
 
 // 5-minute automatic refresh.
@@ -594,7 +643,7 @@ setInterval(async()=>{
 <div id="livePreview" class="livePreview">
       <img id="livePreviewImg" class="livePreviewImg" alt="">
       <div class="livePreviewBody">
-        <div class="livePreviewLive">LIVE</div>
+        <div class="livePreviewLive">LIVE <span id="livePreviewElapsed" style="margin-left:6px;opacity:.82"></span></div>
         <div id="livePreviewTitle" class="livePreviewTitle"></div>
       </div>
     </div>
