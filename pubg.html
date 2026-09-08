@@ -4533,6 +4533,21 @@ html.broadcastOverlay body{
   margin-top:0!important;
 }
 
+
+/* v117 — score mode only for 4 parties, no "킬 현황" title, sticky click-through */
+html:not(.broadcastOverlay) .scoreToolbarSect{
+  justify-content:flex-end!important;
+}
+
+/* The sticky wrapper spans much more width than the visible board.
+   Let clicks pass through its transparent area to controls underneath. */
+html:not(.broadcastOverlay) .scoreStage{
+  pointer-events:none!important;
+}
+html:not(.broadcastOverlay) .scoreStage .scorePanel{
+  pointer-events:auto!important;
+}
+
 </style><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link rel="stylesheet" href="navbar.css">
 </head><body>
@@ -4551,7 +4566,7 @@ html.broadcastOverlay body{
 <div class="top"><div><h1 id="insideTitle" style="margin:0;font-size:20px"></h1><div id="insideMeta" class="meta"></div></div><button id="back" class="btn">← 방 목록</button></div>
 <div class="scoreStage">
   <div class="panel sec scorePanel">
-    <div class="sect"><h2>킬 현황</h2><div class="captureTools">
+    <div class="sect scoreToolbarSect"><div class="captureTools">
       <select id="scoreViewMode"><option value="separate">팀별</option><option value="2v2">A+B vs C+D</option></select>
       <button id="saveResult" class="btn resultSaveBtn">결과 저장</button><button id="pipScore" class="btn">팝업</button><button id="overlayUrlBtn" class="btn overlayUrlBtn">방송 URL</button>
     </div></div>
@@ -5062,7 +5077,10 @@ function renderScore(){
   }
 
   applyScoreWidth();
-  if(scoreViewMode)scoreViewMode.style.display=cur.team_count===2?'none':'';
+  if(scoreViewMode){
+    scoreViewMode.style.display=cur.team_count===4?'':'none';
+    if(cur.team_count!==4) scoreViewMode.value='separate';
+  }
   ck.value=cur.chicken_kills;sk.value=cur.sanhok_chicken_kills;
   let teamScores=[],out='';
   for(let t=1;t<=cur.team_count;t++){
