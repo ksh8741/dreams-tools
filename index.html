@@ -4139,6 +4139,55 @@ html:not(.broadcastOverlay) .avatar img{
   border-radius:50%!important;
 }
 
+
+/* v93 — 4-team website kill board = 2x2 window.
+   A/B on top, C/D below. Each team is 130px.
+   Therefore full board/header width is 260px for 4-team rooms. */
+html:not(.broadcastOverlay) #scoreboard.fourTeamWindow{
+  display:grid!important;
+  grid-template-columns:130px 130px!important;
+  grid-template-rows:auto auto!important;
+  width:260px!important;
+  min-width:260px!important;
+  max-width:260px!important;
+  gap:0!important;
+  align-items:stretch!important;
+  background:#fff!important;
+}
+html:not(.broadcastOverlay) #scoreboard.fourTeamWindow .team{
+  width:130px!important;
+  min-width:130px!important;
+  max-width:130px!important;
+  flex:none!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+/* shared edges, spreadsheet-style */
+html:not(.broadcastOverlay) #scoreboard.fourTeamWindow .team:nth-child(1),
+html:not(.broadcastOverlay) #scoreboard.fourTeamWindow .team:nth-child(3){
+  border-right:0!important;
+}
+html:not(.broadcastOverlay) #scoreboard.fourTeamWindow .team:nth-child(3),
+html:not(.broadcastOverlay) #scoreboard.fourTeamWindow .team:nth-child(4){
+  border-top:1px solid #000!important;
+}
+
+/* Header/status/frame exactly follow the 2-column window width. */
+html:not(.broadcastOverlay):has(#scoreboard.fourTeamWindow) .scoreFrame,
+html:not(.broadcastOverlay):has(#scoreboard.fourTeamWindow) .totalBar,
+html:not(.broadcastOverlay):has(#scoreboard.fourTeamWindow) .scoreStatusRow{
+  width:260px!important;
+  min-width:260px!important;
+  max-width:260px!important;
+  box-sizing:border-box!important;
+}
+html:not(.broadcastOverlay):has(#scoreboard.fourTeamWindow) .totalMain{
+  max-width:218px!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-align:center!important;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -4611,6 +4660,7 @@ async function saveName(x){
   }
 }
 function renderScore(){
+  if(scoreboard)scoreboard.classList.toggle('fourTeamWindow',cur?.team_count===4);
   {
     const homeScoreFrame=document.querySelector('#captureStage .scoreFrame');
     if(homeScoreFrame)homeScoreFrame.style.setProperty('--home-team-count',String(Math.max(1,cur?.team_count||1)));
@@ -4639,9 +4689,10 @@ function renderScore(){
   let center='';
   if(cur.team_count===2){
     center=captainName(1)+' '+(teamScores[0]||0)+' : '+(teamScores[1]||0)+' '+captainName(2);
-  }else if(mode==='2v2' && cur.team_count===4){
-    const left=(teamScores[0]||0)+(teamScores[1]||0),right=(teamScores[2]||0)+(teamScores[3]||0);
-    center=captainName(1)+' '+left+' : '+right+' '+captainName(3);
+  }else if(cur.team_count===4){
+    const left=(teamScores[0]||0)+(teamScores[1]||0);
+    const right=(teamScores[2]||0)+(teamScores[3]||0);
+    center='AB '+left+' : '+right+' CD';
   }else{
     center=teamScores.map((s,i)=>captainName(i+1)+' '+s).join('  ·  ');
   }
