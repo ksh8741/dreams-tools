@@ -347,7 +347,7 @@ function comparePlayers(a,b){
 function raceRow(all,race,label){
   const p=all
     .filter(x=>String(x.race||'').toUpperCase()===race)
-    .filter(x=>!liveOnly || x._live)
+    .filter(x=>!liveOnly || x._live || !x._liveKnown)
     .sort(comparePlayers);
 
   return `<div class="raceGroup ${race} ${p.length?'':'empty'}">
@@ -356,9 +356,14 @@ function raceRow(all,race,label){
   </div>`;
 }
 
+function visibleInTier(all){
+  return all.some(x=>!liveOnly || x._live || !x._liveKnown);
+}
+
 function render(){
   board.innerHTML=TIERS.map(t=>{
     const all=players.filter(x=>x.tier===t);
+    if(!visibleInTier(all))return '';
     return `<div class="tier" id="${tierId(t)}">
       <div class="tierLabel">${t}</div>
       <div class="members">${RACES.map(([r,l])=>raceRow(all,r,l)).join('')}</div>
@@ -369,6 +374,7 @@ function render(){
 }
 
 function buildRail(){
+  const visibleTiers=TIERS.filter(t=>visibleInTier(players.filter(x=>x.tier===t)));
   tierRail.innerHTML=
     '<div class="tierRailTitle">TIER</div>'+
     `<div class="liveOnlyBox">
@@ -378,13 +384,13 @@ function buildRail(){
         <span class="liveSwitchTrack"></span>
       </label>
     </div>`+
-    TIERS.map(t=>`<a class="tierJump" href="#${tierId(t)}">${t}</a>`).join('');
+    visibleTiers.map(t=>`<a class="tierJump" href="#${tierId(t)}">${t}</a>`).join('');
 
   liveOnlyToggle.addEventListener('change',ev=>{
     liveOnly=!!ev.target.checked;
     localStorage.setItem('star_live_only',liveOnly?'1':'0');
-    buildRail();
     render();
+    buildRail();
   });
 }
 
@@ -434,54 +440,107 @@ function movePreview(ev){
 }
 function hidePreview(){livePreview.classList.remove('on')}
 
-async function loadLiveStatuses(){
-  const ids=players.filter(x=>x.soop_user_id).map(x=>x.soop_user_id);
-  const chunks=[];
-  for(let i=0;i<ids.length;i+=60)chunks.push(ids.slice(i,i+60));
-
-  const status=new Map();
-  for(const chunk of chunks){
-    try{
-      const r=await fetch('/api/soop-live-status',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        cache:'no-store',
-        body:JSON.stringify({ids:chunk})
-      });
-      if(!r.ok)continue;
-      const j=await r.json();
-      for(const [id,s] of Object.entries(j.status||{}))status.set(id,s);
-    }catch(_){}
+async function fetchLiveChunk(chunk){
+  try{
+    const r=await fetch('/api/soop-live-status',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      cache:'no-store',
+      body:JSON.stringify({ids:chunk})
+    });
+    if(!r.ok)return {};
+    const j=await r.json();
+    return j.status||{};
+  }catch(_){
+    return {};
   }
+}
 
-  players=players.map(x=>{
-    const s=status.get(x.soop_user_id)||{live:false};
-    return {...x,_live:!!s.live,_liveTitle:s.title||'',_thumbnail:s.thumbnail||'',_bno:s.bno||''};
-  });
+async function loadLiveStatusesProgressive(){
+  const ids=[...new Set(players.filter(x=>x.soop_user_id).map(x=>x.soop_user_id))];
+  const chunkSize=18;
+
+  // Unknown status is intentionally visible at first so the page appears immediately.
+  players=players.map(x=>({...x,_liveKnown:!x.soop_user_id,_live:false,_liveTitle:'',_thumbnail:'',_bno:''}));
+  render();
+  buildRail();
+
+  for(let i=0;i<ids.length;i+=chunkSize){
+    const chunk=ids.slice(i,i+chunkSize);
+    const status=await fetchLiveChunk(chunk);
+
+    players=players.map(x=>{
+      if(!chunk.includes(x.soop_user_id))return x;
+      const s=status[x.soop_user_id]||{live:false};
+      return {
+        ...x,
+        _liveKnown:true,
+        _live:!!s.live,
+        _liveTitle:s.title||'',
+        _thumbnail:s.thumbnail||'',
+        _bno:s.bno||''
+      };
+    });
+
+    // Update after every small batch instead of blocking on all 341 people.
+    render();
+    buildRail();
+
+    // Yield so browser can paint/scroll smoothly between batches.
+    await new Promise(resolve=>setTimeout(resolve,35));
+  }
+}
+
+async function refreshAllLiveStatuses(){
+  const ids=[...new Set(players.filter(x=>x.soop_user_id).map(x=>x.soop_user_id))];
+  const chunkSize=30;
+
+  for(let i=0;i<ids.length;i+=chunkSize){
+    const chunk=ids.slice(i,i+chunkSize);
+    const status=await fetchLiveChunk(chunk);
+
+    players=players.map(x=>{
+      if(!chunk.includes(x.soop_user_id))return x;
+      const s=status[x.soop_user_id]||{live:false};
+      return {
+        ...x,
+        _liveKnown:true,
+        _live:!!s.live,
+        _liveTitle:s.title||'',
+        _thumbnail:s.thumbnail||'',
+        _bno:s.bno||''
+      };
+    });
+
+    render();
+    buildRail();
+    await new Promise(resolve=>setTimeout(resolve,35));
+  }
 }
 
 async function load(){
   liveOnly=localStorage.getItem('star_live_only')!=='0';
-  board.innerHTML='<div class="liveStatusLoading">SOOP 방송 상태 확인 중...</div>';
+  board.innerHTML='<div class="liveStatusLoading">티어표 불러오는 중...</div>';
 
   const r=await fetch('/api/star-public',{cache:'no-store'});
   if(!r.ok){board.innerHTML='<div class="loading">티어표 불러오기 실패</div>';return}
 
   const j=await r.json();
-  players=j.players||[];
+  players=(j.players||[]).map(x=>({...x,_liveKnown:!x.soop_user_id,_live:false}));
 
-  await loadLiveStatuses();
-  buildRail();
+  // DB list is painted immediately. LIVE checking follows in small sequential batches.
   render();
+  buildRail();
+  loadLiveStatusesProgressive();
 }
 
 load();
 
+// 5-minute automatic refresh.
 setInterval(async()=>{
   if(!players.length)return;
-  await loadLiveStatuses();
-  render();
-},60000);
+  await refreshAllLiveStatuses();
+},300000);
 </script>
 
 <div id="livePreview" class="livePreview">
