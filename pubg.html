@@ -4740,12 +4740,13 @@ function refreshScoreTextOnly(){
     if(goalEl)goalEl.textContent='🎯 '+(cur.goal_kills??50);
   });
   let center='';
-  if(cur.team_count===2){
-    center=captainName(1)+' '+(scores[0]||0)+' : '+(scores[1]||0)+' '+captainName(2);
+  const mode=scoreViewMode?.value||cur.score_mode||'separate';
+  if(mode==='2v2'&&cur.team_count===4){
+    center=((scores[0]||0)+(scores[1]||0))+' : '+((scores[2]||0)+(scores[3]||0));
+  }else if(cur.team_count===2){
+    center=(scores[0]||0)+' : '+(scores[1]||0);
   }else{
-    const mode=scoreViewMode?.value||cur.score_mode||'separate';
-    if(mode==='2v2'&&cur.team_count===4)center=captainName(1)+' '+((scores[0]||0)+(scores[1]||0))+' : '+((scores[2]||0)+(scores[3]||0))+' '+captainName(3);
-    else center=scores.map((s,i)=>captainName(i+1)+' '+s).join('  ·  ');
+    center=scores.join(' : ');
   }
   const compare=document.querySelector('#scoreStatusRow .statusCenter');
   if(compare)compare.textContent=center;
@@ -4823,7 +4824,7 @@ function overlayUrlForRoom(team=1,theme='luxury',nameTag=true,frames=0){
   if(!cur)return '';
   const u=new URL(location.href);u.search='';u.hash='';
   u.searchParams.set('overlay',String(cur.id));
-  u.searchParams.set('team',String(team));u.searchParams.set('theme',theme);u.searchParams.set('nametag',nameTag?'1':'0');u.searchParams.set('frames',String(Math.max(0,Math.min(3,parseInt(frames||0,10)||0))));
+  u.searchParams.set('team',String(team));u.searchParams.set('theme',theme);u.searchParams.set('nametag',nameTag?'1':'0');u.searchParams.set('frames',String(Math.max(0,Math.min(3,parseInt(frames||0,10)||0))));u.searchParams.set('scoremode',scoreViewMode?.value||cur.score_mode||'separate');
   return u.toString();
 }
 
@@ -5103,9 +5104,9 @@ function renderScore(){
   totalBar.innerHTML='<span class="fixedTimer">⏱️ '+e(fixedTime)+'</span>'+(cur.team_count===1?'':'<span class="goalBadge">🎯 '+goal+'</span>');
   const oldStatus=document.getElementById('scoreStatusRow');if(oldStatus)oldStatus.remove();
 
-  // Combined total is useful only when each side consists of 2+ parties (5v5+ capacity)
-  // and the user selected A+B vs C+D.
-  const showCombined=(mode==='2v2' && cur.team_count===4 && (cur.players_per_team*2)>=5);
+  // In 4-party rooms, show the combined A+B vs C+D total whenever that mode is selected.
+  // This includes 1:1:1:1 and 2:2:2:2 rooms.
+  const showCombined=(mode==='2v2' && cur.team_count===4);
   if(showCombined){
     const left=(teamScores[0]||0)+(teamScores[1]||0);
     const right=(teamScores[2]||0)+(teamScores[3]||0);
@@ -5128,7 +5129,11 @@ let rankDisplayPhase=0;
 let rankModeTimer=null;
 
 function rankHasVersusPhase(){
-  return !!cur && cur.team_count===4 && (cur.score_mode==='2v2' || scoreViewMode?.value==='2v2');
+  if(!cur || cur.team_count!==4)return false;
+  if(document.documentElement.classList.contains('broadcastOverlay')){
+    return (overlayScoreMode||cur.score_mode)==='2v2';
+  }
+  return (scoreViewMode?.value||cur.score_mode)==='2v2';
 }
 function restartRankModeCycle(){
   if(rankModeTimer)clearInterval(rankModeTimer);
@@ -5740,6 +5745,7 @@ const overlayFrameCount=Math.max(0,Math.min(3,parseInt(overlayParams.get('frames
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout='vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
+const overlayScoreMode=overlayParams.get('scoremode');
 const OVERLAY_THEMES=['luxury','lavender','winter_night','mono_stripe','midnight_purple','esports_red'];
 const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'luxury';
 if(overlayRoomId){
