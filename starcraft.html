@@ -1,124 +1,334 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>스타크래프트 티어표</title><link rel="stylesheet" href="navbar.css">
 
+
 <style>
 *{box-sizing:border-box}
-html{overflow-y:scroll;scrollbar-gutter:stable}
-body{margin:0;background:#f4f5f7;color:#15171a;font-family:Arial,"Noto Sans KR",sans-serif}
-main{width:min(1280px,calc(100% - 30px));margin:30px auto 70px}
-h1{font-size:24px;margin:0 0 16px}
-.board{border:1px solid #d8dce1;background:#fff}
-.tier{display:grid;grid-template-columns:90px 1fr;min-height:150px;border-bottom:1px solid #e2e5e9}
+html{overflow-y:scroll;scrollbar-gutter:stable;scroll-behavior:smooth}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255,255,255,.9), rgba(244,246,249,.88) 42%, rgba(237,240,244,.94) 100%);
+  color:#15171a;
+  font-family:Inter,Arial,"Noto Sans KR",sans-serif;
+}
+main{
+  width:min(1320px,calc(100% - 110px));
+  margin:34px auto 90px;
+}
+.pageTitleWrap{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:18px;
+  padding:0 4px;
+}
+.pageTitleWrap h1{
+  margin:0;
+  font-size:28px;
+  letter-spacing:-1.3px;
+  font-weight:1000;
+}
+.pageSub{
+  font-size:11px;
+  color:#7d838b;
+  margin-bottom:3px;
+}
+.board{
+  position:relative;
+  border:1px solid #d8dde4;
+  border-radius:18px;
+  background:rgba(255,255,255,.96);
+  box-shadow:
+    0 16px 45px rgba(24,31,42,.08),
+    0 2px 8px rgba(24,31,42,.04);
+  overflow:hidden;
+}
+.tier{
+  display:grid;
+  grid-template-columns:108px 1fr;
+  min-height:178px;
+  border-bottom:1px solid #e8ebef;
+  background:linear-gradient(180deg,#fff 0%,#fdfefe 100%);
+  scroll-margin-top:90px;
+}
 .tier:last-child{border-bottom:0}
-.tierLabel{display:flex;align-items:center;justify-content:center;border-right:1px solid #ddd;font-size:18px;font-weight:1000;background:#f8f9fa}
-.members{display:flex;align-items:flex-start;flex-wrap:wrap;gap:14px;padding:16px}
+.tierLabel{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-right:1px solid #e4e8ed;
+  background:
+    linear-gradient(180deg,#f8fafc 0%,#f3f6f9 100%);
+  font-size:19px;
+  font-weight:1000;
+  letter-spacing:-.4px;
+}
+.tierLabel::after{
+  content:"";
+  position:absolute;
+  right:-1px;
+  top:22%;
+  bottom:22%;
+  width:2px;
+  background:#111;
+  opacity:.08;
+}
+.members{
+  display:flex;
+  align-items:flex-start;
+  flex-wrap:wrap;
+  gap:16px;
+  padding:18px 20px 20px;
+}
 
+/* card */
 .playerCard{
   --race:#7c8796;
   position:relative;
-  width:154px;
+  width:160px;
   text-decoration:none;
   color:inherit;
   display:block;
-  border-radius:12px;
-  transition:transform .12s ease,filter .12s ease
+  border-radius:14px;
+  transition:transform .14s ease,filter .14s ease;
 }
-.playerCard:hover{transform:translateY(-2px)}
-.playerCard.T{--race:#3488ff}
-.playerCard.Z{--race:#9b5cff}
-.playerCard.P{--race:#e0ad00}
+.playerCard:hover{transform:translateY(-3px)}
+.playerCard.T{--race:#3685f5}
+.playerCard.Z{--race:#9258df}
+.playerCard.P{--race:#d4a900}
 
-.playerCard.idle{filter:grayscale(.72) saturate(.35);opacity:.62}
-.playerCard.idle .portrait{border-color:color-mix(in srgb,var(--race) 35%,#8e9297 65%)}
-.playerCard.idle .namePlate{color:color-mix(in srgb,var(--race) 30%,#6f747b 70%)}
+/* idle */
+.playerCard.idle{
+  filter:grayscale(.72) saturate(.36);
+  opacity:.62
+}
+.playerCard.idle .portrait{
+  border-color:color-mix(in srgb,var(--race) 35%,#8e9297 65%)
+}
+.playerCard.idle .namePlate{
+  color:color-mix(in srgb,var(--race) 28%,#6f747b 72%)
+}
 
 .portrait{
   position:relative;
-  width:154px;
-  height:154px;
+  width:160px;
+  height:160px;
   overflow:hidden;
-  border-radius:12px;
+  border-radius:14px;
   border:3px solid var(--race);
-  background:#edf0f3;
-  box-shadow:0 2px 8px rgba(0,0,0,.08)
+  background:#fff;
+  box-shadow:
+    0 8px 20px rgba(22,28,36,.09),
+    0 1px 3px rgba(22,28,36,.05);
 }
-.portrait img{display:block;width:100%;height:100%;object-fit:cover;position:relative;z-index:1}
+.portrait img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  background:#fff;
+}
 
-.userFallback{position:absolute;inset:0;background:#e9edf1;z-index:0}
-.userFallback::before{
-  content:"";
+/* no image = pure white only */
+.blankPortrait{
   position:absolute;
-  width:48px;height:48px;border-radius:50%;
-  background:#aeb5bd;top:33px;left:50%;transform:translateX(-50%)
-}
-.userFallback::after{
-  content:"";
-  position:absolute;
-  width:86px;height:58px;border-radius:50% 50% 18px 18px;
-  background:#aeb5bd;bottom:23px;left:50%;transform:translateX(-50%)
+  inset:0;
+  background:rgb(255,255,255);
 }
 
 .univBadge{
-  position:absolute;left:7px;top:7px;width:34px;height:34px;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:9px;background:rgba(12,14,17,.86);
+  position:absolute;
+  left:8px;
+  top:8px;
+  width:36px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  background:rgba(12,14,17,.88);
   border:1px solid rgba(255,255,255,.28);
-  box-shadow:0 2px 8px rgba(0,0,0,.22);z-index:5
+  box-shadow:0 3px 10px rgba(0,0,0,.20);
+  z-index:5
 }
-.univBadge img{width:28px;height:28px;object-fit:contain}
+.univBadge img{width:29px;height:29px;object-fit:contain}
 
-.playerCard.soon .portrait{animation:raceGlow 1.15s ease-in-out infinite alternate}
+/* promotion glow */
+.playerCard.soon .portrait{
+  animation:raceGlow 1.05s ease-in-out infinite alternate
+}
 @keyframes raceGlow{
-  from{box-shadow:0 0 0 1px color-mix(in srgb,var(--race) 45%,transparent),0 0 8px color-mix(in srgb,var(--race) 50%,transparent)}
-  to{box-shadow:0 0 0 2px var(--race),0 0 20px var(--race),0 0 30px color-mix(in srgb,var(--race) 65%,transparent)}
+  from{
+    box-shadow:
+      0 0 0 1px color-mix(in srgb,var(--race) 42%,transparent),
+      0 0 8px color-mix(in srgb,var(--race) 48%,transparent),
+      0 8px 20px rgba(22,28,36,.08)
+  }
+  to{
+    box-shadow:
+      0 0 0 2px var(--race),
+      0 0 18px var(--race),
+      0 0 30px color-mix(in srgb,var(--race) 62%,transparent)
+  }
 }
 
 .cornerBadges{
-  position:absolute;right:7px;bottom:7px;z-index:6;
-  display:flex;flex-direction:column;align-items:flex-end;gap:4px
+  position:absolute;
+  right:8px;
+  bottom:8px;
+  z-index:6;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:4px
 }
 .stateBadge{
-  display:inline-flex;align-items:center;justify-content:center;
-  height:22px;padding:0 7px;border-radius:5px;
-  font-size:10px;font-weight:1000;letter-spacing:.25px;color:#fff;
-  border:1px solid rgba(255,255,255,.48);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:22px;
+  padding:0 7px;
+  border-radius:6px;
+  font-size:10px;
+  line-height:1;
+  font-weight:1000;
+  letter-spacing:.25px;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.5);
   box-shadow:0 2px 7px rgba(0,0,0,.28)
 }
-.stateBadge.up{background:#ff3e3e}
+.stateBadge.up{background:#ff3b45}
 .stateBadge.new{background:#17191d}
 .stateBadge.repair{background:#ff8a00}
 
 .namePlate{
-  margin-top:7px;min-height:34px;
-  display:flex;align-items:center;justify-content:center;gap:5px;
-  padding:6px 8px;
-  border:1px solid color-mix(in srgb,var(--race) 58%,#d8dce1 42%);
-  border-radius:8px;background:#fff;color:var(--race);
-  font-size:13px;font-weight:1000
+  margin-top:8px;
+  min-height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  padding:7px 9px;
+  border:1px solid color-mix(in srgb,var(--race) 56%,#d8dce1 44%);
+  border-radius:10px;
+  background:rgba(255,255,255,.98);
+  color:var(--race);
+  font-size:13px;
+  font-weight:1000;
+  box-shadow:0 2px 8px rgba(24,31,42,.04)
 }
-.playerName{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.raceText{flex:0 0 auto;font-weight:1000;color:var(--race)}
-
+.playerName{
+  min-width:0;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis
+}
+.raceText{
+  flex:0 0 auto;
+  font-weight:1000;
+  color:var(--race)
+}
 .liveBadge{
-  flex:0 0 auto;height:18px;display:inline-flex;align-items:center;justify-content:center;
-  padding:0 5px;border-radius:4px;background:#ff2647;color:#fff;
-  font-size:9px;font-weight:1000;letter-spacing:.3px
+  flex:0 0 auto;
+  height:18px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 5px;
+  border-radius:4px;
+  background:#ff2647;
+  color:#fff;
+  font-size:9px;
+  font-weight:1000;
+  letter-spacing:.3px
 }
-.playerCard.missing{opacity:.82}
+.playerCard.missing{opacity:.86}
+
+/* fixed right tier navigation */
+.tierRail{
+  position:fixed;
+  right:18px;
+  top:50%;
+  transform:translateY(-50%);
+  width:70px;
+  max-height:82vh;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  padding:10px 8px;
+  border:1px solid rgba(210,215,222,.9);
+  border-radius:18px;
+  background:rgba(255,255,255,.94);
+  box-shadow:0 14px 40px rgba(25,31,40,.12);
+  backdrop-filter:blur(12px);
+  z-index:9000;
+}
+.tierRailTitle{
+  text-align:center;
+  font-size:9px;
+  color:#8a9097;
+  font-weight:900;
+  letter-spacing:.8px;
+  margin-bottom:2px
+}
+.tierJump{
+  height:30px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 4px;
+  border-radius:9px;
+  border:1px solid transparent;
+  background:#f6f8fa;
+  color:#343940;
+  text-decoration:none;
+  font-size:10px;
+  font-weight:1000;
+  transition:.12s;
+}
+.tierJump:hover{
+  background:#111;
+  color:#fff;
+  transform:translateX(-2px)
+}
+.tierJump.active{
+  background:#111;
+  color:#fff
+}
+
 .loading{padding:26px;color:#888}
 
+@media(max-width:900px){
+  main{width:calc(100% - 24px)}
+  .tierRail{display:none}
+}
 @media(max-width:650px){
-  .tier{grid-template-columns:58px 1fr}
+  .tier{grid-template-columns:62px 1fr}
   .tierLabel{font-size:15px}
   .members{gap:10px;padding:10px}
-  .playerCard,.portrait{width:136px}
-  .portrait{height:136px}
+  .playerCard,.portrait{width:138px}
+  .portrait{height:138px}
 }
 </style>
+
 </head>
 <body>
 <nav id="global-navbar" class="globalNav"><div class="globalNavInner"><a class="globalNavBrand" href="index.html">MUJE</a><div class="globalNavLinks"><a class="globalNavLink" href="pubg.html">배틀그라운드</a><a class="globalNavLink active" href="starcraft.html">스타크래프트</a></div></div></nav>
-<main><h1>스타크래프트 티어표</h1><div id="board" class="board"><div class="loading">티어표 불러오는 중...</div></div></main>
+<main>
+      <div class="pageTitleWrap">
+        <div>
+          <h1>스타크래프트 티어표</h1>
+          <div class="pageSub">SOOP STARCRAFT TIER BOARD</div>
+        </div>
+      </div>
+      <div id="board" class="board"><div class="loading">티어표 불러오는 중...</div></div>
+    </main>
+    <aside id="tierRail" class="tierRail">
+      <div class="tierRailTitle">TIER</div>
+    </aside>
 
 <script>
 const TIERS=["갓", "킹", "잭", "조커", "스페이드", "0티어", "1티어", "2티어", "3티어", "4티어", "5티어", "6티어", "7티어", "8티어", "베이비"];
@@ -128,8 +338,8 @@ function flags(x){return Array.isArray(x.status_flags)?x.status_flags:[]}
 
 function fallbackOrImage(x){
   const img=x.soop_profile_image||'';
-  if(!img)return '<div class="userFallback" aria-label="프로필 이미지 없음"></div>';
-  return `<div class="userFallback" aria-hidden="true"></div><img src="${e(img)}" alt="" onerror="this.remove()">`;
+  if(!img)return '<div class="blankPortrait" aria-label="프로필 이미지 없음"></div>';
+  return `<div class="blankPortrait" aria-hidden="true"></div><img src="${e(img)}" alt="" onerror="this.remove()">`;
 }
 
 function universityBadge(x){
@@ -166,21 +376,37 @@ function card(x){
   </a>`;
 }
 
+function tierId(t){return 'tier-'+String(t).replace(/[^0-9A-Za-z가-힣]/g,'-')}
+function buildRail(){
+  tierRail.innerHTML='<div class="tierRailTitle">TIER</div>'+TIERS.map(t=>`<a class="tierJump" href="#${tierId(t)}">${t}</a>`).join('');
+}
+function setupRailObserver(){
+  const links=[...document.querySelectorAll('.tierJump')];
+  const sections=[...document.querySelectorAll('.tier')];
+  if(!sections.length)return;
+  const io=new IntersectionObserver(entries=>{
+    const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+    if(!visible)return;
+    links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+visible.target.id));
+  },{rootMargin:'-35% 0px -50% 0px',threshold:[0,.2,.5,.8]});
+  sections.forEach(s=>io.observe(s));
+}
 async function load(){
   const r=await fetch('/api/star-public',{cache:'no-store'});
   if(!r.ok){board.innerHTML='<div class="loading">티어표 불러오기 실패</div>';return}
   const j=await r.json(),a=j.players||[];
   board.innerHTML=TIERS.map(t=>{
     const p=a.filter(x=>x.tier===t).sort((a,b)=>{
-      // 휴면은 해당 티어의 맨 뒤. 휴면끼리는 종족 → 기존 순서 유지.
       const ai=flags(a).includes('idle')?1:0;
       const bi=flags(b).includes('idle')?1:0;
       return ai-bi ||
         (RACE_ORDER[a.race]??9)-(RACE_ORDER[b.race]??9) ||
         (Number(a.sort_order||0)-Number(b.sort_order||0));
     });
-    return `<div class="tier"><div class="tierLabel">${t}</div><div class="members">${p.map(card).join('')}</div></div>`;
+    return `<div class="tier" id="${tierId(t)}"><div class="tierLabel">${t}</div><div class="members">${p.map(card).join('')}</div></div>`;
   }).join('');
+  buildRail();
+  setupRailObserver();
 }
 load();
 </script>
