@@ -4824,7 +4824,7 @@ function overlayUrlForRoom(team=1,theme='luxury',nameTag=true,frames=0){
   if(!cur)return '';
   const u=new URL(location.href);u.search='';u.hash='';
   u.searchParams.set('overlay',String(cur.id));
-  u.searchParams.set('team',String(team));u.searchParams.set('theme',theme);u.searchParams.set('nametag',nameTag?'1':'0');u.searchParams.set('frames',String(Math.max(0,Math.min(3,parseInt(frames||0,10)||0))));u.searchParams.set('scoremode',scoreViewMode?.value||cur.score_mode||'separate');
+  u.searchParams.set('team',String(team));u.searchParams.set('theme',theme);u.searchParams.set('nametag',nameTag?'1':'0');u.searchParams.set('frames',String(Math.max(0,Math.min(3,parseInt(frames||0,10)||0))));
   return u.toString();
 }
 
@@ -5015,7 +5015,11 @@ async function load(isPoll=false){
 
     const sig=stateSignature(r[0]||cur,p,ro,ss,tm);
     if(isPoll && sig===lastAppliedSignature)return;
+    const prevScoreMode=cur?.score_mode;
     cur=r[0]||cur;P=p;RO=ro;S=ss;mergeTeamMapRows(tm);reconcileStatCache();lastAppliedSignature=sig;
+    if(document.documentElement.classList.contains('broadcastVertical') && prevScoreMode!==cur.score_mode){
+      restartRankModeCycle();
+    }
 
     remoteFlashQueue=[];
     P.forEach(pl=>{
@@ -5131,7 +5135,7 @@ let rankModeTimer=null;
 function rankHasVersusPhase(){
   if(!cur || cur.team_count!==4)return false;
   if(document.documentElement.classList.contains('broadcastOverlay')){
-    return (overlayScoreMode||cur.score_mode)==='2v2';
+    return cur.score_mode==='2v2';
   }
   return (scoreViewMode?.value||cur.score_mode)==='2v2';
 }
@@ -5745,7 +5749,6 @@ const overlayFrameCount=Math.max(0,Math.min(3,parseInt(overlayParams.get('frames
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout='vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
-const overlayScoreMode=overlayParams.get('scoremode');
 const OVERLAY_THEMES=['luxury','lavender','winter_night','mono_stripe','midnight_purple','esports_red'];
 const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'luxury';
 if(overlayRoomId){
