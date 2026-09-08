@@ -2247,6 +2247,24 @@ html.broadcastOverlay.broadcastVertical .rankOverlay{
   transform:none!important;
 }
 
+
+/* v56 — larger profile pictures */
+html.broadcastOverlay.broadcastVertical .rankAvatar,
+html.broadcastOverlay.broadcastVertical .rankAvatarEmpty{
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  min-height:34px!important;
+}
+
+
+/* v57 — no vertical centering logic: ranking board sticks to the top */
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  top:0!important;
+  bottom:auto!important;
+  transform:none!important;
+}
+
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -2870,14 +2888,6 @@ function renderGameNameplates(){
 }
 
 
-function positionVerticalRanking(){
-  if(!document.documentElement.classList.contains('broadcastVertical')) return;
-  const board=document.querySelector('.rankOverlay');
-  if(!board) return;
-  const CENTER_Y=517;
-  const boardH=board.getBoundingClientRect().height;
-  document.documentElement.style.setProperty('--ranking-top',Math.round(CENTER_Y-(boardH/2))+'px');
-}
 
 function renderVerticalRanking(animate=true){
   if(!cur||!captureStage)return;
@@ -3285,22 +3295,6 @@ if(overlayRoomId){
 
 
 
-(function(){
-  let raf=0;
-  const schedule=()=>{
-    cancelAnimationFrame(raf);
-    raf=requestAnimationFrame(positionVerticalRanking);
-  };
-  window.addEventListener('resize',schedule,{passive:true});
-  const start=()=>{
-    const board=document.querySelector('.rankOverlay');
-    const names=document.querySelector('.gameNameplates');
-    if(board) new MutationObserver(schedule).observe(board,{childList:true,subtree:true,characterData:true});
-    if(names) new MutationObserver(schedule).observe(names,{childList:true,subtree:true,characterData:true});
-    schedule();
-  };
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start,{once:true});
-  else start();
-})();
+
 
 </script></body></html>
