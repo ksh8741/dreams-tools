@@ -4293,6 +4293,45 @@ html:not(.broadcastOverlay) .scoreStatusRow{
   max-width:calc(134px * var(--home-team-count,4))!important;
 }
 
+
+/* v97 — cleaner timer / goal header */
+html:not(.broadcastOverlay) .fixedTimer,
+html:not(.broadcastOverlay) .goalBadge{
+  font-size:13px!important;
+  font-weight:900!important;
+  letter-spacing:.2px!important;
+  gap:3px!important;
+}
+html:not(.broadcastOverlay) .fixedTimer{
+  justify-content:center!important;
+  border-right:1px solid #4b4b4b!important;
+}
+html:not(.broadcastOverlay) .goalBadge{
+  justify-content:center!important;
+}
+
+
+/* v98 — total score is the visual priority */
+html:not(.broadcastOverlay) .scoreStatusRow.killCompareRow{
+  height:38px!important;
+  min-height:38px!important;
+  background:#050505!important;
+  color:#fff!important;
+  border:1px solid #000!important;
+  border-top:0!important;
+}
+html:not(.broadcastOverlay) .scoreStatusRow.killCompareRow .statusCenter{
+  height:37px!important;
+  padding:0 5px!important;
+  background:#050505!important;
+  color:#fff!important;
+  font-size:21px!important;
+  line-height:37px!important;
+  font-weight:950!important;
+  letter-spacing:1.2px!important;
+  text-shadow:none!important;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -4607,7 +4646,7 @@ function timerText(){
 function refreshStatusRow(){
   if(!cur)return;
   const topTimer=totalBar?.querySelector('.fixedTimer');
-  if(topTimer)topTimer.textContent='◷ '+(timerText()||'00:00');
+  if(topTimer)topTimer.textContent='⏱️ '+(timerText()||'00:00');
 }
 function refreshTimerBadge(){
   const el=document.getElementById('timerBadge');
@@ -4791,7 +4830,7 @@ function renderScore(){
     center=teamScores.map((s,i)=>captainName(i+1)+' '+s).join('  ·  ');
   }
   const fixedTime=timerText()||'00:00';
-  totalBar.innerHTML='<span class="fixedTimer">◷ '+e(fixedTime)+'</span><span class="goalBadge">목표 '+goal+'</span>';
+  totalBar.innerHTML='<span class="fixedTimer">⏱️ '+e(fixedTime)+'</span><span class="goalBadge">🎯 '+goal+'킬</span>';
   const oldStatus=document.getElementById('scoreStatusRow');if(oldStatus)oldStatus.remove();
   totalBar.insertAdjacentHTML('afterend','<div id="scoreStatusRow" class="scoreStatusRow killCompareRow"><span class="statusLeft"></span><span class="statusCenter">'+e(center)+'</span><span class="statusRight"></span></div>');
   deathItems.innerHTML=P.map(p=>'<div class="di"><span>'+e(p.nickname||'PLAYER '+p.position)+'</span><input data-death="'+p.id+'" type="number" value="'+n(p.death_penalty)+'"></div>').join('');
@@ -5249,7 +5288,7 @@ t10.onchange=()=>{touchLocal();cur.top10_no_death_penalty=t10.checked;refreshSco
 if(goalKills){
   goalKills.oninput=()=>{
     if(!cur)return;touchLocal();cur.goal_kills=n(goalKills.value);
-    const b=totalBar.querySelector('.goalBadge');if(b)b.textContent='목표 '+String(cur.goal_kills);
+    const b=totalBar.querySelector('.goalBadge');if(b)b.textContent='🎯 '+String(cur.goal_kills)+'킬';
   };
   goalKills.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({goal_kills:n(goalKills.value)})}).catch(console.error);
 }
