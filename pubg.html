@@ -4522,6 +4522,17 @@ html:not(.broadcastOverlay) .teamSummary .miniGoal{
   font-weight:900!important;
 }
 
+
+/* v116 — never show site navigation inside broadcast overlay */
+html.broadcastOverlay #global-navbar,
+html.broadcastOverlay .globalNav{
+  display:none!important;
+}
+html.broadcastOverlay body{
+  padding-top:0!important;
+  margin-top:0!important;
+}
+
 </style><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link rel="stylesheet" href="navbar.css">
 </head><body>
