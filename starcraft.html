@@ -42,9 +42,9 @@ h1{font-size:24px;margin:0 0 16px}
   background:#edf0f3;
   box-shadow:0 2px 8px rgba(0,0,0,.08)
 }
-.portrait img{display:block;width:100%;height:100%;object-fit:cover}
+.portrait img{display:block;width:100%;height:100%;object-fit:cover;position:relative;z-index:1}
 
-.userFallback{position:absolute;inset:0;background:#e9edf1}
+.userFallback{position:absolute;inset:0;background:#e9edf1;z-index:0}
 .userFallback::before{
   content:"";
   position:absolute;
@@ -171,10 +171,14 @@ async function load(){
   if(!r.ok){board.innerHTML='<div class="loading">티어표 불러오기 실패</div>';return}
   const j=await r.json(),a=j.players||[];
   board.innerHTML=TIERS.map(t=>{
-    const p=a.filter(x=>x.tier===t).sort((a,b)=>
-      (RACE_ORDER[a.race]??9)-(RACE_ORDER[b.race]??9) ||
-      (Number(a.sort_order||0)-Number(b.sort_order||0))
-    );
+    const p=a.filter(x=>x.tier===t).sort((a,b)=>{
+      // 휴면은 해당 티어의 맨 뒤. 휴면끼리는 종족 → 기존 순서 유지.
+      const ai=flags(a).includes('idle')?1:0;
+      const bi=flags(b).includes('idle')?1:0;
+      return ai-bi ||
+        (RACE_ORDER[a.race]??9)-(RACE_ORDER[b.race]??9) ||
+        (Number(a.sort_order||0)-Number(b.sort_order||0));
+    });
     return `<div class="tier"><div class="tierLabel">${t}</div><div class="members">${p.map(card).join('')}</div></div>`;
   }).join('');
 }
