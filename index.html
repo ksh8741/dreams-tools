@@ -2225,6 +2225,30 @@ html.broadcastOverlay.broadcastVertical .rankRow.killChanged:before{
   animation:rankKillBorderStrong 1.35s ease-out forwards!important;
 }
 
+
+/* v53 — right side +2px space; right edge FX/SCORE sheet move together */
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  width:249px!important; /* +2px physical room on the right */
+}
+
+/* Keep the main grid geometry unchanged; use the new 2px only as right-side room */
+html.broadcastOverlay.broadcastVertical .rankHeader,
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRows{
+  width:247px!important;
+}
+
+/* SCORE "paper" shifts 2px right into the newly reserved room */
+html.broadcastOverlay.broadcastVertical .rankScore{
+  transform:translateX(2px)!important;
+}
+
+/* Kill border: right edge shifts 2px right as well.
+   Left/top/bottom remain exactly where they were. */
+html.broadcastOverlay.broadcastVertical .rankRow.killChanged:before{
+  right:-1px!important; /* was 1px inset => +2px right */
+}
+
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
