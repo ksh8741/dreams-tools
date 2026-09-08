@@ -2997,6 +2997,206 @@ html.broadcastOverlay.broadcastVertical.theme-winter_night .rankRow{background:l
 html.broadcastOverlay.broadcastVertical.theme-winter_night .rankScore{background:transparent!important;border:0!important;box-shadow:none!important;color:#eef7ff!important}
 html.broadcastOverlay.broadcastVertical.theme-winter_night .rankAvatarEmpty{background:linear-gradient(135deg,#315474,#101a2b)!important;border:2px solid #8bb5d8!important;box-shadow:none!important}
 
+
+/* v70 — FORCE readable text colors per theme.
+   Light backgrounds => dark text everywhere.
+   Dark themes => light text everywhere. */
+
+/* LIGHT THEMES */
+html.broadcastOverlay.broadcastVertical:is(
+.theme-lavender,
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankOverlay,
+html.broadcastOverlay.broadcastVertical:is(
+.theme-lavender,
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankOverlay *{
+  color:var(--th-text)!important;
+  text-shadow:none!important;
+}
+
+/* Header labels can use the muted dark tone, still readable */
+html.broadcastOverlay.broadcastVertical:is(
+.theme-lavender,
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankCols,
+html.broadcastOverlay.broadcastVertical:is(
+.theme-lavender,
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankCols *{
+  color:var(--th-muted)!important;
+}
+
+/* Specifically override old white/light hard-coded values */
+html.broadcastOverlay.broadcastVertical:is(
+.theme-lavender,
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) :is(
+.rankName,.rankPos,.rankK,.rankD,.rankScore,.rankValue,.rankValue strong,.rankScore strong,
+.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo
+){
+  color:var(--th-text)!important;
+  text-shadow:none!important;
+}
+
+/* DARK THEMES */
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankOverlay,
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankOverlay *{
+  color:#f3ead5!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankCols,
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankCols *{
+  color:#c9aa6c!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury :is(
+.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo,.rankScore,.rankScore strong
+){
+  color:#f2d68e!important;
+}
+
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankOverlay,
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankOverlay *{
+  color:#eef7ff!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankCols,
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankCols *{
+  color:#c8ddf0!important;
+}
+
+
+/* ===== v71 MODERN MONOCHROME COLLECTION =====
+   Strictly black / white / grayscale. No hue colors in the theme surfaces. */
+
+/* MODERN WHITE — white broadcast card, black typography */
+html.broadcastOverlay.broadcastVertical.theme-modern_white{
+ --mono-bg:#fff;--mono-panel:#f5f5f5;--mono-panel2:#e5e5e5;--mono-line:#111;--mono-text:#090909;--mono-muted:#555;
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_white .rankHeader{
+ background:#fff!important;color:#090909!important;border:2px solid #111!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_white .rankTotal{
+ background:#fff!important;color:#090909!important;border:1px solid #111!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_white .rankCols{
+ background:#111!important;color:#fff!important;border-color:#111!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_white .rankRows{background:#fff!important;border-color:#111!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_white .rankRow{
+ background:#fff!important;color:#090909!important;border-color:#c8c8c8!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_white .rankRow:nth-child(even){background:#f3f3f3!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_white .rankScore{background:transparent!important;border:0!important;box-shadow:none!important;color:#090909!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_white .rankAvatarEmpty{background:#eee!important;border:2px solid #111!important;box-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_white :is(.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo){color:#090909!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_white .rankCols *{color:#fff!important}
+
+/* MODERN BLACK — black slab, crisp white typography */
+html.broadcastOverlay.broadcastVertical.theme-modern_black .rankHeader{
+ background:#050505!important;color:#fff!important;border:1px solid #fff!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_black .rankTotal{
+ background:#0a0a0a!important;color:#fff!important;border:1px solid #777!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_black .rankCols{background:#fff!important;color:#050505!important;border-color:#fff!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_black .rankRows{background:#050505!important;border-color:#777!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_black .rankRow{background:#090909!important;color:#fff!important;border-color:#333!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_black .rankRow:nth-child(even){background:#151515!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_black .rankScore{background:transparent!important;border:0!important;box-shadow:none!important;color:#fff!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_black .rankAvatarEmpty{background:#1c1c1c!important;border:2px solid #fff!important;box-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_black :is(.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo){color:#fff!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_black .rankCols *{color:#050505!important}
+
+/* MODERN SPLIT — alternating black/white visual blocks */
+html.broadcastOverlay.broadcastVertical.theme-modern_split .rankHeader{
+ background:linear-gradient(90deg,#050505 0 50%,#fff 50% 100%)!important;
+ color:#fff!important;border:1px solid #111!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_split .rankGoal{color:#fff!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_split .rankTimer{color:#050505!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_split .rankTotal{background:#fff!important;color:#050505!important;border:2px solid #111!important;box-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_split .rankTotal:nth-child(even){background:#080808!important;color:#fff!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_split .rankCols{background:#0a0a0a!important;color:#fff!important;border-color:#111!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_split .rankRows{background:#fff!important;border-color:#111!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_split .rankRow{background:#fff!important;color:#050505!important;border-color:#aaa!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_split .rankRow:nth-child(even){background:#111!important;color:#fff!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_split .rankScore{background:transparent!important;border:0!important;box-shadow:none!important;color:inherit!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_split .rankAvatarEmpty{background:#ddd!important;border:2px solid currentColor!important;box-shadow:none!important}
+
+/* EDITORIAL MONO — magazine/editorial, heavy rules */
+html.broadcastOverlay.broadcastVertical.theme-modern_editorial .rankHeader{
+ background:#fafafa!important;color:#080808!important;border-top:4px solid #080808!important;border-bottom:1px solid #080808!important;border-left:0!important;border-right:0!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_editorial .rankTotal{
+ background:#fafafa!important;color:#080808!important;border:0!important;border-bottom:2px solid #080808!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_editorial .rankCols{
+ background:#fafafa!important;color:#080808!important;border-top:1px solid #080808!important;border-bottom:3px solid #080808!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_editorial .rankRows{background:#fafafa!important;border:0!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_editorial .rankRow{
+ background:#fafafa!important;color:#080808!important;border-bottom:1px solid #8a8a8a!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_editorial .rankScore{background:transparent!important;border:0!important;box-shadow:none!important;color:#080808!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_editorial .rankAvatarEmpty{background:#fff!important;border:2px solid #080808!important;box-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_editorial :is(.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo){color:#080808!important;text-shadow:none!important}
+
+/* MONO GRID — technical grid, gray/black/white */
+html.broadcastOverlay.broadcastVertical.theme-modern_grid .rankHeader{
+ background:repeating-linear-gradient(90deg,#111 0 1px,#242424 1px 18px)!important;
+ color:#fff!important;border:1px solid #aaa!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_grid .rankTotal{
+ background:#181818!important;color:#fff!important;border:1px solid #777!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_grid .rankCols{background:#ddd!important;color:#111!important;border-color:#777!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_grid .rankRows{background:#111!important;border-color:#777!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_grid .rankRow{
+ background:repeating-linear-gradient(90deg,#151515 0 24px,#1c1c1c 24px 25px)!important;
+ color:#fff!important;border-bottom:1px solid #444!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_grid .rankScore{background:transparent!important;border:0!important;box-shadow:none!important;color:#fff!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_grid .rankAvatarEmpty{background:#252525!important;border:2px solid #aaa!important;box-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_grid :is(.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo){color:#fff!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_grid .rankCols *{color:#111!important}
+
+/* MONO GLASS — translucent grayscale glass */
+html.broadcastOverlay.broadcastVertical.theme-modern_glass .rankHeader{
+ background:rgba(245,245,245,.82)!important;color:#111!important;border:1px solid rgba(0,0,0,.5)!important;backdrop-filter:blur(10px)!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_glass .rankTotal{
+ background:rgba(255,255,255,.78)!important;color:#111!important;border:1px solid rgba(0,0,0,.42)!important;backdrop-filter:blur(8px)!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_glass .rankCols{background:rgba(25,25,25,.88)!important;color:#fff!important;border-color:#777!important;backdrop-filter:blur(8px)!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_glass .rankRows{background:transparent!important;border-color:#777!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_glass .rankRow{
+ background:rgba(248,248,248,.78)!important;color:#111!important;border-bottom:1px solid rgba(0,0,0,.28)!important;backdrop-filter:blur(7px)!important
+}
+html.broadcastOverlay.broadcastVertical.theme-modern_glass .rankScore{background:transparent!important;border:0!important;box-shadow:none!important;color:#111!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_glass .rankAvatarEmpty{background:rgba(225,225,225,.82)!important;border:2px solid #333!important;box-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_glass :is(.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo){color:#111!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-modern_glass .rankCols *{color:#fff!important}
+
+/* Modern themes: remove the old SCORE-paper pseudo surfaces once and for all. */
+html.broadcastOverlay.broadcastVertical:is(.theme-modern_white,.theme-modern_black,.theme-modern_split,.theme-modern_editorial,.theme-modern_grid,.theme-modern_glass) .rankScore:before,
+html.broadcastOverlay.broadcastVertical:is(.theme-modern_white,.theme-modern_black,.theme-modern_split,.theme-modern_editorial,.theme-modern_grid,.theme-modern_glass) .rankScore:after{
+ content:none!important;display:none!important
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -3085,34 +3285,18 @@ html.broadcastOverlay.broadcastVertical.theme-winter_night .rankAvatarEmpty{back
       <label class="overlaySettingField">
         <span>테마</span>
         <select id="overlayThemeSelect">
-          <optgroup label="기존">
+          <optgroup label="확정">
             <option value="luxury">LUXURY NOIR</option>
             <option value="lavender">LAVENDER PINK</option>
-          </optgroup>
-          <optgroup label="여름">
-            <option value="summer_ocean">SUMMER OCEAN</option>
-            <option value="summer_pool">POOL BLUE</option>
-            <option value="summer_lemon">LEMON SODA</option>
-            <option value="summer_tropical">TROPICAL PUNCH</option>
-          </optgroup>
-          <optgroup label="가을">
-            <option value="autumn_maple">MAPLE AUTUMN</option>
-            <option value="autumn_cafe">AUTUMN CAFE</option>
-            <option value="autumn_olive">OLIVE HARVEST</option>
-            <option value="autumn_wine">WINE AUTUMN</option>
-          </optgroup>
-          <optgroup label="겨울">
-            <option value="winter_snow">SNOW WHITE</option>
-            <option value="winter_ice">ICE BLUE</option>
             <option value="winter_night">WINTER NIGHT</option>
-            <option value="winter_xmas">HOLIDAY WINTER</option>
           </optgroup>
-          <optgroup label="파스텔">
-            <option value="pastel_candy">PASTEL CANDY</option>
-            <option value="pastel_mint">MINT CREAM</option>
-            <option value="pastel_peach">PEACH MILK</option>
-            <option value="pastel_cloud">CLOUD PASTEL</option>
-            <option value="pastel_rainbow">PASTEL RAINBOW</option>
+          <optgroup label="모던 · 흑백">
+            <option value="modern_white">MODERN WHITE</option>
+            <option value="modern_black">MODERN BLACK</option>
+            <option value="modern_split">MODERN SPLIT</option>
+            <option value="modern_editorial">EDITORIAL MONO</option>
+            <option value="modern_grid">MONO GRID</option>
+            <option value="modern_glass">MONO GLASS</option>
           </optgroup>
         </select>
       </label>
@@ -4065,7 +4249,7 @@ const overlayParams=new URLSearchParams(location.search);
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout=overlayParams.get('layout')==='horizontal'?'horizontal':'vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
-const OVERLAY_THEMES=['luxury','lavender','summer_ocean','summer_pool','summer_lemon','summer_tropical','autumn_maple','autumn_cafe','autumn_olive','autumn_wine','winter_snow','winter_ice','winter_night','winter_xmas','pastel_candy','pastel_mint','pastel_peach','pastel_cloud','pastel_rainbow'];
+const OVERLAY_THEMES=['luxury','lavender','winter_night','modern_white','modern_black','modern_split','modern_editorial','modern_grid','modern_glass'];
 const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'luxury';
 if(overlayRoomId){
   document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal','theme-'+overlayTheme);
