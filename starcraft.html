@@ -499,6 +499,7 @@ async function hydrateLiveMeta(x){
   }catch(_){}
 }
 
+let previewElapsedTimer=null;
 function showPreview(ev){
   const card=ev.currentTarget.closest('.playerCard');
   const id=Number(card?.dataset?.playerId||0);
@@ -517,6 +518,12 @@ function showPreview(ev){
   livePreview.classList.add('on');
   movePreview(ev);
   hydrateLiveMeta(x);
+  clearInterval(previewElapsedTimer);
+  previewElapsedTimer=setInterval(()=>{
+    if(livePreview.classList.contains('on')){
+      livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
+    }
+  },30000);
 }
 function movePreview(ev){
   const w=320,g=14;
@@ -526,59 +533,9 @@ function movePreview(ev){
   livePreview.style.left=x+'px';
   livePreview.style.top=y+'px';
 }
-function hidePreview(){livePreview.classList.remove('on')}
+function hidePreview(){livePreview.classList.remove('on');clearInterval(previewElapsedTimer);previewElapsedTimer=null}
 
-async function fetchLiveChunk(chunk){
-  try{
-    const r=await fetch('/api/soop-live-status',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      cache:'no-store',
-      body:JSON.stringify({ids:chunk})
-    });
-    if(!r.ok)return {};
-    const j=await r.json();
-    return j.status||{};
-  }catch(_){return {}}
-}
 
-function orderedLiveIds(){
-  const ordered=[];
-  for(const tier of TIERS){
-    for(const [race] of RACES){
-      const group=players
-        .filter(x=>x.tier===tier && String(x.race||'').toUpperCase()===race && x.soop_user_id)
-        .sort(comparePlayers);
-      for(const x of group)ordered.push(x.soop_user_id);
-    }
-  }
-  return [...new Set(ordered)];
-}
-
-function applyStatusChunk(chunk,status){
-  const set=new Set(chunk);
-  players=players.map(x=>{
-    if(!set.has(x.soop_user_id))return x;
-    const s=status[x.soop_user_id]||{live:false};
-    return {...x,_liveKnown:true,_live:!!s.live,_liveTitle:s.title||'',_thumbnail:s.thumbnail||'',_bno:s.bno||'',_liveStartedAt:s.started_at||x._liveStartedAt||''};
-  });
-}
-
-async function refreshLiveInBackground(){
-  const ids=orderedLiveIds();
-  const chunks=[];
-  for(let i=0;i<ids.length;i+=70)chunks.push(ids.slice(i,i+70));
-  await Promise.all(chunks.map(async chunk=>{
-    const status=await fetchLiveChunk(chunk);
-    applyStatusChunk(chunk,status);
-    render();
-  }));
-}
-
-async function refreshAllLiveStatuses(){
-  await refreshLiveInBackground();
-  buildRail();
-}
 
 async function load(){
   liveOnly=localStorage.getItem('star_live_only')!=='0';
@@ -604,9 +561,6 @@ async function load(){
 
   render();
   buildRail();
-
-  // 실제 LIVE 재검사는 뒤에서 돌아간다. 첫 화면은 여기서 이미 끝.
-  refreshLiveInBackground();
 }
 
 

@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/star-live-refresh",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}
