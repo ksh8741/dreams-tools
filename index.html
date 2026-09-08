@@ -1773,6 +1773,23 @@ html.broadcastOverlay.broadcastVertical .gameNameplates{
   bottom:34px!important; /* v33 14px + 20px upward */
   gap:11px!important;    /* v33 10px + 1px */
 }
+
+/* v35 nameplate fine positioning */
+html.broadcastOverlay.broadcastVertical .gameNameplates{
+  left:36px!important;   /* 4px left from v34 */
+  gap:13px!important;    /* +2px row spacing */
+}
+html.broadcastOverlay.broadcastVertical .gameNameplate{
+  grid-template-columns:27px minmax(0,1fr)!important;
+}
+html.broadcastOverlay.broadcastVertical .gameNameplate img,
+html.broadcastOverlay.broadcastVertical .gameNameplate .gameNameplateAvatarEmpty{
+  width:26px!important;
+  height:26px!important;
+  margin-left:-2px!important;
+  position:relative!important;
+  z-index:2!important;
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
