@@ -1932,6 +1932,123 @@ html.broadcastOverlay.broadcastVertical .hudFrame:after{
   border-right:2px solid;
   border-bottom:2px solid;
 }
+
+/* v39 — 1920x1080 vertical broadcast layout */
+
+/* Full browser-source coordinate system: 1920x1080.
+   Top 80px is deliberately empty for the streamer's own logo. */
+html.broadcastOverlay.broadcastVertical,
+html.broadcastOverlay.broadcastVertical body{
+  width:1920px!important;
+  min-width:1920px!important;
+  height:1080px!important;
+  min-height:1080px!important;
+  overflow:hidden!important;
+}
+html.broadcastOverlay.broadcastVertical body{
+  padding:0!important;
+}
+
+/* Ranking board starts after the reserved logo zone.
+   Its height is CONTENT ONLY — never stretches below the 16th player row. */
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  position:absolute!important;
+  left:4px!important;
+  top:80px!important;
+  width:250px!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+html.broadcastOverlay.broadcastVertical .rankOverlay:after{
+  display:none!important; /* remove old 960px bottom guide */
+}
+html.broadcastOverlay.broadcastVertical .rankRows{
+  height:auto!important;
+  min-height:0!important;
+  max-height:672px!important; /* exactly 16 x 42px */
+  overflow:hidden!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRow:nth-child(n+17){
+  display:none!important;
+}
+
+/* Keep the requested 3px inner breathing room on the right edge */
+html.broadcastOverlay.broadcastVertical .rankHeader,
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRows{
+  width:247px!important;
+}
+
+/* In-game nickname covers remain independent from ranking-board height */
+html.broadcastOverlay.broadcastVertical .gameNameplates{
+  position:absolute!important;
+  left:33px!important;
+  bottom:34px!important;
+}
+
+/* PUBG-like three portrait frames:
+   taller/thicker, metallic tactical frame, moved further right. */
+html.broadcastOverlay.broadcastVertical .hudFrames{
+  position:absolute!important;
+  left:286px!important;
+  bottom:34px!important;
+  display:flex!important;
+  gap:8px!important;
+  z-index:20!important;
+}
+html.broadcastOverlay.broadcastVertical .hudFrame{
+  width:132px!important;
+  height:166px!important;
+  position:relative!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(135deg,rgba(90,111,125,.12),rgba(8,15,21,.08) 44%,rgba(77,102,118,.11)),
+    linear-gradient(180deg,rgba(15,24,31,.18),rgba(5,9,13,.08))!important;
+  border:2px solid rgba(132,151,161,.90)!important;
+  clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px),0 8px)!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(14,23,29,.95),
+    inset 0 0 0 3px rgba(205,217,221,.10),
+    inset 0 0 24px rgba(81,128,151,.10),
+    0 2px 8px rgba(0,0,0,.30)!important;
+}
+html.broadcastOverlay.broadcastVertical .hudFrame:before{
+  content:""!important;
+  position:absolute!important;
+  inset:5px!important;
+  width:auto!important;
+  height:auto!important;
+  border:1px solid rgba(195,211,218,.38)!important;
+  box-shadow:inset 0 0 12px rgba(115,166,188,.08)!important;
+}
+html.broadcastOverlay.broadcastVertical .hudFrame:after{
+  content:""!important;
+  position:absolute!important;
+  left:12px!important;
+  right:12px!important;
+  top:7px!important;
+  width:auto!important;
+  height:3px!important;
+  border:0!important;
+  background:linear-gradient(90deg,transparent,rgba(190,210,218,.72),transparent)!important;
+  box-shadow:0 148px 0 rgba(112,139,151,.46)!important;
+}
+
+/* Small angular corner bolts / tactical detail */
+html.broadcastOverlay.broadcastVertical .hudFrames:after{
+  content:"";
+  position:absolute;
+  left:0; right:0; top:-4px;
+  height:2px;
+  pointer-events:none;
+  background:repeating-linear-gradient(90deg,
+    rgba(176,195,203,.0) 0 16px,
+    rgba(176,195,203,.52) 16px 22px,
+    rgba(176,195,203,.0) 22px 140px);
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -2572,7 +2689,7 @@ function renderVerticalRanking(animate=true){
     captureStage.appendChild(box);
   }
 
-  const rows=playerRankData();
+  const rows=playerRankData().slice(0,16);
   const nowOrder=rows.map(x=>String(x.id));
   const oldPositions=new Map(previousRankOrder.map((id,i)=>[String(id),i]));
 
