@@ -4079,6 +4079,66 @@ html:not(.broadcastOverlay) .avatarEmpty{
   min-height:18px!important;
 }
 
+
+/* v89 — website kill-board right-edge clipping fix */
+html:not(.broadcastOverlay) .score .team{
+  width:164px!important;
+  flex:0 0 164px!important;
+  box-sizing:border-box!important;
+}
+html:not(.broadcastOverlay) .slot{
+  box-sizing:border-box!important;
+  padding-right:5px!important;
+}
+html:not(.broadcastOverlay) .playerInline{
+  width:100%!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+}
+html:not(.broadcastOverlay) .detail{
+  box-sizing:border-box!important;
+  padding-right:3px!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+}
+
+
+/* v90 — website scoreboard fixed 130px per team.
+   Header/title/status width follows actual team count: 130px × team count. */
+html:not(.broadcastOverlay) .score .team{
+  width:130px!important;
+  flex:0 0 130px!important;
+  min-width:130px!important;
+  max-width:130px!important;
+}
+html:not(.broadcastOverlay) .scoreFrame,
+html:not(.broadcastOverlay) .score,
+html:not(.broadcastOverlay) .totalBar,
+html:not(.broadcastOverlay) .scoreStatusRow{
+  width:calc(130px * var(--home-team-count,4))!important;
+  min-width:calc(130px * var(--home-team-count,4))!important;
+  max-width:calc(130px * var(--home-team-count,4))!important;
+  box-sizing:border-box!important;
+}
+html:not(.broadcastOverlay) .totalBar{
+  padding-left:8px!important;
+  padding-right:8px!important;
+}
+
+
+/* v91 — website kill-board profile photos: circular */
+html:not(.broadcastOverlay) .avatar,
+html:not(.broadcastOverlay) .avatarEmpty{
+  border-radius:50%!important;
+  overflow:hidden!important;
+}
+html:not(.broadcastOverlay) .avatar img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  border-radius:50%!important;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -4551,6 +4611,8 @@ async function saveName(x){
   }
 }
 function renderScore(){
+  if(scoreFrame)scoreFrame.style.setProperty('--home-team-count',String(Math.max(1,cur?.team_count||1)));
+
   applyScoreWidth();
   if(scoreViewMode)scoreViewMode.style.display=cur.team_count===2?'none':'';
   ck.value=cur.chicken_kills;sk.value=cur.sanhok_chicken_kills;t10.checked=cur.top10_no_death_penalty;
