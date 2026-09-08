@@ -4028,6 +4028,44 @@ html:not(.broadcastOverlay) .chicken{
   font-size:12px!important;
 }
 
+
+/* v88 — compact vertical player row: photo | 4-char nickname | K | D | SCORE */
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  width:232px!important;
+  min-width:232px!important;
+  max-width:232px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankHeader,
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRows,
+html.broadcastOverlay.broadcastVertical .rankRow{
+  width:230px!important;
+  min-width:230px!important;
+  max-width:230px!important;
+  box-sizing:border-box!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRow{
+  grid-template-columns:31px 89px 34px 36px 40px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankIdentity{
+  grid-template-columns:34px 48px!important;
+  gap:3px!important;
+  padding:0 2px!important;
+  align-items:center!important;
+}
+html.broadcastOverlay.broadcastVertical .rankIdentity > .rankName{
+  position:relative!important;
+  left:0!important;
+  transform:none!important;
+  width:48px!important;
+  max-width:48px!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  text-overflow:clip!important;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -4713,12 +4751,26 @@ function renderVerticalRanking(animate=true){
   const oldPositions=new Map(previousRankOrder.map((id,i)=>[String(id),i]));
 
   const teamTotals=teamKillTotals();
-  const totals=teamTotals.map(x=>{
-    const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
-    return '<div class="rankTotal" data-rank-total-team="'+x.team+'" style="--team-color:'+c+'">'+
-      '<span class="rankTotalInfo rankTotalLabel">현재킬 '+x.kill+'</span>'+
-    '</div>';
-  }).join('');
+  let totals='',initialRankCount=Math.max(1,cur.team_count);
+  if(rankDisplayPhase===2 && rankHasVersusPhase()){
+    const byTeam=new Map(teamTotals.map(x=>[x.team,x]));
+    const a=byTeam.get(1),b=byTeam.get(2),c=byTeam.get(3),d=byTeam.get(4);
+    const left=(a?.kill||0)+(b?.kill||0),right=(c?.kill||0)+(d?.kill||0);
+    const ca=RANK_TEAM_COLORS[0],cc=RANK_TEAM_COLORS[2];
+    initialRankCount=2;
+    totals=
+      '<div class="rankTotal versusMode" style="--team-color:'+ca+'"><span class="rankTotalInfo rankTotalLabel">'+left+'</span></div>'+
+      '<div class="rankTotal versusMode" style="--team-color:'+cc+'"><span class="rankTotalInfo rankTotalLabel">'+right+'</span></div>';
+  }else{
+    totals=teamTotals.map(x=>{
+      const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
+      const modeClass=rankDisplayPhase===1?'chickenMode':'killMode';
+      const value=rankDisplayPhase===1?x.chicken:x.kill;
+      return '<div class="rankTotal '+modeClass+'" data-rank-total-team="'+x.team+'" style="--team-color:'+c+'">'+
+        '<span class="rankTotalInfo rankTotalLabel">'+value+'</span>'+
+      '</div>';
+    }).join('');
+  }
 
   const timeTxt=timerText()||'00:00';
   const body=rows.map((x,i)=>{
@@ -4733,14 +4785,14 @@ function renderVerticalRanking(animate=true){
     return '<div class="rankRow '+(i===0?'rankFirst ':'')+(move?'rankChanged':'')+'" data-rank-player="'+x.id+'" data-pending-kill-delta="'+killDelta+'" style="--team-color:'+c+'">'+
       move+
       '<div class="rankPos">'+(i+1)+'</div>'+
-      '<div class="rankIdentity">'+rankAvatarHtml(x.player)+'<div class="rankName">'+e(x.name)+'</div></div>'+
+      '<div class="rankIdentity">'+rankAvatarHtml(x.player)+'<div class="rankName">'+e((x.name||'PLAYER').slice(0,4))+'</div></div>'+
       '<div class="rankValue"><small>KILL</small><strong>'+x.kill+'</strong></div>'+
       '<div class="rankValue rankDeath"><small>DEATH</small><strong>'+(x.death?'-'+x.death:'0')+'</strong></div>'+
       '<div class="rankValue rankScore"><small>SCORE</small><strong>'+x.score+'</strong></div>'+
     '</div>';
   }).join('');
 
-  box.style.setProperty('--rank-count',Math.max(1,cur.team_count));
+  box.style.setProperty('--rank-count',initialRankCount);
   box.innerHTML=
     '<div class="rankHeader">'+
       '<div class="rankHeaderTop"><span class="rankGoal">'+n(cur.goal_kills||0)+'</span>'+(timeTxt?'<span class="rankTimer">'+e(timeTxt)+'</span>':'')+'</div>'+
