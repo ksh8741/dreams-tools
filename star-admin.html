@@ -72,8 +72,19 @@ async function patch(id,data){
    showMsg('저장 실패 ('+r.status+'): '+(j.error||raw||'응답 없음'));
    return false;
  }
- showMsg('저장 완료',true);
- await load();return true
+ if(!j.row){
+   showMsg('저장 응답은 성공했지만 변경된 행 데이터가 없습니다.');
+   return false;
+ }
+ const idx=rows.findIndex(x=>Number(x.id)===Number(id));
+ if(idx>=0) rows[idx]={...rows[idx],...j.row};
+ render();
+ const changed=[];
+ if(Object.prototype.hasOwnProperty.call(data,'soop_user_id')) changed.push('SOOP '+(j.row.soop_nickname||j.row.soop_user_id||'')+' 연결');
+ if(Object.prototype.hasOwnProperty.call(data,'display_name')) changed.push('표시명 '+(j.row.display_name||'')+' 저장');
+ if(Object.prototype.hasOwnProperty.call(data,'tier')) changed.push('티어 '+(j.row.tier||'')+' 저장');
+ showMsg((changed.join(' · ')||'저장')+' 완료',true);
+ return true
 }
 updateLoginBtn();
 function saveDisplay(id){const el=document.getElementById('dn-'+id);patch(id,{display_name:el.value.trim()})}
@@ -86,6 +97,12 @@ async function searchSoop(){
  results.innerHTML=a.length?a.map((x,i)=>{const id=x.user_id||x.id||x.userId||'';const nick=x.nickname||x.nick||x.user_nick||id;const img=x.profile_image||x.profile||x.profileImage||'';return `<div class="result">${img?`<img src="${e(img)}">`:''}<div class="txt"><b>${e(nick)}</b><div class="muted">${e(id)}</div></div><button onclick='linkSoop(${JSON.stringify(id)},${JSON.stringify(nick)},${JSON.stringify(img)})'>연결</button></div>`}).join(''):'검색 결과 없음';
  }catch(err){results.textContent='검색 실패: '+err.message}
 }
-async function linkSoop(id,nick,img){if(!target)return;const ok=await patch(target.id,{soop_user_id:id,soop_nickname:nick,soop_profile_image:img});if(ok)closeM()}
+async function linkSoop(id,nick,img){
+ if(!target)return;
+ const data={soop_user_id:id,soop_nickname:nick,soop_profile_image:img};
+ if(!target.display_name || target.display_name===target.player_name) data.display_name=nick;
+ const ok=await patch(target.id,data);
+ if(ok)closeM()
+}
 load();
 </script><script src="navbar.js"></script></body></html>
