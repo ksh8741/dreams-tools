@@ -9,10 +9,11 @@
     mount.innerHTML = await res.text();
 
     const file = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-    const page = file === "pubg.html" ? "pubg" : "main";
 
-    const active = mount.querySelector('[data-page="' + page + '"]');
-    if (active) active.classList.add("active");
+    if (file === "pubg.html") {
+      const active = mount.querySelector('[data-page="pubg"]');
+      if (active) active.classList.add("active");
+    }
   } catch (err) {
     console.error(err);
   }

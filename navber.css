@@ -1,9 +1,117 @@
-.globalNav{position:sticky;top:0;z-index:9999;width:100%;height:58px;background:rgba(12,14,17,.94);border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 8px 22px rgba(0,0,0,.12);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.globalNavInner{width:min(1180px,calc(100% - 32px));height:58px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-.globalNavBrand{display:flex;align-items:center;height:58px;color:#fff;text-decoration:none;font-size:15px;font-weight:950;letter-spacing:2.4px}
-.globalNavLinks{height:58px;display:flex;align-items:center;gap:4px}
-.globalNavLink{position:relative;height:58px;padding:0 16px;display:flex;align-items:center;color:#9ea5ad;text-decoration:none;font-size:13px;font-weight:900;transition:.14s}
-.globalNavLink:hover,.globalNavLink.active{color:#fff}
-.globalNavLink:hover{background:rgba(255,255,255,.035)}
-.globalNavLink.active:after{content:"";position:absolute;left:16px;right:16px;bottom:0;height:2px;background:#fff}
-@media(max-width:700px){.globalNavInner{width:calc(100% - 18px)}.globalNavBrand{font-size:13px}.globalNavLink{padding:0 10px;font-size:12px}.globalNavLink.active:after{left:10px;right:10px}}
+/* Shared global navigation */
+#global-navbar{
+  display:block !important;
+  width:100% !important;
+  height:58px !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  font-family:Arial,"Noto Sans KR",sans-serif !important;
+  line-height:normal !important;
+}
+#global-navbar *,
+#global-navbar *::before,
+#global-navbar *::after{box-sizing:border-box !important}
+
+#global-navbar .globalNav{
+  position:relative !important;
+  top:auto !important;
+  left:auto !important;
+  right:auto !important;
+  width:100% !important;
+  height:58px !important;
+  min-height:58px !important;
+  margin:0 !important;
+  padding:0 !important;
+  background:rgba(12,14,17,.96) !important;
+  border:0 !important;
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+  border-radius:0 !important;
+  box-shadow:0 8px 22px rgba(0,0,0,.12) !important;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+#global-navbar .globalNavInner{
+  width:min(1180px,calc(100% - 32px)) !important;
+  height:58px !important;
+  min-height:58px !important;
+  margin:0 auto !important;
+  padding:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:0 !important;
+}
+#global-navbar .globalNavBrand{
+  position:static !important;
+  display:flex !important;
+  align-items:center !important;
+  width:auto !important;
+  height:58px !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  background:none !important;
+  color:#fff !important;
+  text-decoration:none !important;
+  font-size:15px !important;
+  font-weight:900 !important;
+  letter-spacing:2.4px !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+}
+#global-navbar .globalNavLinks{
+  position:static !important;
+  display:flex !important;
+  align-items:center !important;
+  width:auto !important;
+  height:58px !important;
+  margin:0 !important;
+  padding:0 !important;
+  gap:4px !important;
+}
+#global-navbar .globalNavLink{
+  position:relative !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:auto !important;
+  height:58px !important;
+  min-height:58px !important;
+  margin:0 !important;
+  padding:0 16px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:#9ea5ad !important;
+  text-decoration:none !important;
+  font-size:13px !important;
+  font-weight:900 !important;
+  letter-spacing:-.15px !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+}
+#global-navbar .globalNavLink:hover,
+#global-navbar .globalNavLink.active{
+  color:#fff !important;
+}
+#global-navbar .globalNavLink:hover{
+  background:rgba(255,255,255,.035) !important;
+}
+#global-navbar .globalNavLink.active::after{
+  content:"" !important;
+  position:absolute !important;
+  left:16px !important;
+  right:16px !important;
+  bottom:0 !important;
+  height:2px !important;
+  background:#fff !important;
+}
+@media(max-width:700px){
+  #global-navbar .globalNavInner{width:calc(100% - 18px) !important}
+  #global-navbar .globalNavBrand{font-size:13px !important;letter-spacing:1.8px !important}
+  #global-navbar .globalNavLink{padding:0 10px !important;font-size:12px !important}
+  #global-navbar .globalNavLink.active::after{left:10px !important;right:10px !important}
+}
