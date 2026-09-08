@@ -1659,6 +1659,107 @@ html.broadcastOverlay.broadcastVertical .rankRow.killChanged:after{
   70%{opacity:1;transform:translateY(0) scale(1)}
   100%{opacity:0;transform:translateY(-8px) scale(.96)}
 }
+
+/* v32 compact totals + in-game nickname cover strip */
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  width:247px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankHeader,
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRows{
+  width:247px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRow{
+  grid-template-columns:31px 104px 34px 35px 43px!important;
+  width:247px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols{
+  border-left:1px solid #29343f!important;
+  border-right:1px solid #29343f!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotal{
+  min-width:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotalLabel{
+  font-size:14px!important;
+  font-weight:1000!important;
+  letter-spacing:-.25px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotal.killMode .rankTotalLabel:before{
+  content:"⚔";
+  margin-right:4px;
+  font-size:13px;
+  color:#fff;
+}
+html.broadcastOverlay.broadcastVertical .rankTotal.chickenMode .rankTotalLabel:before{
+  content:"🍗";
+  margin-right:4px;
+  font-size:12px;
+}
+html.broadcastOverlay.broadcastVertical .rankTotal.versusMode .rankTotalLabel:before{
+  content:"⚔";
+  margin-right:4px;
+  font-size:13px;
+}
+html.broadcastOverlay.broadcastVertical .rankHeader{
+  padding-right:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTotals{
+  width:100%!important;
+}
+html.broadcastOverlay.broadcastVertical .rankScore{
+  padding-right:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols>div:last-child,
+html.broadcastOverlay.broadcastVertical .rankRow>div:last-child{
+  padding-right:0!important;
+  margin-right:0!important;
+}
+
+/* bottom nickname cover: covers nickname line only, never health bars */
+html.broadcastOverlay.broadcastVertical .gameNameplates{
+  position:absolute;
+  left:0;
+  bottom:14px; /* leave visible separation above the final 2px guide line */
+  width:247px;
+  display:grid;
+  gap:6px;
+  pointer-events:none;
+}
+html.broadcastOverlay.broadcastVertical .gameNameplate{
+  width:230px;
+  height:23px;
+  display:grid;
+  grid-template-columns:22px minmax(0,1fr);
+  align-items:center;
+  gap:6px;
+  background:rgba(17,23,30,.88);
+  border-left:4px solid var(--team-color);
+  border-top:1px solid rgba(255,255,255,.10);
+  border-bottom:1px solid rgba(0,0,0,.55);
+  padding:0 7px 0 4px;
+  box-shadow:0 1px 5px rgba(0,0,0,.22);
+}
+html.broadcastOverlay.broadcastVertical .gameNameplate img,
+html.broadcastOverlay.broadcastVertical .gameNameplate .gameNameplateAvatarEmpty{
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#26313b;
+}
+html.broadcastOverlay.broadcastVertical .gameNameplate span{
+  min-width:0;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  color:#fff;
+  font-size:13px;
+  font-weight:950;
+  line-height:1;
+  text-shadow:0 1px 2px #000;
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -2230,19 +2331,18 @@ function applyRankTotalMode(){
     const ca=RANK_TEAM_COLORS[0],cc=RANK_TEAM_COLORS[2];
     totalsWrap.style.setProperty('--rank-count','2');
     totalsWrap.innerHTML=
-      '<div class="rankTotal" style="--team-color:'+ca+'"><span class="rankTotalInfo rankTotalLabel">AB '+left+'</span></div>'+
-      '<div class="rankTotal" style="--team-color:'+cc+'"><span class="rankTotalInfo rankTotalLabel">CD '+right+'</span></div>';
+      '<div class="rankTotal versusMode" style="--team-color:'+ca+'"><span class="rankTotalInfo rankTotalLabel">'+left+'</span></div>'+
+      '<div class="rankTotal versusMode" style="--team-color:'+cc+'"><span class="rankTotalInfo rankTotalLabel">'+right+'</span></div>';
     return;
   }
 
   totalsWrap.style.setProperty('--rank-count',Math.max(1,cur.team_count));
   totalsWrap.innerHTML=teamData.map(x=>{
     const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
-    const label=rankDisplayPhase===1
-      ? '🍗 '+x.chicken
-      : '현재킬 '+x.kill;
-    return '<div class="rankTotal" data-rank-total-team="'+x.team+'" style="--team-color:'+c+'">'+
-      '<span class="rankTotalInfo rankTotalLabel rankTotalModeFade">'+e(label)+'</span>'+
+    const modeClass=rankDisplayPhase===1?'chickenMode':'killMode';
+    const value=rankDisplayPhase===1?x.chicken:x.kill;
+    return '<div class="rankTotal '+modeClass+'" data-rank-total-team="'+x.team+'" style="--team-color:'+c+'">'+
+      '<span class="rankTotalInfo rankTotalLabel rankTotalModeFade">'+value+'</span>'+
     '</div>';
   }).join('');
 }
@@ -2257,6 +2357,28 @@ function animateVerticalKillChange(playerId,delta){
   row.classList.add('killChanged');
   clearTimeout(row._killFxTimer);
   row._killFxTimer=setTimeout(()=>row.classList.remove('killChanged'),1180);
+}
+
+
+function renderGameNameplates(){
+  if(!cur||!captureStage)return;
+  let holder=document.getElementById('gameNameplates');
+  if(!holder){
+    holder=document.createElement('div');
+    holder.id='gameNameplates';
+    holder.className='gameNameplates';
+    captureStage.appendChild(holder);
+  }
+  const ps=teamPlayers(1).slice(0,4);
+  holder.innerHTML=ps.map(p=>{
+    const c=RANK_TEAM_COLORS[(1-1)%RANK_TEAM_COLORS.length];
+    const av=p?.soop_user_id
+      ? '<img src="'+pic(p.soop_user_id)+'">'
+      : '<span class="gameNameplateAvatarEmpty"></span>';
+    return '<div class="gameNameplate" style="--team-color:'+c+'">'+
+      av+'<span>'+e((p.nickname||'PLAYER').slice(0,8))+'</span>'+
+    '</div>';
+  }).join('');
 }
 
 function renderVerticalRanking(animate=true){
@@ -2324,6 +2446,7 @@ function renderVerticalRanking(animate=true){
   previousRankOrder=nowOrder;
   previousRankStats=new Map(rows.map(x=>[String(x.id),{kill:x.kill,death:x.death,score:x.score}]));
   previousTeamKills=new Map(teamTotals.map(x=>[x.team,x.kill]));
+  if(document.documentElement.classList.contains('broadcastVertical'))renderGameNameplates();
   if(!rankModeTimer && document.documentElement.classList.contains('broadcastVertical'))restartRankModeCycle();
 }
 
