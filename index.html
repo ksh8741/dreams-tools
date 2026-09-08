@@ -2066,7 +2066,7 @@ html.broadcastOverlay.broadcastVertical .rankOverlay{
 /* v41 — 1920x1080 adaptive ranking placement */
 html.broadcastOverlay.broadcastVertical .rankOverlay{
   left:6px!important;
-  top:var(--ranking-top,145px)!important;
+  top:var(--ranking-top)!important;
   bottom:auto!important;
   height:auto!important;
   min-height:0!important;
@@ -2226,43 +2226,25 @@ html.broadcastOverlay.broadcastVertical .rankRow.killChanged:before{
 }
 
 
-/* v54 — ACTUALLY EXTEND the board 2px to the right */
-/* Previous visible width: 247px -> new visible width: 249px */
+/* v55 — ADD 2px EMPTY SPACE on the RIGHT. Do not shrink/reallocate columns. */
 html.broadcastOverlay.broadcastVertical .rankOverlay{
-  width:249px!important;
-  min-width:249px!important;
-  max-width:249px!important;
+  width:251px!important;       /* existing 249-ish content area + 2px EMPTY room */
+  min-width:251px!important;
+  max-width:251px!important;
+  padding-right:2px!important; /* actual added empty space */
+  box-sizing:border-box!important;
+  overflow:visible!important;
 }
 
-/* The actual visible board grows too — not just the wrapper */
-html.broadcastOverlay.broadcastVertical .rankHeader,
-html.broadcastOverlay.broadcastVertical .rankCols,
-html.broadcastOverlay.broadcastVertical .rankRows,
-html.broadcastOverlay.broadcastVertical .rankRow{
-  width:249px!important;
-  min-width:249px!important;
-  max-width:249px!important;
-}
+/* Existing table/content dimensions are left untouched.
+   The added 2px belongs ONLY to the right-side empty area. */
 
-/* Give the new 2px specifically to the SCORE column */
-html.broadcastOverlay.broadcastVertical .rankCols,
-html.broadcastOverlay.broadcastVertical .rankRow{
-  grid-template-columns:31px 104px 34px 35px 45px!important;
-}
-
-/* SCORE paper itself grows 2px to the right; it does NOT shift left/right */
-html.broadcastOverlay.broadcastVertical .rankScore{
-  width:45px!important;
+/* Remove every old 145px fallback / minimum-top concept.
+   Y position is controlled only by CENTER_Y=517 calculation. */
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  top:var(--ranking-top)!important;
+  bottom:auto!important;
   transform:none!important;
-}
-
-/* Kill border remains fully inside the row.
-   Since the row itself is now 2px wider, its RIGHT EDGE naturally moves 2px right. */
-html.broadcastOverlay.broadcastVertical .rankRow.killChanged:before{
-  left:1px!important;
-  right:1px!important;
-  top:1px!important;
-  bottom:1px!important;
 }
 
 </style></head><body>
@@ -2892,15 +2874,9 @@ function positionVerticalRanking(){
   if(!document.documentElement.classList.contains('broadcastVertical')) return;
   const board=document.querySelector('.rankOverlay');
   if(!board) return;
-
   const CENTER_Y=517;
   const boardH=board.getBoundingClientRect().height;
-
-  /* Exact rule: the geometric vertical center of the current ranking board
-     is always Y=517, regardless of whether 4, 8, 12, or 16 players are shown. */
-  const y=CENTER_Y-(boardH/2);
-
-  document.documentElement.style.setProperty('--ranking-top',Math.round(y)+'px');
+  document.documentElement.style.setProperty('--ranking-top',Math.round(CENTER_Y-(boardH/2))+'px');
 }
 
 function renderVerticalRanking(animate=true){
