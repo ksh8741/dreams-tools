@@ -4406,6 +4406,28 @@ html:not(.broadcastOverlay) .teamSummary .miniChicken{
   white-space:nowrap!important;
 }
 
+
+/* v107 — team headers: final aggregate score + chicken only, centered */
+html:not(.broadcastOverlay) .teamSummary{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:10px!important;
+  text-align:center!important;
+}
+html:not(.broadcastOverlay) .teamSummary .miniScore,
+html:not(.broadcastOverlay) .teamSummary .miniChicken{
+  position:static!important;
+  transform:none!important;
+  display:inline-block!important;
+  color:#fff!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  line-height:24px!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+}
+
 </style><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
@@ -4926,13 +4948,13 @@ function renderScore(){
   applyScoreWidth();
   if(scoreViewMode)scoreViewMode.style.display=cur.team_count===2?'none':'';
   ck.value=cur.chicken_kills;sk.value=cur.sanhok_chicken_kills;
-  let teamScores=[],teamKills=[],out='';
+  let teamScores=[],out='';
   for(let t=1;t<=cur.team_count;t++){
-    let ps=P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===t),teamScore=0,teamKill=0,ch=0;
-    ps.forEach(p=>{const a=totals(p);teamScore+=a.score;teamKill+=a.raw});
+    let ps=P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===t),teamScore=0,ch=0;
+    ps.forEach(p=>{teamScore+=totals(p).score});
     RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
-    teamScores.push(teamScore);teamKills.push(teamKill);
-    out+='<div class="team"><div class="teamSummary"><span class="miniScore">🔫 '+teamKill+'</span><span class="miniChicken">🍗 '+ch+'</span></div><div class="plist">'+
+    teamScores.push(teamScore);
+    out+='<div class="team"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span></div><div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<img class="avatar" src="'+pic(p.soop_user_id)+'">':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름 입력">'+
@@ -5010,7 +5032,6 @@ function teamKillTotals(){
   const out=[];
   for(let team=1;team<=cur.team_count;team++){
     const ps=teamPlayers(team);
-    const rawKill=ps.reduce((sum,p)=>sum+n(totals(p).raw),0);
     const playerScore=ps.reduce((sum,p)=>sum+n(totals(p).score),0);
     const chickenRounds=RO.filter(r=>r.chicken_team===team);
     const chickenBonus=chickenRounds.reduce((sum,r)=>
@@ -5019,7 +5040,6 @@ function teamKillTotals(){
     out.push({
       team,
       name:(ps[0]?.nickname||('TEAM '+team)).slice(0,2),
-      kill:rawKill,
       score:playerScore+chickenBonus,
       chicken:chickenRounds.length
     });
