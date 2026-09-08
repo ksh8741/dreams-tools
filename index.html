@@ -1813,6 +1813,125 @@ html.broadcastOverlay.broadcastVertical .gameNameplate img,
 html.broadcastOverlay.broadcastVertical .gameNameplate .gameNameplateAvatarEmpty{
   transform:translateY(-4px)!important; /* avatar 4px upward */
 }
+
+/* v38 overlay polish + lower HUD sponsor frames */
+
+/* vertical ranking: 3px right breathing room + thin soft-gray outline */
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  width:250px!important;
+  box-sizing:border-box!important;
+  border:1px solid rgba(214,222,230,.62)!important;
+  background:
+    radial-gradient(circle at 18% 4%,rgba(57,110,156,.20),transparent 32%),
+    linear-gradient(145deg,rgba(16,29,43,.96),rgba(7,14,22,.94))!important;
+}
+html.broadcastOverlay.broadcastVertical .rankHeader,
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRows{
+  width:247px!important;
+  box-sizing:border-box!important;
+}
+html.broadcastOverlay.broadcastVertical .rankHeader{
+  background:
+    radial-gradient(circle at 15% 0%,rgba(87,145,190,.18),transparent 38%),
+    linear-gradient(180deg,rgba(24,39,55,.97),rgba(10,20,30,.96))!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols{
+  background:linear-gradient(180deg,rgba(24,37,50,.96),rgba(13,24,35,.96))!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRows{
+  background:linear-gradient(145deg,rgba(14,28,41,.95),rgba(7,16,25,.95))!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRow{
+  background:
+    linear-gradient(90deg,color-mix(in srgb,var(--team-color) 9%,transparent),transparent 58%),
+    linear-gradient(180deg,rgba(25,39,52,.90),rgba(13,25,36,.90))!important;
+}
+html.broadcastOverlay.broadcastVertical .rankRow:nth-child(even){
+  background:
+    linear-gradient(90deg,color-mix(in srgb,var(--team-color) 7%,transparent),transparent 58%),
+    linear-gradient(180deg,rgba(20,34,47,.90),rgba(10,21,31,.90))!important;
+}
+
+/* subtle moving glass/sparkle texture */
+html.broadcastOverlay.broadcastVertical .rankOverlay:before{
+  content:"";
+  position:absolute;
+  z-index:8;
+  inset:0 3px 0 0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 12% 18%,rgba(255,255,255,.34) 0 1px,transparent 1.6px),
+    radial-gradient(circle at 76% 9%,rgba(126,203,255,.25) 0 1px,transparent 1.7px),
+    radial-gradient(circle at 58% 43%,rgba(255,255,255,.18) 0 1px,transparent 1.6px),
+    linear-gradient(112deg,transparent 0 42%,rgba(160,218,255,.055) 48%,transparent 54%);
+  background-size:71px 83px,97px 113px,89px 101px,190px 100%;
+  opacity:.72;
+  mix-blend-mode:screen;
+  animation:rankGlassDrift 9s linear infinite;
+}
+@keyframes rankGlassDrift{
+  from{background-position:0 0,0 0,0 0,-190px 0}
+  to{background-position:17px 23px,-19px 31px,13px -21px,190px 0}
+}
+
+/* profile picture gets its own team-color jewel rim */
+html.broadcastOverlay.broadcastVertical .rankAvatar,
+html.broadcastOverlay.broadcastVertical .rankAvatarEmpty{
+  border:2px solid var(--team-color)!important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.28),
+    0 0 7px color-mix(in srgb,var(--team-color) 48%,transparent),
+    inset 0 0 8px rgba(255,255,255,.08)!important;
+}
+
+/* bottom health-bar nickname text only: 2px upward */
+html.broadcastOverlay.broadcastVertical .gameNameplate span{
+  transform:translateY(-2px)!important;
+}
+
+/* three luxury transparent frames to the right of the in-game health bars */
+html.broadcastOverlay.broadcastVertical .hudFrames{
+  position:absolute;
+  left:242px;
+  bottom:34px;
+  display:flex;
+  gap:5px;
+  pointer-events:none;
+  z-index:20;
+}
+html.broadcastOverlay.broadcastVertical .hudFrame{
+  width:126px;
+  height:116px;
+  box-sizing:border-box;
+  position:relative;
+  background:
+    linear-gradient(145deg,rgba(13,24,35,.22),rgba(5,10,17,.08)),
+    radial-gradient(circle at 50% 20%,rgba(91,160,210,.08),transparent 65%);
+  border:1px solid rgba(205,218,229,.72);
+  box-shadow:
+    inset 0 0 0 1px rgba(15,29,41,.88),
+    inset 0 0 18px rgba(86,151,196,.08),
+    0 0 0 1px rgba(255,255,255,.07),
+    0 3px 12px rgba(0,0,0,.18);
+}
+html.broadcastOverlay.broadcastVertical .hudFrame:before,
+html.broadcastOverlay.broadcastVertical .hudFrame:after{
+  content:"";
+  position:absolute;
+  width:15px;height:15px;
+  border-color:rgba(172,217,244,.92);
+}
+html.broadcastOverlay.broadcastVertical .hudFrame:before{
+  left:3px;top:3px;
+  border-left:2px solid;
+  border-top:2px solid;
+}
+html.broadcastOverlay.broadcastVertical .hudFrame:after{
+  right:3px;bottom:3px;
+  border-right:2px solid;
+  border-bottom:2px solid;
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -2415,6 +2534,14 @@ function animateVerticalKillChange(playerId,delta){
 
 function renderGameNameplates(){
   if(!cur||!captureStage)return;
+  let frames=document.getElementById('hudFrames');
+  if(!frames){
+    frames=document.createElement('div');
+    frames.id='hudFrames';
+    frames.className='hudFrames';
+    frames.innerHTML='<div class="hudFrame"></div><div class="hudFrame"></div><div class="hudFrame"></div>';
+    captureStage.appendChild(frames);
+  }
   let holder=document.getElementById('gameNameplates');
   if(!holder){
     holder=document.createElement('div');
