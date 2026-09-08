@@ -4611,7 +4611,10 @@ async function saveName(x){
   }
 }
 function renderScore(){
-  if(scoreFrame)scoreFrame.style.setProperty('--home-team-count',String(Math.max(1,cur?.team_count||1)));
+  {
+    const homeScoreFrame=document.querySelector('#captureStage .scoreFrame');
+    if(homeScoreFrame)homeScoreFrame.style.setProperty('--home-team-count',String(Math.max(1,cur?.team_count||1)));
+  }
 
   applyScoreWidth();
   if(scoreViewMode)scoreViewMode.style.display=cur.team_count===2?'none':'';
