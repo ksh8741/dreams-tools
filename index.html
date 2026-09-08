@@ -2791,6 +2791,79 @@ html.broadcastOverlay.broadcastVertical.theme-cherry .rankTotalInfo{
   color:#fff0f6!important;
 }
 
+
+/* v68 — final shortlist + seamless SCORE column + themed goal text */
+
+/* SCORE: absolutely no separate surface. It is just another cell in the row. */
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankScore,
+html.broadcastOverlay.broadcastVertical.theme-lavender .rankScore{
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  backdrop-filter:none!important;
+  opacity:1!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankScore:before,
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankScore:after,
+html.broadcastOverlay.broadcastVertical.theme-lavender .rankScore:before,
+html.broadcastOverlay.broadcastVertical.theme-lavender .rankScore:after{
+  content:none!important;
+  display:none!important;
+}
+
+/* The SCORE number itself has no plate either. */
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankScore strong,
+html.broadcastOverlay.broadcastVertical.theme-lavender .rankScore strong{
+  background:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+  margin:0!important;
+}
+
+/* Lavender: all row values, including SCORE, use the same dark family. */
+html.broadcastOverlay.broadcastVertical.theme-lavender .rankRow{
+  color:#29202d!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-lavender .rankScore,
+html.broadcastOverlay.broadcastVertical.theme-lavender .rankScore strong{
+  color:#29202d!important;
+}
+
+/* Luxury: SCORE follows the same row typography, without a separate gold paper. */
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankRow{
+  color:#f3ead5!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankScore,
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankScore strong{
+  color:#f3ead5!important;
+}
+
+/* Goal kills must use the theme text color too. */
+html.broadcastOverlay.broadcastVertical.theme-lavender .rankGoal{
+  color:#29202d!important;
+  text-shadow:none!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankGoal{
+  color:#f2d68e!important;
+  text-shadow:0 1px 2px #000!important;
+}
+
+/* Timer follows the same theme family for consistency. */
+html.broadcastOverlay.broadcastVertical.theme-lavender .rankTimer{
+  color:#29202d!important;
+  text-shadow:none!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankTimer{
+  color:#f2d68e!important;
+  text-shadow:0 1px 2px #000!important;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -2880,15 +2953,7 @@ html.broadcastOverlay.broadcastVertical.theme-cherry .rankTotalInfo{
         <span>테마</span>
         <select id="overlayThemeSelect">
           <option value="luxury">LUXURY NOIR</option>
-          <option value="sakura">SAKURA MILK</option>
-          <option value="blossom">BLOSSOM GLASS</option>
-          <option value="rose">ROSE CREAM</option>
-          <option value="berry">BERRY POP</option>
-          <option value="peach">PEACH SPRING</option>
           <option value="lavender">LAVENDER PINK</option>
-          <option value="cherry">CHERRY NIGHT</option>
-          <option value="ribbon">PINK RIBBON</option>
-          <option value="garden">SPRING GARDEN</option>
         </select>
       </label>
       <label class="overlaySettingField"><span>내 팀</span><select id="overlayTeamSelect"></select></label>
@@ -3840,7 +3905,7 @@ const overlayParams=new URLSearchParams(location.search);
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout=overlayParams.get('layout')==='horizontal'?'horizontal':'vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
-const OVERLAY_THEMES=['luxury','sakura','blossom','rose','berry','peach','lavender','cherry','ribbon','garden'];
+const OVERLAY_THEMES=['luxury','lavender'];
 const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'luxury';
 if(overlayRoomId){
   document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal','theme-'+overlayTheme);
