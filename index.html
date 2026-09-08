@@ -2156,6 +2156,50 @@ html.broadcastOverlay.broadcastVertical .hudFrames:before{
       rgba(150,176,188,.55) calc(100% - 2px) 100%);
   opacity:.28;
 }
+
+/* v46 — timer slightly larger + goal kills on the left */
+html.broadcastOverlay.broadcastVertical .rankHeaderTop{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  width:100%!important;
+}
+html.broadcastOverlay.broadcastVertical .rankTimer{
+  font-size:14px!important;
+  line-height:18px!important;
+  font-weight:950!important;
+}
+html.broadcastOverlay.broadcastVertical .rankGoal{
+  font-size:13px!important;
+  line-height:18px!important;
+  font-weight:950!important;
+  color:#eef4f8!important;
+  letter-spacing:-.2px!important;
+  white-space:nowrap!important;
+}
+html.broadcastOverlay.broadcastVertical .rankGoal:before{
+  content:"🎯";
+  margin-right:4px;
+  font-size:12px;
+}
+
+/* v47 — restore a little right-side breathing room */
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  width:254px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankHeader,
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRows{
+  width:250px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankCols,
+html.broadcastOverlay.broadcastVertical .rankRow{
+  grid-template-columns:31px 104px 34px 35px 43px!important;
+  width:250px!important;
+}
+html.broadcastOverlay.broadcastVertical .rankScore{
+  padding-right:3px!important;
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -2847,7 +2891,7 @@ function renderVerticalRanking(animate=true){
   box.style.setProperty('--rank-count',Math.max(1,cur.team_count));
   box.innerHTML=
     '<div class="rankHeader">'+
-      (timeTxt?'<div class="rankHeaderTop"><span class="rankTimer">'+e(timeTxt)+'</span></div>':'')+
+      '<div class="rankHeaderTop"><span class="rankGoal">'+n(cur.goal_kills||0)+'</span>'+(timeTxt?'<span class="rankTimer">'+e(timeTxt)+'</span>':'')+'</div>'+
       '<div class="rankTotals">'+totals+'</div>'+
     '</div>'+
     '<div class="rankCols"><div>RANK</div><div>PLAYER</div><div>K</div><div>D</div><div>SCORE</div></div>'+
