@@ -3584,6 +3584,156 @@ html.broadcastOverlay.broadcastVertical:is(
 .theme-hologram,.theme-mint_fresh,.theme-cream_beige,.theme-midnight_purple
 ) .rankIdentity{border-left-color:var(--team-color)!important}
 
+
+/* ===== v76 final theme candidates ===== */
+
+/* ESPORTS RED v2
+   Midnight Purple-style dark header with restrained red depth/accent,
+   instead of a solid red header band. */
+html.broadcastOverlay.broadcastVertical.theme-esports_red .rankHeader{
+  background:linear-gradient(100deg,#080707 0%,#230b0d 45%,#090707 100%)!important;
+  color:#fff!important;
+  border:1px solid #9f2630!important;
+  box-shadow:inset 0 -1px 0 rgba(215,25,32,.32)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-esports_red .rankCols{
+  background:#1d0b0d!important;
+  color:#fff!important;
+  border-color:#8f2630!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-esports_red .rankCols *{color:#fff!important}
+html.broadcastOverlay.broadcastVertical.theme-esports_red .rankTotal{
+  background:linear-gradient(100deg,#0d0909,#251013)!important;
+  color:#fff!important;
+  border:1px solid #8f2630!important;
+  box-shadow:none!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-esports_red .rankRows{
+  background:#090707!important;
+  border-color:#612027!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-esports_red .rankRow{
+  background:linear-gradient(90deg,#0b0909,#1e0d10)!important;
+  color:#fff!important;
+  border-color:#3c171c!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-esports_red .rankScore{
+  background:transparent!important;background-image:none!important;border:0!important;
+  box-shadow:none!important;color:#fff!important
+}
+html.broadcastOverlay.broadcastVertical.theme-esports_red :is(
+.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo,
+.rankName,.rankPos,.rankK,.rankD,.rankScore,.rankScore strong
+){color:#fff!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-esports_red .rankAvatarEmpty{
+  background:#160b0d!important;border:2px solid var(--team-color)!important;box-shadow:none!important
+}
+
+/* SIGNAL YELLOW
+   Broadcast hazard / performance graphic. Yellow surfaces always use black text. */
+html.broadcastOverlay.broadcastVertical.theme-signal_yellow .rankHeader{
+  background:linear-gradient(105deg,#ffd400,#ffea55)!important;
+  color:#000!important;border:1px solid #000!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-signal_yellow .rankHeader *,
+html.broadcastOverlay.broadcastVertical.theme-signal_yellow :is(.rankGoal,.rankTimer){
+  color:#000!important;text-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-signal_yellow .rankCols{
+  background:#000!important;color:#fff!important;border-color:#000!important
+}
+html.broadcastOverlay.broadcastVertical.theme-signal_yellow .rankCols *{color:#fff!important}
+html.broadcastOverlay.broadcastVertical.theme-signal_yellow .rankTotal{
+  background:#ffdf18!important;color:#000!important;border:1px solid #000!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-signal_yellow .rankTotal *{
+  color:#000!important;text-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-signal_yellow .rankRows{
+  background:#fff8c8!important;border-color:#000!important
+}
+html.broadcastOverlay.broadcastVertical.theme-signal_yellow .rankRow{
+  background:linear-gradient(90deg,#fffdf0,#fff1a6)!important;
+  color:#000!important;border-color:#dbc95f!important
+}
+html.broadcastOverlay.broadcastVertical.theme-signal_yellow .rankRow *{color:#000!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-signal_yellow .rankScore{
+  background:transparent!important;background-image:none!important;border:0!important;
+  box-shadow:none!important;color:#000!important
+}
+html.broadcastOverlay.broadcastVertical.theme-signal_yellow .rankAvatarEmpty{
+  background:#fff4a5!important;border:2px solid var(--team-color)!important;box-shadow:none!important
+}
+
+/* MILITARY NAVY
+   Naval/tactical: deep navy, desaturated steel-blue, restrained military sand.
+   All dark surfaces use warm off-white text. */
+html.broadcastOverlay.broadcastVertical.theme-military_navy .rankHeader{
+  background:linear-gradient(105deg,#08131c 0%,#172b39 52%,#0a151e 100%)!important;
+  color:#f1ead8!important;border:1px solid #78848a!important;
+  box-shadow:inset 0 -1px 0 rgba(194,177,133,.28)!important
+}
+html.broadcastOverlay.broadcastVertical.theme-military_navy .rankCols{
+  background:#253743!important;color:#f1ead8!important;border-color:#7e8a8e!important
+}
+html.broadcastOverlay.broadcastVertical.theme-military_navy .rankCols *{color:#f1ead8!important}
+html.broadcastOverlay.broadcastVertical.theme-military_navy .rankTotal{
+  background:linear-gradient(100deg,#0c1922,#1b303d)!important;
+  color:#f1ead8!important;border:1px solid #74838a!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-military_navy .rankRows{
+  background:#09151e!important;border-color:#596970!important
+}
+html.broadcastOverlay.broadcastVertical.theme-military_navy .rankRow{
+  background:linear-gradient(90deg,#0d1a23,#182b36)!important;
+  color:#f1ead8!important;border-color:#304650!important
+}
+html.broadcastOverlay.broadcastVertical.theme-military_navy .rankScore{
+  background:transparent!important;background-image:none!important;border:0!important;
+  box-shadow:none!important;color:#f1ead8!important
+}
+html.broadcastOverlay.broadcastVertical.theme-military_navy :is(
+.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo,
+.rankName,.rankPos,.rankK,.rankD,.rankScore,.rankScore strong
+){color:#f1ead8!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-military_navy .rankAvatarEmpty{
+  background:#172934!important;border:2px solid var(--team-color)!important;box-shadow:none!important
+}
+
+/* Keep actual team colors in every new/retained competitive theme. */
+html.broadcastOverlay.broadcastVertical:is(
+.theme-esports_red,.theme-midnight_purple,.theme-signal_yellow,.theme-military_navy
+) .rankTotal:before{
+  background:var(--team-color)!important;background-image:none!important
+}
+html.broadcastOverlay.broadcastVertical:is(
+.theme-esports_red,.theme-midnight_purple,.theme-signal_yellow,.theme-military_navy
+) .rankAvatar{
+  border:2px solid var(--team-color)!important
+}
+html.broadcastOverlay.broadcastVertical:is(
+.theme-esports_red,.theme-midnight_purple,.theme-signal_yellow,.theme-military_navy
+) .rankAvatarEmpty{
+  border-color:var(--team-color)!important
+}
+html.broadcastOverlay.broadcastVertical:is(
+.theme-esports_red,.theme-midnight_purple,.theme-signal_yellow,.theme-military_navy
+) .rankIdentity{
+  border-left-color:var(--team-color)!important
+}
+
+/* SCORE pseudo-card remains forbidden in all 8 kept themes. */
+html.broadcastOverlay.broadcastVertical:is(
+.theme-luxury,.theme-lavender,.theme-winter_night,.theme-mono_stripe,
+.theme-midnight_purple,.theme-esports_red,.theme-signal_yellow,.theme-military_navy
+) .rankScore:before,
+html.broadcastOverlay.broadcastVertical:is(
+.theme-luxury,.theme-lavender,.theme-winter_night,.theme-mono_stripe,
+.theme-midnight_purple,.theme-esports_red,.theme-signal_yellow,.theme-military_navy
+) .rankScore:after{
+  content:none!important;display:none!important
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -3677,16 +3827,12 @@ html.broadcastOverlay.broadcastVertical:is(
             <option value="lavender">LAVENDER PINK</option>
             <option value="winter_night">WINTER NIGHT</option>
             <option value="mono_stripe">BLACK &amp; WHITE</option>
-          </optgroup>
-          <optgroup label="추가 후보">
-            <option value="pubg_tactical">PUBG TACTICAL</option>
-            <option value="esports_red">ESPORTS RED</option>
-            <option value="royal_navy">ROYAL NAVY</option>
-            <option value="retro_arcade">RETRO ARCADE</option>
-            <option value="hologram">HOLOGRAM</option>
-            <option value="mint_fresh">MINT FRESH</option>
-            <option value="cream_beige">CREAM BEIGE</option>
             <option value="midnight_purple">MIDNIGHT PURPLE</option>
+            <option value="esports_red">ESPORTS RED</option>
+          </optgroup>
+          <optgroup label="마지막 후보">
+            <option value="signal_yellow">SIGNAL YELLOW</option>
+            <option value="military_navy">MILITARY NAVY</option>
           </optgroup>
         </select>
       </label>
@@ -4639,7 +4785,7 @@ const overlayParams=new URLSearchParams(location.search);
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout=overlayParams.get('layout')==='horizontal'?'horizontal':'vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
-const OVERLAY_THEMES=['luxury','lavender','winter_night','mono_stripe','pubg_tactical','esports_red','royal_navy','retro_arcade','hologram','mint_fresh','cream_beige','midnight_purple'];
+const OVERLAY_THEMES=['luxury','lavender','winter_night','mono_stripe','midnight_purple','esports_red','signal_yellow','military_navy'];
 const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'luxury';
 if(overlayRoomId){
   document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal','theme-'+overlayTheme);
