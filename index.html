@@ -2049,6 +2049,19 @@ html.broadcastOverlay.broadcastVertical .hudFrames:after{
     rgba(176,195,203,.52) 16px 22px,
     rgba(176,195,203,.0) 22px 140px);
 }
+
+/* v40 — ranking board anchored from the bottom HUD nameplates
+   Board bottom = 25px above the top edge of nickname covers. */
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  top:auto!important;
+  bottom:calc(34px + 4 * 39px + 3 * 13px + 25px)!important;
+  left:4px!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+}
+
+/* no reserved transparent logo strip at the top anymore */
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
