@@ -3734,6 +3734,142 @@ html.broadcastOverlay.broadcastVertical:is(
   content:none!important;display:none!important
 }
 
+
+/* ===== v77 YELLOW + REAL MILITARY candidate pack ===== */
+
+/* ---------- YELLOW 6 ---------- */
+html.broadcastOverlay.broadcastVertical.theme-yellow_signal{--bg:#fff7b8;--row:#fff9cf;--head:#ffd400;--sub:#000;--line:#111;--txt:#000;--subtxt:#fff}
+html.broadcastOverlay.broadcastVertical.theme-yellow_black{--bg:#0a0a0a;--row:#121212;--head:#f5cf00;--sub:#000;--line:#f5cf00;--txt:#fff;--subtxt:#fff}
+html.broadcastOverlay.broadcastVertical.theme-yellow_sport{--bg:#fff;--row:#fff;--head:#ffe100;--sub:#111;--line:#111;--txt:#111;--subtxt:#fff}
+html.broadcastOverlay.broadcastVertical.theme-yellow_cream{--bg:#fffdf0;--row:#fff9d9;--head:#fff0a3;--sub:#f0d65b;--line:#b49c35;--txt:#302a13;--subtxt:#302a13}
+html.broadcastOverlay.broadcastVertical.theme-yellow_neon{--bg:#101010;--row:#171717;--head:#eaff00;--sub:#050505;--line:#eaff00;--txt:#fff;--subtxt:#fff}
+html.broadcastOverlay.broadcastVertical.theme-yellow_gold{--bg:#17130a;--row:#211b0d;--head:#d7aa24;--sub:#4a3810;--line:#d7aa24;--txt:#fff5cf;--subtxt:#fff5cf}
+
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_signal,.theme-yellow_sport,.theme-yellow_cream) .rankHeader{
+ background:var(--head)!important;color:var(--txt)!important;border:1px solid var(--line)!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_signal,.theme-yellow_sport,.theme-yellow_cream) .rankHeader *,
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_signal,.theme-yellow_sport,.theme-yellow_cream) :is(.rankGoal,.rankTimer){color:var(--txt)!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_signal,.theme-yellow_sport,.theme-yellow_cream) .rankCols{
+ background:var(--sub)!important;color:var(--subtxt)!important;border-color:var(--line)!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_signal,.theme-yellow_sport,.theme-yellow_cream) .rankCols *{color:var(--subtxt)!important}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_signal,.theme-yellow_sport,.theme-yellow_cream) .rankTotal{
+ background:var(--head)!important;color:var(--txt)!important;border:1px solid var(--line)!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_signal,.theme-yellow_sport,.theme-yellow_cream) .rankTotal *{color:var(--txt)!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_signal,.theme-yellow_sport,.theme-yellow_cream) .rankRows{background:var(--bg)!important;border-color:var(--line)!important}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_signal,.theme-yellow_sport,.theme-yellow_cream) .rankRow{
+ background:var(--row)!important;color:var(--txt)!important;border-color:color-mix(in srgb,var(--line) 35%,transparent)!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_signal,.theme-yellow_sport,.theme-yellow_cream) .rankRow *{color:var(--txt)!important;text-shadow:none!important}
+
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_black,.theme-yellow_neon,.theme-yellow_gold) .rankHeader{
+ background:linear-gradient(100deg,var(--bg),var(--head),var(--bg))!important;color:var(--txt)!important;border:1px solid var(--line)!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_black,.theme-yellow_neon,.theme-yellow_gold) .rankHeader *,
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_black,.theme-yellow_neon,.theme-yellow_gold) :is(.rankGoal,.rankTimer){color:var(--txt)!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_black,.theme-yellow_neon,.theme-yellow_gold) .rankCols{
+ background:var(--sub)!important;color:var(--subtxt)!important;border-color:var(--line)!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_black,.theme-yellow_neon,.theme-yellow_gold) .rankCols *{color:var(--subtxt)!important}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_black,.theme-yellow_neon,.theme-yellow_gold) .rankTotal{
+ background:var(--row)!important;color:var(--txt)!important;border:1px solid var(--line)!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_black,.theme-yellow_neon,.theme-yellow_gold) .rankTotal *{color:var(--txt)!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_black,.theme-yellow_neon,.theme-yellow_gold) .rankRows{background:var(--bg)!important;border-color:var(--line)!important}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_black,.theme-yellow_neon,.theme-yellow_gold) .rankRow{
+ background:var(--row)!important;color:var(--txt)!important;border-color:color-mix(in srgb,var(--line) 30%,transparent)!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-yellow_black,.theme-yellow_neon,.theme-yellow_gold) .rankRow *{color:var(--txt)!important;text-shadow:none!important}
+
+/* ---------- MILITARY 6 ----------
+   Soldier/military palettes: army green, camouflage, desert tan,
+   tactical black, olive drab, naval combat. */
+html.broadcastOverlay.broadcastVertical.theme-mil_army{--m0:#182015;--m1:#293322;--m2:#4b5738;--m3:#9a9165;--mt:#f0ead5;--mm:#c9c2a7}
+html.broadcastOverlay.broadcastVertical.theme-mil_camo{--m0:#171b12;--m1:#303823;--m2:#5a6040;--m3:#7b7049;--mt:#f1ecd8;--mm:#d0c8ad}
+html.broadcastOverlay.broadcastVertical.theme-mil_desert{--m0:#3a3022;--m1:#67583e;--m2:#a48e64;--m3:#d0b986;--mt:#fff5dc;--mm:#ead9b6}
+html.broadcastOverlay.broadcastVertical.theme-mil_tactical{--m0:#080a09;--m1:#151a17;--m2:#303832;--m3:#687268;--mt:#f0f2ed;--mm:#bfc7bf}
+html.broadcastOverlay.broadcastVertical.theme-mil_olive{--m0:#202417;--m1:#383d25;--m2:#626542;--m3:#a49c6a;--mt:#f5f0d9;--mm:#d2cbae}
+html.broadcastOverlay.broadcastVertical.theme-mil_navy{--m0:#08131c;--m1:#142733;--m2:#304653;--m3:#8b846a;--mt:#f3eddc;--mm:#cbd0ca}
+
+html.broadcastOverlay.broadcastVertical:is(.theme-mil_army,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy) .rankHeader{
+ background:linear-gradient(105deg,var(--m0),var(--m2),var(--m0))!important;
+ color:var(--mt)!important;border:1px solid var(--m3)!important;box-shadow:inset 0 -1px 0 rgba(255,255,255,.08)!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-mil_army,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy) .rankCols{
+ background:var(--m2)!important;color:var(--mt)!important;border-color:var(--m3)!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-mil_army,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy) .rankCols *{color:var(--mt)!important}
+html.broadcastOverlay.broadcastVertical:is(.theme-mil_army,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy) .rankTotal{
+ background:linear-gradient(100deg,var(--m0),var(--m1))!important;color:var(--mt)!important;border:1px solid var(--m3)!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-mil_army,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy) .rankRows{
+ background:var(--m0)!important;border-color:var(--m3)!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-mil_army,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy) .rankRow{
+ background:linear-gradient(90deg,var(--m0),var(--m1))!important;color:var(--mt)!important;border-color:var(--m2)!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-mil_army,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy) :is(
+.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo,
+.rankName,.rankPos,.rankK,.rankD,.rankScore,.rankScore strong
+){color:var(--mt)!important;text-shadow:none!important}
+
+/* CAMOUFLAGE gets an actual camouflage-style field pattern rather than plain navy. */
+html.broadcastOverlay.broadcastVertical.theme-mil_camo .rankHeader{
+ background:
+ linear-gradient(135deg,transparent 0 18%,#5a6040 18% 32%,transparent 32% 55%,#303823 55% 72%,transparent 72%),
+ #171b12!important;color:#f1ecd8!important;border:1px solid #7b7049!important
+}
+html.broadcastOverlay.broadcastVertical.theme-mil_camo .rankCols{
+ background:#303823!important;color:#f1ecd8!important;border-color:#7b7049!important
+}
+html.broadcastOverlay.broadcastVertical.theme-mil_camo .rankCols *{color:#f1ecd8!important}
+html.broadcastOverlay.broadcastVertical.theme-mil_camo .rankTotal{
+ background:
+ linear-gradient(125deg,#171b12 0 28%,#303823 28% 48%,#5a6040 48% 61%,#171b12 61%)!important;
+ color:#f1ecd8!important;border:1px solid #7b7049!important
+}
+html.broadcastOverlay.broadcastVertical.theme-mil_camo .rankRows{background:#171b12!important;border-color:#7b7049!important}
+html.broadcastOverlay.broadcastVertical.theme-mil_camo .rankRow{
+ background:
+ linear-gradient(120deg,#171b12 0 34%,#252c1c 34% 57%,#3d432b 57% 66%,#1a1f15 66%)!important;
+ color:#f1ecd8!important;border-color:#4c5335!important
+}
+html.broadcastOverlay.broadcastVertical.theme-mil_camo :is(
+.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo,
+.rankName,.rankPos,.rankK,.rankD,.rankScore,.rankScore strong
+){color:#f1ecd8!important;text-shadow:none!important}
+
+/* Seamless SCORE + team colors for every candidate */
+html.broadcastOverlay.broadcastVertical:is(
+.theme-yellow_signal,.theme-yellow_black,.theme-yellow_sport,.theme-yellow_cream,.theme-yellow_neon,.theme-yellow_gold,
+.theme-mil_army,.theme-mil_camo,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy
+) .rankScore{
+ background:transparent!important;background-image:none!important;border:0!important;outline:0!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical:is(
+.theme-yellow_signal,.theme-yellow_black,.theme-yellow_sport,.theme-yellow_cream,.theme-yellow_neon,.theme-yellow_gold,
+.theme-mil_army,.theme-mil_camo,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy
+) .rankScore:before,
+html.broadcastOverlay.broadcastVertical:is(
+.theme-yellow_signal,.theme-yellow_black,.theme-yellow_sport,.theme-yellow_cream,.theme-yellow_neon,.theme-yellow_gold,
+.theme-mil_army,.theme-mil_camo,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy
+) .rankScore:after{content:none!important;display:none!important}
+
+html.broadcastOverlay.broadcastVertical:is(
+.theme-yellow_signal,.theme-yellow_black,.theme-yellow_sport,.theme-yellow_cream,.theme-yellow_neon,.theme-yellow_gold,
+.theme-mil_army,.theme-mil_camo,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy
+) .rankTotal:before{background:var(--team-color)!important;background-image:none!important}
+html.broadcastOverlay.broadcastVertical:is(
+.theme-yellow_signal,.theme-yellow_black,.theme-yellow_sport,.theme-yellow_cream,.theme-yellow_neon,.theme-yellow_gold,
+.theme-mil_army,.theme-mil_camo,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy
+) .rankAvatar{border:2px solid var(--team-color)!important}
+html.broadcastOverlay.broadcastVertical:is(
+.theme-yellow_signal,.theme-yellow_black,.theme-yellow_sport,.theme-yellow_cream,.theme-yellow_neon,.theme-yellow_gold,
+.theme-mil_army,.theme-mil_camo,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy
+) .rankAvatarEmpty{border:2px solid var(--team-color)!important}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -3822,7 +3958,7 @@ html.broadcastOverlay.broadcastVertical:is(
       <label class="overlaySettingField">
         <span>테마</span>
         <select id="overlayThemeSelect">
-          <optgroup label="확정">
+          <optgroup label="확정 / 유지">
             <option value="luxury">LUXURY NOIR</option>
             <option value="lavender">LAVENDER PINK</option>
             <option value="winter_night">WINTER NIGHT</option>
@@ -3830,9 +3966,21 @@ html.broadcastOverlay.broadcastVertical:is(
             <option value="midnight_purple">MIDNIGHT PURPLE</option>
             <option value="esports_red">ESPORTS RED</option>
           </optgroup>
-          <optgroup label="마지막 후보">
-            <option value="signal_yellow">SIGNAL YELLOW</option>
-            <option value="military_navy">MILITARY NAVY</option>
+          <optgroup label="YELLOW 후보">
+            <option value="yellow_signal">SIGNAL YELLOW</option>
+            <option value="yellow_black">YELLOW BLACK</option>
+            <option value="yellow_sport">SPORT YELLOW</option>
+            <option value="yellow_cream">CREAM YELLOW</option>
+            <option value="yellow_neon">NEON YELLOW</option>
+            <option value="yellow_gold">GOLD YELLOW</option>
+          </optgroup>
+          <optgroup label="MILITARY 후보">
+            <option value="mil_army">ARMY GREEN</option>
+            <option value="mil_camo">CAMOUFLAGE</option>
+            <option value="mil_desert">DESERT SOLDIER</option>
+            <option value="mil_tactical">TACTICAL BLACK</option>
+            <option value="mil_olive">OLIVE DRAB</option>
+            <option value="mil_navy">NAVY SOLDIER</option>
           </optgroup>
         </select>
       </label>
@@ -4785,7 +4933,7 @@ const overlayParams=new URLSearchParams(location.search);
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout=overlayParams.get('layout')==='horizontal'?'horizontal':'vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
-const OVERLAY_THEMES=['luxury','lavender','winter_night','mono_stripe','midnight_purple','esports_red','signal_yellow','military_navy'];
+const OVERLAY_THEMES=['luxury','lavender','winter_night','mono_stripe','midnight_purple','esports_red','yellow_signal','yellow_black','yellow_sport','yellow_cream','yellow_neon','yellow_gold','mil_army','mil_camo','mil_desert','mil_tactical','mil_olive','mil_navy'];
 const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'luxury';
 if(overlayRoomId){
   document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal','theme-'+overlayTheme);
