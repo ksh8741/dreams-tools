@@ -2284,6 +2284,58 @@ html.broadcastOverlay.broadcastVertical .rankIdentity > .rankName{
   left:6px!important;
 }
 
+
+/* v61 overlay settings UI */
+.overlayExplain{
+  margin:8px 0 12px;
+  padding:10px 12px;
+  border:1px solid #e1e7ed;
+  background:#f7f9fb;
+  border-radius:9px;
+  color:#56616c;
+  font-size:12px;
+  line-height:1.55;
+}
+.overlaySettingGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.overlaySettingField{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  font-size:11px;
+  font-weight:900;
+  color:#66717c;
+}
+.overlaySettingField select{
+  height:38px;
+  border:1px solid #dce3ea;
+  border-radius:8px;
+  padding:0 9px;
+  background:#fff;
+  color:#26313c;
+  font-weight:900;
+}
+.overlayUrlPreview{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 84px;
+  gap:8px;
+  margin-top:10px;
+}
+.overlayUrlPreview input{
+  height:40px;
+  min-width:0;
+  border:1px solid #dce3ea;
+  border-radius:8px;
+  padding:0 10px;
+  background:#f8fafc;
+  color:#394550;
+  font-size:11px;
+  font-weight:700;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -2356,36 +2408,44 @@ html.broadcastOverlay.broadcastVertical .rankIdentity > .rankName{
 
 <div id="overlayUrlOv" class="overlay hidden">
   <div class="modal overlayUrlModal">
-    <h2>방송 오버레이 URL</h2>
-    <div class="meta" style="margin-bottom:12px">OBS · 브라우저 소스에 원하는 레이아웃 주소를 붙여넣으세요.</div>
-
-    <div class="overlayChoice">
-      <div class="overlayChoiceHead"><b>가로형 HUD</b><span>상단 중앙 배치용</span></div>
-      <div class="overlayUrlRow">
-        <input id="overlayHorizontalInput" readonly>
-        <button id="overlayHorizontalCopy" class="btn primary">복사</button>
-      </div>
-      <div class="overlayGuide">기존 현황판과 100% 동일한 형태 · 좌측 캠 유지에 적합</div>
+    <h2>방송 오버레이 설정</h2>
+    <div class="overlayExplain">
+      OBS 또는 FreecShot에서 <b>웹 URL 추가</b> 버튼을 눌러 아래 생성된 주소를 넣으면 됩니다.
     </div>
 
-    <div class="overlayChoice">
-      <div class="overlayChoiceHead"><b>세로형 HUD</b><span>좌측 세로 배치용</span></div>
-      <div class="overlayUrlRow">
-        <input id="overlayVerticalInput" readonly>
-        <button id="overlayVerticalCopy" class="btn primary">복사</button>
-      </div>
-      <div class="overlayGuide">같은 데이터/애니메이션 · 팀을 아래로 직렬 배치</div>
+    <div class="overlaySettingGrid">
+      <label class="overlaySettingField">
+        <span>레이아웃</span>
+        <select id="overlayLayoutSelect">
+          <option value="vertical">세로형</option>
+          <option value="horizontal">가로형</option>
+        </select>
+      </label>
+      <label class="overlaySettingField">
+        <span>내 팀</span>
+        <select id="overlayTeamSelect"></select>
+      </label>
+    </div>
+
+    <div class="overlayUrlPreview">
+      <input id="overlayGeneratedUrl" readonly>
+      <button id="overlayGeneratedCopy" class="btn primary">URL 복사</button>
+    </div>
+
+    <div class="overlayGuide">
+      목표킬은 항상 표시됩니다. 타이머도 항상 표시되며, 게임 설정에서 OFF여도 오버레이에는 <b>00:00</b>으로 표시됩니다.
     </div>
 
     <div class="actions"><button id="overlayCloseBtn" class="btn">닫기</button></div>
   </div>
 </div>
 
+
 <div id="picker" class="overlay hidden"><div class="modal"><h2 id="pt">SOOP 계정 선택</h2><div id="ph" class="meta"></div><div id="cands"></div><div class="actions"><button id="noPhoto" class="btn">사진 없이 사용</button><button id="pc" class="btn">취소</button></div></div></div>
 <script>
 const B='https://llqikrcqavwfbuajykig.supabase.co/rest/v1',K='sb_publishable_aLPzJI_jQLlywmoQsiLRtw_ElX_aslF',H={'apikey':K,'Authorization':'Bearer '+K,'Content-Type':'application/json'},n=x=>Math.max(0,parseInt(x)||0),e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let cur,pick,P=[],RO=[],S=[],poll,editing=false,pickId=null,pickName='',dragId=null,ghost=null;
 const chromaOn=document.getElementById('chromaOn'),chromaColor=document.getElementById('chromaColor'),
-scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),overlayUrlBtn=document.getElementById('overlayUrlBtn'),overlayUrlOv=document.getElementById('overlayUrlOv'),overlayHorizontalInput=document.getElementById('overlayHorizontalInput'),overlayHorizontalCopy=document.getElementById('overlayHorizontalCopy'),overlayVerticalInput=document.getElementById('overlayVerticalInput'),overlayVerticalCopy=document.getElementById('overlayVerticalCopy'),overlayCloseBtn=document.getElementById('overlayCloseBtn'),captureStage=document.getElementById('captureStage'),
+scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),overlayUrlBtn=document.getElementById('overlayUrlBtn'),overlayUrlOv=document.getElementById('overlayUrlOv'),overlayLayoutSelect=document.getElementById('overlayLayoutSelect'),overlayTeamSelect=document.getElementById('overlayTeamSelect'),overlayGeneratedUrl=document.getElementById('overlayGeneratedUrl'),overlayGeneratedCopy=document.getElementById('overlayGeneratedCopy'),overlayCloseBtn=document.getElementById('overlayCloseBtn'),captureStage=document.getElementById('captureStage'),
 totalBar=document.getElementById('totalBar'),scoreboard=document.getElementById('scoreboard'),
 killBoard=document.getElementById('killBoard'),
 goalKills=document.getElementById('goalKills'),timerMode=document.getElementById('timerMode'),
@@ -2513,13 +2573,14 @@ function applyScoreWidth(){
   const w=Math.max(202,cur.team_count*202);
   document.documentElement.style.setProperty('--score-width',w+'px');
 }
-function overlayUrlForRoom(layout='horizontal'){
+function overlayUrlForRoom(layout='vertical',team=1){
   if(!cur)return '';
   const u=new URL(location.href);
   u.search='';
   u.hash='';
   u.searchParams.set('overlay',String(cur.id));
   u.searchParams.set('layout',layout);
+  u.searchParams.set('team',String(team));
   return u.toString();
 }
 
@@ -2894,9 +2955,9 @@ function renderGameNameplates(){
     holder.className='gameNameplates';
     captureStage.appendChild(holder);
   }
-  const ps=teamPlayers(1).slice(0,4);
+  const ps=teamPlayers(Math.min(cur.team_count,overlayTeam||1)).slice(0,4);
   holder.innerHTML=ps.map(p=>{
-    const c=RANK_TEAM_COLORS[(1-1)%RANK_TEAM_COLORS.length];
+    const c=RANK_TEAM_COLORS[((Math.min(cur.team_count,overlayTeam||1))-1)%RANK_TEAM_COLORS.length];
     const av=p?.soop_user_id
       ? '<img src="'+pic(p.soop_user_id)+'">'
       : '<span class="gameNameplateAvatarEmpty"></span>';
@@ -2931,7 +2992,7 @@ function renderVerticalRanking(animate=true){
     '</div>';
   }).join('');
 
-  const timeTxt=timerText();
+  const timeTxt=timerText()||'00:00';
   const body=rows.map((x,i)=>{
     const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
     const old=oldPositions.has(String(x.id))?oldPositions.get(String(x.id)):i;
@@ -3228,25 +3289,48 @@ if(scoreViewMode)scoreViewMode.onchange=()=>{
   q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({score_mode:scoreViewMode.value})}).catch(console.error);
 };
 
+
+
+function rebuildOverlayTeamOptions(){
+  if(!overlayTeamSelect||!cur)return;
+  const current=overlayTeamSelect.value||'1';
+  overlayTeamSelect.innerHTML='';
+  for(let i=1;i<=cur.team_count;i++){
+    const o=document.createElement('option');
+    o.value=String(i);
+    o.textContent=(captainName(i)||teamLetter(i)+'팀');
+    overlayTeamSelect.appendChild(o);
+  }
+  if([...overlayTeamSelect.options].some(o=>o.value===current))overlayTeamSelect.value=current;
+}
+function refreshOverlayGeneratedUrl(){
+  if(!cur||!overlayGeneratedUrl)return;
+  const layout=overlayLayoutSelect?.value||'vertical';
+  const team=Math.max(1,parseInt(overlayTeamSelect?.value||'1',10)||1);
+  overlayGeneratedUrl.value=overlayUrlForRoom(layout,team);
+}
 if(overlayUrlBtn)overlayUrlBtn.onclick=()=>{
   if(!cur)return;
-  overlayHorizontalInput.value=overlayUrlForRoom('horizontal');
-  overlayVerticalInput.value=overlayUrlForRoom('vertical');
+  rebuildOverlayTeamOptions();
+  if(overlayLayoutSelect)overlayLayoutSelect.value='vertical';
+  refreshOverlayGeneratedUrl();
   overlayUrlOv.classList.remove('hidden');
 };
+if(overlayLayoutSelect)overlayLayoutSelect.onchange=refreshOverlayGeneratedUrl;
+if(overlayTeamSelect)overlayTeamSelect.onchange=refreshOverlayGeneratedUrl;
 if(overlayCloseBtn)overlayCloseBtn.onclick=()=>overlayUrlOv.classList.add('hidden');
-async function copyOverlayUrl(input,button){
-  const v=input.value;
+if(overlayGeneratedCopy)overlayGeneratedCopy.onclick=async()=>{
+  const v=overlayGeneratedUrl?.value||'';
+  if(!v)return;
   try{
     await navigator.clipboard.writeText(v);
-    button.textContent='복사됨';
-    setTimeout(()=>button.textContent='복사',1000);
+    overlayGeneratedCopy.textContent='복사됨';
+    setTimeout(()=>overlayGeneratedCopy.textContent='URL 복사',1000);
   }catch(_){
-    input.select();document.execCommand('copy');
+    overlayGeneratedUrl.select();
+    document.execCommand('copy');
   }
-}
-if(overlayHorizontalCopy)overlayHorizontalCopy.onclick=()=>copyOverlayUrl(overlayHorizontalInput,overlayHorizontalCopy);
-if(overlayVerticalCopy)overlayVerticalCopy.onclick=()=>copyOverlayUrl(overlayVerticalInput,overlayVerticalCopy);
+};
 
 if(pipScore)pipScore.onclick=async()=>{
   if(!cur)return;
@@ -3292,7 +3376,8 @@ document.addEventListener('visibilitychange',()=>{
 
 const overlayParams=new URLSearchParams(location.search);
 const overlayRoomId=overlayParams.get('overlay');
-const overlayLayout=overlayParams.get('layout')==='vertical'?'vertical':'horizontal';
+const overlayLayout=overlayParams.get('layout')==='horizontal'?'horizontal':'vertical';
+const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
 if(overlayRoomId){
   document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal');
   (async()=>{
