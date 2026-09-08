@@ -7,269 +7,186 @@
 
 
 
+
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scrollbar-gutter:stable}
 body{
-  margin:0;
-  color:#11151a;
+  margin:0;background:#f2f3f5;color:#15181c;
   font-family:Inter,Arial,"Noto Sans KR",sans-serif;
-  background:
-    linear-gradient(rgba(25,31,38,.035) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(25,31,38,.035) 1px,transparent 1px),
-    #f4f6f8;
-  background-size:28px 28px;
 }
-main{
-  width:min(1460px,calc(100% - 165px));
-  margin:34px auto 110px;
-}
+main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
 .pageTitleWrap{
-  display:flex;align-items:end;justify-content:space-between;
-  margin:0 0 26px;padding:0 3px 17px;
-  border-bottom:1px solid #d8dde3;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin:0 0 22px;padding:0 2px 17px;border-bottom:1px solid #d9dde2
 }
-.pageTitleWrap h1{
-  margin:0;font-size:31px;font-weight:1000;letter-spacing:-1.8px;
-}
-.pageSub{
-  margin-top:5px;font-size:9px;font-weight:900;letter-spacing:2.1px;color:#949ba4;
-}
-.board{
-  display:flex;flex-direction:column;gap:26px;
-  background:transparent;border:0;box-shadow:none;overflow:visible;
-}
+.pageTitleWrap h1{margin:0;font-size:31px;font-weight:1000;letter-spacing:-1.8px}
+.pageSub{margin-top:5px;font-size:9px;font-weight:900;letter-spacing:2px;color:#979da4}
 
-/* ===== tier = horizontal roster strip ===== */
+.board{display:flex;flex-direction:column;gap:18px;background:transparent;border:0;box-shadow:none;overflow:visible}
 .tier{
-  position:relative;display:grid;
-  grid-template-columns:105px 1fr;
-  min-height:190px;
-  border:1px solid #dfe3e8;
-  border-radius:20px;
-  background:rgba(255,255,255,.84);
-  box-shadow:0 10px 30px rgba(25,32,42,.055);
-  overflow:hidden;
-  scroll-margin-top:25px;
+  display:block;overflow:hidden;min-height:0;
+  border:1px solid #dce1e6;border-radius:22px;background:#fff;
+  box-shadow:0 12px 34px rgba(27,33,41,.06);scroll-margin-top:24px
 }
 .tierLabel{
-  position:relative;
-  display:flex;align-items:center;justify-content:center;
-  writing-mode:initial;transform:none;
-  background:#15191e;color:#fff;
-  border:0;
-  font-size:22px;font-weight:1000;letter-spacing:-1px;
+  height:55px;padding:0 22px;
+  display:flex;align-items:center;justify-content:flex-start;
+  writing-mode:initial;transform:none;background:#171a1f;color:#fff;
+  font-size:19px;font-weight:1000;letter-spacing:-.5px
 }
 .tierLabel:before{
-  content:"TIER";position:absolute;top:18px;
-  font-size:7px;font-weight:1000;letter-spacing:2px;color:#747c85;
+  content:"";width:5px;height:20px;border-radius:99px;background:#fff;margin-right:11px;opacity:.9
 }
 .tierLabel:after{
-  content:"";position:absolute;bottom:19px;
-  width:22px;height:3px;border-radius:99px;background:#fff;
-}
-.members{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(142px,1fr));
-  gap:18px;
-  padding:20px 22px 21px;
-  align-items:start;
+  content:"STARCRAFT TIER";margin-left:auto;
+  font-size:8px;letter-spacing:1.8px;color:#6f7780;font-weight:900
 }
 
-/* ===== V14: "ID CHIP" =====
-   Profile is ALWAYS square. No portrait ratio, no fake image cover.
-*/
-.playerCard{
-  --race:#7b838c;
-  position:relative;min-width:0;
-  text-decoration:none;color:#161a1f;
-  background:transparent;border:0;border-radius:0;
-  overflow:visible;
-  transition:transform .16s ease;
+/* Every race gets its own row */
+.members{display:block;padding:0}
+.raceGroup{
+  --race:#7c838b;
+  display:grid;grid-template-columns:78px 1fr;
+  min-height:165px;border-bottom:1px solid #eceff2
 }
-.playerCard.T{--race:#2b76d2}
-.playerCard.Z{--race:#8151c5}
-.playerCard.P{--race:#c99a00}
+.raceGroup:last-child{border-bottom:0}
+.raceGroup.T{--race:#2c78d2}
+.raceGroup.Z{--race:#8050c1}
+.raceGroup.P{--race:#c99a00}
+.raceGroup.empty{display:none}
+.raceHead{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+  background:#f7f8fa;border-right:1px solid #e7eaee;
+  color:var(--race);font-weight:1000
+}
+.raceLetter{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--race);color:#fff;font-size:14px;font-weight:1000
+}
+.raceName{font-size:9px;letter-spacing:-.2px;color:#777e86}
+.racePlayers{
+  display:flex;align-items:flex-start;flex-wrap:wrap;
+  gap:18px;padding:18px 20px 20px
+}
+
+/* V15: circular medallion player, no conventional rectangular card */
+.playerCard{
+  --race:#7c838b;position:relative;width:132px;display:block;
+  text-decoration:none;color:#171a1f;text-align:center;
+  background:transparent;border:0;transition:transform .16s ease
+}
 .playerCard:hover{transform:translateY(-4px)}
+.playerCard.T{--race:#2c78d2}
+.playerCard.Z{--race:#8050c1}
+.playerCard.P{--race:#c99a00}
 
 .portrait{
-  position:relative;
-  width:100%;
-  aspect-ratio:1 / 1 !important;
-  overflow:hidden;
-  border-radius:14px;
-  background:#fff;
-  border:1px solid #dfe3e8;
-  box-shadow:0 6px 16px rgba(25,31,40,.075);
+  position:relative;width:118px;height:118px;aspect-ratio:1/1;
+  margin:0 auto;overflow:hidden;border-radius:50%;
+  background:#fff;border:5px solid #fff;
+  box-shadow:0 0 0 2px var(--race),0 8px 20px rgba(25,31,39,.12)
 }
 .profileImg{
-  display:block;position:relative;z-index:1;
-  width:100%;height:100%;
-  object-fit:cover;
-  background:#fff;
+  position:relative;z-index:1;display:block;width:100%;height:100%;
+  object-fit:cover;border-radius:50%;background:#fff
 }
-.blankPortrait{
-  position:absolute;inset:0;z-index:0;background:#fff;
-}
+.blankPortrait{position:absolute;inset:0;z-index:0;border-radius:50%;background:#fff}
 
-/* race marker = corner bracket instead of full colored frame */
-.portrait:before,
+/* small race tab below the medallion */
 .portrait:after{
-  content:"";position:absolute;z-index:5;pointer-events:none;
-}
-.portrait:before{
-  left:0;bottom:0;width:32px;height:4px;background:var(--race);
-}
-.portrait:after{
-  left:0;bottom:0;width:4px;height:32px;background:var(--race);
-}
-
-/* name becomes an ID label crossing the lower edge */
-.namePlate{
-  position:relative;z-index:7;
-  width:calc(100% - 14px);
-  min-height:34px;
-  margin:-9px 7px 0;
-  padding:0 10px;
-  display:flex;align-items:center;justify-content:center;gap:5px;
-  border:1px solid #dfe3e8;
-  border-radius:9px;
-  background:rgba(255,255,255,.96);
-  box-shadow:0 5px 13px rgba(24,31,40,.07);
-  font-size:12px;font-weight:1000;
-}
-.playerName{
-  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.raceText{
-  flex:0 0 auto;
-  width:20px;height:20px;
-  display:inline-flex;align-items:center;justify-content:center;
-  border-radius:6px;
-  background:color-mix(in srgb,var(--race) 10%,white);
-  color:var(--race);
-  font-size:10px;font-weight:1000;
-}
-
-/* live */
-.liveBadge{
-  position:absolute;left:8px;bottom:8px;z-index:8;
-  order:initial;
-  height:20px;padding:0 7px;
-  display:inline-flex;align-items:center;gap:4px;
-  border-radius:6px;
-  background:#ed2443;color:#fff;
-  box-shadow:0 4px 10px rgba(237,36,67,.24);
-  font-size:7px;font-weight:1000;letter-spacing:.6px;
-}
-.liveBadge:before{
-  content:"";width:5px;height:5px;border-radius:50%;background:#fff;
-}
-
-/* university */
-.univBadge{
-  position:absolute;left:8px;top:8px;z-index:8;
-  width:34px;height:34px;
+  content:attr(data-race);
+  position:absolute;z-index:6;right:4px;bottom:4px;
+  width:25px;height:25px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  border-radius:10px;
-  background:rgba(255,255,255,.93);
-  border:1px solid rgba(218,222,228,.9);
-  box-shadow:0 4px 11px rgba(0,0,0,.12);
-  overflow:hidden;
+  background:var(--race);color:#fff;border:2px solid #fff;
+  font-size:9px;font-weight:1000
 }
-.univBadge img{width:28px;height:28px;object-fit:contain}
 
-/* status flags */
+.namePlate{
+  margin:8px 0 0;padding:0 3px;min-height:27px;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  border:0;background:transparent;box-shadow:none;
+  color:#202328;font-size:12px;font-weight:1000
+}
+.playerName{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.raceText{display:none}
+
+/* live is attached to name, not photo */
+.liveBadge{
+  position:static;order:-1;height:17px;padding:0 5px;border-radius:5px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:#ed2947;color:#fff;font-size:7px;font-weight:1000;letter-spacing:.45px;
+  box-shadow:none
+}
+.liveBadge:before{display:none}
+
+/* university seal */
+.univBadge{
+  position:absolute;left:2px;top:2px;z-index:8;width:31px;height:31px;
+  display:flex;align-items:center;justify-content:center;border-radius:50%;
+  background:#fff;border:2px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.16);overflow:hidden
+}
+.univBadge img{width:26px;height:26px;object-fit:contain}
+
+/* badges fan out at lower right */
 .cornerBadges{
-  position:absolute;right:7px;top:7px;z-index:9;
-  display:flex;flex-direction:column;align-items:flex-end;gap:5px;
+  position:absolute;right:-4px;bottom:5px;top:auto;z-index:9;
+  display:flex;flex-direction:column;align-items:flex-end;gap:3px
 }
 .stateBadge{
-  height:20px;padding:0 7px;
+  height:19px;padding:0 6px;border-radius:5px;
   display:inline-flex;align-items:center;justify-content:center;
-  border-radius:6px;
-  color:#fff;font-size:7px;font-weight:1000;letter-spacing:.65px;
-  border:1px solid rgba(255,255,255,.35);
-  box-shadow:0 3px 8px rgba(0,0,0,.14);
+  color:#fff;font-size:7px;font-weight:1000;letter-spacing:.55px;
+  border:2px solid #fff;box-shadow:0 2px 7px rgba(0,0,0,.14)
 }
-.stateBadge.up{background:#ef3447}
-.stateBadge.new{background:#171b20}
-.stateBadge.repair{background:#e18b19}
+.stateBadge.up{background:#eb3448}
+.stateBadge.new{background:#171a1f}
+.stateBadge.repair{background:#e38b19}
 
-/* promotion = corner bracket glow, square image remains untouched */
-.playerCard.soon .portrait{
-  animation:v14Glow 1s ease-in-out infinite alternate;
+/* promotion = circular halo */
+.playerCard.soon .portrait{animation:halo 1s ease-in-out infinite alternate}
+@keyframes halo{
+  from{box-shadow:0 0 0 2px var(--race),0 8px 20px rgba(25,31,39,.12)}
+  to{box-shadow:0 0 0 3px var(--race),0 0 18px var(--race),0 0 31px color-mix(in srgb,var(--race) 32%,transparent)}
 }
-.playerCard.soon .portrait:before,
-.playerCard.soon .portrait:after{
-  animation:v14Bracket 1s ease-in-out infinite alternate;
-}
-@keyframes v14Glow{
-  from{box-shadow:0 6px 16px rgba(25,31,40,.075)}
-  to{box-shadow:0 7px 18px rgba(25,31,40,.09),0 0 18px color-mix(in srgb,var(--race) 32%,transparent)}
-}
-@keyframes v14Bracket{
-  from{filter:brightness(1)}
-  to{filter:brightness(1.35);box-shadow:0 0 10px var(--race)}
-}
-
-/* inactive stays last via existing JS sorting, visually muted */
-.playerCard.idle{
-  opacity:.43;
-  filter:grayscale(.94) saturate(.15);
-}
-.playerCard.idle .raceText{
-  color:#858b92;background:#f0f1f2;
-}
-.playerCard.idle .portrait:before,
-.playerCard.idle .portrait:after{background:#92979d}
+.playerCard.idle{opacity:.42;filter:grayscale(.92) saturate(.18)}
+.playerCard.idle .portrait{box-shadow:0 0 0 2px #91969c,0 7px 17px rgba(25,31,39,.08)}
 .playerCard.missing{opacity:.86}
 
-/* fixed tier rail - keep the version user liked */
+/* fixed menu preserved */
 .tierRail{
   position:fixed;right:22px;top:50%;transform:translateY(-50%);
   z-index:9000;width:82px;padding:9px 7px 10px;
   border:1px solid rgba(218,221,226,.9);border-radius:22px;
   background:rgba(250,250,251,.86);backdrop-filter:blur(18px);
-  box-shadow:0 18px 55px rgba(21,24,30,.13);
+  box-shadow:0 18px 55px rgba(21,24,30,.13)
 }
-.tierRailTitle{
-  height:25px;display:flex;align-items:center;justify-content:center;
-  font-size:8px;font-weight:1000;letter-spacing:1.8px;color:#a1a6ad;
-}
+.tierRailTitle{height:25px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:1000;letter-spacing:1.8px;color:#a1a6ad}
 .tierJump{
   position:relative;height:30px;margin:2px 0;padding:0 5px;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:10px;text-decoration:none;background:transparent;
-  color:#666c74;font-size:10px;font-weight:900;transition:.15s;
+  display:flex;align-items:center;justify-content:center;border-radius:10px;
+  text-decoration:none;background:transparent;color:#666c74;font-size:10px;font-weight:900;transition:.15s
 }
-.tierJump:before{
-  content:"";position:absolute;left:4px;width:3px;height:3px;
-  border-radius:50%;background:#c8ccd2;transition:.15s;
-}
+.tierJump:before{content:"";position:absolute;left:4px;width:3px;height:3px;border-radius:50%;background:#c8ccd2;transition:.15s}
 .tierJump:hover{background:#eceef1;color:#16181c}
-.tierJump.active{
-  background:#17191d;color:#fff;
-  box-shadow:0 5px 14px rgba(23,25,29,.18);
-}
+.tierJump.active{background:#17191d;color:#fff;box-shadow:0 5px 14px rgba(23,25,29,.18)}
 .tierJump.active:before{background:#fff;height:12px;border-radius:3px}
 .loading{padding:30px;color:#8c929a}
 
 @media(max-width:950px){
-  main{width:calc(100% - 24px)}
-  .tierRail{display:none}
-  .tier{grid-template-columns:72px 1fr}
+  main{width:calc(100% - 24px)} .tierRail{display:none}
 }
-@media(max-width:700px){
-  .tier{display:block}
-  .tierLabel{
-    height:48px;justify-content:flex-start;padding:0 18px;
-  }
-  .tierLabel:before{display:none}
-  .tierLabel:after{right:18px;left:auto;bottom:22px}
-  .members{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 10px;padding:15px 12px 18px}
+@media(max-width:650px){
+  .raceGroup{grid-template-columns:50px 1fr}
+  .racePlayers{gap:13px;padding:14px 10px}
+  .playerCard{width:110px}
+  .portrait{width:100px;height:100px}
+  .raceName{display:none}
 }
 </style>
+
 
 
 
@@ -325,7 +242,7 @@ function card(x){
   const href=x.soop_user_id?'https://play.sooplive.co.kr/'+encodeURIComponent(x.soop_user_id):'#';
   const name=e(x.display_name||x.soop_nickname||x.player_name);
   return `<a class="${cls}" href="${href}" ${x.soop_user_id?'target="_blank" rel="noopener"':''}>
-    <div class="portrait">
+    <div class="portrait" data-race="${e(String(x.race||'').toUpperCase())}">
       ${fallbackOrImage(x)}
       ${universityBadge(x)}
       ${cornerBadges(x)}
@@ -358,14 +275,26 @@ async function load(){
   if(!r.ok){board.innerHTML='<div class="loading">티어표 불러오기 실패</div>';return}
   const j=await r.json(),a=j.players||[];
   board.innerHTML=TIERS.map(t=>{
-    const p=a.filter(x=>x.tier===t).sort((a,b)=>{
-      const ai=flags(a).includes('idle')?1:0;
-      const bi=flags(b).includes('idle')?1:0;
-      return ai-bi ||
-        (RACE_ORDER[a.race]??9)-(RACE_ORDER[b.race]??9) ||
-        (Number(a.sort_order||0)-Number(b.sort_order||0));
-    });
-    return `<div class="tier" id="${tierId(t)}"><div class="tierLabel">${t}</div><div class="members">${p.map(card).join('')}</div></div>`;
+    const all=a.filter(x=>x.tier===t);
+    const raceRow=(race,label)=>{
+      const p=all.filter(x=>String(x.race||'').toUpperCase()===race).sort((a,b)=>{
+        const ai=flags(a).includes('idle')?1:0;
+        const bi=flags(b).includes('idle')?1:0;
+        return ai-bi || (Number(a.sort_order||0)-Number(b.sort_order||0));
+      });
+      return `<div class="raceGroup ${race} ${p.length?'':'empty'}">
+        <div class="raceHead"><span class="raceLetter">${race}</span><span class="raceName">${label}</span></div>
+        <div class="racePlayers">${p.map(card).join('')}</div>
+      </div>`;
+    };
+    return `<div class="tier" id="${tierId(t)}">
+      <div class="tierLabel">${t}</div>
+      <div class="members">
+        ${raceRow('T','테란')}
+        ${raceRow('Z','저그')}
+        ${raceRow('P','프로토스')}
+      </div>
+    </div>`;
   }).join('');
   buildRail();
   setupRailObserver();
