@@ -2864,6 +2864,139 @@ html.broadcastOverlay.broadcastVertical.theme-luxury .rankTimer{
   text-shadow:0 1px 2px #000!important;
 }
 
+
+/* ===== v69 seasonal + pastel theme library ===== */
+/* Every new theme owns ALL visible surfaces: header, timer/goal, rotating totals,
+   column header, rows, empty avatars. SCORE remains seamless by design. */
+
+html.broadcastOverlay.broadcastVertical.theme-summer_ocean{--th-bg:#eefcff;--th-panel:#d5f7fb;--th-panel2:#aeeaf2;--th-line:#38aabd;--th-text:#10333a;--th-muted:#35656d;--th-accent:#1bb7cb}
+html.broadcastOverlay.broadcastVertical.theme-summer_pool{--th-bg:#f5fdff;--th-panel:#dff8ff;--th-panel2:#bfeeff;--th-line:#54b9dc;--th-text:#12384a;--th-muted:#3f6878;--th-accent:#24a9db}
+html.broadcastOverlay.broadcastVertical.theme-summer_lemon{--th-bg:#fffef1;--th-panel:#fff8b9;--th-panel2:#dcf4c6;--th-line:#b4bf55;--th-text:#34381d;--th-muted:#64683c;--th-accent:#d3c82f}
+html.broadcastOverlay.broadcastVertical.theme-summer_tropical{--th-bg:#fff6ef;--th-panel:#ffd0b9;--th-panel2:#bfe8d2;--th-line:#e67f62;--th-text:#3c2925;--th-muted:#70504a;--th-accent:#ef6e5d}
+
+html.broadcastOverlay.broadcastVertical.theme-autumn_maple{--th-bg:#fff8ee;--th-panel:#edc294;--th-panel2:#c96f45;--th-line:#934c2d;--th-text:#38231a;--th-muted:#654536;--th-accent:#c5532d}
+html.broadcastOverlay.broadcastVertical.theme-autumn_cafe{--th-bg:#f8f1e7;--th-panel:#dfc6a6;--th-panel2:#b58b67;--th-line:#77563d;--th-text:#30251e;--th-muted:#625044;--th-accent:#9a6b48}
+html.broadcastOverlay.broadcastVertical.theme-autumn_olive{--th-bg:#f6f4e8;--th-panel:#deddb8;--th-panel2:#aab07c;--th-line:#747a4f;--th-text:#2e3020;--th-muted:#555a3c;--th-accent:#8d945b}
+html.broadcastOverlay.broadcastVertical.theme-autumn_wine{--th-bg:#f7edef;--th-panel:#d7aeb4;--th-panel2:#7b3042;--th-line:#612437;--th-text:#301b21;--th-muted:#64434c;--th-accent:#8e334d}
+
+html.broadcastOverlay.broadcastVertical.theme-winter_snow{--th-bg:#ffffff;--th-panel:#f0f5f8;--th-panel2:#dbe8ef;--th-line:#9db8c7;--th-text:#1e3039;--th-muted:#536b77;--th-accent:#8db8cd}
+html.broadcastOverlay.broadcastVertical.theme-winter_ice{--th-bg:#f2fbff;--th-panel:#d9f2ff;--th-panel2:#b7dcf2;--th-line:#6ca8c9;--th-text:#173445;--th-muted:#466878;--th-accent:#63b5e2}
+html.broadcastOverlay.broadcastVertical.theme-winter_night{--th-bg:#101a2b;--th-panel:#182a45;--th-panel2:#284466;--th-line:#7198c2;--th-text:#eef7ff;--th-muted:#b9cce0;--th-accent:#7ec8ff}
+html.broadcastOverlay.broadcastVertical.theme-winter_xmas{--th-bg:#fff9f4;--th-panel:#e6eee4;--th-panel2:#c84850;--th-line:#39694d;--th-text:#26342b;--th-muted:#53685a;--th-accent:#b93d45}
+
+html.broadcastOverlay.broadcastVertical.theme-pastel_candy{--th-bg:#fff8fb;--th-panel:#f9d9e7;--th-panel2:#d9d7fa;--th-line:#c39ab5;--th-text:#372b36;--th-muted:#665263;--th-accent:#dc88ad}
+html.broadcastOverlay.broadcastVertical.theme-pastel_mint{--th-bg:#fbfffc;--th-panel:#dff5e9;--th-panel2:#c7eadc;--th-line:#8ebda7;--th-text:#24352e;--th-muted:#50675d;--th-accent:#77bea0}
+html.broadcastOverlay.broadcastVertical.theme-pastel_peach{--th-bg:#fffaf7;--th-panel:#ffe3d6;--th-panel2:#f8cdbf;--th-line:#dca797;--th-text:#3a2b27;--th-muted:#69534d;--th-accent:#ed9f86}
+html.broadcastOverlay.broadcastVertical.theme-pastel_cloud{--th-bg:#fbfbff;--th-panel:#e9e7f4;--th-panel2:#d9e6f1;--th-line:#aeb4ca;--th-text:#2d3040;--th-muted:#5e6376;--th-accent:#9eaad0}
+html.broadcastOverlay.broadcastVertical.theme-pastel_rainbow{--th-bg:#fffafb;--th-panel:#f8dce8;--th-panel2:#d8eaf4;--th-line:#b7a9c8;--th-text:#302c38;--th-muted:#625d6b;--th-accent:#d99ab7}
+
+/* common complete skin for all new LIGHT seasonal/pastel themes */
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankHeader{
+ background:linear-gradient(110deg,var(--th-panel),var(--th-panel2))!important;
+ color:var(--th-text)!important;border:1px solid var(--th-line)!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankGoal,
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankTimer{color:var(--th-text)!important;text-shadow:none!important}
+
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankTotal{
+ background:linear-gradient(110deg,var(--th-bg),var(--th-panel))!important;
+ border:1px solid var(--th-line)!important;color:var(--th-text)!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankTotalLabel,
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankTotalName,
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankTotalKill,
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankTotalInfo{color:var(--th-text)!important;text-shadow:none!important}
+
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankCols{background:var(--th-panel2)!important;color:var(--th-muted)!important;border-color:var(--th-line)!important}
+
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankRows{background:var(--th-bg)!important;border-color:var(--th-line)!important}
+
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankRow{background:linear-gradient(90deg,var(--th-bg),var(--th-panel))!important;color:var(--th-text)!important;border-color:color-mix(in srgb,var(--th-line) 55%,transparent)!important}
+
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankScore{background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;color:var(--th-text)!important}
+
+html.broadcastOverlay.broadcastVertical:is(
+.theme-summer_ocean,.theme-summer_pool,.theme-summer_lemon,.theme-summer_tropical,
+.theme-autumn_maple,.theme-autumn_cafe,.theme-autumn_olive,.theme-autumn_wine,
+.theme-winter_snow,.theme-winter_ice,.theme-winter_xmas,
+.theme-pastel_candy,.theme-pastel_mint,.theme-pastel_peach,.theme-pastel_cloud,.theme-pastel_rainbow
+) .rankAvatarEmpty{background:linear-gradient(135deg,var(--th-panel2),var(--th-bg))!important;border:2px solid var(--th-line)!important;box-shadow:none!important}
+
+/* Winter Night: genuinely dark navy/snow theme */
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankHeader{background:linear-gradient(110deg,#0b1424,#284766)!important;color:#eef7ff!important;border:1px solid #7198c2!important}
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankGoal,
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankTimer{color:#eef7ff!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankTotal{background:linear-gradient(110deg,#101a2b,#203a58)!important;border:1px solid #587da4!important;color:#eef7ff!important}
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankTotalLabel,
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankTotalName,
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankTotalKill,
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankTotalInfo{color:#eef7ff!important}
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankCols{background:#1b304b!important;color:#c8ddf0!important;border-color:#587da4!important}
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankRows{background:#101a2b!important;border-color:#587da4!important}
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankRow{background:linear-gradient(90deg,#101a2bf5,#1a3049f5)!important;color:#eef7ff!important;border-color:#314d69!important}
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankScore{background:transparent!important;border:0!important;box-shadow:none!important;color:#eef7ff!important}
+html.broadcastOverlay.broadcastVertical.theme-winter_night .rankAvatarEmpty{background:linear-gradient(135deg,#315474,#101a2b)!important;border:2px solid #8bb5d8!important;box-shadow:none!important}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -2952,8 +3085,35 @@ html.broadcastOverlay.broadcastVertical.theme-luxury .rankTimer{
       <label class="overlaySettingField">
         <span>테마</span>
         <select id="overlayThemeSelect">
-          <option value="luxury">LUXURY NOIR</option>
-          <option value="lavender">LAVENDER PINK</option>
+          <optgroup label="기존">
+            <option value="luxury">LUXURY NOIR</option>
+            <option value="lavender">LAVENDER PINK</option>
+          </optgroup>
+          <optgroup label="여름">
+            <option value="summer_ocean">SUMMER OCEAN</option>
+            <option value="summer_pool">POOL BLUE</option>
+            <option value="summer_lemon">LEMON SODA</option>
+            <option value="summer_tropical">TROPICAL PUNCH</option>
+          </optgroup>
+          <optgroup label="가을">
+            <option value="autumn_maple">MAPLE AUTUMN</option>
+            <option value="autumn_cafe">AUTUMN CAFE</option>
+            <option value="autumn_olive">OLIVE HARVEST</option>
+            <option value="autumn_wine">WINE AUTUMN</option>
+          </optgroup>
+          <optgroup label="겨울">
+            <option value="winter_snow">SNOW WHITE</option>
+            <option value="winter_ice">ICE BLUE</option>
+            <option value="winter_night">WINTER NIGHT</option>
+            <option value="winter_xmas">HOLIDAY WINTER</option>
+          </optgroup>
+          <optgroup label="파스텔">
+            <option value="pastel_candy">PASTEL CANDY</option>
+            <option value="pastel_mint">MINT CREAM</option>
+            <option value="pastel_peach">PEACH MILK</option>
+            <option value="pastel_cloud">CLOUD PASTEL</option>
+            <option value="pastel_rainbow">PASTEL RAINBOW</option>
+          </optgroup>
         </select>
       </label>
       <label class="overlaySettingField"><span>내 팀</span><select id="overlayTeamSelect"></select></label>
@@ -3905,7 +4065,7 @@ const overlayParams=new URLSearchParams(location.search);
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout=overlayParams.get('layout')==='horizontal'?'horizontal':'vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
-const OVERLAY_THEMES=['luxury','lavender'];
+const OVERLAY_THEMES=['luxury','lavender','summer_ocean','summer_pool','summer_lemon','summer_tropical','autumn_maple','autumn_cafe','autumn_olive','autumn_wine','winter_snow','winter_ice','winter_night','winter_xmas','pastel_candy','pastel_mint','pastel_peach','pastel_cloud','pastel_rainbow'];
 const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'luxury';
 if(overlayRoomId){
   document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal','theme-'+overlayTheme);
