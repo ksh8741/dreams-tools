@@ -2062,6 +2062,16 @@ html.broadcastOverlay.broadcastVertical .rankOverlay{
 }
 
 /* no reserved transparent logo strip at the top anymore */
+
+/* v41 — 1920x1080 adaptive ranking placement */
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  left:6px!important;
+  top:var(--ranking-top,145px)!important;
+  bottom:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -2691,6 +2701,32 @@ function renderGameNameplates(){
   }).join('');
 }
 
+
+function positionVerticalRanking(){
+  if(!document.documentElement.classList.contains('broadcastVertical')) return;
+  const board=document.querySelector('.rankOverlay');
+  const names=document.querySelector('.gameNameplates');
+  if(!board) return;
+
+  const SAFE_TOP=145, MIN_GAP=12;
+  let lower=1080-(34 + 4*39 + 3*13);
+
+  if(names){
+    const r=names.getBoundingClientRect();
+    if(r.height>0) lower=r.top;
+  }
+
+  const h=board.getBoundingClientRect().height;
+  const safeBottom=lower-MIN_GAP;
+  const available=Math.max(0,safeBottom-SAFE_TOP);
+
+  let y=SAFE_TOP+Math.max(0,(available-h)/2);
+  y=Math.max(SAFE_TOP,y);
+  if(y+h>safeBottom) y=Math.max(SAFE_TOP,safeBottom-h);
+
+  document.documentElement.style.setProperty('--ranking-top',Math.round(y)+'px');
+}
+
 function renderVerticalRanking(animate=true){
   if(!cur||!captureStage)return;
 
@@ -3095,5 +3131,24 @@ if(overlayRoomId){
   setInterval(()=>{if(cur)load(true)},3000);
 }
 
+
+
+(function(){
+  let raf=0;
+  const schedule=()=>{
+    cancelAnimationFrame(raf);
+    raf=requestAnimationFrame(positionVerticalRanking);
+  };
+  window.addEventListener('resize',schedule,{passive:true});
+  const start=()=>{
+    const board=document.querySelector('.rankOverlay');
+    const names=document.querySelector('.gameNameplates');
+    if(board) new MutationObserver(schedule).observe(board,{childList:true,subtree:true,characterData:true});
+    if(names) new MutationObserver(schedule).observe(names,{childList:true,subtree:true,characterData:true});
+    schedule();
+  };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start,{once:true});
+  else start();
+})();
 
 </script></body></html>
