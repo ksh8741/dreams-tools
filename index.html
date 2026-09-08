@@ -4410,7 +4410,7 @@ html:not(.broadcastOverlay) .teamSummary .miniChicken{
 </head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
-<section id="lobby"><div class="top"><div class="title"><h1>배틀그라운드</h1><p>무제 MATCH ROOM</p></div><div><button id="refresh" class="btn">새로고침</button> <button id="adminDeleteMode" class="btn">방 삭제</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>팀 구성</div><div>생성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
+<section id="lobby"><div class="top"><div class="title"><h1>배틀그라운드</h1></div><div><button id="refresh" class="btn">새로고침</button> <button id="adminDeleteMode" class="btn">방 삭제</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>팀 구성</div><div>생성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
 <section id="roomView" class="hidden">
 <div class="top"><div><h1 id="insideTitle" style="margin:0;font-size:20px"></h1><div id="insideMeta" class="meta"></div></div><button id="back" class="btn">← 방 목록</button></div>
 <div class="scoreStage">
@@ -4810,7 +4810,7 @@ function roomCreatedText(v){
   return pad(d.getMonth()+1)+'/'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes());
 }
 
-async function rooms(){let d=await q('/pubg_rooms?select=id,name,host_name,team_count,players_per_team,password_hash,created_at&order=created_at.asc');roomList.innerHTML=d.length?'':'<div class="empty">생성된 방이 없습니다.</div>';d.forEach((r,i)=>{let x=document.createElement('div');x.className='room';x.innerHTML='<div>'+(i+1)+'</div><div class="roomName">'+e(r.name)+'</div><div class="host">'+e(r.host_name)+'</div><div>'+cfg(r.team_count,r.players_per_team)+'</div><div class="createdAt">'+roomCreatedText(r.created_at)+'</div><div class="lock">'+(r.password_hash?'●':'○')+'</div>';x.onclick=()=>{
+async function rooms(){let d=await q('/pubg_rooms?select=id,name,host_name,team_count,players_per_team,password_hash,created_at&order=created_at.desc');roomList.innerHTML=d.length?'':'<div class="empty">생성된 방이 없습니다.</div>';d.forEach((r,i)=>{let x=document.createElement('div');x.className='room';x.innerHTML='<div>'+(d.length-i)+'</div><div class="roomName">'+e(r.name)+'</div><div class="host">'+e(r.host_name)+'</div><div>'+cfg(r.team_count,r.players_per_team)+'</div><div class="createdAt">'+roomCreatedText(r.created_at)+'</div><div class="lock">'+(r.password_hash?'●':'○')+'</div>';x.onclick=()=>{
   if(adminDeleteModeOn){
     adminDeleteTarget=r;adminDeletePw.value='';adminDeleteErr.textContent='';
     adminDeleteOv.classList.remove('hidden');setTimeout(()=>adminDeletePw.focus(),0);
@@ -4833,7 +4833,7 @@ cb.onclick=async()=>{
     enter(rr||{id,name,host_name:host,team_count:a,players_per_team:b,chicken_kills:8,sanhok_chicken_kills:5,top10_no_death_penalty:false,score_mode:mode});
   }catch(x){ce.textContent='방 생성 실패'}
 };
-function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team);jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
+function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team);je.textContent='';jp.value='';jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
 async function ensure(){let a=await q('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds',{method:'POST',body:JSON.stringify(x)})}
 async function enter(r){cur=r;applyScoreWidth();loadTeamMaps();loadStatCache();lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),document.documentElement.classList.contains('broadcastOverlay')?1250:1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
 async function load(isPoll=false){
