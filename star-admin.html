@@ -1,0 +1,55 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>스타 티어 관리자</title><link rel="stylesheet" href="navbar.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f5f7;color:#17191c;font-family:Arial,"Noto Sans KR",sans-serif}
+main{width:min(1200px,calc(100% - 30px));margin:30px auto 70px}h1{font-size:24px;margin:0 0 18px}
+.top{display:flex;gap:8px;flex-wrap:wrap;background:#fff;border:1px solid #ddd;padding:12px;margin-bottom:14px}
+input,select,button{height:34px;border:1px solid #ccd1d7;background:#fff;padding:0 10px}button{cursor:pointer;font-weight:800}
+#q{width:210px}.stat{margin-left:auto;align-self:center;font-size:12px;color:#666}
+.row{display:grid;grid-template-columns:55px 80px 160px 100px 1fr 100px;gap:8px;align-items:center;background:#fff;border:1px solid #e0e3e7;border-bottom:0;padding:8px}
+.row:last-child{border-bottom:1px solid #e0e3e7}.race{font-weight:1000;text-align:center}.name{font-weight:900}
+.soop{display:flex;align-items:center;gap:8px;min-width:0}.soop img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.muted{font-size:11px;color:#999}.ok{font-size:11px;color:#0a8f4d;font-weight:900}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:9999}
+.modal.on{display:flex}.box{width:min(620px,calc(100% - 24px));max-height:80vh;overflow:auto;background:#fff;padding:18px}
+.searchbar{display:flex;gap:7px;margin-bottom:12px}.searchbar input{flex:1}
+.result{display:flex;align-items:center;gap:10px;padding:9px;border-top:1px solid #eee}.result img{width:48px;height:48px;border-radius:50%;object-fit:cover}.result .txt{flex:1}
+@media(max-width:800px){.row{grid-template-columns:35px 60px 1fr 80px}.soop{grid-column:1/-2}}
+</style></head><body>
+<nav id="global-navbar" class="globalNav"><div class="globalNavInner"><a class="globalNavBrand" href="index.html">MUJE</a><div class="globalNavLinks"><a class="globalNavLink" href="pubg.html">배틀그라운드</a><a class="globalNavLink" href="starcraft.html">스타크래프트</a></div></div></nav>
+<main><h1>스타 티어 관리자</h1>
+<div class="top"><input id="sburl" placeholder="Supabase URL"><input id="sbkey" placeholder="Supabase anon key"><button onclick="saveCfg()">연결정보 저장</button><input id="q" placeholder="선수 검색"><select id="tf"><option value="">전체 티어</option><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><button onclick="load()">새로고침</button><span class="stat" id="stat"></span></div>
+<div id="list"></div></main>
+<div class="modal" id="modal" onclick="if(event.target===this)closeM()"><div class="box"><div class="searchbar"><input id="sq"><button onclick="searchSoop()">SOOP 검색</button><button onclick="closeM()">닫기</button></div><div id="results"></div></div></div>
+<script>
+const TIERS=["갓", "킹", "잭", "조커", "스페이드", "0티어", "1티어", "2티어", "3티어", "4티어", "5티어", "6티어", "7티어", "8티어", "베이비"];
+let rows=[],target=null;
+sburl.value=localStorage.star_sburl||'';sbkey.value=localStorage.star_sbkey||'';
+function saveCfg(){localStorage.star_sburl=sburl.value.trim().replace(/\/$/,'');localStorage.star_sbkey=sbkey.value.trim();load()}
+function hdr(extra={}){return Object.assign({'apikey':sbkey.value,'Authorization':'Bearer '+sbkey.value,'Content-Type':'application/json'},extra)}
+async function load(){
+ if(!sburl.value||!sbkey.value){list.innerHTML='<div class="muted">Supabase URL과 anon key를 입력해.</div>';return}
+ const r=await fetch(sburl.value+'/rest/v1/star_players?select=*&enabled=eq.true&order=sort_order.asc',{headers:hdr()});
+ if(!r.ok){list.textContent='DB 읽기 실패: '+await r.text();return} rows=await r.json();render()
+}
+function render(){
+ const s=q.value.trim().toLowerCase(),tier=tf.value;
+ const a=rows.filter(x=>(!tier||x.tier===tier)&&(!s||(x.player_name+' '+(x.soop_nickname||'')+' '+(x.soop_user_id||'')).toLowerCase().includes(s)));
+ stat.textContent='연결 '+rows.filter(x=>x.soop_user_id).length+' / '+rows.length;
+ list.innerHTML=a.map(x=>`<div class="row"><div class="race">${x.race}</div><div>${x.tier}</div><div class="name">${e(x.player_name)}</div><select onchange="changeTier(${x.id},this.value)">${TIERS.map(t=>`<option ${t===x.tier?'selected':''}>${t}</option>`).join('')}</select><div class="soop">${x.soop_profile_image?`<img src="${e(x.soop_profile_image)}">`:''}<div>${x.soop_user_id?`<b>${e(x.soop_nickname||x.soop_user_id)}</b><div class="ok">${e(x.soop_user_id)} · 연결됨</div>`:'<span class="muted">SOOP 미연결</span>'}</div></div><button onclick="openSearch(${x.id})">계정 찾기</button></div>`).join('')
+}
+function e(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+q.oninput=render;tf.onchange=render;
+async function patch(id,data){const r=await fetch(sburl.value+'/rest/v1/star_players?id=eq.'+id,{method:'PATCH',headers:hdr({'Prefer':'return=minimal'}),body:JSON.stringify({...data,updated_at:new Date().toISOString()})});if(!r.ok)alert(await r.text());else await load()}
+function changeTier(id,tier){patch(id,{tier})}
+function openSearch(id){target=rows.find(x=>x.id===id);sq.value=target.player_name;results.innerHTML='';modal.classList.add('on');searchSoop()}
+function closeM(){modal.classList.remove('on')}
+async function searchSoop(){
+ results.innerHTML='검색 중...';
+ try{const r=await fetch('/api/soop-search?nickname='+encodeURIComponent(sq.value.trim()),{cache:'no-store'});const j=await r.json();const a=Array.isArray(j)?j:(j.results||j.data||j.users||[]);
+ results.innerHTML=a.length?a.map((x,i)=>{const id=x.user_id||x.id||x.userId||'';const nick=x.nickname||x.nick||x.user_nick||id;const img=x.profile_image||x.profile||x.profileImage||'';return `<div class="result">${img?`<img src="${e(img)}">`:''}<div class="txt"><b>${e(nick)}</b><div class="muted">${e(id)}</div></div><button onclick='linkSoop(${JSON.stringify(id)},${JSON.stringify(nick)},${JSON.stringify(img)})'>연결</button></div>`}).join(''):'검색 결과 없음';
+ }catch(err){results.textContent='검색 실패: '+err.message}
+}
+async function linkSoop(id,nick,img){if(!target)return;await patch(target.id,{soop_user_id:id,soop_nickname:nick,soop_profile_image:img});closeM()}
+load();
+</script><script src="navbar.js"></script></body></html>
