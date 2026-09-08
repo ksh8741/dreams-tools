@@ -4394,11 +4394,23 @@ html:not(.broadcastOverlay) .teamSummary .miniChicken{
   color:#fff!important;font-size:11px!important;font-weight:900!important;
   white-space:nowrap!important;
 }
+
+/* v103 — lobby chronological room numbers + created time */
+#lobby .rh,#lobby .room{
+  grid-template-columns:42px minmax(180px,1fr) 110px 105px 92px 46px!important;
+}
+#lobby .createdAt{
+  color:#7a838c!important;
+  font-size:11px!important;
+  font-variant-numeric:tabular-nums!important;
+  white-space:nowrap!important;
+}
+
 </style><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
-<section id="lobby"><div class="top"><div class="title"><h1>배틀그라운드</h1><p>무제 MATCH ROOM</p></div><div><button id="refresh" class="btn">새로고침</button> <button id="adminDeleteMode" class="btn">방 삭제</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>팀 구성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
+<section id="lobby"><div class="top"><div class="title"><h1>배틀그라운드</h1><p>무제 MATCH ROOM</p></div><div><button id="refresh" class="btn">새로고침</button> <button id="adminDeleteMode" class="btn">방 삭제</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>팀 구성</div><div>생성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
 <section id="roomView" class="hidden">
 <div class="top"><div><h1 id="insideTitle" style="margin:0;font-size:20px"></h1><div id="insideMeta" class="meta"></div></div><button id="back" class="btn">← 방 목록</button></div>
 <div class="scoreStage">
@@ -4786,7 +4798,19 @@ if(adminDeleteConfirm)adminDeleteConfirm.onclick=async()=>{
   }
 };
 
-async function rooms(){let d=await q('/pubg_rooms?select=id,name,host_name,team_count,players_per_team,password_hash&order=created_at.desc');roomList.innerHTML=d.length?'':'<div class="empty">생성된 방이 없습니다.</div>';d.forEach((r,i)=>{let x=document.createElement('div');x.className='room';x.innerHTML='<div>'+(i+1)+'</div><div class="roomName">'+e(r.name)+'</div><div class="host">'+e(r.host_name)+'</div><div>'+cfg(r.team_count,r.players_per_team)+'</div><div class="lock">'+(r.password_hash?'●':'○')+'</div>';x.onclick=()=>{
+
+function roomCreatedText(v){
+  if(!v)return '-';
+  const d=new Date(v);
+  if(Number.isNaN(d.getTime()))return '-';
+  const now=new Date();
+  const sameDay=d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth()&&d.getDate()===now.getDate();
+  const pad=x=>String(x).padStart(2,'0');
+  if(sameDay)return pad(d.getHours())+':'+pad(d.getMinutes());
+  return pad(d.getMonth()+1)+'/'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+}
+
+async function rooms(){let d=await q('/pubg_rooms?select=id,name,host_name,team_count,players_per_team,password_hash,created_at&order=created_at.asc');roomList.innerHTML=d.length?'':'<div class="empty">생성된 방이 없습니다.</div>';d.forEach((r,i)=>{let x=document.createElement('div');x.className='room';x.innerHTML='<div>'+(i+1)+'</div><div class="roomName">'+e(r.name)+'</div><div class="host">'+e(r.host_name)+'</div><div>'+cfg(r.team_count,r.players_per_team)+'</div><div class="createdAt">'+roomCreatedText(r.created_at)+'</div><div class="lock">'+(r.password_hash?'●':'○')+'</div>';x.onclick=()=>{
   if(adminDeleteModeOn){
     adminDeleteTarget=r;adminDeletePw.value='';adminDeleteErr.textContent='';
     adminDeleteOv.classList.remove('hidden');setTimeout(()=>adminDeletePw.focus(),0);
