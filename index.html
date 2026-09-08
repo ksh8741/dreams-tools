@@ -3870,6 +3870,192 @@ html.broadcastOverlay.broadcastVertical:is(
 .theme-mil_army,.theme-mil_camo,.theme-mil_desert,.theme-mil_tactical,.theme-mil_olive,.theme-mil_navy
 ) .rankAvatarEmpty{border:2px solid var(--team-color)!important}
 
+
+/* ===== v78 CAMOUFLAGE family + Champagne Yellow ===== */
+
+/* CHAMPAGNE YELLOW — same upscale family as champagne gold, shifted toward yellow */
+html.broadcastOverlay.broadcastVertical.theme-yellow_champagne .rankHeader{
+ background:linear-gradient(105deg,#fff4ad 0%,#e7c94f 48%,#fff0a0 100%)!important;
+ color:#2b250b!important;border:1px solid #a78d25!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 -1px 0 rgba(116,91,10,.18)!important
+}
+html.broadcastOverlay.broadcastVertical.theme-yellow_champagne .rankCols{
+ background:#d9bd45!important;color:#2a2308!important;border-color:#9d8425!important
+}
+html.broadcastOverlay.broadcastVertical.theme-yellow_champagne .rankCols *{color:#2a2308!important}
+html.broadcastOverlay.broadcastVertical.theme-yellow_champagne .rankTotal{
+ background:linear-gradient(100deg,#fff8c8,#ead15f)!important;
+ color:#292307!important;border:1px solid #aa902b!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-yellow_champagne .rankRows{
+ background:#fffbea!important;border-color:#b59b36!important
+}
+html.broadcastOverlay.broadcastVertical.theme-yellow_champagne .rankRow{
+ background:linear-gradient(90deg,#fffdf1,#f8edb1)!important;
+ color:#292307!important;border-color:#dfce7c!important
+}
+html.broadcastOverlay.broadcastVertical.theme-yellow_champagne :is(
+.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo,
+.rankName,.rankPos,.rankK,.rankD,.rankScore,.rankScore strong
+){color:#292307!important;text-shadow:none!important}
+
+/* Shared camouflage typography/surfaces: all dark enough => warm off-white text */
+html.broadcastOverlay.broadcastVertical:is(
+.theme-camo_woodland,.theme-camo_forest,.theme-camo_desert,.theme-camo_urban,
+.theme-camo_night,.theme-camo_digital,.theme-camo_special
+) .rankCols *{color:#f3eedc!important}
+html.broadcastOverlay.broadcastVertical:is(
+.theme-camo_woodland,.theme-camo_forest,.theme-camo_desert,.theme-camo_urban,
+.theme-camo_night,.theme-camo_digital,.theme-camo_special
+) :is(.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo,
+.rankName,.rankPos,.rankK,.rankD,.rankScore,.rankScore strong){
+ color:#f3eedc!important;text-shadow:0 1px 1px rgba(0,0,0,.45)!important
+}
+
+/* WOODLAND CAMO — classic green/brown/black military camouflage */
+html.broadcastOverlay.broadcastVertical.theme-camo_woodland .rankHeader{
+ background:linear-gradient(132deg,#151a10 0 19%,#485033 19% 34%,#292f1d 34% 53%,#66533a 53% 66%,#1b2114 66% 82%,#596043 82%)!important;
+ color:#f3eedc!important;border:1px solid #847657!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_woodland .rankCols{background:#303724!important;color:#f3eedc!important;border-color:#75694c!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_woodland .rankTotal{
+ background:linear-gradient(125deg,#151a10 0 30%,#394127 30% 51%,#655239 51% 64%,#202617 64%)!important;
+ color:#f3eedc!important;border:1px solid #847657!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_woodland .rankRows{background:#171c12!important;border-color:#75694c!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_woodland .rankRow{
+ background:linear-gradient(118deg,#171c12 0 31%,#2c331f 31% 52%,#4d4930 52% 63%,#202617 63%)!important;
+ color:#f3eedc!important;border-color:#4e5238!important
+}
+
+/* FOREST CAMO — deeper, wetter forest green */
+html.broadcastOverlay.broadcastVertical.theme-camo_forest .rankHeader{
+ background:linear-gradient(128deg,#07150d 0 22%,#183923 22% 39%,#304d2b 39% 57%,#162318 57% 76%,#536043 76%)!important;
+ color:#eff4e9!important;border:1px solid #68775a!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_forest .rankCols{background:#183423!important;color:#eff4e9!important;border-color:#62705a!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_forest .rankTotal{
+ background:linear-gradient(120deg,#09170e 0 34%,#214029 34% 55%,#3d5132 55% 68%,#101e14 68%)!important;
+ color:#eff4e9!important;border:1px solid #68775a!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_forest .rankRows{background:#08140d!important;border-color:#53634d!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_forest .rankRow{
+ background:linear-gradient(120deg,#09150e 0 38%,#17301e 38% 58%,#314329 58% 68%,#0e1c13 68%)!important;
+ color:#eff4e9!important;border-color:#294432!important
+}
+
+/* DESERT CAMO — tan/brown combat uniform, still dark enough for light text */
+html.broadcastOverlay.broadcastVertical.theme-camo_desert .rankHeader{
+ background:linear-gradient(130deg,#443725 0 20%,#806d4b 20% 37%,#5d4c34 37% 55%,#9a845c 55% 69%,#3f3424 69%)!important;
+ color:#fff5df!important;border:1px solid #b29b70!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_desert .rankCols{background:#594a34!important;color:#fff5df!important;border-color:#a58c63!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_desert .rankTotal{
+ background:linear-gradient(120deg,#3d3223 0 32%,#69583d 32% 54%,#8a744f 54% 67%,#473a28 67%)!important;
+ color:#fff5df!important;border:1px solid #a58c63!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_desert .rankRows{background:#392f22!important;border-color:#8f7958!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_desert .rankRow{
+ background:linear-gradient(118deg,#3a3022 0 37%,#594a34 37% 58%,#756344 58% 69%,#413628 69%)!important;
+ color:#fff5df!important;border-color:#68583f!important
+}
+
+/* URBAN CAMO — black/charcoal concrete camouflage */
+html.broadcastOverlay.broadcastVertical.theme-camo_urban .rankHeader{
+ background:linear-gradient(130deg,#090909 0 19%,#333 19% 34%,#181818 34% 52%,#555 52% 64%,#101010 64% 82%,#3e3e3e 82%)!important;
+ color:#fff!important;border:1px solid #777!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_urban .rankCols{background:#292929!important;color:#fff!important;border-color:#777!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_urban .rankTotal{
+ background:linear-gradient(122deg,#0b0b0b 0 31%,#303030 31% 51%,#505050 51% 63%,#151515 63%)!important;
+ color:#fff!important;border:1px solid #777!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_urban .rankRows{background:#0b0b0b!important;border-color:#666!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_urban .rankRow{
+ background:linear-gradient(120deg,#0c0c0c 0 36%,#252525 36% 57%,#404040 57% 67%,#151515 67%)!important;
+ color:#fff!important;border-color:#3d3d3d!important
+}
+
+/* NIGHT CAMO — stealth black/green */
+html.broadcastOverlay.broadcastVertical.theme-camo_night .rankHeader{
+ background:linear-gradient(130deg,#020504 0 23%,#101b15 23% 40%,#1d2a20 40% 56%,#080d0a 56% 76%,#273328 76%)!important;
+ color:#eef3ec!important;border:1px solid #4c5c50!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_night .rankCols{background:#101914!important;color:#eef3ec!important;border-color:#46564a!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_night .rankTotal{
+ background:linear-gradient(120deg,#030605 0 35%,#111c16 35% 56%,#263128 56% 67%,#080d0a 67%)!important;
+ color:#eef3ec!important;border:1px solid #4c5c50!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_night .rankRows{background:#030605!important;border-color:#3b493e!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_night .rankRow{
+ background:linear-gradient(118deg,#030605 0 39%,#0e1712 39% 59%,#1d2820 59% 69%,#070c09 69%)!important;
+ color:#eef3ec!important;border-color:#243229!important
+}
+
+/* DIGITAL CAMO — pixel-block military pattern */
+html.broadcastOverlay.broadcastVertical.theme-camo_digital .rankHeader{
+ background:
+ linear-gradient(90deg,transparent 0 13%,#566047 13% 22%,transparent 22% 39%,#242b20 39% 51%,transparent 51% 72%,#6b7056 72% 81%,transparent 81%),
+ linear-gradient(0deg,#1b2118 0 48%,#333b2d 48%)!important;
+ color:#f4f0df!important;border:1px solid #73785f!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_digital .rankCols{background:#2d3428!important;color:#f4f0df!important;border-color:#73785f!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_digital .rankTotal{
+ background:linear-gradient(90deg,#1b2118 0 23%,#4a533d 23% 39%,#252c21 39% 62%,#646a50 62% 74%,#20261d 74%)!important;
+ color:#f4f0df!important;border:1px solid #73785f!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_digital .rankRows{background:#1a2017!important;border-color:#666c55!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_digital .rankRow{
+ background:linear-gradient(90deg,#1b2118 0 29%,#39412f 29% 42%,#22291f 42% 65%,#515944 65% 75%,#1c2219 75%)!important;
+ color:#f4f0df!important;border-color:#424a39!important
+}
+
+/* SPECIAL FORCES — tactical charcoal + muted army green camo */
+html.broadcastOverlay.broadcastVertical.theme-camo_special .rankHeader{
+ background:linear-gradient(128deg,#070908 0 25%,#202820 25% 41%,#111512 41% 59%,#3a4335 59% 70%,#090b0a 70%)!important;
+ color:#f1f3ec!important;border:1px solid #687066!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_special .rankCols{background:#171c18!important;color:#f1f3ec!important;border-color:#626a61!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_special .rankTotal{
+ background:linear-gradient(120deg,#070908 0 36%,#1d251e 36% 55%,#353d31 55% 66%,#0d100e 66%)!important;
+ color:#f1f3ec!important;border:1px solid #687066!important
+}
+html.broadcastOverlay.broadcastVertical.theme-camo_special .rankRows{background:#070908!important;border-color:#4c544d!important}
+html.broadcastOverlay.broadcastVertical.theme-camo_special .rankRow{
+ background:linear-gradient(120deg,#080a09 0 39%,#171d18 39% 58%,#2b3229 58% 68%,#0c0f0d 68%)!important;
+ color:#f1f3ec!important;border-color:#303832!important
+}
+
+/* Seamless SCORE + team identity for all new themes */
+html.broadcastOverlay.broadcastVertical:is(
+.theme-yellow_champagne,.theme-camo_woodland,.theme-camo_forest,.theme-camo_desert,
+.theme-camo_urban,.theme-camo_night,.theme-camo_digital,.theme-camo_special
+) .rankScore{
+ background:transparent!important;background-image:none!important;border:0!important;
+ outline:0!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical:is(
+.theme-yellow_champagne,.theme-camo_woodland,.theme-camo_forest,.theme-camo_desert,
+.theme-camo_urban,.theme-camo_night,.theme-camo_digital,.theme-camo_special
+) .rankScore:before,
+html.broadcastOverlay.broadcastVertical:is(
+.theme-yellow_champagne,.theme-camo_woodland,.theme-camo_forest,.theme-camo_desert,
+.theme-camo_urban,.theme-camo_night,.theme-camo_digital,.theme-camo_special
+) .rankScore:after{content:none!important;display:none!important}
+
+html.broadcastOverlay.broadcastVertical:is(
+.theme-yellow_champagne,.theme-camo_woodland,.theme-camo_forest,.theme-camo_desert,
+.theme-camo_urban,.theme-camo_night,.theme-camo_digital,.theme-camo_special
+) .rankTotal:before{background:var(--team-color)!important;background-image:none!important}
+html.broadcastOverlay.broadcastVertical:is(
+.theme-yellow_champagne,.theme-camo_woodland,.theme-camo_forest,.theme-camo_desert,
+.theme-camo_urban,.theme-camo_night,.theme-camo_digital,.theme-camo_special
+) .rankAvatar,
+html.broadcastOverlay.broadcastVertical:is(
+.theme-yellow_champagne,.theme-camo_woodland,.theme-camo_forest,.theme-camo_desert,
+.theme-camo_urban,.theme-camo_night,.theme-camo_digital,.theme-camo_special
+) .rankAvatarEmpty{border:2px solid var(--team-color)!important}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -3965,22 +4151,17 @@ html.broadcastOverlay.broadcastVertical:is(
             <option value="mono_stripe">BLACK &amp; WHITE</option>
             <option value="midnight_purple">MIDNIGHT PURPLE</option>
             <option value="esports_red">ESPORTS RED</option>
+            <option value="yellow_champagne">CHAMPAGNE YELLOW</option>
           </optgroup>
-          <optgroup label="YELLOW 후보">
-            <option value="yellow_signal">SIGNAL YELLOW</option>
-            <option value="yellow_black">YELLOW BLACK</option>
-            <option value="yellow_sport">SPORT YELLOW</option>
-            <option value="yellow_cream">CREAM YELLOW</option>
-            <option value="yellow_neon">NEON YELLOW</option>
-            <option value="yellow_gold">GOLD YELLOW</option>
-          </optgroup>
-          <optgroup label="MILITARY 후보">
-            <option value="mil_army">ARMY GREEN</option>
+          <optgroup label="CAMOUFLAGE 계열">
             <option value="mil_camo">CAMOUFLAGE</option>
-            <option value="mil_desert">DESERT SOLDIER</option>
-            <option value="mil_tactical">TACTICAL BLACK</option>
-            <option value="mil_olive">OLIVE DRAB</option>
-            <option value="mil_navy">NAVY SOLDIER</option>
+            <option value="camo_woodland">WOODLAND CAMO</option>
+            <option value="camo_forest">FOREST CAMO</option>
+            <option value="camo_desert">DESERT CAMO</option>
+            <option value="camo_urban">URBAN CAMO</option>
+            <option value="camo_night">NIGHT CAMO</option>
+            <option value="camo_digital">DIGITAL CAMO</option>
+            <option value="camo_special">SPECIAL FORCES</option>
           </optgroup>
         </select>
       </label>
@@ -4933,7 +5114,7 @@ const overlayParams=new URLSearchParams(location.search);
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout=overlayParams.get('layout')==='horizontal'?'horizontal':'vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
-const OVERLAY_THEMES=['luxury','lavender','winter_night','mono_stripe','midnight_purple','esports_red','yellow_signal','yellow_black','yellow_sport','yellow_cream','yellow_neon','yellow_gold','mil_army','mil_camo','mil_desert','mil_tactical','mil_olive','mil_navy'];
+const OVERLAY_THEMES=['luxury','lavender','winter_night','mono_stripe','midnight_purple','esports_red','yellow_champagne','mil_camo','camo_woodland','camo_forest','camo_desert','camo_urban','camo_night','camo_digital','camo_special'];
 const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'luxury';
 if(overlayRoomId){
   document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal','theme-'+overlayTheme);
