@@ -5,184 +5,197 @@
 
 
 
+
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scrollbar-gutter:stable}
 body{
   margin:0;
-  color:#17191d;
+  color:#16191d;
   font-family:Inter,Arial,"Noto Sans KR",sans-serif;
-  background:#eceff2;
+  background:#f6f6f4;
 }
 main{
   width:min(1480px,calc(100% - 160px));
-  margin:32px auto 100px;
+  margin:34px auto 110px;
 }
 .pageTitleWrap{
   display:flex;align-items:flex-end;justify-content:space-between;
-  margin:0 0 20px;padding:0 4px;
+  margin:0 0 24px;padding:0 4px;
 }
 .pageTitleWrap h1{
-  margin:0;font-size:32px;font-weight:1000;letter-spacing:-1.8px;color:#111318;
+  margin:0;font-size:32px;font-weight:1000;letter-spacing:-1.9px;
 }
 .pageSub{
-  margin-top:5px;font-size:10px;font-weight:900;letter-spacing:1.6px;color:#9198a0;
+  margin-top:5px;font-size:10px;font-weight:900;letter-spacing:1.7px;color:#9a9da2;
 }
 
-/* BOARD */
+/* no giant outer table */
 .board{
-  display:flex;flex-direction:column;gap:18px;
-  border:0;background:transparent;box-shadow:none;overflow:visible;
+  display:flex;flex-direction:column;gap:34px;
+  background:transparent;border:0;box-shadow:none;overflow:visible;
 }
 
-/* each tier = dark broadcast module */
+/* magazine section */
 .tier{
-  position:relative;display:block;min-height:0;overflow:hidden;
-  border:1px solid #d9dde2;border-radius:24px;background:#fff;
-  box-shadow:0 16px 42px rgba(25,31,39,.07);
-  scroll-margin-top:26px;
+  position:relative;display:block;min-height:0;
+  border:0;background:transparent;box-shadow:none;overflow:visible;
+  scroll-margin-top:28px;
 }
 .tierLabel{
-  position:relative;height:64px;padding:0 24px;
-  display:flex;align-items:center;justify-content:flex-start;
+  position:relative;
+  height:45px;padding:0 2px 13px;
+  display:flex;align-items:flex-end;justify-content:flex-start;
   writing-mode:initial;transform:none;
-  background:#15181d;color:#fff;
-  font-size:19px;font-weight:1000;letter-spacing:-.5px;
+  border-bottom:2px solid #181b1f;
+  background:transparent;color:#17191d;
+  font-size:23px;font-weight:1000;letter-spacing:-1.1px;
 }
 .tierLabel:before{
-  content:"TIER";display:inline-flex;align-items:center;justify-content:center;
-  height:24px;padding:0 9px;margin-right:12px;border-radius:7px;
-  background:#fff;color:#17191d;font-size:8px;font-weight:1000;letter-spacing:1.4px;
+  content:"";width:7px;height:7px;margin:0 10px 6px 1px;
+  border-radius:50%;background:#181b1f;
 }
 .tierLabel:after{
-  content:"STARCRAFT ROSTER";margin-left:auto;
-  color:#707780;font-size:8px;font-weight:900;letter-spacing:1.8px;
+  content:"ROSTER";
+  margin-left:auto;margin-bottom:3px;
+  font-size:8px;font-weight:1000;letter-spacing:2px;color:#a2a5aa;
 }
 
 .members{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(255px,1fr));
-  gap:12px;padding:16px;
-  align-items:stretch;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:24px 16px;
+  padding:18px 0 0;
+  align-items:start;
 }
 
-/* ===== landscape broadcast card ===== */
+/* ===== V13: editorial portrait tile, almost no card container ===== */
 .playerCard{
-  --race:#838b94;
-  position:relative;display:grid;
-  grid-template-columns:96px minmax(0,1fr);
-  min-height:108px;overflow:hidden;
-  border:1px solid #e2e5e9;border-radius:15px;
-  background:#f7f8fa;color:#181b20;text-decoration:none;
-  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+  --race:#7f858c;
+  position:relative;display:block;min-width:0;
+  color:#181b1f;text-decoration:none;
+  background:transparent;border:0;border-radius:0;overflow:visible;
+  transition:transform .18s ease;
 }
-.playerCard:hover{
-  transform:translateY(-3px);
-  border-color:#cbd1d8;
-  box-shadow:0 12px 28px rgba(25,31,39,.10);
-}
-.playerCard.T{--race:#2477cf}
-.playerCard.Z{--race:#7546b5}
-.playerCard.P{--race:#c89400}
+.playerCard:hover{transform:translateY(-5px)}
+.playerCard.T{--race:#2877c9}
+.playerCard.Z{--race:#7848b2}
+.playerCard.P{--race:#c18f00}
 
-/* left image panel */
 .portrait{
-  position:relative;grid-column:1;grid-row:1;
-  width:96px;height:108px;margin:0;overflow:hidden;
-  border:0;border-radius:0;background:#fff;box-shadow:none;
+  position:relative;width:100%;aspect-ratio:5/6.15;
+  margin:0;overflow:hidden;
+  border:0;border-radius:16px 16px 16px 3px;
+  background:#fff;
+  box-shadow:0 10px 24px rgba(26,30,36,.09);
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 19px),calc(100% - 19px) 100%,0 100%);
 }
 .portrait:after{
-  content:"";display:block;position:absolute;left:0;right:auto;top:0;bottom:0;
-  width:4px;height:auto;background:var(--race);z-index:4;
+  content:"";display:block;
+  position:absolute;z-index:4;
+  left:0;bottom:0;width:46px;height:5px;
+  background:var(--race);
 }
 .profileImg{
-  position:relative;z-index:1;display:block;width:100%;height:100%;
-  object-fit:cover;background:#fff;
+  position:relative;z-index:1;display:block;
+  width:100%;height:100%;object-fit:cover;background:#fff;
 }
-.blankPortrait{position:absolute;inset:0;background:#fff;z-index:0}
+.blankPortrait{
+  position:absolute;inset:0;z-index:0;background:#fff;
+}
 
-/* right identity block */
+/* identity is typography, not another box */
 .namePlate{
-  position:relative;grid-column:2;grid-row:1;
-  margin:0;padding:0 14px 0 15px;
-  min-width:0;min-height:108px;
-  display:flex;align-items:center;justify-content:flex-start;gap:7px;
-  border:0;background:#f7f8fa;box-shadow:none;
-  color:#1b1e23;font-size:14px;font-weight:1000;
-}
-.namePlate:before{
-  content:"PLAYER";
-  position:absolute;left:15px;top:20px;
-  font-size:7px;font-weight:1000;letter-spacing:1.4px;color:#a2a8af;
+  position:relative;margin:0;padding:10px 3px 0;
+  min-height:37px;
+  display:flex;align-items:center;justify-content:flex-start;gap:6px;
+  border:0;background:transparent;box-shadow:none;
+  color:#1b1e22;font-size:13px;font-weight:1000;
 }
 .playerName{
   min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  margin-top:7px;
 }
 .raceText{
-  flex:0 0 auto;margin-top:7px;
-  width:25px;height:25px;
+  flex:0 0 auto;width:auto;height:auto;
   display:inline-flex;align-items:center;justify-content:center;
-  border-radius:8px;background:var(--race);color:#fff;
-  font-size:10px;font-weight:1000;
+  border:0;border-radius:0;background:transparent;
+  color:var(--race);font-size:11px;font-weight:1000;
 }
-.liveBadge{
-  position:absolute;left:15px;bottom:17px;
-  height:18px;padding:0 7px;border-radius:5px;
-  display:inline-flex;align-items:center;justify-content:center;
-  background:#ef2947;color:#fff;font-size:8px;font-weight:1000;letter-spacing:.55px;
+.raceText:before{
+  content:"/";margin-right:5px;color:#c0c3c7;font-weight:700;
 }
 
-/* university mark overlays image */
+/* LIVE is an editorial red dot + label */
+.liveBadge{
+  order:-1;
+  flex:0 0 auto;height:auto;padding:0;
+  display:inline-flex;align-items:center;gap:4px;
+  border-radius:0;background:transparent;color:#e72d45;
+  font-size:8px;font-weight:1000;letter-spacing:.45px;
+}
+.liveBadge:before{
+  content:"";width:6px;height:6px;border-radius:50%;background:#e72d45;
+  box-shadow:0 0 0 3px rgba(231,45,69,.10);
+}
+
+/* university mark: small square seal */
 .univBadge{
   position:absolute;left:9px;top:9px;z-index:8;
-  width:31px;height:31px;
+  width:34px;height:34px;
   display:flex;align-items:center;justify-content:center;
-  border-radius:9px;background:rgba(255,255,255,.94);
-  border:1px solid rgba(225,228,232,.9);
-  box-shadow:0 4px 12px rgba(0,0,0,.15);overflow:hidden;
+  border-radius:8px;background:rgba(255,255,255,.91);
+  border:1px solid rgba(225,227,230,.9);
+  box-shadow:0 4px 12px rgba(0,0,0,.13);overflow:hidden;
 }
-.univBadge img{width:26px;height:26px;object-fit:contain}
+.univBadge img{width:29px;height:29px;object-fit:contain}
 
-/* status stack at right */
+/* status tags run vertically down right side */
 .cornerBadges{
-  position:absolute;right:9px;top:9px;bottom:auto;z-index:8;
+  position:absolute;right:8px;top:8px;bottom:auto;z-index:8;
   display:flex;flex-direction:column;align-items:flex-end;gap:5px;
 }
 .stateBadge{
-  height:20px;padding:0 7px;border:0;border-radius:5px;
+  height:21px;padding:0 7px;
   display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.45);border-radius:6px;
   color:#fff;font-size:8px;font-weight:1000;letter-spacing:.6px;
-  box-shadow:none;
+  backdrop-filter:blur(5px);
+  box-shadow:0 3px 10px rgba(0,0,0,.14);
 }
-.stateBadge.up{background:#df3d48}
-.stateBadge.new{background:#181b20}
-.stateBadge.repair{background:#e68a18}
+.stateBadge.up{background:rgba(221,49,61,.94)}
+.stateBadge.new{background:rgba(19,22,26,.94)}
+.stateBadge.repair{background:rgba(225,133,19,.95)}
 
-/* promotion: glowing race spine */
+/* promotion: only the signature line and portrait shadow glow */
+.playerCard.soon .portrait{
+  animation:v13Glow .9s ease-in-out infinite alternate;
+}
 .playerCard.soon .portrait:after{
-  width:5px;animation:spineGlow .9s ease-in-out infinite alternate;
+  animation:v13Line  .9s ease-in-out infinite alternate;
 }
-.playerCard.soon{
-  animation:softCardGlow .9s ease-in-out infinite alternate;
+@keyframes v13Glow{
+  from{box-shadow:0 10px 24px rgba(26,30,36,.09)}
+  to{
+    box-shadow:
+      0 10px 26px rgba(26,30,36,.10),
+      0 0 0 2px color-mix(in srgb,var(--race) 45%,transparent),
+      0 0 18px color-mix(in srgb,var(--race) 28%,transparent);
+  }
 }
-@keyframes spineGlow{
-  from{box-shadow:0 0 4px var(--race)}
-  to{box-shadow:0 0 18px var(--race),0 0 28px var(--race)}
-}
-@keyframes softCardGlow{
-  from{box-shadow:0 0 0 1px color-mix(in srgb,var(--race) 15%,transparent)}
-  to{box-shadow:0 0 0 2px color-mix(in srgb,var(--race) 50%,transparent),0 8px 24px color-mix(in srgb,var(--race) 16%,transparent)}
+@keyframes v13Line{
+  from{width:46px;box-shadow:0 0 3px var(--race)}
+  to{width:76px;box-shadow:0 0 14px var(--race)}
 }
 
+/* inactive */
 .playerCard.idle{
-  opacity:.43;filter:grayscale(.88) saturate(.25);
+  opacity:.42;filter:grayscale(.92) saturate(.18);
 }
-.playerCard.idle .portrait:after,
-.playerCard.idle .raceText{background:#8b9198}
-.playerCard.missing{opacity:.85}
+.playerCard.idle .portrait:after{background:#8e9297}
+.playerCard.idle .raceText{color:#8e9297}
+.playerCard.missing{opacity:.84}
 
-/* KEEP V10/V11 FIXED TIER MENU */
+/* fixed menu intentionally preserved */
 .tierRail{
   position:fixed;right:22px;top:50%;transform:translateY(-50%);
   z-index:9000;width:82px;padding:9px 7px 10px;
@@ -196,9 +209,9 @@ main{
 }
 .tierJump{
   position:relative;height:30px;margin:2px 0;padding:0 5px;
-  display:flex;align-items:center;justify-content:center;border-radius:10px;
-  text-decoration:none;background:transparent;color:#666c74;
-  font-size:10px;font-weight:900;transition:.15s;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:10px;text-decoration:none;background:transparent;
+  color:#666c74;font-size:10px;font-weight:900;transition:.15s;
 }
 .tierJump:before{
   content:"";position:absolute;left:4px;width:3px;height:3px;
@@ -215,11 +228,12 @@ main{
   main{width:calc(100% - 24px)}
   .tierRail{display:none}
 }
-@media(max-width:650px){
-  .members{grid-template-columns:1fr;padding:10px}
-  .tierLabel{height:54px;font-size:16px}
+@media(max-width:700px){
+  .members{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 10px}
+  .tierLabel{font-size:19px}
 }
 </style>
+
 
 
 
