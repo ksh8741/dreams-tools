@@ -18,6 +18,7 @@ export default async function handler(req, res) {
     method:'PATCH',
     headers:{
       'apikey':secret,
+      'Authorization':`Bearer ${secret}`,
       'Content-Type':'application/json',
       'Prefer':'return=representation'
     },
@@ -27,7 +28,10 @@ export default async function handler(req, res) {
   if(!r.ok) return res.status(r.status).json({error:`Supabase PATCH 실패: ${text}`});
 
   // Read back from DB with the secret key and verify the requested values really persisted.
-  const vr = await fetch(endpoint+'&select=*',{headers:{'apikey':secret}});
+  const vr = await fetch(endpoint+'&select=*',{headers:{
+    'apikey':secret,
+    'Authorization':`Bearer ${secret}`
+  }});
   const vtext = await vr.text();
   if(!vr.ok) return res.status(vr.status).json({error:`저장 후 검증 조회 실패: ${vtext}`});
   let rows=[];
