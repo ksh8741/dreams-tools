@@ -2704,6 +2704,93 @@ html.broadcastOverlay.broadcastVertical.theme-luxury .rankAvatarEmpty{
   background:linear-gradient(135deg,#332816,#0b0b0b)!important;border:2px solid #b99754!important;box-shadow:none!important;
 }
 
+
+/* v67 — remove SCORE "paper" completely + theme the REAL rotating total cards (.rankTotal) */
+
+/* SCORE is now just a normal grid cell: no separate sheet/background in ANY theme */
+html.broadcastOverlay.broadcastVertical .rankScore{
+  background:transparent!important;
+  background-image:none!important;
+  border-left:0!important;
+  border-right:0!important;
+  box-shadow:none!important;
+  outline:0!important;
+}
+html.broadcastOverlay.broadcastVertical .rankScore:before,
+html.broadcastOverlay.broadcastVertical .rankScore:after{
+  background:none!important;
+  box-shadow:none!important;
+}
+
+/* Light theme rotating team total/chicken/versus cards.
+   These are the actual .rankTotal elements used by the 8-second loop. */
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTotals{
+  background:transparent!important;
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTotal{
+  background:linear-gradient(110deg,var(--th-panel),var(--th-panel2))!important;
+  border:1px solid var(--th-line)!important;
+  box-shadow:none!important;
+  color:var(--th-text)!important;
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTotal:before{
+  background:var(--team-color)!important;
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTotal:after{
+  background:linear-gradient(90deg,rgba(255,255,255,.30),transparent 58%)!important;
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTotalLabel,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTotalName,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTotalKill,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTotalInfo{
+  color:var(--th-text)!important;
+  text-shadow:none!important;
+}
+/* Old kill-mode pseudo icon forced white; inherit the theme text color instead */
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTotal.killMode .rankTotalLabel:before,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTotal.chickenMode .rankTotalLabel:before,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTotal.versusMode .rankTotalLabel:before{
+  color:var(--th-text)!important;
+}
+
+/* Luxury Noir rotating total/chicken cards */
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankTotal{
+  background:linear-gradient(110deg,#0a0a0af8,#241d12f8,#0c0c0cf8)!important;
+  border:1px solid #8d713d!important;
+  box-shadow:inset 0 0 0 1px rgba(239,207,133,.08)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankTotal:before{
+  background:var(--team-color)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankTotal:after{
+  background:linear-gradient(90deg,rgba(244,211,137,.09),transparent 62%)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankTotalLabel,
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankTotalName,
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankTotalKill,
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankTotalInfo{
+  color:#f2d68e!important;
+  text-shadow:0 1px 2px #000!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankTotal.killMode .rankTotalLabel:before,
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankTotal.chickenMode .rankTotalLabel:before,
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankTotal.versusMode .rankTotalLabel:before{
+  color:#f2d68e!important;
+}
+
+/* Cherry Night rotating total cards too */
+html.broadcastOverlay.broadcastVertical.theme-cherry .rankTotal{
+  background:linear-gradient(100deg,#240b15f8,#53192ff8)!important;
+  border:1px solid #84324f!important;
+  box-shadow:none!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-cherry .rankTotalLabel,
+html.broadcastOverlay.broadcastVertical.theme-cherry .rankTotalName,
+html.broadcastOverlay.broadcastVertical.theme-cherry .rankTotalKill,
+html.broadcastOverlay.broadcastVertical.theme-cherry .rankTotalInfo{
+  color:#fff0f6!important;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
