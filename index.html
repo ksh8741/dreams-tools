@@ -3659,7 +3659,55 @@ html.broadcastOverlay.broadcastVertical.theme-esports_red .rankTotal:before{
   background-image:none!important;
 }
 
-#overlayTeamField.isDisabled{opacity:.38}#overlayTeamField.isDisabled select{pointer-events:none}</style></head><body>
+#overlayTeamField.isDisabled{opacity:.38}#overlayTeamField.isDisabled select{pointer-events:none}
+/* v84 — optional broadcast frames aligned to the right of the Name Tag */
+html.broadcastOverlay.broadcastVertical .overlayFrames{
+  position:absolute!important;
+  left:265px!important;      /* name tag right edge + small gap */
+  bottom:34px!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  gap:8px!important;
+  pointer-events:none!important;
+  z-index:18!important;
+}
+html.broadcastOverlay.broadcastVertical .overlayFrame{
+  width:88px!important;
+  height:118px!important;
+  position:relative!important;
+  box-sizing:border-box!important;
+  background:
+    linear-gradient(145deg,rgba(18,27,34,.72),rgba(5,10,14,.48))!important;
+  border:1px solid rgba(210,220,226,.74)!important;
+  clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px),0 8px)!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(20,30,37,.9),
+    inset 0 0 16px rgba(120,160,184,.08),
+    0 3px 10px rgba(0,0,0,.22)!important;
+}
+html.broadcastOverlay.broadcastVertical .overlayFrame:before,
+html.broadcastOverlay.broadcastVertical .overlayFrame:after{
+  content:""!important;
+  position:absolute!important;
+  pointer-events:none!important;
+}
+html.broadcastOverlay.broadcastVertical .overlayFrame:before{
+  left:7px!important;right:7px!important;top:7px!important;bottom:7px!important;
+  border:1px solid rgba(182,198,207,.34)!important;
+}
+html.broadcastOverlay.broadcastVertical .overlayFrame:after{
+  left:12px!important;right:12px!important;top:5px!important;height:2px!important;
+  background:linear-gradient(90deg,transparent,rgba(221,230,234,.7),transparent)!important;
+  box-shadow:0 106px 0 rgba(140,158,168,.44)!important;
+}
+html.broadcastOverlay.broadcastVertical .overlayFrameInner{
+  position:absolute!important;
+  inset:12px!important;
+  border:1px solid rgba(111,133,146,.22)!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0))!important;
+}
+
+</style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
 <section id="lobby"><div class="top"><div class="title"><h1>배틀그라운드</h1><p>무제 MATCH ROOM</p></div><div><button id="refresh" class="btn">새로고침</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>팀 구성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
@@ -3763,6 +3811,15 @@ html.broadcastOverlay.broadcastVertical.theme-esports_red .rankTotal:before{
         </select>
       </label>
       <label id="overlayTeamField" class="overlaySettingField"><span>내 팀</span><select id="overlayTeamSelect"></select></label>
+      <label class="overlaySettingField">
+        <span>프레임 개수</span>
+        <select id="overlayFrameCountSelect">
+          <option value="0">0개</option>
+          <option value="1">1개</option>
+          <option value="2">2개</option>
+          <option value="3">3개</option>
+        </select>
+      </label>
     </div>
 
     <div class="overlayUrlPreview">
@@ -3779,7 +3836,7 @@ html.broadcastOverlay.broadcastVertical.theme-esports_red .rankTotal:before{
 <script>
 const B='https://llqikrcqavwfbuajykig.supabase.co/rest/v1',K='sb_publishable_aLPzJI_jQLlywmoQsiLRtw_ElX_aslF',H={'apikey':K,'Authorization':'Bearer '+K,'Content-Type':'application/json'},n=x=>Math.max(0,parseInt(x)||0),e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let cur,pick,P=[],RO=[],S=[],poll,editing=false,pickId=null,pickName='',dragId=null,ghost=null;
 const chromaOn=document.getElementById('chromaOn'),chromaColor=document.getElementById('chromaColor'),
-scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),overlayUrlBtn=document.getElementById('overlayUrlBtn'),overlayUrlOv=document.getElementById('overlayUrlOv'),overlayLayoutSelect=document.getElementById('overlayLayoutSelect'),overlayThemeSelect=document.getElementById('overlayThemeSelect'),overlayNameTagSelect=document.getElementById('overlayNameTagSelect'),overlayTeamField=document.getElementById('overlayTeamField'),overlayTeamSelect=document.getElementById('overlayTeamSelect'),overlayGeneratedUrl=document.getElementById('overlayGeneratedUrl'),overlayGeneratedCopy=document.getElementById('overlayGeneratedCopy'),overlayCloseBtn=document.getElementById('overlayCloseBtn'),captureStage=document.getElementById('captureStage'),
+scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),overlayUrlBtn=document.getElementById('overlayUrlBtn'),overlayUrlOv=document.getElementById('overlayUrlOv'),overlayLayoutSelect=document.getElementById('overlayLayoutSelect'),overlayThemeSelect=document.getElementById('overlayThemeSelect'),overlayNameTagSelect=document.getElementById('overlayNameTagSelect'),overlayTeamField=document.getElementById('overlayTeamField'),overlayTeamSelect=document.getElementById('overlayTeamSelect'),overlayFrameCountSelect=document.getElementById('overlayFrameCountSelect'),overlayGeneratedUrl=document.getElementById('overlayGeneratedUrl'),overlayGeneratedCopy=document.getElementById('overlayGeneratedCopy'),overlayCloseBtn=document.getElementById('overlayCloseBtn'),captureStage=document.getElementById('captureStage'),
 totalBar=document.getElementById('totalBar'),scoreboard=document.getElementById('scoreboard'),
 killBoard=document.getElementById('killBoard'),
 goalKills=document.getElementById('goalKills'),timerMode=document.getElementById('timerMode'),
@@ -3907,11 +3964,11 @@ function applyScoreWidth(){
   const w=Math.max(202,cur.team_count*202);
   document.documentElement.style.setProperty('--score-width',w+'px');
 }
-function overlayUrlForRoom(layout='vertical',team=1,theme='luxury',nameTag=true){
+function overlayUrlForRoom(layout='vertical',team=1,theme='luxury',nameTag=true,frames=0){
   if(!cur)return '';
   const u=new URL(location.href);u.search='';u.hash='';
   u.searchParams.set('overlay',String(cur.id));u.searchParams.set('layout',layout);
-  u.searchParams.set('team',String(team));u.searchParams.set('theme',theme);u.searchParams.set('nametag',nameTag?'1':'0');
+  u.searchParams.set('team',String(team));u.searchParams.set('theme',theme);u.searchParams.set('nametag',nameTag?'1':'0');u.searchParams.set('frames',String(Math.max(0,Math.min(3,parseInt(frames||0,10)||0))));
   return u.toString();
 }
 
@@ -4276,7 +4333,27 @@ function animateVerticalKillChange(playerId,delta){
 }
 
 
+
+function renderOverlayFrames(){
+  if(!captureStage)return;
+  let holder=document.getElementById('overlayFrames');
+  if(overlayFrameCount<=0){
+    if(holder)holder.remove();
+    return;
+  }
+  if(!holder){
+    holder=document.createElement('div');
+    holder.id='overlayFrames';
+    holder.className='overlayFrames';
+    captureStage.appendChild(holder);
+  }
+  holder.innerHTML=Array.from({length:overlayFrameCount},(_,i)=>
+    '<div class="overlayFrame" data-frame="'+(i+1)+'"><div class="overlayFrameInner"></div></div>'
+  ).join('');
+}
+
 function renderGameNameplates(){
+  renderOverlayFrames();
   if(!cur||!captureStage)return;
   if(!overlayNameTagEnabled){
     const old=document.getElementById('gameNameplates');
@@ -4650,14 +4727,16 @@ function refreshOverlayGeneratedUrl(){
   const nameTag=overlayNameTagSelect?.value!=='0';
   const team=Math.max(1,parseInt(overlayTeamSelect?.value||'1',10)||1);
   const theme=overlayThemeSelect?.value||'luxury';
+  const frames=Math.max(0,Math.min(3,parseInt(overlayFrameCountSelect?.value||'0',10)||0));
   syncOverlayNameTagUi();
-  overlayGeneratedUrl.value=overlayUrlForRoom(layout,team,theme,nameTag);
+  overlayGeneratedUrl.value=overlayUrlForRoom(layout,team,theme,nameTag,frames);
 }
 if(overlayUrlBtn)overlayUrlBtn.onclick=()=>{
   if(!cur)return;
   rebuildOverlayTeamOptions();
   if(overlayLayoutSelect)overlayLayoutSelect.value='vertical';
   if(overlayNameTagSelect)overlayNameTagSelect.value='1';
+  if(overlayFrameCountSelect)overlayFrameCountSelect.value='0';
   syncOverlayNameTagUi();
   refreshOverlayGeneratedUrl();
   overlayUrlOv.classList.remove('hidden');
@@ -4666,6 +4745,7 @@ if(overlayLayoutSelect)overlayLayoutSelect.onchange=refreshOverlayGeneratedUrl;
 if(overlayNameTagSelect)overlayNameTagSelect.onchange=refreshOverlayGeneratedUrl;
 if(overlayTeamSelect)overlayTeamSelect.onchange=refreshOverlayGeneratedUrl;
 if(overlayThemeSelect)overlayThemeSelect.onchange=refreshOverlayGeneratedUrl;
+if(overlayFrameCountSelect)overlayFrameCountSelect.onchange=refreshOverlayGeneratedUrl;
 if(overlayCloseBtn)overlayCloseBtn.onclick=()=>overlayUrlOv.classList.add('hidden');
 if(overlayGeneratedCopy)overlayGeneratedCopy.onclick=async()=>{
   const v=overlayGeneratedUrl?.value||'';
@@ -4724,6 +4804,7 @@ document.addEventListener('visibilitychange',()=>{
 
 const overlayParams=new URLSearchParams(location.search);
 const overlayNameTagEnabled=overlayParams.get('nametag')!=='0';
+const overlayFrameCount=Math.max(0,Math.min(3,parseInt(overlayParams.get('frames')||'0',10)||0));
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout=overlayParams.get('layout')==='horizontal'?'horizontal':'vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
