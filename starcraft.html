@@ -2,317 +2,171 @@
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>스타크래프트 티어표</title><link rel="stylesheet" href="navbar.css">
 
 
+
 <style>
 *{box-sizing:border-box}
-html{overflow-y:scroll;scrollbar-gutter:stable;scroll-behavior:smooth}
+html{scroll-behavior:smooth;scrollbar-gutter:stable}
 body{
-  margin:0;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(255,255,255,.9), rgba(244,246,249,.88) 42%, rgba(237,240,244,.94) 100%);
-  color:#15171a;
-  font-family:Inter,Arial,"Noto Sans KR",sans-serif;
+ margin:0;color:#17191d;
+ font-family:Inter,Arial,"Noto Sans KR",sans-serif;
+ background:#f3f4f6;
 }
-main{
-  width:min(1320px,calc(100% - 110px));
-  margin:34px auto 90px;
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+ background:
+ linear-gradient(rgba(17,24,39,.022) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(17,24,39,.022) 1px,transparent 1px);
+ background-size:32px 32px;
 }
-.pageTitleWrap{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:18px;
-  margin-bottom:18px;
-  padding:0 4px;
-}
-.pageTitleWrap h1{
-  margin:0;
-  font-size:28px;
-  letter-spacing:-1.3px;
-  font-weight:1000;
-}
-.pageSub{
-  font-size:11px;
-  color:#7d838b;
-  margin-bottom:3px;
-}
+main{width:min(1420px,calc(100% - 150px));margin:34px auto 100px}
+.pageTitleWrap{display:flex;align-items:end;justify-content:space-between;margin:0 2px 18px}
+.pageTitleWrap h1{margin:0;font-size:30px;font-weight:950;letter-spacing:-1.7px}
+.pageSub{margin-top:5px;font-size:10px;font-weight:800;letter-spacing:1.5px;color:#9aa0a8}
+
 .board{
-  position:relative;
-  border:1px solid #d8dde4;
-  border-radius:18px;
-  background:rgba(255,255,255,.96);
-  box-shadow:
-    0 16px 45px rgba(24,31,42,.08),
-    0 2px 8px rgba(24,31,42,.04);
-  overflow:hidden;
+ overflow:hidden;border:1px solid #dfe2e7;border-radius:24px;
+ background:#fff;box-shadow:0 22px 60px rgba(26,32,44,.08);
 }
 .tier{
-  display:grid;
-  grid-template-columns:108px 1fr;
-  min-height:178px;
-  border-bottom:1px solid #e8ebef;
-  background:linear-gradient(180deg,#fff 0%,#fdfefe 100%);
-  scroll-margin-top:90px;
+ display:grid;grid-template-columns:88px 1fr;min-height:190px;
+ border-bottom:1px solid #eceef1;scroll-margin-top:24px;
 }
 .tier:last-child{border-bottom:0}
 .tierLabel{
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-right:1px solid #e4e8ed;
-  background:
-    linear-gradient(180deg,#f8fafc 0%,#f3f6f9 100%);
-  font-size:19px;
-  font-weight:1000;
-  letter-spacing:-.4px;
+ position:relative;display:flex;align-items:center;justify-content:center;
+ background:#17191d;color:#fff;font-size:16px;font-weight:950;
+ writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:2px
 }
-.tierLabel::after{
-  content:"";
-  position:absolute;
-  right:-1px;
-  top:22%;
-  bottom:22%;
-  width:2px;
-  background:#111;
-  opacity:.08;
+.tierLabel:before{
+ content:"";position:absolute;left:50%;top:18px;width:1px;height:22px;
+ background:rgba(255,255,255,.25)
 }
 .members{
-  display:flex;
-  align-items:flex-start;
-  flex-wrap:wrap;
-  gap:16px;
-  padding:18px 20px 20px;
+ display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+ gap:22px 16px;padding:22px 24px 26px;align-items:start;
 }
 
-/* card */
+/* completely new roster card */
 .playerCard{
-  --race:#7c8796;
-  position:relative;
-  width:160px;
-  text-decoration:none;
-  color:inherit;
-  display:block;
-  border-radius:14px;
-  transition:transform .14s ease,filter .14s ease;
+ --race:#858b93;position:relative;display:block;min-width:0;
+ text-decoration:none;color:#16181c;transition:transform .16s ease;
 }
-.playerCard:hover{transform:translateY(-3px)}
-.playerCard.T{--race:#3685f5}
-.playerCard.Z{--race:#9258df}
-.playerCard.P{--race:#d4a900}
-
-/* idle */
-.playerCard.idle{
-  filter:grayscale(.72) saturate(.36);
-  opacity:.62
-}
-.playerCard.idle .portrait{
-  border-color:color-mix(in srgb,var(--race) 35%,#8e9297 65%)
-}
-.playerCard.idle .namePlate{
-  color:color-mix(in srgb,var(--race) 28%,#6f747b 72%)
-}
+.playerCard:hover{transform:translateY(-4px)}
+.playerCard.T{--race:#2478d7}
+.playerCard.Z{--race:#7542bb}
+.playerCard.P{--race:#c99500}
 
 .portrait{
-  position:relative;
-  width:160px;
-  height:160px;
-  overflow:hidden;
-  border-radius:14px;
-  border:3px solid var(--race);
-  background:#fff;
-  box-shadow:
-    0 8px 20px rgba(22,28,36,.09),
-    0 1px 3px rgba(22,28,36,.05);
+ position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;
+ border:0;border-radius:18px 18px 6px 6px;background:#fff;
+ box-shadow:0 8px 20px rgba(23,25,29,.10);
 }
-.portrait img{
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  background:#fff;
+.portrait:after{
+ content:"";position:absolute;left:0;right:0;bottom:0;height:5px;
+ background:var(--race);z-index:3
 }
+.profileImg{
+ position:relative;z-index:1;display:block;width:100%;height:100%;
+ object-fit:cover;background:#fff
+}
+.blankPortrait{position:absolute;inset:0;z-index:0;background:#fff}
 
-/* no image = pure white only */
-.blankPortrait{
-  position:absolute;
-  inset:0;
-  background:rgb(255,255,255);
+/* status becomes small hardware labels, not copied corner pills */
+.cornerBadges{
+ position:absolute;right:8px;top:8px;bottom:auto;z-index:7;
+ display:flex;flex-direction:column;align-items:flex-end;gap:5px
 }
+.stateBadge{
+ height:21px;padding:0 7px;border:0;border-radius:5px;
+ display:inline-flex;align-items:center;justify-content:center;
+ font-size:9px;font-weight:1000;letter-spacing:.65px;color:#fff;
+ box-shadow:0 3px 9px rgba(0,0,0,.18)
+}
+.stateBadge.up{background:#e33b45}
+.stateBadge.new{background:#181b20}
+.stateBadge.repair{background:#e88b16}
 
+/* university is a floating seal */
 .univBadge{
-  position:absolute;
-  left:8px;
-  top:8px;
-  width:36px;
-  height:36px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:10px;
-  background:rgba(12,14,17,.88);
-  border:1px solid rgba(255,255,255,.28);
-  box-shadow:0 3px 10px rgba(0,0,0,.20);
-  z-index:5
+ position:absolute;left:9px;top:9px;z-index:8;width:34px;height:34px;
+ display:flex;align-items:center;justify-content:center;border-radius:50%;
+ background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.8);
+ box-shadow:0 3px 12px rgba(0,0,0,.18);overflow:hidden
 }
 .univBadge img{width:29px;height:29px;object-fit:contain}
 
-/* promotion glow */
-.playerCard.soon .portrait{
-  animation:raceGlow 1.05s ease-in-out infinite alternate
-}
-@keyframes raceGlow{
-  from{
-    box-shadow:
-      0 0 0 1px color-mix(in srgb,var(--race) 42%,transparent),
-      0 0 8px color-mix(in srgb,var(--race) 48%,transparent),
-      0 8px 20px rgba(22,28,36,.08)
-  }
-  to{
-    box-shadow:
-      0 0 0 2px var(--race),
-      0 0 18px var(--race),
-      0 0 30px color-mix(in srgb,var(--race) 62%,transparent)
-  }
-}
-
-.cornerBadges{
-  position:absolute;
-  right:8px;
-  bottom:8px;
-  z-index:6;
-  display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  gap:4px
-}
-.stateBadge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  height:22px;
-  padding:0 7px;
-  border-radius:6px;
-  font-size:10px;
-  line-height:1;
-  font-weight:1000;
-  letter-spacing:.25px;
-  color:#fff;
-  border:1px solid rgba(255,255,255,.5);
-  box-shadow:0 2px 7px rgba(0,0,0,.28)
-}
-.stateBadge.up{background:#ff3b45}
-.stateBadge.new{background:#17191d}
-.stateBadge.repair{background:#ff8a00}
-
+/* name is no longer another bordered card */
 .namePlate{
-  margin-top:8px;
-  min-height:36px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:5px;
-  padding:7px 9px;
-  border:1px solid color-mix(in srgb,var(--race) 56%,#d8dce1 44%);
-  border-radius:10px;
-  background:rgba(255,255,255,.98);
-  color:var(--race);
-  font-size:13px;
-  font-weight:1000;
-  box-shadow:0 2px 8px rgba(24,31,42,.04)
+ margin:0;padding:11px 4px 0;min-height:34px;
+ display:flex;align-items:center;justify-content:flex-start;gap:6px;
+ border:0;background:transparent;box-shadow:none;color:#202328;
+ font-size:13px;font-weight:950
 }
-.playerName{
-  min-width:0;
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis
-}
+.playerName{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .raceText{
-  flex:0 0 auto;
-  font-weight:1000;
-  color:var(--race)
+ flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+ width:20px;height:20px;border-radius:50%;background:var(--race);
+ color:#fff;font-size:10px;font-weight:1000
 }
 .liveBadge{
-  flex:0 0 auto;
-  height:18px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:0 5px;
-  border-radius:4px;
-  background:#ff2647;
-  color:#fff;
-  font-size:9px;
-  font-weight:1000;
-  letter-spacing:.3px
+ flex:0 0 auto;height:18px;padding:0 6px;border-radius:9px;
+ display:inline-flex;align-items:center;justify-content:center;
+ background:#ef2947;color:#fff;font-size:8px;font-weight:1000;letter-spacing:.5px
 }
+
+/* promotion: glow only the race accent, not a copied full colored frame */
+.playerCard.soon .portrait:after{
+ height:6px;animation:accentGlow .9s ease-in-out infinite alternate
+}
+@keyframes accentGlow{
+ from{box-shadow:0 0 5px var(--race)}
+ to{box-shadow:0 0 18px var(--race),0 0 28px color-mix(in srgb,var(--race) 55%,transparent)}
+}
+.playerCard.idle{opacity:.48;filter:grayscale(.82) saturate(.35)}
+.playerCard.idle .portrait:after{background:#85898f}
+.playerCard.idle .raceText{background:#85898f}
 .playerCard.missing{opacity:.86}
 
-/* fixed right tier navigation */
+/* premium compact navigator */
 .tierRail{
-  position:fixed;
-  right:18px;
-  top:50%;
-  transform:translateY(-50%);
-  width:70px;
-  max-height:82vh;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  padding:10px 8px;
-  border:1px solid rgba(210,215,222,.9);
-  border-radius:18px;
-  background:rgba(255,255,255,.94);
-  box-shadow:0 14px 40px rgba(25,31,40,.12);
-  backdrop-filter:blur(12px);
-  z-index:9000;
+ position:fixed;right:22px;top:50%;transform:translateY(-50%);
+ z-index:9000;width:82px;padding:9px 7px 10px;
+ border:1px solid rgba(218,221,226,.9);border-radius:22px;
+ background:rgba(250,250,251,.86);backdrop-filter:blur(18px);
+ box-shadow:0 18px 55px rgba(21,24,30,.13)
 }
 .tierRailTitle{
-  text-align:center;
-  font-size:9px;
-  color:#8a9097;
-  font-weight:900;
-  letter-spacing:.8px;
-  margin-bottom:2px
+ height:25px;display:flex;align-items:center;justify-content:center;
+ font-size:8px;font-weight:1000;letter-spacing:1.8px;color:#a1a6ad
 }
 .tierJump{
-  height:30px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:0 4px;
-  border-radius:9px;
-  border:1px solid transparent;
-  background:#f6f8fa;
-  color:#343940;
-  text-decoration:none;
-  font-size:10px;
-  font-weight:1000;
-  transition:.12s;
+ position:relative;height:30px;margin:2px 0;padding:0 5px;
+ display:flex;align-items:center;justify-content:center;
+ border-radius:10px;text-decoration:none;background:transparent;
+ color:#666c74;font-size:10px;font-weight:900;transition:.15s
 }
-.tierJump:hover{
-  background:#111;
-  color:#fff;
-  transform:translateX(-2px)
+.tierJump:before{
+ content:"";position:absolute;left:4px;width:3px;height:3px;border-radius:50%;
+ background:#c8ccd2;transition:.15s
 }
+.tierJump:hover{background:#eceef1;color:#16181c}
 .tierJump.active{
-  background:#111;
-  color:#fff
+ background:#17191d;color:#fff;box-shadow:0 5px 14px rgba(23,25,29,.18)
 }
+.tierJump.active:before{background:#fff;height:12px;border-radius:3px}
 
-.loading{padding:26px;color:#888}
-
-@media(max-width:900px){
-  main{width:calc(100% - 24px)}
-  .tierRail{display:none}
+.loading{padding:30px;color:#8c929a}
+@media(max-width:950px){
+ main{width:calc(100% - 24px)}
+ .tierRail{display:none}
 }
-@media(max-width:650px){
-  .tier{grid-template-columns:62px 1fr}
-  .tierLabel{font-size:15px}
-  .members{gap:10px;padding:10px}
-  .playerCard,.portrait{width:138px}
-  .portrait{height:138px}
+@media(max-width:700px){
+ .tier{grid-template-columns:54px 1fr}
+ .members{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 10px;padding:14px}
+ .tierLabel{font-size:13px}
 }
 </style>
+
 
 </head>
 <body>
@@ -337,9 +191,9 @@ function e(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;
 function flags(x){return Array.isArray(x.status_flags)?x.status_flags:[]}
 
 function fallbackOrImage(x){
-  const img=x.soop_profile_image||'';
-  if(!img)return '<div class="blankPortrait" aria-label="프로필 이미지 없음"></div>';
-  return `<div class="blankPortrait" aria-hidden="true"></div><img src="${e(img)}" alt="" onerror="this.remove()">`;
+  const img=(x.soop_profile_image||'').trim();
+  if(!img) return '<div class="blankPortrait" aria-label="프로필 이미지 없음"></div>';
+  return `<img class="profileImg" src="${e(img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div class=&quot;blankPortrait&quot;></div>')">`;
 }
 
 function universityBadge(x){
