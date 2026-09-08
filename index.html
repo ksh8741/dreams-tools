@@ -3418,6 +3418,62 @@ html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankRow.killChanged:a
   box-shadow:none!important;
 }
 
+
+/* v74 — BLACK & WHITE keeps team identity colors.
+   Theme surfaces remain pure black/white; team markers stay colored. */
+
+/* Rotating total/chicken/versus cards:
+   left identity bar uses each team's real color again. */
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankTotal:before{
+  background:var(--team-color)!important;
+  background-image:none!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankTotal:after{
+  background:none!important;
+}
+
+/* Player avatar ring uses the player's team color. */
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankAvatar{
+  border:2px solid var(--team-color)!important;
+  box-shadow:0 0 0 1px #fff!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankAvatarEmpty{
+  border:2px solid var(--team-color)!important;
+}
+
+/* Player identity strip / team accent stays colored too. */
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankIdentity{
+  border-left-color:var(--team-color)!important;
+}
+
+/* Kill animation uses team color again, but remains fully inside the row. */
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankRow.killChanged:before{
+  border-color:var(--team-color)!important;
+  box-shadow:
+    inset 0 0 0 1px var(--team-color),
+    inset 0 0 8px color-mix(in srgb,var(--team-color) 72%,transparent)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankRow.killChanged:after{
+  background:#000!important;
+  color:#fff!important;
+  border-color:var(--team-color)!important;
+  text-shadow:0 0 6px var(--team-color)!important;
+  box-shadow:0 0 8px color-mix(in srgb,var(--team-color) 55%,transparent)!important;
+}
+
+/* Keep the readable contrast rule intact. */
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankHeader *,
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankCols *{
+  color:#fff!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankTotal *,
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankRow *{
+  color:#000!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankRow.killChanged:after{
+  color:#fff!important;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
