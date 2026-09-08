@@ -2336,6 +2336,36 @@ html.broadcastOverlay.broadcastVertical .rankIdentity > .rankName{
   font-weight:700;
 }
 
+
+/* six vertical broadcast themes */
+html.broadcastOverlay.broadcastVertical.theme-tactical .rankHeader{background:linear-gradient(180deg,#18242dec,#0a1116f5)!important}
+html.broadcastOverlay.broadcastVertical.theme-tactical .rankCols{background:#0e171def!important}
+html.broadcastOverlay.broadcastVertical.theme-tactical .rankRow{background:linear-gradient(90deg,#0e181fee,#18242cdd)!important}
+
+html.broadcastOverlay.broadcastVertical.theme-neon .rankHeader{background:linear-gradient(100deg,#080b17f7,#1c0927f2)!important;border-color:#3ef0ffb8!important;box-shadow:inset 0 -1px #ff37d873!important}
+html.broadcastOverlay.broadcastVertical.theme-neon .rankCols{background:#0a0d1cf2!important;color:#8cf7ff!important}
+html.broadcastOverlay.broadcastVertical.theme-neon .rankRow{background:linear-gradient(90deg,#080e1df0,#170a22e8)!important;border-color:#3ef0ff38!important}
+
+html.broadcastOverlay.broadcastVertical.theme-ice .rankHeader{background:linear-gradient(180deg,#22435ce8,#0e1f2df0)!important;border-color:#afe1ff94!important}
+html.broadcastOverlay.broadcastVertical.theme-ice .rankCols{background:#183346e8!important;color:#d5f2ff!important}
+html.broadcastOverlay.broadcastVertical.theme-ice .rankRow{background:linear-gradient(90deg,#1f3d50dc,#0f2230d8)!important;border-color:#aaddfa3d!important;backdrop-filter:blur(5px)}
+
+html.broadcastOverlay.broadcastVertical.theme-carbon .rankHeader{background:linear-gradient(135deg,#1b1b1d 25%,#111214 25%,#111214 50%,#1b1b1d 50%,#1b1b1d 75%,#111214 75%)!important;background-size:8px 8px!important}
+html.broadcastOverlay.broadcastVertical.theme-carbon .rankCols{background:#111214!important;color:#c7c7c9!important}
+html.broadcastOverlay.broadcastVertical.theme-carbon .rankRow{background:linear-gradient(90deg,#131416f8,#252628f0)!important;border-color:#ffffff21!important}
+
+html.broadcastOverlay.broadcastVertical.theme-royal .rankHeader{background:linear-gradient(110deg,#080d1bf9,#17141cf7)!important;border-color:#dcb75ea3!important;box-shadow:inset 0 -1px #dcb75e59!important}
+html.broadcastOverlay.broadcastVertical.theme-royal .rankCols{background:#0b111ff5!important;color:#e4c77d!important}
+html.broadcastOverlay.broadcastVertical.theme-royal .rankRow{background:linear-gradient(90deg,#0b1221f2,#1c191ff0)!important;border-color:#dcb75e2e!important}
+
+html.broadcastOverlay.broadcastVertical.theme-minimal .rankHeader{background:#191d21eb!important;border-color:#ffffff52!important}
+html.broadcastOverlay.broadcastVertical.theme-minimal .rankCols{background:#272c31e8!important;color:#e4e8eb!important}
+html.broadcastOverlay.broadcastVertical.theme-minimal .rankRow{background:#1b2024e2!important;border-color:#ffffff29!important}
+
+html.broadcastOverlay.broadcastVertical[class*="theme-"] .rankAvatar{
+  box-shadow:0 0 0 2px var(--team-color),0 0 9px color-mix(in srgb,var(--team-color) 55%,transparent)!important
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -2422,9 +2452,14 @@ html.broadcastOverlay.broadcastVertical .rankIdentity > .rankName{
         </select>
       </label>
       <label class="overlaySettingField">
-        <span>내 팀</span>
-        <select id="overlayTeamSelect"></select>
+        <span>테마</span>
+        <select id="overlayThemeSelect">
+          <option value="tactical">TACTICAL</option><option value="neon">NEON</option>
+          <option value="ice">ICE</option><option value="carbon">CARBON</option>
+          <option value="royal">ROYAL</option><option value="minimal">MINIMAL</option>
+        </select>
       </label>
+      <label class="overlaySettingField"><span>내 팀</span><select id="overlayTeamSelect"></select></label>
     </div>
 
     <div class="overlayUrlPreview">
@@ -2441,7 +2476,7 @@ html.broadcastOverlay.broadcastVertical .rankIdentity > .rankName{
 <script>
 const B='https://llqikrcqavwfbuajykig.supabase.co/rest/v1',K='sb_publishable_aLPzJI_jQLlywmoQsiLRtw_ElX_aslF',H={'apikey':K,'Authorization':'Bearer '+K,'Content-Type':'application/json'},n=x=>Math.max(0,parseInt(x)||0),e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let cur,pick,P=[],RO=[],S=[],poll,editing=false,pickId=null,pickName='',dragId=null,ghost=null;
 const chromaOn=document.getElementById('chromaOn'),chromaColor=document.getElementById('chromaColor'),
-scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),overlayUrlBtn=document.getElementById('overlayUrlBtn'),overlayUrlOv=document.getElementById('overlayUrlOv'),overlayLayoutSelect=document.getElementById('overlayLayoutSelect'),overlayTeamSelect=document.getElementById('overlayTeamSelect'),overlayGeneratedUrl=document.getElementById('overlayGeneratedUrl'),overlayGeneratedCopy=document.getElementById('overlayGeneratedCopy'),overlayCloseBtn=document.getElementById('overlayCloseBtn'),captureStage=document.getElementById('captureStage'),
+scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),overlayUrlBtn=document.getElementById('overlayUrlBtn'),overlayUrlOv=document.getElementById('overlayUrlOv'),overlayLayoutSelect=document.getElementById('overlayLayoutSelect'),overlayThemeSelect=document.getElementById('overlayThemeSelect'),overlayTeamSelect=document.getElementById('overlayTeamSelect'),overlayGeneratedUrl=document.getElementById('overlayGeneratedUrl'),overlayGeneratedCopy=document.getElementById('overlayGeneratedCopy'),overlayCloseBtn=document.getElementById('overlayCloseBtn'),captureStage=document.getElementById('captureStage'),
 totalBar=document.getElementById('totalBar'),scoreboard=document.getElementById('scoreboard'),
 killBoard=document.getElementById('killBoard'),
 goalKills=document.getElementById('goalKills'),timerMode=document.getElementById('timerMode'),
@@ -2569,14 +2604,11 @@ function applyScoreWidth(){
   const w=Math.max(202,cur.team_count*202);
   document.documentElement.style.setProperty('--score-width',w+'px');
 }
-function overlayUrlForRoom(layout='vertical',team=1){
+function overlayUrlForRoom(layout='vertical',team=1,theme='tactical'){
   if(!cur)return '';
-  const u=new URL(location.href);
-  u.search='';
-  u.hash='';
-  u.searchParams.set('overlay',String(cur.id));
-  u.searchParams.set('layout',layout);
-  u.searchParams.set('team',String(team));
+  const u=new URL(location.href);u.search='';u.hash='';
+  u.searchParams.set('overlay',String(cur.id));u.searchParams.set('layout',layout);
+  u.searchParams.set('team',String(team));u.searchParams.set('theme',theme);
   return u.toString();
 }
 
@@ -3303,7 +3335,8 @@ function refreshOverlayGeneratedUrl(){
   if(!cur||!overlayGeneratedUrl)return;
   const layout=overlayLayoutSelect?.value||'vertical';
   const team=Math.max(1,parseInt(overlayTeamSelect?.value||'1',10)||1);
-  overlayGeneratedUrl.value=overlayUrlForRoom(layout,team);
+  const theme=overlayThemeSelect?.value||'tactical';
+  overlayGeneratedUrl.value=overlayUrlForRoom(layout,team,theme);
 }
 if(overlayUrlBtn)overlayUrlBtn.onclick=()=>{
   if(!cur)return;
@@ -3314,6 +3347,7 @@ if(overlayUrlBtn)overlayUrlBtn.onclick=()=>{
 };
 if(overlayLayoutSelect)overlayLayoutSelect.onchange=refreshOverlayGeneratedUrl;
 if(overlayTeamSelect)overlayTeamSelect.onchange=refreshOverlayGeneratedUrl;
+if(overlayThemeSelect)overlayThemeSelect.onchange=refreshOverlayGeneratedUrl;
 if(overlayCloseBtn)overlayCloseBtn.onclick=()=>overlayUrlOv.classList.add('hidden');
 if(overlayGeneratedCopy)overlayGeneratedCopy.onclick=async()=>{
   const v=overlayGeneratedUrl?.value||'';
@@ -3374,8 +3408,10 @@ const overlayParams=new URLSearchParams(location.search);
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout=overlayParams.get('layout')==='horizontal'?'horizontal':'vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
+const OVERLAY_THEMES=['tactical','neon','ice','carbon','royal','minimal'];
+const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'tactical';
 if(overlayRoomId){
-  document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal');
+  document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal','theme-'+overlayTheme);
   (async()=>{
     try{
       const rr=await q('/pubg_rooms?id=eq.'+encodeURIComponent(overlayRoomId)+'&select=*');
