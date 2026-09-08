@@ -4029,41 +4029,54 @@ html:not(.broadcastOverlay) .chicken{
 }
 
 
-/* v88 — compact vertical player row: photo | 4-char nickname | K | D | SCORE */
-html.broadcastOverlay.broadcastVertical .rankOverlay{
-  width:232px!important;
-  min-width:232px!important;
-  max-width:232px!important;
+/* v88-corrected — WEBSITE kill-status board only.
+   Compact: photo | nickname(max ~4 chars visible) | kill/score */
+html:not(.broadcastOverlay) .score .team{
+  width:156px!important;
+  flex:0 0 156px!important;
 }
-html.broadcastOverlay.broadcastVertical .rankHeader,
-html.broadcastOverlay.broadcastVertical .rankCols,
-html.broadcastOverlay.broadcastVertical .rankRows,
-html.broadcastOverlay.broadcastVertical .rankRow{
-  width:230px!important;
-  min-width:230px!important;
-  max-width:230px!important;
-  box-sizing:border-box!important;
-}
-html.broadcastOverlay.broadcastVertical .rankCols,
-html.broadcastOverlay.broadcastVertical .rankRow{
-  grid-template-columns:31px 89px 34px 36px 40px!important;
-}
-html.broadcastOverlay.broadcastVertical .rankIdentity{
-  grid-template-columns:34px 48px!important;
+html:not(.broadcastOverlay) .slot{
+  grid-template-columns:18px minmax(0,1fr)!important;
   gap:3px!important;
-  padding:0 2px!important;
-  align-items:center!important;
+  padding:2px 3px!important;
 }
-html.broadcastOverlay.broadcastVertical .rankIdentity > .rankName{
-  position:relative!important;
-  left:0!important;
-  transform:none!important;
-  width:48px!important;
-  max-width:48px!important;
+html:not(.broadcastOverlay) .playerInline{
+  display:grid!important;
+  grid-template-columns:48px minmax(0,1fr)!important;
+  gap:2px!important;
+  align-items:center!important;
   min-width:0!important;
+}
+html:not(.broadcastOverlay) .name{
+  width:48px!important;
+  min-width:48px!important;
+  max-width:48px!important;
+  padding:0!important;
   overflow:hidden!important;
   white-space:nowrap!important;
   text-overflow:clip!important;
+  font-size:12px!important;
+}
+html:not(.broadcastOverlay) .detail{
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  padding:0!important;
+  margin:0!important;
+  text-align:right!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  font-size:12px!important;
+}
+html:not(.broadcastOverlay) .detail b{
+  font-size:12px!important;
+}
+html:not(.broadcastOverlay) .avatar,
+html:not(.broadcastOverlay) .avatarEmpty{
+  width:18px!important;
+  height:18px!important;
+  min-width:18px!important;
+  min-height:18px!important;
 }
 
 </style></head><body>
@@ -4785,7 +4798,7 @@ function renderVerticalRanking(animate=true){
     return '<div class="rankRow '+(i===0?'rankFirst ':'')+(move?'rankChanged':'')+'" data-rank-player="'+x.id+'" data-pending-kill-delta="'+killDelta+'" style="--team-color:'+c+'">'+
       move+
       '<div class="rankPos">'+(i+1)+'</div>'+
-      '<div class="rankIdentity">'+rankAvatarHtml(x.player)+'<div class="rankName">'+e((x.name||'PLAYER').slice(0,4))+'</div></div>'+
+      '<div class="rankIdentity">'+rankAvatarHtml(x.player)+'<div class="rankName">'+e(x.name)+'</div></div>'+
       '<div class="rankValue"><small>KILL</small><strong>'+x.kill+'</strong></div>'+
       '<div class="rankValue rankDeath"><small>DEATH</small><strong>'+(x.death?'-'+x.death:'0')+'</strong></div>'+
       '<div class="rankValue rankScore"><small>SCORE</small><strong>'+x.score+'</strong></div>'+
