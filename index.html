@@ -4332,19 +4332,80 @@ html:not(.broadcastOverlay) .scoreStatusRow.killCompareRow .statusCenter{
   text-shadow:none!important;
 }
 
-</style></head><body>
+
+/* v99 — clean lobby */
+#lobby{max-width:820px!important;margin:22px auto!important}
+#lobby>.top{margin-bottom:12px!important;align-items:flex-end!important}
+#lobby .title h1{font-size:24px!important;letter-spacing:-.7px!important}
+#lobby .title p{font-size:10px!important;letter-spacing:1.6px!important;color:#8b939c!important}
+#lobby .rooms{border:1px solid #dfe4e8!important;border-radius:10px!important;overflow:hidden!important;box-shadow:0 8px 26px rgba(20,30,40,.06)!important;background:#fff!important}
+#lobby .rh,#lobby .room{
+  grid-template-columns:42px minmax(180px,1fr) 120px 115px 54px!important;
+  min-height:42px!important;padding:0 12px!important
+}
+#lobby .rh{background:#111!important;color:#fff!important;font-size:11px!important;font-weight:900!important}
+#lobby .room{border-top:1px solid #edf0f2!important;font-size:12px!important;transition:.12s ease!important}
+#lobby .room:hover{background:#f6f7f8!important;transform:none!important}
+#lobby .roomName{font-weight:900!important;color:#111!important}
+#lobby .host{color:#616a73!important}
+#adminDeleteMode.active{background:#111!important;color:#fff!important;border-color:#111!important}
+
+/* v99 — cleaner match settings, square-ish and restrained */
+.settingsPanel{border:0!important;box-shadow:none!important;background:transparent!important}
+.settingsPanel>.sect{padding:0 0 9px!important;border:0!important}
+.settingsDeck{grid-template-columns:1fr 1fr 1.25fr!important;gap:8px!important}
+.settingCard{
+  border:1px solid #dfe3e6!important;border-radius:6px!important;
+  background:#fff!important;padding:12px!important;
+  box-shadow:0 3px 12px rgba(20,30,40,.035)!important
+}
+.settingCardTitle{margin-bottom:10px!important;color:#111!important;font-size:13px!important}
+.settingCardTitle small{color:#9aa1a8!important}
+.settingField{color:#59616a!important;font-size:10px!important;gap:4px!important}
+.settingField input,.settingField select{
+  height:35px!important;border:1px solid #d8dde1!important;border-radius:4px!important;
+  background:#fdfdfd!important;color:#111!important;font-size:12px!important
+}
+.settingField input:focus,.settingField select:focus{border-color:#111!important;box-shadow:none!important}
+.di{border-radius:4px!important;border-color:#e1e5e8!important;box-shadow:none!important}
+.btn{border-radius:4px!important}
+.resultSaveBtn{background:#111!important;color:#fff!important;border-color:#111!important}
+
+/* Timer / goal: no divider */
+html:not(.broadcastOverlay) .fixedTimer{border-right:0!important}
+
+/* Team header is always black with kill + chicken visible */
+html:not(.broadcastOverlay) .teamSummary{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:4px!important;padding:0 5px!important;background:#050505!important;color:#fff!important
+}
+html:not(.broadcastOverlay) .teamHeadStats{
+  color:#fff!important;font-size:10px!important;font-weight:900!important;white-space:nowrap!important
+}
+
+/* Combined score exists only when JS inserts it (AB/CD, 5v5+ capacity). */
+html:not(.broadcastOverlay) .scoreStatusRow.killCompareRow{
+  background:#050505!important;color:#fff!important
+}
+
+
+html:not(.broadcastOverlay) .teamSummary .miniScore,
+html:not(.broadcastOverlay) .teamSummary .miniChicken{
+  color:#fff!important;font-size:11px!important;font-weight:900!important;
+  white-space:nowrap!important;
+}
+</style><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
-<section id="lobby"><div class="top"><div class="title"><h1>배틀그라운드</h1><p>무제 MATCH ROOM</p></div><div><button id="refresh" class="btn">새로고침</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>팀 구성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
+<section id="lobby"><div class="top"><div class="title"><h1>배틀그라운드</h1><p>무제 MATCH ROOM</p></div><div><button id="refresh" class="btn">새로고침</button> <button id="adminDeleteMode" class="btn">방 삭제</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>팀 구성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
 <section id="roomView" class="hidden">
 <div class="top"><div><h1 id="insideTitle" style="margin:0;font-size:20px"></h1><div id="insideMeta" class="meta"></div></div><button id="back" class="btn">← 방 목록</button></div>
 <div class="scoreStage">
   <div class="panel sec scorePanel">
     <div class="sect"><h2>킬 현황</h2><div class="captureTools">
-      <label><input id="chromaOn" type="checkbox"> 크로마키</label>
-      <input id="chromaColor" type="color" value="#00ff00" title="크로마키 색상">
       <select id="scoreViewMode"><option value="separate">팀별</option><option value="2v2">A+B vs C+D</option></select>
-      <button id="pipScore" class="btn">팝업</button><button id="overlayUrlBtn" class="btn overlayUrlBtn">방송 URL</button>
+      <button id="saveResult" class="btn resultSaveBtn">결과 저장</button><button id="pipScore" class="btn">팝업</button><button id="overlayUrlBtn" class="btn overlayUrlBtn">방송 URL</button>
     </div></div>
     <div id="captureStage" class="scoreWrap"><div class="scoreFrame"><div id="totalBar" class="totalBar"></div><div id="scoreboard" class="score"></div></div></div>
   </div>
@@ -4358,7 +4419,6 @@ html:not(.broadcastOverlay) .scoreStatusRow.killCompareRow .statusCenter{
         <label class="settingField"><span>목표 킬</span><input id="goalKills" type="number" min="0" max="9999" value="50"></label>
         <label class="settingField"><span>일반 치킨</span><input id="ck" type="number" min="0"></label>
         <label class="settingField"><span>사녹 치킨</span><input id="sk" type="number" min="0"></label>
-        <label class="settingToggle"><input id="t10" type="checkbox"><span>탑텐 시 데스감점 없음</span></label>
       </div>
     </section>
     <section class="settingCard">
@@ -4401,6 +4461,17 @@ html:not(.broadcastOverlay) .scoreStatusRow.killCompareRow .statusCenter{
 <div id="ce" class="err"></div><div class="actions"><button id="cc" class="btn">취소</button><button id="cb" class="btn primary">생성</button></div></div></div>
 
 <div id="joinOv" class="overlay hidden"><div class="modal"><h2 id="jt"></h2><div id="jm" class="meta"></div><div id="jpf" class="field"><label>비밀번호</label><input id="jp" type="password"></div><div id="je" class="err"></div><div class="actions"><button id="jc" class="btn">취소</button><button id="jb" class="btn primary">입장</button></div></div></div>
+
+
+<div id="adminDeleteOv" class="overlay hidden">
+  <div class="modal adminDeleteModal">
+    <h2>방 삭제</h2>
+    <div class="meta">관리자 비밀번호를 입력하면 이 방을 삭제합니다.</div>
+    <div class="field"><label>관리자 비밀번호</label><input id="adminDeletePw" type="password" autocomplete="off"></div>
+    <div id="adminDeleteErr" class="err"></div>
+    <div class="actions"><button id="adminDeleteCancel" class="btn">취소</button><button id="adminDeleteConfirm" class="btn danger">삭제</button></div>
+  </div>
+</div>
 
 <div id="overlayUrlOv" class="overlay hidden">
   <div class="modal overlayUrlModal">
@@ -4691,7 +4762,36 @@ document.addEventListener('focusout',ev=>{
   },180);
 });
 
-async function rooms(){let d=await q('/pubg_rooms?select=id,name,host_name,team_count,players_per_team,password_hash&order=created_at.desc');roomList.innerHTML=d.length?'':'<div class="empty">생성된 방이 없습니다.</div>';d.forEach((r,i)=>{let x=document.createElement('div');x.className='room';x.innerHTML='<div>'+(i+1)+'</div><div class="roomName">'+e(r.name)+'</div><div class="host">'+e(r.host_name)+'</div><div>'+cfg(r.team_count,r.players_per_team)+'</div><div class="lock">'+(r.password_hash?'●':'○')+'</div>';x.onclick=()=>ask(r);roomList.appendChild(x)})}
+
+let adminDeleteTarget=null,adminDeleteModeOn=false;
+if(adminDeleteMode)adminDeleteMode.onclick=()=>{
+  adminDeleteModeOn=!adminDeleteModeOn;
+  adminDeleteMode.classList.toggle('active',adminDeleteModeOn);
+  adminDeleteMode.textContent=adminDeleteModeOn?'삭제 선택 중':'방 삭제';
+  rooms();
+};
+if(adminDeleteCancel)adminDeleteCancel.onclick=()=>{
+  adminDeleteOv.classList.add('hidden');adminDeleteTarget=null;adminDeletePw.value='';adminDeleteErr.textContent='';
+};
+if(adminDeleteConfirm)adminDeleteConfirm.onclick=async()=>{
+  if(!adminDeleteTarget)return;
+  adminDeleteErr.textContent='';
+  try{
+    await q('/rpc/delete_pubg_room_admin',{method:'POST',body:JSON.stringify({room_id:adminDeleteTarget.id,admin_password:adminDeletePw.value})});
+    adminDeleteOv.classList.add('hidden');adminDeleteTarget=null;adminDeletePw.value='';
+    adminDeleteModeOn=false;adminDeleteMode.classList.remove('active');adminDeleteMode.textContent='방 삭제';
+    rooms();
+  }catch(err){
+    adminDeleteErr.textContent='관리자 비밀번호가 맞지 않거나 삭제할 수 없습니다.';
+  }
+};
+
+async function rooms(){let d=await q('/pubg_rooms?select=id,name,host_name,team_count,players_per_team,password_hash&order=created_at.desc');roomList.innerHTML=d.length?'':'<div class="empty">생성된 방이 없습니다.</div>';d.forEach((r,i)=>{let x=document.createElement('div');x.className='room';x.innerHTML='<div>'+(i+1)+'</div><div class="roomName">'+e(r.name)+'</div><div class="host">'+e(r.host_name)+'</div><div>'+cfg(r.team_count,r.players_per_team)+'</div><div class="lock">'+(r.password_hash?'●':'○')+'</div>';x.onclick=()=>{
+  if(adminDeleteModeOn){
+    adminDeleteTarget=r;adminDeletePw.value='';adminDeleteErr.textContent='';
+    adminDeleteOv.classList.remove('hidden');setTimeout(()=>adminDeletePw.focus(),0);
+  }else ask(r);
+};roomList.appendChild(x)})}
 showCreate.onclick=()=>{ce.textContent='';createOv.classList.remove('hidden')};
 cc.onclick=()=>createOv.classList.add('hidden');refresh.onclick=rooms;
 cb.onclick=async()=>{
@@ -4763,7 +4863,7 @@ async function load(isPoll=false){
     }
   }
 }
-function st(r,p){return S.find(x=>x.round_id===r&&x.player_id===p)||{kills:0,died:false}}function totals(p){let raw=0,minus=0;RO.forEach(r=>{let s=st(r.id,p.id);raw+=n(s.kills);if(s.died&&!(r.top10&&cur.top10_no_death_penalty))minus+=n(p.death_penalty)});return{raw,minus,score:raw-minus}}
+function st(r,p){return S.find(x=>x.round_id===r&&x.player_id===p)||{kills:0,died:false}}function totals(p){let raw=0,minus=0;RO.forEach(r=>{let s=st(r.id,p.id);raw+=n(s.kills);if(s.died&&!(r.top10&&false))minus+=n(p.death_penalty)});return{raw,minus,score:raw-minus}}
 async function pickProfile(id,name){
   pickId=id;pickName=name;
   pt.textContent='SOOP 계정 선택';
@@ -4801,14 +4901,14 @@ function renderScore(){
 
   applyScoreWidth();
   if(scoreViewMode)scoreViewMode.style.display=cur.team_count===2?'none':'';
-  ck.value=cur.chicken_kills;sk.value=cur.sanhok_chicken_kills;t10.checked=cur.top10_no_death_penalty;
-  let teamScores=[],out='';
+  ck.value=cur.chicken_kills;sk.value=cur.sanhok_chicken_kills;
+  let teamScores=[],teamKills=[],out='';
   for(let t=1;t<=cur.team_count;t++){
-    let ps=P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===t),teamScore=0,ch=0;
-    ps.forEach(p=>teamScore+=totals(p).score);
+    let ps=P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===t),teamScore=0,teamKill=0,ch=0;
+    ps.forEach(p=>{const a=totals(p);teamScore+=a.score;teamKill+=a.raw});
     RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
-    teamScores.push(teamScore);
-    out+='<div class="team">'+(cur.team_count>=3?'<div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span></div>':'')+'<div class="plist">'+
+    teamScores.push(teamScore);teamKills.push(teamKill);
+    out+='<div class="team"><div class="teamSummary"><span class="miniScore">🔫 '+teamKill+'</span><span class="miniChicken">🍗 '+ch+'</span></div><div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<img class="avatar" src="'+pic(p.soop_user_id)+'">':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름 입력">'+
@@ -4819,20 +4919,18 @@ function renderScore(){
   renderVerticalRanking(false);
   const mode=scoreViewMode.value||cur.score_mode||'separate';
   const goal=cur.goal_kills??50;
-  let center='';
-  if(cur.team_count===2){
-    center=captainName(1)+' '+(teamScores[0]||0)+' : '+(teamScores[1]||0)+' '+captainName(2);
-  }else if(cur.team_count===4){
-    const left=(teamScores[0]||0)+(teamScores[1]||0);
-    const right=(teamScores[2]||0)+(teamScores[3]||0);
-    center=left+' : '+right;
-  }else{
-    center=teamScores.map((s,i)=>captainName(i+1)+' '+s).join('  ·  ');
-  }
   const fixedTime=timerText()||'00:00';
   totalBar.innerHTML='<span class="fixedTimer">⏱️ '+e(fixedTime)+'</span><span class="goalBadge">🎯 '+goal+'킬</span>';
   const oldStatus=document.getElementById('scoreStatusRow');if(oldStatus)oldStatus.remove();
-  totalBar.insertAdjacentHTML('afterend','<div id="scoreStatusRow" class="scoreStatusRow killCompareRow"><span class="statusLeft"></span><span class="statusCenter">'+e(center)+'</span><span class="statusRight"></span></div>');
+
+  // Combined total is useful only when each side consists of 2+ parties (5v5+ capacity)
+  // and the user selected A+B vs C+D.
+  const showCombined=(mode==='2v2' && cur.team_count===4 && (cur.players_per_team*2)>=5);
+  if(showCombined){
+    const left=(teamScores[0]||0)+(teamScores[1]||0);
+    const right=(teamScores[2]||0)+(teamScores[3]||0);
+    totalBar.insertAdjacentHTML('afterend','<div id="scoreStatusRow" class="scoreStatusRow killCompareRow"><span class="statusLeft"></span><span class="statusCenter">'+left+' : '+right+'</span><span class="statusRight"></span></div>');
+  }
   deathItems.innerHTML=P.map(p=>'<div class="di"><span>'+e(p.nickname||'PLAYER '+p.position)+'</span><input data-death="'+p.id+'" type="number" value="'+n(p.death_penalty)+'"></div>').join('');
   document.querySelectorAll('[data-name]').forEach(x=>{x.onfocus=()=>editing=true;x.onkeydown=a=>{if(a.key==='Enter'){a.preventDefault();x.blur()}};x.onblur=()=>saveName(x)});
   document.querySelectorAll('[data-death]').forEach(x=>{
@@ -4888,11 +4986,18 @@ function teamKillTotals(){
   const out=[];
   for(let team=1;team<=cur.team_count;team++){
     const ps=teamPlayers(team);
+    const rawKill=ps.reduce((sum,p)=>sum+n(totals(p).raw),0);
+    const playerScore=ps.reduce((sum,p)=>sum+n(totals(p).score),0);
+    const chickenRounds=RO.filter(r=>r.chicken_team===team);
+    const chickenBonus=chickenRounds.reduce((sum,r)=>
+      sum+(getTeamMap(r,team)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)),0
+    );
     out.push({
       team,
       name:(ps[0]?.nickname||('TEAM '+team)).slice(0,2),
-      kill:ps.reduce((sum,p)=>sum+n(totals(p).raw),0),
-      chicken:RO.filter(r=>r.chicken_team===team).length
+      kill:rawKill,
+      score:playerScore+chickenBonus,
+      chicken:chickenRounds.length
     });
   }
   return out;
@@ -4914,8 +5019,8 @@ function applyRankTotalMode(){
   if(rankDisplayPhase===2 && rankHasVersusPhase()){
     const byTeam=new Map(teamData.map(x=>[x.team,x]));
     const a=byTeam.get(1),b=byTeam.get(2),c=byTeam.get(3),d=byTeam.get(4);
-    const left=(a?.kill||0)+(b?.kill||0);
-    const right=(c?.kill||0)+(d?.kill||0);
+    const left=(a?.score||0)+(b?.score||0);
+    const right=(c?.score||0)+(d?.score||0);
     const ca=RANK_TEAM_COLORS[0],cc=RANK_TEAM_COLORS[2];
     totalsWrap.style.setProperty('--rank-count','2');
     totalsWrap.innerHTML=
@@ -4928,7 +5033,7 @@ function applyRankTotalMode(){
   totalsWrap.innerHTML=teamData.map(x=>{
     const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
     const modeClass=rankDisplayPhase===1?'chickenMode':'killMode';
-    const value=rankDisplayPhase===1?x.chicken:x.kill;
+    const value=rankDisplayPhase===1?x.chicken:x.score;
     return '<div class="rankTotal '+modeClass+'" data-rank-total-team="'+x.team+'" style="--team-color:'+c+'">'+
       '<span class="rankTotalInfo rankTotalLabel rankTotalModeFade">'+value+'</span>'+
     '</div>';
@@ -5017,7 +5122,7 @@ function renderVerticalRanking(animate=true){
   if(rankDisplayPhase===2 && rankHasVersusPhase()){
     const byTeam=new Map(teamTotals.map(x=>[x.team,x]));
     const a=byTeam.get(1),b=byTeam.get(2),c=byTeam.get(3),d=byTeam.get(4);
-    const left=(a?.kill||0)+(b?.kill||0),right=(c?.kill||0)+(d?.kill||0);
+    const left=(a?.score||0)+(b?.score||0),right=(c?.score||0)+(d?.score||0);
     const ca=RANK_TEAM_COLORS[0],cc=RANK_TEAM_COLORS[2];
     initialRankCount=2;
     totals=
@@ -5027,7 +5132,7 @@ function renderVerticalRanking(animate=true){
     totals=teamTotals.map(x=>{
       const c=RANK_TEAM_COLORS[(x.team-1)%RANK_TEAM_COLORS.length];
       const modeClass=rankDisplayPhase===1?'chickenMode':'killMode';
-      const value=rankDisplayPhase===1?x.chicken:x.kill;
+      const value=rankDisplayPhase===1?x.chicken:x.score;
       return '<div class="rankTotal '+modeClass+'" data-rank-total-team="'+x.team+'" style="--team-color:'+c+'">'+
         '<span class="rankTotalInfo rankTotalLabel">'+value+'</span>'+
       '</div>';
@@ -5284,7 +5389,6 @@ ck.oninput=()=>{touchLocal();cur.chicken_kills=n(ck.value);refreshScoreTextOnly(
 ck.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({chicken_kills:n(ck.value)})}).catch(console.error);
 sk.oninput=()=>{touchLocal();cur.sanhok_chicken_kills=n(sk.value);refreshScoreTextOnly()};
 sk.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({sanhok_chicken_kills:n(sk.value)})}).catch(console.error);
-t10.onchange=()=>{touchLocal();cur.top10_no_death_penalty=t10.checked;refreshScoreTextOnly();q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({top10_no_death_penalty:t10.checked})}).catch(console.error)};
 if(goalKills){
   goalKills.oninput=()=>{
     if(!cur)return;touchLocal();cur.goal_kills=n(goalKills.value);
@@ -5318,12 +5422,7 @@ if(timerStart)timerStart.onclick=async()=>{
   syncTimerControls();renderScore();refreshTimerBadge();
 };
 addRound.onclick=async()=>{await q('/pubg_rounds',{method:'POST',body:JSON.stringify({room_id:cur.id,round_no:RO.length?Math.max(...RO.map(x=>x.round_no))+1:1})});editing=false;load()};back.onclick=()=>{cur=null;clearInterval(poll);clearInterval(timerTick);roomView.classList.add('hidden');lobby.classList.remove('hidden');rooms()};
-function applyChroma(){
-  const on=!!chromaOn?.checked,color=chromaColor?.value||'#00ff00';
-  if(!captureStage)return;captureStage.style.background=on?color:'transparent';
-  captureStage.style.padding=on?'14px':'0';
-}
-if(chromaOn)chromaOn.onchange=applyChroma;if(chromaColor)chromaColor.oninput=applyChroma;
+
 if(scoreViewMode)scoreViewMode.onchange=()=>{
   if(!cur)return;
   touchLocal();cur.score_mode=scoreViewMode.value;renderScore();
@@ -5395,7 +5494,7 @@ if(pipScore)pipScore.onclick=async()=>{
     const targetW=Math.ceil(rect.width+40),targetH=Math.ceil(rect.height+40);
     const pip=await documentPictureInPicture.requestWindow({width:targetW,height:targetH});
     const style=[...document.querySelectorAll('style')].map(x=>x.textContent).join('\n');
-    const chroma=chromaOn?.checked?(chromaColor?.value||'#00ff00'):'transparent';
+    const chroma='transparent';
     pip.document.head.innerHTML='<style>'+style+
       'html,body{margin:0!important;padding:0!important;width:100%;height:100%;overflow:hidden!important;background:'+chroma+'!important}'+
       '#pipPad{box-sizing:border-box;padding:20px;width:max-content;height:max-content;min-width:100%;min-height:100%;display:flex;align-items:flex-start;justify-content:flex-start}'+
@@ -5404,20 +5503,49 @@ if(pipScore)pipScore.onclick=async()=>{
     const sync=()=>{
       const src=document.querySelector('#captureStage .scoreFrame'),dst=pip.document.getElementById('pipPad');
       if(src&&dst)dst.innerHTML=src.outerHTML;
-      pip.document.body.style.background=chromaOn?.checked?(chromaColor?.value||'#00ff00'):'transparent';
+      pip.document.body.style.background='transparent';
     };
     sync();
     const ob=new MutationObserver(sync);ob.observe(captureStage,{childList:true,subtree:true,characterData:true,attributes:true});
-    const colorSync=()=>sync();
-    chromaOn?.addEventListener('change',colorSync);chromaColor?.addEventListener('input',colorSync);
     pip.addEventListener('pagehide',()=>{
       ob.disconnect();
-      chromaOn?.removeEventListener('change',colorSync);chromaColor?.removeEventListener('input',colorSync);
+      
     });
   }catch(e){console.error('[PiP]',e)}
 };
 
 
+
+
+if(saveResult)saveResult.onclick=async()=>{
+  const node=document.querySelector('#captureStage .scoreFrame');
+  if(!node)return;
+  try{
+    if(typeof html2canvas!=='function')throw new Error('capture library unavailable');
+    const canvas=await html2canvas(node,{backgroundColor:null,scale:2,useCORS:true,logging:false});
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+    if(!blob)throw new Error('PNG 생성 실패');
+    const filename=(cur?.name||'kill-board').replace(/[\\/:*?"<>|]/g,'_')+'-결과.png';
+
+    // Browser security does not allow silently forcing Desktop.
+    // Where supported, open the native save dialog with the requested filename.
+    if(window.showSaveFilePicker){
+      const handle=await window.showSaveFilePicker({
+        suggestedName:filename,
+        types:[{description:'PNG 이미지',accept:{'image/png':['.png']}}]
+      });
+      const writable=await handle.createWritable();
+      await writable.write(blob);await writable.close();
+    }else{
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);a.download=filename;
+      document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+    }
+  }catch(err){
+    if(err?.name!=='AbortError')alert('결과 저장 실패: '+(err?.message||err));
+  }
+};
 
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='hidden'){
