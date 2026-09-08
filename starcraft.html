@@ -44,6 +44,11 @@ main{width:min(1180px,calc(100% - 32px));margin:34px auto 70px}
   .tierLabel{font-size:22px}
   .streamer{width:120px}
 }
+
+.tierLabel{font-size:17px!important;letter-spacing:-.5px}
+.raceBadge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-right:5px;border:1px solid #d4d8dd;background:#f5f6f7;font-size:10px;font-weight:1000;color:#555}
+.newBadge{margin-left:4px;padding:2px 4px;border:1px solid #d9dde2;font-size:8px;font-weight:900;color:#777;background:#fafafa}
+
 </style>
 </head>
 <body>
@@ -52,7 +57,7 @@ main{width:min(1180px,calc(100% - 32px));margin:34px auto 70px}
     <a class="globalNavBrand" href="index.html">MUJE</a>
     <div class="globalNavLinks">
       <a class="globalNavLink" data-page="pubg" href="pubg.html">배틀그라운드</a>
-      <a class="globalNavLink active" data-page="starcraft" href="starcraft.html">스타크래프트</a>
+      <a class="globalNavLink active" href="starcraft.html">스타크래프트</a>
     </div>
   </div>
 </nav>
@@ -63,7 +68,7 @@ main{width:min(1180px,calc(100% - 32px));margin:34px auto 70px}
     <p id="updated">방송 상태 확인 중...</p>
   </div>
   <section id="board" class="board"></section>
-  <div class="notice">LIVE 방송은 티어 안에서 앞으로 자동 정렬됩니다.</div>
+  <div class="notice">베이비 티어 11명 적용 · SOOP USERID 연결 전 단계</div>
 </main>
 
 <div id="preview" class="preview">
@@ -81,17 +86,26 @@ main{width:min(1180px,calc(100% - 32px));margin:34px auto 70px}
   /api/soop-search 는 기존 프로젝트에서 사용하던 검색 API를 그대로 사용.
   라이브 API는 다음 단계에서 실제 SOOP 응답 필드에 맞춰 /api/soop-live 로 붙인다.
 */
-const TIERS=['S','A','B','C','D','E','F'];
+const TIERS=['베이비'];
 const STREAMERS=[
-  // {tier:'S', user_id:'bj아이디', nickname:'닉네임'},
-  // {tier:'A', user_id:'bj아이디2', nickname:'닉네임2'},
+  {tier:'베이비', race:'T', player_id:6485, user_id:'', nickname:'요괴버스'},
+  {tier:'베이비', race:'T', player_id:847,  user_id:'', nickname:'타마양', source_image:'https://eloboard.co.kr/static/players/847.jpg?v=1787122152'},
+  {tier:'베이비', race:'T', player_id:843,  user_id:'', nickname:'온도이', source_image:'https://eloboard.co.kr/static/players/843.jpg?v=1787122152'},
+  {tier:'베이비', race:'Z', player_id:6486, user_id:'', nickname:'럭키위키', is_new:true},
+  {tier:'베이비', race:'Z', player_id:845,  user_id:'', nickname:'떠아', source_image:'https://eloboard.co.kr/static/players/845.jpg?v=1787122153'},
+  {tier:'베이비', race:'P', player_id:850,  user_id:'', nickname:'진서', source_image:'https://eloboard.co.kr/static/players/850.jpg?v=1787122153'},
+  {tier:'베이비', race:'P', player_id:6487, user_id:'', nickname:'빵체리', is_new:true},
+  {tier:'베이비', race:'P', player_id:6489, user_id:'', nickname:'이나', is_new:true},
+  {tier:'베이비', race:'P', player_id:851,  user_id:'', nickname:'여지니', is_new:true, source_image:'https://eloboard.co.kr/static/players/851.jpg?v=1787122153'},
+  {tier:'베이비', race:'P', player_id:848,  user_id:'', nickname:'휘연', source_image:'https://eloboard.co.kr/static/players/848.jpg?v=1787122153'},
+  {tier:'베이비', race:'P', player_id:839,  user_id:'', nickname:'이아라', source_image:'https://eloboard.co.kr/static/players/839.jpg?v=1787122152'}
 ];
 
 const state=new Map();
 
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function profile(id){return 'https://profile.img.sooplive.co.kr/LOGO/'+String(id).slice(0,2)+'/'+id+'/'+id+'.jpg'}
-function broadcastUrl(id){return 'https://play.sooplive.co.kr/'+encodeURIComponent(id)}
+function broadcastUrl(id){return id?'https://play.sooplive.co.kr/'+encodeURIComponent(id):'#'}
 
 function render(){
   const board=document.getElementById('board');
@@ -110,10 +124,13 @@ function render(){
 function card(x){
   const s=x._live;
   const live=!!s.live;
-  return '<a class="streamer '+(live?'live':'off')+'" data-user="'+esc(x.user_id)+'" href="'+broadcastUrl(x.user_id)+'" target="_blank" rel="noopener">'+
-    '<img class="avatar" src="'+esc(x.profile_image||profile(x.user_id))+'" onerror="this.style.visibility=\'hidden\'">'+
-    '<div class="info"><div class="name">'+esc(x.nickname||x.user_id)+'</div>'+
-    '<div class="state"><span class="dot"></span>'+(live?'LIVE':'OFF')+'</div></div>'+
+  const hasId=!!x.user_id;
+  const img=x.profile_image||(hasId?profile(x.user_id):x.source_image)||'';
+  const href=hasId?broadcastUrl(x.user_id):'#';
+  return '<a class="streamer '+(live?'live':'off')+'" data-user="'+esc(x.user_id||'')+'" href="'+href+'" '+(hasId?'target="_blank" rel="noopener"':'onclick="return false"')+'>'+
+    (img?'<img class="avatar" src="'+esc(img)+'" onerror="this.style.visibility=\'hidden\'">':'<div class="avatar" style="display:flex;align-items:center;justify-content:center;font-weight:900;color:#999">'+esc((x.nickname||'?').slice(0,1))+'</div>')+
+    '<div class="info"><div class="name"><span class="raceBadge">'+esc(x.race||'')+'</span>'+esc(x.nickname||x.user_id)+(x.is_new?'<span class="newBadge">신규</span>':'')+'</div>'+
+    '<div class="state"><span class="dot"></span>'+(hasId?(live?'LIVE':'OFF'):'SOOP 미연결')+'</div></div>'+
   '</a>';
 }
 
@@ -162,7 +179,7 @@ async function fetchLive(userId){
 }
 
 async function refreshLive(){
-  const results=await Promise.all(STREAMERS.map(async x=>[x.user_id,await fetchLive(x.user_id)]));
+  const results=await Promise.all(STREAMERS.filter(x=>x.user_id).map(async x=>[x.user_id,await fetchLive(x.user_id)]));
   results.forEach(([id,s])=>state.set(id,s));
   render();
   updated.textContent='방송 상태 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' 갱신';
