@@ -540,7 +540,6 @@ function hidePreview(){livePreview.classList.remove('on');clearInterval(previewE
 async function load(){
   liveOnly=localStorage.getItem('star_live_only')!=='0';
   universityFilter=localStorage.getItem('star_university_filter_v2')||'all';
-  board.innerHTML='<div class="liveStatusLoading">티어표 불러오는 중...</div>';
 
   const r=await fetch('/api/star-public',{cache:'no-store'});
   if(!r.ok){board.innerHTML='<div class="loading">티어표 불러오기 실패</div>';return}
