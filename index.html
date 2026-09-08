@@ -4188,6 +4188,111 @@ html:not(.broadcastOverlay):has(#scoreboard.fourTeamWindow) .totalMain{
   text-align:center!important;
 }
 
+
+/* v94 — website board header rows
+   Row 1: TIMER | GOAL (fixed)
+   Row 2: total kill comparison */
+html:not(.broadcastOverlay) .totalBar{
+  height:28px!important;
+  min-height:28px!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  align-items:center!important;
+  padding:0!important;
+  background:#050505!important;
+  color:#fff!important;
+  border:1px solid #000!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+html:not(.broadcastOverlay) .fixedTimer,
+html:not(.broadcastOverlay) .goalBadge{
+  position:static!important;
+  transform:none!important;
+  width:auto!important;
+  min-width:0!important;
+  height:27px!important;
+  padding:0 5px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+  background:#050505!important;
+  color:#fff!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
+html:not(.broadcastOverlay) .fixedTimer{
+  border-right:1px solid #fff!important;
+}
+html:not(.broadcastOverlay) .scoreStatusRow.killCompareRow{
+  height:27px!important;
+  min-height:27px!important;
+  display:grid!important;
+  grid-template-columns:0 1fr 0!important;
+  padding:0!important;
+  background:#fff!important;
+  color:#000!important;
+  border:1px solid #000!important;
+  border-top:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+html:not(.broadcastOverlay) .scoreStatusRow.killCompareRow .statusCenter{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 4px!important;
+  background:#fff!important;
+  color:#000!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+}
+
+
+/* v95 — website team width 134px */
+html:not(.broadcastOverlay) .score .team{
+  width:134px!important;
+  flex:0 0 134px!important;
+  min-width:134px!important;
+  max-width:134px!important;
+}
+html:not(.broadcastOverlay) #scoreboard.fourTeamWindow{
+  grid-template-columns:134px 134px!important;
+  width:268px!important;
+  min-width:268px!important;
+  max-width:268px!important;
+}
+html:not(.broadcastOverlay) #scoreboard.fourTeamWindow .team{
+  width:134px!important;
+  min-width:134px!important;
+  max-width:134px!important;
+}
+html:not(.broadcastOverlay):has(#scoreboard.fourTeamWindow) .scoreFrame,
+html:not(.broadcastOverlay):has(#scoreboard.fourTeamWindow) .totalBar,
+html:not(.broadcastOverlay):has(#scoreboard.fourTeamWindow) .scoreStatusRow{
+  width:268px!important;
+  min-width:268px!important;
+  max-width:268px!important;
+}
+html:not(.broadcastOverlay) .scoreFrame,
+html:not(.broadcastOverlay) .score,
+html:not(.broadcastOverlay) .totalBar,
+html:not(.broadcastOverlay) .scoreStatusRow{
+  width:calc(134px * var(--home-team-count,4))!important;
+  min-width:calc(134px * var(--home-team-count,4))!important;
+  max-width:calc(134px * var(--home-team-count,4))!important;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -4367,8 +4472,8 @@ function refreshScoreTextOnly(){
     if(mode==='2v2'&&cur.team_count===4)center=captainName(1)+' '+((scores[0]||0)+(scores[1]||0))+' : '+((scores[2]||0)+(scores[3]||0))+' '+captainName(3);
     else center=scores.map((s,i)=>captainName(i+1)+' '+s).join('  ·  ');
   }
-  const main=totalBar.querySelector('.totalMain');
-  if(main)main.textContent=center;
+  const compare=document.querySelector('#scoreStatusRow .statusCenter');
+  if(compare)compare.textContent=center;
   refreshStatusRow();
   renderVerticalRanking(true);
 }
@@ -4500,20 +4605,9 @@ function timerText(){
 }
 
 function refreshStatusRow(){
-  const row=document.getElementById('scoreStatusRow');if(!row||!cur)return;
-  const left=row.querySelector('.statusLeft'),center=row.querySelector('.statusCenter'),right=row.querySelector('.statusRight');
-  const tt=timerText();
-  if(cur.team_count===2){
-    if(left)left.textContent='🍗 '+RO.filter(r=>r.chicken_team===1).length;
-    if(right)right.textContent='🍗 '+RO.filter(r=>r.chicken_team===2).length;
-  }else{
-    if(left)left.textContent='';
-    if(right)right.textContent='';
-  }
-  if(center){
-    if(tt){center.style.display='flex';center.textContent='◷ '+tt}
-    else{center.style.display='none';center.textContent=''}
-  }
+  if(!cur)return;
+  const topTimer=totalBar?.querySelector('.fixedTimer');
+  if(topTimer)topTimer.textContent='◷ '+(timerText()||'00:00');
 }
 function refreshTimerBadge(){
   const el=document.getElementById('timerBadge');
@@ -4692,14 +4786,14 @@ function renderScore(){
   }else if(cur.team_count===4){
     const left=(teamScores[0]||0)+(teamScores[1]||0);
     const right=(teamScores[2]||0)+(teamScores[3]||0);
-    center='AB '+left+' : '+right+' CD';
+    center=left+' : '+right;
   }else{
     center=teamScores.map((s,i)=>captainName(i+1)+' '+s).join('  ·  ');
   }
-  totalBar.innerHTML='<span class="goalBadge">'+goal+'</span><span class="totalMain">'+e(center)+'</span>';
+  const fixedTime=timerText()||'00:00';
+  totalBar.innerHTML='<span class="fixedTimer">◷ '+e(fixedTime)+'</span><span class="goalBadge">목표 '+goal+'</span>';
   const oldStatus=document.getElementById('scoreStatusRow');if(oldStatus)oldStatus.remove();
-  totalBar.insertAdjacentHTML('afterend','<div id="scoreStatusRow" class="scoreStatusRow"><span class="statusLeft"></span><span class="statusCenter"></span><span class="statusRight"></span></div>');
-  refreshStatusRow();
+  totalBar.insertAdjacentHTML('afterend','<div id="scoreStatusRow" class="scoreStatusRow killCompareRow"><span class="statusLeft"></span><span class="statusCenter">'+e(center)+'</span><span class="statusRight"></span></div>');
   deathItems.innerHTML=P.map(p=>'<div class="di"><span>'+e(p.nickname||'PLAYER '+p.position)+'</span><input data-death="'+p.id+'" type="number" value="'+n(p.death_penalty)+'"></div>').join('');
   document.querySelectorAll('[data-name]').forEach(x=>{x.onfocus=()=>editing=true;x.onkeydown=a=>{if(a.key==='Enter'){a.preventDefault();x.blur()}};x.onblur=()=>saveName(x)});
   document.querySelectorAll('[data-death]').forEach(x=>{
@@ -5155,7 +5249,7 @@ t10.onchange=()=>{touchLocal();cur.top10_no_death_penalty=t10.checked;refreshSco
 if(goalKills){
   goalKills.oninput=()=>{
     if(!cur)return;touchLocal();cur.goal_kills=n(goalKills.value);
-    const b=totalBar.querySelector('.goalBadge');if(b)b.textContent=String(cur.goal_kills);
+    const b=totalBar.querySelector('.goalBadge');if(b)b.textContent='목표 '+String(cur.goal_kills);
   };
   goalKills.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({goal_kills:n(goalKills.value)})}).catch(console.error);
 }
