@@ -6,196 +6,226 @@
 
 
 
+
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scrollbar-gutter:stable}
 body{
   margin:0;
-  color:#16191d;
+  color:#11151a;
   font-family:Inter,Arial,"Noto Sans KR",sans-serif;
-  background:#f6f6f4;
+  background:
+    linear-gradient(rgba(25,31,38,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(25,31,38,.035) 1px,transparent 1px),
+    #f4f6f8;
+  background-size:28px 28px;
 }
 main{
-  width:min(1480px,calc(100% - 160px));
+  width:min(1460px,calc(100% - 165px));
   margin:34px auto 110px;
 }
 .pageTitleWrap{
-  display:flex;align-items:flex-end;justify-content:space-between;
-  margin:0 0 24px;padding:0 4px;
+  display:flex;align-items:end;justify-content:space-between;
+  margin:0 0 26px;padding:0 3px 17px;
+  border-bottom:1px solid #d8dde3;
 }
 .pageTitleWrap h1{
-  margin:0;font-size:32px;font-weight:1000;letter-spacing:-1.9px;
+  margin:0;font-size:31px;font-weight:1000;letter-spacing:-1.8px;
 }
 .pageSub{
-  margin-top:5px;font-size:10px;font-weight:900;letter-spacing:1.7px;color:#9a9da2;
+  margin-top:5px;font-size:9px;font-weight:900;letter-spacing:2.1px;color:#949ba4;
 }
-
-/* no giant outer table */
 .board{
-  display:flex;flex-direction:column;gap:34px;
+  display:flex;flex-direction:column;gap:26px;
   background:transparent;border:0;box-shadow:none;overflow:visible;
 }
 
-/* magazine section */
+/* ===== tier = horizontal roster strip ===== */
 .tier{
-  position:relative;display:block;min-height:0;
-  border:0;background:transparent;box-shadow:none;overflow:visible;
-  scroll-margin-top:28px;
+  position:relative;display:grid;
+  grid-template-columns:105px 1fr;
+  min-height:190px;
+  border:1px solid #dfe3e8;
+  border-radius:20px;
+  background:rgba(255,255,255,.84);
+  box-shadow:0 10px 30px rgba(25,32,42,.055);
+  overflow:hidden;
+  scroll-margin-top:25px;
 }
 .tierLabel{
   position:relative;
-  height:45px;padding:0 2px 13px;
-  display:flex;align-items:flex-end;justify-content:flex-start;
+  display:flex;align-items:center;justify-content:center;
   writing-mode:initial;transform:none;
-  border-bottom:2px solid #181b1f;
-  background:transparent;color:#17191d;
-  font-size:23px;font-weight:1000;letter-spacing:-1.1px;
+  background:#15191e;color:#fff;
+  border:0;
+  font-size:22px;font-weight:1000;letter-spacing:-1px;
 }
 .tierLabel:before{
-  content:"";width:7px;height:7px;margin:0 10px 6px 1px;
-  border-radius:50%;background:#181b1f;
+  content:"TIER";position:absolute;top:18px;
+  font-size:7px;font-weight:1000;letter-spacing:2px;color:#747c85;
 }
 .tierLabel:after{
-  content:"ROSTER";
-  margin-left:auto;margin-bottom:3px;
-  font-size:8px;font-weight:1000;letter-spacing:2px;color:#a2a5aa;
+  content:"";position:absolute;bottom:19px;
+  width:22px;height:3px;border-radius:99px;background:#fff;
 }
-
 .members{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-  gap:24px 16px;
-  padding:18px 0 0;
+  grid-template-columns:repeat(auto-fill,minmax(142px,1fr));
+  gap:18px;
+  padding:20px 22px 21px;
   align-items:start;
 }
 
-/* ===== V13: editorial portrait tile, almost no card container ===== */
+/* ===== V14: "ID CHIP" =====
+   Profile is ALWAYS square. No portrait ratio, no fake image cover.
+*/
 .playerCard{
-  --race:#7f858c;
-  position:relative;display:block;min-width:0;
-  color:#181b1f;text-decoration:none;
-  background:transparent;border:0;border-radius:0;overflow:visible;
-  transition:transform .18s ease;
+  --race:#7b838c;
+  position:relative;min-width:0;
+  text-decoration:none;color:#161a1f;
+  background:transparent;border:0;border-radius:0;
+  overflow:visible;
+  transition:transform .16s ease;
 }
-.playerCard:hover{transform:translateY(-5px)}
-.playerCard.T{--race:#2877c9}
-.playerCard.Z{--race:#7848b2}
-.playerCard.P{--race:#c18f00}
+.playerCard.T{--race:#2b76d2}
+.playerCard.Z{--race:#8151c5}
+.playerCard.P{--race:#c99a00}
+.playerCard:hover{transform:translateY(-4px)}
 
 .portrait{
-  position:relative;width:100%;aspect-ratio:5/6.15;
-  margin:0;overflow:hidden;
-  border:0;border-radius:16px 16px 16px 3px;
+  position:relative;
+  width:100%;
+  aspect-ratio:1 / 1 !important;
+  overflow:hidden;
+  border-radius:14px;
   background:#fff;
-  box-shadow:0 10px 24px rgba(26,30,36,.09);
-  clip-path:polygon(0 0,100% 0,100% calc(100% - 19px),calc(100% - 19px) 100%,0 100%);
-}
-.portrait:after{
-  content:"";display:block;
-  position:absolute;z-index:4;
-  left:0;bottom:0;width:46px;height:5px;
-  background:var(--race);
+  border:1px solid #dfe3e8;
+  box-shadow:0 6px 16px rgba(25,31,40,.075);
 }
 .profileImg{
-  position:relative;z-index:1;display:block;
-  width:100%;height:100%;object-fit:cover;background:#fff;
+  display:block;position:relative;z-index:1;
+  width:100%;height:100%;
+  object-fit:cover;
+  background:#fff;
 }
 .blankPortrait{
   position:absolute;inset:0;z-index:0;background:#fff;
 }
 
-/* identity is typography, not another box */
+/* race marker = corner bracket instead of full colored frame */
+.portrait:before,
+.portrait:after{
+  content:"";position:absolute;z-index:5;pointer-events:none;
+}
+.portrait:before{
+  left:0;bottom:0;width:32px;height:4px;background:var(--race);
+}
+.portrait:after{
+  left:0;bottom:0;width:4px;height:32px;background:var(--race);
+}
+
+/* name becomes an ID label crossing the lower edge */
 .namePlate{
-  position:relative;margin:0;padding:10px 3px 0;
-  min-height:37px;
-  display:flex;align-items:center;justify-content:flex-start;gap:6px;
-  border:0;background:transparent;box-shadow:none;
-  color:#1b1e22;font-size:13px;font-weight:1000;
+  position:relative;z-index:7;
+  width:calc(100% - 14px);
+  min-height:34px;
+  margin:-9px 7px 0;
+  padding:0 10px;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  border:1px solid #dfe3e8;
+  border-radius:9px;
+  background:rgba(255,255,255,.96);
+  box-shadow:0 5px 13px rgba(24,31,40,.07);
+  font-size:12px;font-weight:1000;
 }
 .playerName{
   min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 .raceText{
-  flex:0 0 auto;width:auto;height:auto;
+  flex:0 0 auto;
+  width:20px;height:20px;
   display:inline-flex;align-items:center;justify-content:center;
-  border:0;border-radius:0;background:transparent;
-  color:var(--race);font-size:11px;font-weight:1000;
-}
-.raceText:before{
-  content:"/";margin-right:5px;color:#c0c3c7;font-weight:700;
+  border-radius:6px;
+  background:color-mix(in srgb,var(--race) 10%,white);
+  color:var(--race);
+  font-size:10px;font-weight:1000;
 }
 
-/* LIVE is an editorial red dot + label */
+/* live */
 .liveBadge{
-  order:-1;
-  flex:0 0 auto;height:auto;padding:0;
+  position:absolute;left:8px;bottom:8px;z-index:8;
+  order:initial;
+  height:20px;padding:0 7px;
   display:inline-flex;align-items:center;gap:4px;
-  border-radius:0;background:transparent;color:#e72d45;
-  font-size:8px;font-weight:1000;letter-spacing:.45px;
+  border-radius:6px;
+  background:#ed2443;color:#fff;
+  box-shadow:0 4px 10px rgba(237,36,67,.24);
+  font-size:7px;font-weight:1000;letter-spacing:.6px;
 }
 .liveBadge:before{
-  content:"";width:6px;height:6px;border-radius:50%;background:#e72d45;
-  box-shadow:0 0 0 3px rgba(231,45,69,.10);
+  content:"";width:5px;height:5px;border-radius:50%;background:#fff;
 }
 
-/* university mark: small square seal */
+/* university */
 .univBadge{
-  position:absolute;left:9px;top:9px;z-index:8;
+  position:absolute;left:8px;top:8px;z-index:8;
   width:34px;height:34px;
   display:flex;align-items:center;justify-content:center;
-  border-radius:8px;background:rgba(255,255,255,.91);
-  border:1px solid rgba(225,227,230,.9);
-  box-shadow:0 4px 12px rgba(0,0,0,.13);overflow:hidden;
+  border-radius:10px;
+  background:rgba(255,255,255,.93);
+  border:1px solid rgba(218,222,228,.9);
+  box-shadow:0 4px 11px rgba(0,0,0,.12);
+  overflow:hidden;
 }
-.univBadge img{width:29px;height:29px;object-fit:contain}
+.univBadge img{width:28px;height:28px;object-fit:contain}
 
-/* status tags run vertically down right side */
+/* status flags */
 .cornerBadges{
-  position:absolute;right:8px;top:8px;bottom:auto;z-index:8;
+  position:absolute;right:7px;top:7px;z-index:9;
   display:flex;flex-direction:column;align-items:flex-end;gap:5px;
 }
 .stateBadge{
-  height:21px;padding:0 7px;
+  height:20px;padding:0 7px;
   display:inline-flex;align-items:center;justify-content:center;
-  border:1px solid rgba(255,255,255,.45);border-radius:6px;
-  color:#fff;font-size:8px;font-weight:1000;letter-spacing:.6px;
-  backdrop-filter:blur(5px);
-  box-shadow:0 3px 10px rgba(0,0,0,.14);
+  border-radius:6px;
+  color:#fff;font-size:7px;font-weight:1000;letter-spacing:.65px;
+  border:1px solid rgba(255,255,255,.35);
+  box-shadow:0 3px 8px rgba(0,0,0,.14);
 }
-.stateBadge.up{background:rgba(221,49,61,.94)}
-.stateBadge.new{background:rgba(19,22,26,.94)}
-.stateBadge.repair{background:rgba(225,133,19,.95)}
+.stateBadge.up{background:#ef3447}
+.stateBadge.new{background:#171b20}
+.stateBadge.repair{background:#e18b19}
 
-/* promotion: only the signature line and portrait shadow glow */
+/* promotion = corner bracket glow, square image remains untouched */
 .playerCard.soon .portrait{
-  animation:v13Glow .9s ease-in-out infinite alternate;
+  animation:v14Glow 1s ease-in-out infinite alternate;
 }
+.playerCard.soon .portrait:before,
 .playerCard.soon .portrait:after{
-  animation:v13Line  .9s ease-in-out infinite alternate;
+  animation:v14Bracket 1s ease-in-out infinite alternate;
 }
-@keyframes v13Glow{
-  from{box-shadow:0 10px 24px rgba(26,30,36,.09)}
-  to{
-    box-shadow:
-      0 10px 26px rgba(26,30,36,.10),
-      0 0 0 2px color-mix(in srgb,var(--race) 45%,transparent),
-      0 0 18px color-mix(in srgb,var(--race) 28%,transparent);
-  }
+@keyframes v14Glow{
+  from{box-shadow:0 6px 16px rgba(25,31,40,.075)}
+  to{box-shadow:0 7px 18px rgba(25,31,40,.09),0 0 18px color-mix(in srgb,var(--race) 32%,transparent)}
 }
-@keyframes v13Line{
-  from{width:46px;box-shadow:0 0 3px var(--race)}
-  to{width:76px;box-shadow:0 0 14px var(--race)}
+@keyframes v14Bracket{
+  from{filter:brightness(1)}
+  to{filter:brightness(1.35);box-shadow:0 0 10px var(--race)}
 }
 
-/* inactive */
+/* inactive stays last via existing JS sorting, visually muted */
 .playerCard.idle{
-  opacity:.42;filter:grayscale(.92) saturate(.18);
+  opacity:.43;
+  filter:grayscale(.94) saturate(.15);
 }
-.playerCard.idle .portrait:after{background:#8e9297}
-.playerCard.idle .raceText{color:#8e9297}
-.playerCard.missing{opacity:.84}
+.playerCard.idle .raceText{
+  color:#858b92;background:#f0f1f2;
+}
+.playerCard.idle .portrait:before,
+.playerCard.idle .portrait:after{background:#92979d}
+.playerCard.missing{opacity:.86}
 
-/* fixed menu intentionally preserved */
+/* fixed tier rail - keep the version user liked */
 .tierRail{
   position:fixed;right:22px;top:50%;transform:translateY(-50%);
   z-index:9000;width:82px;padding:9px 7px 10px;
@@ -219,20 +249,28 @@ main{
 }
 .tierJump:hover{background:#eceef1;color:#16181c}
 .tierJump.active{
-  background:#17191d;color:#fff;box-shadow:0 5px 14px rgba(23,25,29,.18);
+  background:#17191d;color:#fff;
+  box-shadow:0 5px 14px rgba(23,25,29,.18);
 }
 .tierJump.active:before{background:#fff;height:12px;border-radius:3px}
-
 .loading{padding:30px;color:#8c929a}
+
 @media(max-width:950px){
   main{width:calc(100% - 24px)}
   .tierRail{display:none}
+  .tier{grid-template-columns:72px 1fr}
 }
 @media(max-width:700px){
-  .members{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 10px}
-  .tierLabel{font-size:19px}
+  .tier{display:block}
+  .tierLabel{
+    height:48px;justify-content:flex-start;padding:0 18px;
+  }
+  .tierLabel:before{display:none}
+  .tierLabel:after{right:18px;left:auto;bottom:22px}
+  .members{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 10px;padding:15px 12px 18px}
 }
 </style>
+
 
 
 
