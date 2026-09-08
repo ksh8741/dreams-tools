@@ -3909,6 +3909,125 @@ html:not(.broadcastOverlay) .avatarEmpty{
   box-shadow:none!important;
 }
 
+
+/* v87 — HOME scoreboard = spreadsheet/reference style */
+html:not(.broadcastOverlay) .scorePanel,
+html:not(.broadcastOverlay) .scoreFrame,
+html:not(.broadcastOverlay) .scoreWrap{
+  background:#fff!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+}
+html:not(.broadcastOverlay) .totalBar{
+  min-height:30px!important;
+  height:30px!important;
+  padding:0 8px!important;
+  background:#050505!important;
+  color:#fff!important;
+  border:1px solid #000!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  font-size:14px!important;
+  font-weight:800!important;
+}
+html:not(.broadcastOverlay) .totalBar *{color:#fff!important}
+html:not(.broadcastOverlay) .score{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:flex-start!important;
+  gap:0!important;
+  background:#fff!important;
+}
+html:not(.broadcastOverlay) .scoreGroup{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:stretch!important;
+  gap:0!important;
+}
+html:not(.broadcastOverlay) .score .team{
+  width:210px!important;
+  flex:0 0 210px!important;
+  margin:0 0 0 -1px!important;
+  background:#fff!important;
+  color:#000!important;
+  border:1px solid #000!important;
+  border-top:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+html:not(.broadcastOverlay) .score .team:first-child{margin-left:0!important}
+html:not(.broadcastOverlay) .teamSummary{
+  height:24px!important;
+  min-height:24px!important;
+  padding:0 5px!important;
+  background:#050505!important;
+  color:#fff!important;
+  border:0!important;
+  border-bottom:1px solid #000!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+html:not(.broadcastOverlay) .teamSummary *{
+  color:#fff!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  padding:0!important;
+  box-shadow:none!important;
+}
+html:not(.broadcastOverlay) .plist{
+  padding:0!important;
+  background:#fff!important;
+}
+html:not(.broadcastOverlay) .slot{
+  min-height:23px!important;
+  padding:2px 5px!important;
+  background:#fff!important;
+  color:#000!important;
+  border:0!important;
+  border-top:1px solid #c9c9c9!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+html:not(.broadcastOverlay) .slot:first-child{border-top:0!important}
+html:not(.broadcastOverlay) .name,
+html:not(.broadcastOverlay) .detail,
+html:not(.broadcastOverlay) .detail b,
+html:not(.broadcastOverlay) .playerInline{
+  color:#000!important;
+  background:#fff!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+html:not(.broadcastOverlay) .name{font-size:12px!important;font-weight:700!important}
+html:not(.broadcastOverlay) .detail,
+html:not(.broadcastOverlay) .detail b{font-size:12px!important;font-weight:700!important}
+html:not(.broadcastOverlay) .avatar,
+html:not(.broadcastOverlay) .avatarEmpty{
+  width:18px!important;
+  height:18px!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+html:not(.broadcastOverlay) .chi,
+html:not(.broadcastOverlay) .chicken{
+  min-height:22px!important;
+  background:#050505!important;
+  color:#fff!important;
+  border:0!important;
+  border-top:1px solid #000!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  font-size:12px!important;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -3962,11 +4081,11 @@ html:not(.broadcastOverlay) .avatarEmpty{
 </section>
 </main>
 <div id="createOv" class="overlay hidden"><div class="modal"><h2>방 생성</h2>
-<div class="meta" style="margin-bottom:10px">최대 4팀 · 팀당 최대 4명 · 총 16명</div>
+<div class="meta" style="margin-bottom:10px">1~4팀 · 팀당 최대 4명 · 총 16명</div>
 <div class="field"><label>방제</label><input id="cn"></div>
 <div class="field"><label>방장</label><input id="ch"></div>
 <div class="two">
-  <div class="field"><label>팀 수</label><input id="tc" type="number" min="2" max="4" value="4"></div>
+  <div class="field"><label>팀 수</label><input id="tc" type="number" min="1" max="4" value="4"></div>
   <div class="field"><label>팀당 인원</label><input id="pp" type="number" min="1" max="4" value="4"></div>
 </div>
 <div class="field"><label>스코어 묶음</label>
@@ -4008,7 +4127,7 @@ html:not(.broadcastOverlay) .avatarEmpty{
       </label>
       <label id="overlayTeamField" class="overlaySettingField"><span>내 팀</span><select id="overlayTeamSelect"></select></label>
       <label class="overlaySettingField">
-        <span>프레임 개수</span>
+        <span>프레임</span>
         <select id="overlayFrameCountSelect">
           <option value="0">0개</option>
           <option value="1">1개</option>
@@ -4285,7 +4404,7 @@ cc.onclick=()=>createOv.classList.add('hidden');refresh.onclick=rooms;
 cb.onclick=async()=>{
   let name=cn.value.trim(),host=ch.value.trim(),a=+tc.value,b=+pp.value,mode=document.getElementById('scoreMode')?.value||'separate';
   if(!name||!host)return ce.textContent='방제와 방장을 입력하세요';
-  if(a<2||a>4)return ce.textContent='팀은 2~4팀까지만 가능합니다.';
+  if(a<1||a>4)return ce.textContent='팀은 1~4팀까지만 가능합니다.';
   if(b<1||b>4)return ce.textContent='한 팀에는 최대 4명까지만 가능합니다.';
   if(a*b>16)return ce.textContent='최대 참여 인원은 16명입니다.';
   if(mode==='2v2'&&a!==4)return ce.textContent='A+B vs C+D 모드는 4팀일 때만 사용할 수 있습니다.';
