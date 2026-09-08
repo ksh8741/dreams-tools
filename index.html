@@ -3197,6 +3197,116 @@ html.broadcastOverlay.broadcastVertical:is(.theme-modern_white,.theme-modern_bla
  content:none!important;display:none!important
 }
 
+
+/* ===== v72 STRICT MONAMI MONO =====
+   Modern themes use ONLY #000000 and #ffffff. No gray, alpha-gray, gradients or colored surfaces. */
+
+/* MONAMI WHITE */
+html.broadcastOverlay.broadcastVertical.theme-mono_white .rankHeader,
+html.broadcastOverlay.broadcastVertical.theme-mono_white .rankTotal,
+html.broadcastOverlay.broadcastVertical.theme-mono_white .rankRows,
+html.broadcastOverlay.broadcastVertical.theme-mono_white .rankRow,
+html.broadcastOverlay.broadcastVertical.theme-mono_white .rankAvatarEmpty{
+  background:#fff!important;background-image:none!important;color:#000!important;
+  border-color:#000!important;box-shadow:none!important;text-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_white .rankCols{
+  background:#000!important;background-image:none!important;color:#fff!important;
+  border-color:#000!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_white .rankCols *{color:#fff!important}
+html.broadcastOverlay.broadcastVertical.theme-mono_white :is(
+.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo,
+.rankRow,.rankRow *,.rankName,.rankPos,.rankK,.rankD,.rankScore,.rankScore strong
+){color:#000!important;text-shadow:none!important}
+
+/* MONAMI BLACK */
+html.broadcastOverlay.broadcastVertical.theme-mono_black .rankHeader,
+html.broadcastOverlay.broadcastVertical.theme-mono_black .rankTotal,
+html.broadcastOverlay.broadcastVertical.theme-mono_black .rankRows,
+html.broadcastOverlay.broadcastVertical.theme-mono_black .rankRow,
+html.broadcastOverlay.broadcastVertical.theme-mono_black .rankAvatarEmpty{
+  background:#000!important;background-image:none!important;color:#fff!important;
+  border-color:#fff!important;box-shadow:none!important;text-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_black .rankCols{
+  background:#fff!important;background-image:none!important;color:#000!important;
+  border-color:#fff!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_black .rankCols *{color:#000!important}
+html.broadcastOverlay.broadcastVertical.theme-mono_black :is(
+.rankGoal,.rankTimer,.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo,
+.rankRow,.rankRow *,.rankName,.rankPos,.rankK,.rankD,.rankScore,.rankScore strong
+){color:#fff!important;text-shadow:none!important}
+
+/* BLACK & WHITE: white body, black structural bands */
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankHeader,
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankCols{
+  background:#000!important;background-image:none!important;color:#fff!important;
+  border-color:#fff!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankTotal,
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankRows,
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankRow,
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankAvatarEmpty{
+  background:#fff!important;background-image:none!important;color:#000!important;
+  border-color:#000!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankHeader *,
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe .rankCols *{color:#fff!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-mono_stripe :is(
+.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo,
+.rankRow,.rankRow *,.rankName,.rankPos,.rankK,.rankD,.rankScore,.rankScore strong
+){color:#000!important;text-shadow:none!important}
+
+/* REVERSE MONO: white header, black body */
+html.broadcastOverlay.broadcastVertical.theme-mono_reverse .rankHeader,
+html.broadcastOverlay.broadcastVertical.theme-mono_reverse .rankCols{
+  background:#fff!important;background-image:none!important;color:#000!important;
+  border-color:#000!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_reverse .rankTotal,
+html.broadcastOverlay.broadcastVertical.theme-mono_reverse .rankRows,
+html.broadcastOverlay.broadcastVertical.theme-mono_reverse .rankRow,
+html.broadcastOverlay.broadcastVertical.theme-mono_reverse .rankAvatarEmpty{
+  background:#000!important;background-image:none!important;color:#fff!important;
+  border-color:#fff!important;box-shadow:none!important
+}
+html.broadcastOverlay.broadcastVertical.theme-mono_reverse .rankHeader *,
+html.broadcastOverlay.broadcastVertical.theme-mono_reverse .rankCols *{color:#000!important;text-shadow:none!important}
+html.broadcastOverlay.broadcastVertical.theme-mono_reverse :is(
+.rankTotalLabel,.rankTotalName,.rankTotalKill,.rankTotalInfo,
+.rankRow,.rankRow *,.rankName,.rankPos,.rankK,.rankD,.rankScore,.rankScore strong
+){color:#fff!important;text-shadow:none!important}
+
+/* SCORE is never a separate paper/card in any strict mono theme */
+html.broadcastOverlay.broadcastVertical:is(.theme-mono_white,.theme-mono_black,.theme-mono_stripe,.theme-mono_reverse) .rankScore{
+  background:transparent!important;background-image:none!important;border:0!important;
+  outline:0!important;box-shadow:none!important;filter:none!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-mono_white,.theme-mono_black,.theme-mono_stripe,.theme-mono_reverse) .rankScore:before,
+html.broadcastOverlay.broadcastVertical:is(.theme-mono_white,.theme-mono_black,.theme-mono_stripe,.theme-mono_reverse) .rankScore:after{
+  content:none!important;display:none!important
+}
+
+/* Kill animation keeps geometry but becomes pure monochrome too. */
+html.broadcastOverlay.broadcastVertical:is(.theme-mono_white,.theme-mono_stripe) .rankRow.killFlash{
+  box-shadow:inset 0 0 0 2px #000!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-mono_black,.theme-mono_reverse) .rankRow.killFlash{
+  box-shadow:inset 0 0 0 2px #fff!important
+}
+
+/* Neutralize team-color decorative overlays in strict mono themes. */
+html.broadcastOverlay.broadcastVertical:is(.theme-mono_white,.theme-mono_black,.theme-mono_stripe,.theme-mono_reverse) .rankTotal:before,
+html.broadcastOverlay.broadcastVertical:is(.theme-mono_white,.theme-mono_black,.theme-mono_stripe,.theme-mono_reverse) .rankTotal:after{
+  background:#000!important;background-image:none!important
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-mono_black,.theme-mono_reverse) .rankTotal:before,
+html.broadcastOverlay.broadcastVertical:is(.theme-mono_black,.theme-mono_reverse) .rankTotal:after{
+  background:#fff!important
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -3290,13 +3400,11 @@ html.broadcastOverlay.broadcastVertical:is(.theme-modern_white,.theme-modern_bla
             <option value="lavender">LAVENDER PINK</option>
             <option value="winter_night">WINTER NIGHT</option>
           </optgroup>
-          <optgroup label="모던 · 흑백">
-            <option value="modern_white">MODERN WHITE</option>
-            <option value="modern_black">MODERN BLACK</option>
-            <option value="modern_split">MODERN SPLIT</option>
-            <option value="modern_editorial">EDITORIAL MONO</option>
-            <option value="modern_grid">MONO GRID</option>
-            <option value="modern_glass">MONO GLASS</option>
+          <optgroup label="모던 · 순수 흑백">
+            <option value="mono_white">MONAMI WHITE</option>
+            <option value="mono_black">MONAMI BLACK</option>
+            <option value="mono_stripe">BLACK &amp; WHITE</option>
+            <option value="mono_reverse">REVERSE MONO</option>
           </optgroup>
         </select>
       </label>
@@ -4249,7 +4357,7 @@ const overlayParams=new URLSearchParams(location.search);
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout=overlayParams.get('layout')==='horizontal'?'horizontal':'vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
-const OVERLAY_THEMES=['luxury','lavender','winter_night','modern_white','modern_black','modern_split','modern_editorial','modern_grid','modern_glass'];
+const OVERLAY_THEMES=['luxury','lavender','winter_night','mono_white','mono_black','mono_stripe','mono_reverse'];
 const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'luxury';
 if(overlayRoomId){
   document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal','theme-'+overlayTheme);
