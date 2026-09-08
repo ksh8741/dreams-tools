@@ -16,7 +16,7 @@ body{
   margin:0;background:#f3f4f6;color:#15181c;
   font-family:Inter,Arial,"Noto Sans KR",sans-serif
 }
-main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
+main{width:min(1450px,calc(100% - 220px));margin:34px auto 110px}
 .pageTitleWrap{
   display:flex;align-items:flex-end;justify-content:space-between;
   margin:0 0 22px;padding:0 2px 17px;border-bottom:1px solid #d9dde2
@@ -259,7 +259,7 @@ main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
 .liveStatusLoading{padding:24px;color:#80868e;font-size:12px;text-align:center}
 .univFilterBox{margin:0 1px 7px;padding:7px 3px 8px;border-bottom:1px solid rgba(205,210,216,.8)}
 .univFilterLabel{text-align:center;font-size:7px;font-weight:1000;letter-spacing:.8px;color:#777e86;margin-bottom:5px}
-.univFilterSelect{width:100%;height:28px;border:1px solid #d7dbe0;border-radius:8px;background:#fff;color:#3c424a;font-size:9px;font-weight:900;padding:0 3px;outline:none}
+.univFilterSelect{width:100%;height:30px;border:1px solid #d7dbe0;border-radius:8px;background:#fff;color:#3c424a;font-size:10px;font-weight:900;padding:0 8px;outline:none;text-overflow:ellipsis}
 
 
 </style>
@@ -411,7 +411,7 @@ function buildRail(){
   universityFilterSelect.value=String(universityFilter);
   universityFilterSelect.addEventListener('change',ev=>{
     universityFilter=ev.target.value;
-    localStorage.setItem('star_university_filter',universityFilter);
+    localStorage.setItem('star_university_filter_v2',universityFilter);
     render();
     buildRail();
   });
@@ -486,9 +486,24 @@ async function fetchLiveChunk(chunk){
   }
 }
 
+function orderedLiveIds(){
+  const ordered=[];
+  for(const tier of TIERS){
+    for(const [race] of RACES){
+      const group=players
+        .filter(x=>x.tier===tier && String(x.race||'').toUpperCase()===race && x.soop_user_id)
+        .sort(comparePlayers);
+      for(const x of group)ordered.push(x.soop_user_id);
+    }
+  }
+  return [...new Set(ordered)];
+}
+
 async function loadLiveStatusesProgressive(){
-  const ids=[...new Set(players.filter(x=>x.soop_user_id).map(x=>x.soop_user_id))];
-  const chunkSize=18;
+  // IMPORTANT: live checks follow the exact visual order:
+  // top tier -> T/Z/P -> next tier, so the visible top area finishes first.
+  const ids=orderedLiveIds();
+  const chunkSize=12;
 
   // Unknown status is intentionally visible at first so the page appears immediately.
   players=players.map(x=>({...x,_liveKnown:!x.soop_user_id,_live:false,_liveTitle:'',_thumbnail:'',_bno:''}));
@@ -522,8 +537,8 @@ async function loadLiveStatusesProgressive(){
 }
 
 async function refreshAllLiveStatuses(){
-  const ids=[...new Set(players.filter(x=>x.soop_user_id).map(x=>x.soop_user_id))];
-  const chunkSize=30;
+  const ids=orderedLiveIds();
+  const chunkSize=24;
 
   for(let i=0;i<ids.length;i+=chunkSize){
     const chunk=ids.slice(i,i+chunkSize);
@@ -550,7 +565,7 @@ async function refreshAllLiveStatuses(){
 
 async function load(){
   liveOnly=localStorage.getItem('star_live_only')!=='0';
-  universityFilter=localStorage.getItem('star_university_filter')||'all';
+  universityFilter=localStorage.getItem('star_university_filter_v2')||'all';
   board.innerHTML='<div class="liveStatusLoading">티어표 불러오는 중...</div>';
 
   const r=await fetch('/api/star-public',{cache:'no-store'});
