@@ -4490,6 +4490,38 @@ html:not(.broadcastOverlay) #scoreboard > .team:only-child .teamSummary{
   padding:0 4px!important;
 }
 
+
+/* v114 — exact 2/3-team width alignment
+   Do NOT overlap teams with margin-left:-1px.
+   Keep each team exactly 134px and collapse shared seams with border-left:0. */
+html:not(.broadcastOverlay) #scoreboard:not(.fourTeamWindow) > .team{
+  margin-left:0!important;
+}
+html:not(.broadcastOverlay) #scoreboard:not(.fourTeamWindow) > .team + .team{
+  border-left:0!important;
+}
+html:not(.broadcastOverlay) #scoreboard:not(.fourTeamWindow){
+  width:calc(134px * var(--home-team-count,4))!important;
+  min-width:calc(134px * var(--home-team-count,4))!important;
+  max-width:calc(134px * var(--home-team-count,4))!important;
+}
+html:not(.broadcastOverlay) #scoreboard:not(.fourTeamWindow) > .team{
+  width:134px!important;
+  min-width:134px!important;
+  max-width:134px!important;
+  flex:0 0 134px!important;
+  box-sizing:border-box!important;
+}
+
+
+/* v115 — team summary row: chicken + goal visual sizes fixed at 14px */
+html:not(.broadcastOverlay) .teamSummary .miniChicken,
+html:not(.broadcastOverlay) .teamSummary .miniGoal{
+  font-size:14px!important;
+  line-height:24px!important;
+  font-weight:900!important;
+}
+
 </style><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link rel="stylesheet" href="navbar.css">
 </head><body>
@@ -4679,7 +4711,7 @@ function refreshScoreTextOnly(){
     if(scoreEl)scoreEl.textContent=scores[i]??0;
     if(chEl)chEl.textContent='🍗 '+RO.filter(r=>r.chicken_team===i+1).length;
     const goalEl=el.querySelector('.miniGoal');
-    if(goalEl)goalEl.textContent='🎯 '+(cur.goal_kills??50)+'킬';
+    if(goalEl)goalEl.textContent='🎯 '+(cur.goal_kills??50);
   });
   let center='';
   if(cur.team_count===2){
@@ -5027,7 +5059,7 @@ function renderScore(){
     ps.forEach(p=>{teamScore+=totals(p).score});
     RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
     teamScores.push(teamScore);
-    out+='<div class="team"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span>'+(cur.team_count===1?'<span class="miniGoal">🎯 '+(cur.goal_kills??50)+'킬</span>':'')+'</div><div class="plist">'+
+    out+='<div class="team"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span>'+(cur.team_count===1?'<span class="miniGoal">🎯 '+(cur.goal_kills??50)+'</span>':'')+'</div><div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<img class="avatar" src="'+pic(p.soop_user_id)+'">':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름 입력">'+
@@ -5039,7 +5071,7 @@ function renderScore(){
   const mode=scoreViewMode.value||cur.score_mode||'separate';
   const goal=cur.goal_kills??50;
   const fixedTime=timerText()||'00:00';
-  totalBar.innerHTML='<span class="fixedTimer">⏱️ '+e(fixedTime)+'</span>'+(cur.team_count===1?'':'<span class="goalBadge">🎯 '+goal+'킬</span>');
+  totalBar.innerHTML='<span class="fixedTimer">⏱️ '+e(fixedTime)+'</span>'+(cur.team_count===1?'':'<span class="goalBadge">🎯 '+goal+'</span>');
   const oldStatus=document.getElementById('scoreStatusRow');if(oldStatus)oldStatus.remove();
 
   // Combined total is useful only when each side consists of 2+ parties (5v5+ capacity)
@@ -5509,7 +5541,7 @@ sk.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringif
 if(goalKills){
   goalKills.oninput=()=>{
     if(!cur)return;touchLocal();cur.goal_kills=n(goalKills.value);
-    const b=totalBar.querySelector('.goalBadge');if(b)b.textContent='🎯 '+String(cur.goal_kills)+'킬';
+    const b=totalBar.querySelector('.goalBadge');if(b)b.textContent='🎯 '+String(cur.goal_kills);
   };
   goalKills.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({goal_kills:n(goalKills.value)})}).catch(console.error);
 }
