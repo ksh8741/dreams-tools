@@ -1,82 +1,85 @@
-/* navbar TEST CSS — page CSS interference check */
-#global-navbar{
-  all:initial !important;
-  display:block !important;
-  width:100% !important;
-  height:78px !important;
-  margin:0 !important;
-  padding:0 !important;
-  position:relative !important;
-  z-index:2147483647 !important;
-  font-family:Arial,sans-serif !important;
+/* One shared navbar stylesheet for every page */
+#global-navbar.globalNav{
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  height:58px!important;
+  min-height:58px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-bottom:1px solid rgba(255,255,255,.08)!important;
+  border-radius:0!important;
+  background:#0c0e11!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.12)!important;
+  font-family:Arial,"Noto Sans KR",sans-serif!important;
+  line-height:normal!important;
+  z-index:9999!important;
 }
-
-#global-navbar,
-#global-navbar *{
-  box-sizing:border-box !important;
-}
-
-#global-navbar .globalNav{
-  all:unset !important;
-  display:block !important;
-  width:100% !important;
-  height:78px !important;
-  background:#111 !important;
-  border-bottom:5px solid #ff2b2b !important;
-  color:#fff !important;
-}
-
+#global-navbar.globalNav,
+#global-navbar.globalNav *{box-sizing:border-box!important}
 #global-navbar .globalNavInner{
-  all:unset !important;
-  width:900px !important;
-  max-width:calc(100% - 40px) !important;
-  height:73px !important;
-  margin:0 auto !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:space-between !important;
+  width:min(1180px,calc(100% - 32px))!important;
+  height:58px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
 }
-
 #global-navbar .globalNavBrand{
-  all:unset !important;
-  display:flex !important;
-  align-items:center !important;
-  height:73px !important;
-  color:#ffe600 !important;
-  font-family:Arial,sans-serif !important;
-  font-size:25px !important;
-  font-weight:900 !important;
-  letter-spacing:4px !important;
-  cursor:pointer !important;
-  text-decoration:none !important;
+  display:flex!important;
+  align-items:center!important;
+  height:58px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:none!important;
+  color:#fff!important;
+  text-decoration:none!important;
+  font-size:15px!important;
+  font-weight:900!important;
+  letter-spacing:2.4px!important;
+  line-height:1!important;
 }
-
 #global-navbar .globalNavLinks{
-  all:unset !important;
-  display:flex !important;
-  align-items:center !important;
-  height:73px !important;
+  height:58px!important;
+  display:flex!important;
+  align-items:center!important;
+  margin:0!important;
+  padding:0!important;
 }
-
 #global-navbar .globalNavLink{
-  all:unset !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  height:48px !important;
-  padding:0 24px !important;
-  background:#00d9ff !important;
-  color:#000 !important;
-  border:3px solid #fff !important;
-  border-radius:0 !important;
-  font-family:Arial,sans-serif !important;
-  font-size:18px !important;
-  font-weight:900 !important;
-  cursor:pointer !important;
-  text-decoration:none !important;
+  position:relative!important;
+  height:58px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin:0!important;
+  padding:0 16px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#9ea5ad!important;
+  text-decoration:none!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  white-space:nowrap!important;
 }
-
-#global-navbar .globalNavLink.active{
-  background:#ff00d4 !important;
-  color:#fff !important;
+#global-navbar .globalNavLink:hover,
+#global-navbar .globalNavLink.active{color:#fff!important}
+#global-navbar .globalNavLink.active:after{
+  content:""!important;
+  position:absolute!important;
+  left:16px!important;
+  right:16px!important;
+  bottom:0!important;
+  height:2px!important;
+  background:#fff!important;
+}
+@media(max-width:700px){
+  #global-navbar .globalNavInner{width:calc(100% - 18px)!important}
+  #global-navbar .globalNavBrand{font-size:13px!important;letter-spacing:1.8px!important}
+  #global-navbar .globalNavLink{padding:0 10px!important;font-size:12px!important}
 }
