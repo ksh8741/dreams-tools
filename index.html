@@ -2366,6 +2366,156 @@ html.broadcastOverlay.broadcastVertical[class*="theme-"] .rankAvatar{
   box-shadow:0 0 0 2px var(--team-color),0 0 9px color-mix(in srgb,var(--team-color) 55%,transparent)!important
 }
 
+
+/* ===== v64: genuinely different vertical themes ===== */
+
+/* Shared reset: non-original themes erase the old v61 panel treatment first. */
+html.broadcastOverlay.broadcastVertical:not(.theme-original) .rankHeader,
+html.broadcastOverlay.broadcastVertical:not(.theme-original) .rankCols,
+html.broadcastOverlay.broadcastVertical:not(.theme-original) .rankRow{
+  background-image:none!important;
+  text-shadow:none!important;
+  filter:none!important;
+}
+html.broadcastOverlay.broadcastVertical:not(.theme-original) .rankHeader,
+html.broadcastOverlay.broadcastVertical:not(.theme-original) .rankCols,
+html.broadcastOverlay.broadcastVertical:not(.theme-original) .rankRows,
+html.broadcastOverlay.broadcastVertical:not(.theme-original) .rankRow{
+  border-color:transparent!important;
+}
+
+/* ORIGINAL = v61 untouched. */
+
+/* SPRING BLOOM — bright cherry blossom / mint / cream */
+html.broadcastOverlay.broadcastVertical.theme-spring .rankHeader{
+  background:linear-gradient(110deg,rgba(255,238,245,.96),rgba(225,250,239,.96))!important;
+  color:#70495a!important;
+  border:1px solid rgba(255,164,197,.72)!important;
+  box-shadow:inset 0 -3px 0 rgba(123,206,168,.35)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-spring .rankCols{
+  background:rgba(255,250,247,.95)!important;
+  color:#9a687c!important;
+  border-left:1px solid rgba(255,178,204,.55)!important;
+  border-right:1px solid rgba(255,178,204,.55)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-spring .rankRow{
+  background:linear-gradient(90deg,rgba(255,248,250,.96),rgba(237,252,245,.94))!important;
+  color:#493941!important;
+  border-left:1px solid rgba(255,183,207,.5)!important;
+  border-right:1px solid rgba(173,224,197,.5)!important;
+  border-bottom:1px solid rgba(221,191,203,.42)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-spring .rankRow:nth-child(even){
+  background:linear-gradient(90deg,rgba(255,240,247,.96),rgba(231,249,240,.94))!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-spring .rankAvatar{
+  border:2px solid #fff!important;
+  box-shadow:0 0 0 2px var(--team-color),0 2px 8px rgba(164,103,129,.22)!important;
+}
+
+/* MODERN MONO — editorial black/white, hard grid, no glow */
+html.broadcastOverlay.broadcastVertical.theme-modern .rankHeader{
+  background:#f3f3f1!important;color:#111!important;
+  border:2px solid #111!important;border-bottom:0!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-modern .rankCols{
+  background:#111!important;color:#fff!important;
+  border-left:2px solid #111!important;border-right:2px solid #111!important;
+  letter-spacing:.6px!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-modern .rankRow{
+  background:rgba(244,244,241,.96)!important;color:#111!important;
+  border-left:2px solid #111!important;border-right:2px solid #111!important;
+  border-bottom:1px solid #aaa!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-modern .rankRow:nth-child(even){background:rgba(224,224,220,.96)!important}
+html.broadcastOverlay.broadcastVertical.theme-modern .rankAvatar{
+  border:2px solid #111!important;box-shadow:none!important;filter:grayscale(.15)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-modern .rankScore{background:#111!important;color:#fff!important}
+
+/* CYBER ARENA — deep violet HUD with cyan scan lines */
+html.broadcastOverlay.broadcastVertical.theme-cyber .rankHeader{
+  background:linear-gradient(90deg,#09051df7,#26104df4,#071d29f5)!important;
+  color:#8ffcff!important;border:1px solid #24e9ff!important;
+  box-shadow:inset 4px 0 #ff2bd6,inset -4px 0 #24e9ff!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-cyber .rankCols{
+  background:repeating-linear-gradient(0deg,#0b0c20f5 0 3px,#10152bf5 3px 4px)!important;
+  color:#ff71e5!important;border-left:1px solid #ff2bd6!important;border-right:1px solid #24e9ff!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-cyber .rankRow{
+  background:linear-gradient(90deg,rgba(15,7,36,.96),rgba(5,27,38,.94))!important;
+  color:#effcff!important;border-left:1px solid rgba(255,43,214,.65)!important;
+  border-right:1px solid rgba(36,233,255,.65)!important;border-bottom:1px solid rgba(88,89,177,.35)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-cyber .rankScore{color:#71f7ff!important;text-shadow:0 0 8px #24e9ff!important}
+html.broadcastOverlay.broadcastVertical.theme-cyber .rankAvatar{
+  border:2px solid var(--team-color)!important;box-shadow:0 0 9px var(--team-color)!important;
+}
+
+/* LUXURY NOIR — matte black + champagne gold */
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankHeader{
+  background:linear-gradient(110deg,#080808fa,#211b12f8,#090909fa)!important;
+  color:#f3dfad!important;border:1px solid #b99754!important;
+  box-shadow:inset 0 -1px #f1d48c!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankCols{
+  background:#090909f7!important;color:#c7a866!important;
+  border-left:1px solid #806a3b!important;border-right:1px solid #806a3b!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankRow{
+  background:linear-gradient(90deg,#0b0b0bf7,#1b1813f5,#0d0d0df7)!important;
+  color:#f3ead5!important;border-left:1px solid #5f5032!important;border-right:1px solid #5f5032!important;
+  border-bottom:1px solid rgba(185,151,84,.32)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankScore{color:#f2d68e!important}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankAvatar{
+  border:2px solid #d4b36a!important;box-shadow:0 0 0 1px #5e4a26,0 0 10px rgba(212,179,106,.28)!important;
+}
+
+/* FROST GLASS — translucent icy glass */
+html.broadcastOverlay.broadcastVertical.theme-ice .rankHeader{
+  background:linear-gradient(135deg,rgba(204,239,255,.82),rgba(64,114,150,.72))!important;
+  color:#f7fdff!important;border:1px solid rgba(221,247,255,.9)!important;
+  backdrop-filter:blur(10px)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-ice .rankCols{
+  background:rgba(33,70,96,.66)!important;color:#d9f5ff!important;
+  border-left:1px solid rgba(214,244,255,.58)!important;border-right:1px solid rgba(214,244,255,.58)!important;
+  backdrop-filter:blur(9px)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-ice .rankRow{
+  background:linear-gradient(90deg,rgba(211,239,250,.72),rgba(68,105,132,.72))!important;
+  color:#08273a!important;border-left:1px solid rgba(235,250,255,.72)!important;
+  border-right:1px solid rgba(235,250,255,.72)!important;border-bottom:1px solid rgba(220,245,255,.42)!important;
+  backdrop-filter:blur(9px)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-ice .rankScore{color:#fff!important;text-shadow:0 1px 3px #244f69!important}
+html.broadcastOverlay.broadcastVertical.theme-ice .rankAvatar{
+  border:2px solid rgba(244,253,255,.95)!important;box-shadow:0 0 0 2px var(--team-color),0 0 10px rgba(196,239,255,.7)!important;
+}
+
+/* SUNSET FESTIVAL — warm coral/orange/purple broadcast */
+html.broadcastOverlay.broadcastVertical.theme-sunset .rankHeader{
+  background:linear-gradient(100deg,#ff775ff2,#ffb15cf2,#7e4bb8f2)!important;
+  color:#fff!important;border:1px solid rgba(255,228,180,.85)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-sunset .rankCols{
+  background:rgba(87,42,87,.94)!important;color:#ffd8b8!important;
+  border-left:1px solid rgba(255,160,117,.65)!important;border-right:1px solid rgba(182,120,220,.65)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-sunset .rankRow{
+  background:linear-gradient(90deg,rgba(83,34,57,.94),rgba(73,47,101,.92))!important;
+  color:#fff7ee!important;border-left:1px solid rgba(255,132,104,.5)!important;
+  border-right:1px solid rgba(184,126,222,.5)!important;border-bottom:1px solid rgba(255,202,156,.22)!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-sunset .rankScore{color:#ffd18d!important}
+html.broadcastOverlay.broadcastVertical.theme-sunset .rankAvatar{
+  border:2px solid #ffe0bd!important;box-shadow:0 0 0 2px var(--team-color),0 0 10px rgba(255,113,93,.42)!important;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -2454,9 +2604,13 @@ html.broadcastOverlay.broadcastVertical[class*="theme-"] .rankAvatar{
       <label class="overlaySettingField">
         <span>테마</span>
         <select id="overlayThemeSelect">
-          <option value="tactical">TACTICAL</option><option value="neon">NEON</option>
-          <option value="ice">ICE</option><option value="carbon">CARBON</option>
-          <option value="royal">ROYAL</option><option value="minimal">MINIMAL</option>
+          <option value="original">ORIGINAL</option>
+          <option value="spring">SPRING BLOOM</option>
+          <option value="modern">MODERN MONO</option>
+          <option value="cyber">CYBER ARENA</option>
+          <option value="luxury">LUXURY NOIR</option>
+          <option value="ice">FROST GLASS</option>
+          <option value="sunset">SUNSET FESTIVAL</option>
         </select>
       </label>
       <label class="overlaySettingField"><span>내 팀</span><select id="overlayTeamSelect"></select></label>
@@ -2604,7 +2758,7 @@ function applyScoreWidth(){
   const w=Math.max(202,cur.team_count*202);
   document.documentElement.style.setProperty('--score-width',w+'px');
 }
-function overlayUrlForRoom(layout='vertical',team=1,theme='tactical'){
+function overlayUrlForRoom(layout='vertical',team=1,theme='original'){
   if(!cur)return '';
   const u=new URL(location.href);u.search='';u.hash='';
   u.searchParams.set('overlay',String(cur.id));u.searchParams.set('layout',layout);
@@ -3335,7 +3489,7 @@ function refreshOverlayGeneratedUrl(){
   if(!cur||!overlayGeneratedUrl)return;
   const layout=overlayLayoutSelect?.value||'vertical';
   const team=Math.max(1,parseInt(overlayTeamSelect?.value||'1',10)||1);
-  const theme=overlayThemeSelect?.value||'tactical';
+  const theme=overlayThemeSelect?.value||'original';
   overlayGeneratedUrl.value=overlayUrlForRoom(layout,team,theme);
 }
 if(overlayUrlBtn)overlayUrlBtn.onclick=()=>{
@@ -3408,8 +3562,8 @@ const overlayParams=new URLSearchParams(location.search);
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout=overlayParams.get('layout')==='horizontal'?'horizontal':'vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
-const OVERLAY_THEMES=['tactical','neon','ice','carbon','royal','minimal'];
-const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'tactical';
+const OVERLAY_THEMES=['original','spring','modern','cyber','luxury','ice','sunset'];
+const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'original';
 if(overlayRoomId){
   document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal','theme-'+overlayTheme);
   (async()=>{
