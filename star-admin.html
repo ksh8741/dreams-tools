@@ -18,8 +18,8 @@ input,select,button{height:34px;border:1px solid #ccd1d7;background:#fff;padding
 </style></head><body>
 <nav id="global-navbar" class="globalNav"><div class="globalNavInner"><a class="globalNavBrand" href="index.html">MUJE</a><div class="globalNavLinks"><a class="globalNavLink" href="pubg.html">배틀그라운드</a><a class="globalNavLink" href="starcraft.html">스타크래프트</a></div></div></nav>
 <main><h1>스타 티어 관리자</h1>
-<div class="top"><input id="sburl" placeholder="Supabase URL"><input id="sbkey" placeholder="Supabase anon key"><button onclick="saveCfg()">연결정보 저장</button><input id="q" placeholder="선수 검색"><select id="tf"><option value="">전체 티어</option><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><button onclick="load()">새로고침</button><span class="stat" id="stat"></span></div>
-<div id="list"></div></main>
+<div class="top"><input id="sburl" placeholder="Supabase URL"><input id="sbkey" placeholder="Supabase anon key"><button onclick="saveCfg()">연결정보 저장</button><input id="q" placeholder="선수 검색"><select id="tf"><option value="">전체 티어</option><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><button onclick="load()">새로고침</button><button id="loginBtn" onclick="adminLogin()">관리자 로그인</button><span class="stat" id="stat"></span></div>
+<div id="msg" style="display:none;margin:0 0 12px;padding:10px 12px;background:#fff;border:1px solid #ddd;font-size:13px"></div><div id="list"></div></main>
 <div class="modal" id="modal" onclick="if(event.target===this)closeM()"><div class="box"><div class="searchbar"><input id="sq"><button onclick="searchSoop()">SOOP 검색</button><button onclick="closeM()">닫기</button></div><div id="results"></div></div></div>
 <script>
 const TIERS=["갓", "킹", "잭", "조커", "스페이드", "0티어", "1티어", "2티어", "3티어", "4티어", "5티어", "6티어", "7티어", "8티어", "베이비"];
@@ -40,14 +40,42 @@ function render(){
 }
 function e(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 q.oninput=render;tf.onchange=render;
+let adminPassword=sessionStorage.getItem('star_admin_password')||'';
+function showMsg(text,ok=false){
+ msg.style.display='block'; msg.textContent=text;
+ msg.style.borderColor=ok?'#8bd5ad':'#e7a1a1';
+ msg.style.color=ok?'#08783f':'#b42318';
+}
+function updateLoginBtn(){loginBtn.textContent=adminPassword?'관리자 로그인됨':'관리자 로그인'}
+function adminLogin(){
+ const p=prompt('관리자 비밀번호',adminPassword);
+ if(p===null)return;
+ adminPassword=p.trim();
+ if(adminPassword)sessionStorage.setItem('star_admin_password',adminPassword);
+ else sessionStorage.removeItem('star_admin_password');
+ updateLoginBtn();
+}
 async function patch(id,data){
- const password=prompt('관리자 비밀번호');
- if(password===null)return false;
- const r=await fetch('/api/star-player-update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password,id,data})});
- const j=await r.json().catch(()=>({}));
- if(!r.ok){alert(j.error||'저장 실패');return false}
+ if(!adminPassword){adminLogin();if(!adminPassword)return false}
+ let r;
+ try{
+   r=await fetch('/api/star-player-update',{
+     method:'POST',
+     headers:{'Content-Type':'application/json'},
+     body:JSON.stringify({password:adminPassword,id,data})
+   });
+ }catch(err){showMsg('API 호출 실패: '+err.message);return false}
+ const raw=await r.text();
+ let j={}; try{j=raw?JSON.parse(raw):{}}catch{}
+ if(!r.ok){
+   if(r.status===401){sessionStorage.removeItem('star_admin_password');adminPassword='';updateLoginBtn()}
+   showMsg('저장 실패 ('+r.status+'): '+(j.error||raw||'응답 없음'));
+   return false;
+ }
+ showMsg('저장 완료',true);
  await load();return true
 }
+updateLoginBtn();
 function saveDisplay(id){const el=document.getElementById('dn-'+id);patch(id,{display_name:el.value.trim()})}
 function changeTier(id,tier){patch(id,{tier})}
 function openSearch(id){target=rows.find(x=>x.id===id);sq.value=target.player_name;results.innerHTML='';modal.classList.add('on');searchSoop()}
@@ -58,6 +86,6 @@ async function searchSoop(){
  results.innerHTML=a.length?a.map((x,i)=>{const id=x.user_id||x.id||x.userId||'';const nick=x.nickname||x.nick||x.user_nick||id;const img=x.profile_image||x.profile||x.profileImage||'';return `<div class="result">${img?`<img src="${e(img)}">`:''}<div class="txt"><b>${e(nick)}</b><div class="muted">${e(id)}</div></div><button onclick='linkSoop(${JSON.stringify(id)},${JSON.stringify(nick)},${JSON.stringify(img)})'>연결</button></div>`}).join(''):'검색 결과 없음';
  }catch(err){results.textContent='검색 실패: '+err.message}
 }
-async function linkSoop(id,nick,img){if(!target)return;await patch(target.id,{soop_user_id:id,soop_nickname:nick,soop_profile_image:img});closeM()}
+async function linkSoop(id,nick,img){if(!target)return;const ok=await patch(target.id,{soop_user_id:id,soop_nickname:nick,soop_profile_image:img});if(ok)closeM()}
 load();
 </script><script src="navbar.js"></script></body></html>
