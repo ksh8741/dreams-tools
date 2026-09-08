@@ -12,9 +12,22 @@ button.primary{background:#111;color:#fff;border-color:#111}button.danger{color:
 #q{width:220px}.stat{margin-left:auto;font-size:12px;color:#666}
 #msg{display:none;margin-bottom:12px;padding:10px 12px;background:#fff;border:1px solid #ddd;font-size:13px}
 .legend{font-size:11px;color:#666;margin:0 0 8px}
-.row{display:grid;grid-template-columns:42px 92px 240px 350px minmax(230px,1fr) 180px;gap:8px;align-items:center;background:#fff;border:1px solid #e0e3e7;border-bottom:0;padding:8px}
+.row{display:grid;grid-template-columns:42px 92px 270px 350px minmax(230px,1fr) 180px;gap:8px;align-items:center;background:#fff;border:1px solid #e0e3e7;border-bottom:0;padding:8px}
 .row:last-child{border-bottom:1px solid #e0e3e7}.race{text-align:center;font-weight:1000}.original{font-size:10px;color:#999;margin-bottom:3px}
 .nameEdit{display:flex;gap:4px}.nameEdit input{width:150px;height:28px}.nameEdit button{height:28px;padding:0 7px}
+.univPlayerSelect{width:210px;height:28px;margin-top:5px;font-size:11px}
+.univManage{margin:0 0 12px;padding:12px;background:#fff;border:1px solid #ddd}
+.univTop{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.univTop input[type="text"]{width:180px}
+.univTop input[type="file"]{height:auto;padding:6px;background:#fff}
+.univList{margin-top:10px;display:grid;gap:7px}
+.univRow{display:grid;grid-template-columns:48px 1fr 190px 88px 70px;gap:7px;align-items:center;padding:7px;border:1px solid #e4e7eb}
+.univLogoPreview{width:40px;height:40px;border-radius:8px;object-fit:contain;background:#f5f6f8;border:1px solid #e2e5e9}
+.univNoLogo{width:40px;height:40px;border-radius:8px;background:#f5f6f8;border:1px solid #e2e5e9}
+.univRow input[type="text"]{width:100%}
+.univFile{height:auto!important;padding:4px!important;font-size:10px}
+.univHint{font-size:10px;color:#888;margin-top:6px}
+
 .flags{display:flex;gap:5px 8px;flex-wrap:wrap}.flags label{font-size:11px;display:flex;align-items:center;gap:3px;cursor:pointer;white-space:nowrap}.flags input{width:14px;height:14px;margin:0}
 .soop{display:flex;align-items:center;gap:8px;min-width:0}.soop img{width:38px;height:38px;border-radius:50%;object-fit:cover}
 .ok{font-size:11px;font-weight:900;color:#09864b}.muted{font-size:11px;color:#999}
@@ -30,8 +43,18 @@ button.primary{background:#111;color:#fff;border-color:#111}button.danger{color:
 <nav id="global-navbar" class="globalNav"><div class="globalNavInner"><a class="globalNavBrand" href="index.html">MUJE</a><div class="globalNavLinks"><a class="globalNavLink" href="pubg.html">배틀그라운드</a><a class="globalNavLink" href="starcraft.html">스타크래프트</a></div></div></nav>
 <main>
 <h1>스타 티어 관리자</h1>
-<div class="top"><input id="q" placeholder="선수 검색"><select id="tf"><option value="">전체 티어</option><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><button onclick="load()">새로고침</button><button id="loginBtn" onclick="adminLogin()">관리자 로그인</button><button class="primary" onclick="openAdd()">+ 선수 추가</button><span id="stat" class="stat"></span></div>
+<div class="top"><input id="q" placeholder="선수 검색"><select id="tf"><option value="">전체 티어</option><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><button onclick="load()">새로고침</button><button id="loginBtn" onclick="adminLogin()">관리자 로그인</button><button class="primary" onclick="openAdd()">+ 선수 추가</button><button onclick="toggleUniversityManage()">대학 관리</button><span id="stat" class="stat"></span></div>
 <div class="legend">상태: ⏫ 티어상승임박 · ▲ 최근티어상승 · ⏸ 휴면 · 🔧 수리 · ✦ 신규</div>
+<div id="univManage" class="univManage" style="display:none">
+  <b>대학 관리</b>
+  <div class="univTop" style="margin-top:9px">
+    <input id="newUnivName" type="text" placeholder="대학 이름">
+    <input id="newUnivFile" type="file" accept="image/*">
+    <button class="primary" onclick="createUniversity()">대학 추가</button>
+  </div>
+  <div class="univHint">로고 파일은 관리자 페이지에서 선택하면 128×128 WebP로 줄여서 DB에 저장됨.</div>
+  <div id="univList" class="univList"></div>
+</div>
 <div id="msg"></div><div id="list"></div>
 </main>
 
@@ -42,6 +65,7 @@ button.primary{background:#111;color:#fff;border-color:#111}button.danger{color:
 <div class="modal" id="addModal" onclick="if(event.target===this)closeAdd()"><div class="box">
 <h3 style="margin-top:0">신규 선수 등록</h3>
 <div class="addgrid"><input id="addName" placeholder="사이트에 표시할 이름"><select id="addTier"><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><select id="addRace"><option>T</option><option>Z</option><option>P</option></select></div>
+<div style="margin-top:8px"><select id="addUniversity" style="width:100%"></select></div>
 <div class="searchbar"><input id="addSearch" placeholder="SOOP 닉네임 검색"><button onclick="searchSoop(true)">SOOP 검색</button></div>
 <div id="addResults"></div>
 <div id="selectedSoop" class="selected"></div>
@@ -51,7 +75,7 @@ button.primary{background:#111;color:#fff;border-color:#111}button.danger{color:
 <script>
 const TIERS=["갓", "킹", "잭", "조커", "스페이드", "0티어", "1티어", "2티어", "3티어", "4티어", "5티어", "6티어", "7티어", "8티어", "베이비"];
 const FLAGS=[['soon','⏫','티어상승임박'],['up','▲','최근티어상승'],['idle','⏸','휴면'],['repair','🔧','수리'],['new','✦','신규']];
-let rows=[],target=null,addSelected=null;
+let rows=[],universities=[],target=null,addSelected=null;
 let adminPassword=sessionStorage.getItem('star_admin_password')||'';
 
 function e(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -66,20 +90,106 @@ async function api(action,payload={}){
  if(!r.ok){if(r.status===401){adminPassword='';sessionStorage.removeItem('star_admin_password');updateLogin()}showMsg('저장 실패 ('+r.status+'): '+(j.error||raw));return null}
  return j
 }
-async function load(){const r=await fetch('/api/star-public',{cache:'no-store'});if(!r.ok){list.textContent='목록 불러오기 실패';return}const j=await r.json();rows=j.players||[];render()}
+async function load(){
+ const r=await fetch('/api/star-public',{cache:'no-store'});
+ if(!r.ok){list.textContent='목록 불러오기 실패';return}
+ const j=await r.json();
+ rows=j.players||[];
+ universities=j.universities||[];
+ refreshUniversityUI();
+ render()
+}
+
+function universityOptions(selected){
+  return '<option value="">무소속</option>'+universities.map(u=>`<option value="${u.id}" ${String(selected||'')===String(u.id)?'selected':''}>${e(u.name)}</option>`).join('');
+}
+function refreshUniversityUI(){
+  if(window.addUniversity)addUniversity.innerHTML=universityOptions('');
+  if(window.univList){
+    univList.innerHTML=universities.map(u=>`<div class="univRow">
+      ${u.logo_url?`<img class="univLogoPreview" src="${e(u.logo_url)}">`:'<div class="univNoLogo"></div>'}
+      <input id="univName-${u.id}" type="text" value="${e(u.name)}">
+      <input id="univFile-${u.id}" class="univFile" type="file" accept="image/*">
+      <button onclick="saveUniversity(${u.id})">저장</button>
+      <button class="danger" onclick="deleteUniversity(${u.id})">삭제</button>
+    </div>`).join('')||'<div class="muted">등록된 대학 없음</div>';
+  }
+}
+function toggleUniversityManage(){
+  univManage.style.display=univManage.style.display==='none'?'block':'none';
+  refreshUniversityUI();
+}
+async function imageFileToDataUrl(file){
+  if(!file)return '';
+  const img=await new Promise((resolve,reject)=>{
+    const i=new Image();
+    i.onload=()=>resolve(i); i.onerror=reject;
+    i.src=URL.createObjectURL(file);
+  });
+  const size=128,cv=document.createElement('canvas');cv.width=size;cv.height=size;
+  const ctx=cv.getContext('2d');ctx.clearRect(0,0,size,size);
+  const scale=Math.min(size/img.width,size/img.height);
+  const w=img.width*scale,h=img.height*scale;
+  ctx.drawImage(img,(size-w)/2,(size-h)/2,w,h);
+  return cv.toDataURL('image/webp',0.88);
+}
+async function createUniversity(){
+  const name=newUnivName.value.trim();
+  if(!name)return alert('대학 이름을 입력해');
+  let logo_url='';
+  const f=newUnivFile.files?.[0];
+  if(f)logo_url=await imageFileToDataUrl(f);
+  const j=await api('university_create',{data:{name,logo_url}});
+  if(!j?.university)return;
+  universities.push(j.university);
+  newUnivName.value='';newUnivFile.value='';
+  refreshUniversityUI();render();
+  showMsg(name+' 대학 등록 완료',true);
+}
+async function saveUniversity(id){
+  const name=document.getElementById('univName-'+id).value.trim();
+  const f=document.getElementById('univFile-'+id).files?.[0];
+  const data={name};
+  if(f)data.logo_url=await imageFileToDataUrl(f);
+  const j=await api('university_update',{id,data});
+  if(!j?.university)return;
+  const i=universities.findIndex(u=>Number(u.id)===Number(id));
+  if(i>=0)universities[i]=j.university;
+  refreshUniversityUI();
+  await load();
+  showMsg(name+' 대학 저장 완료',true);
+}
+async function deleteUniversity(id){
+  const u=universities.find(v=>Number(v.id)===Number(id));
+  if(!u||!confirm(u.name+' 대학을 삭제할까? 해당 선수들은 무소속으로 바뀜.'))return;
+  const j=await api('university_delete',{id});
+  if(!j?.ok)return;
+  universities=universities.filter(v=>Number(v.id)!==Number(id));
+  rows=rows.map(x=>Number(x.university_id)===Number(id)?{...x,university_id:null,university_name:'',university_logo:''}:x);
+  refreshUniversityUI();render();
+  showMsg(u.name+' 대학 삭제 완료',true);
+}
+function setPlayerUniversity(id,value){
+  updatePlayer(id,{university_id:value?Number(value):null});
+}
+
 function arrFlags(x){return Array.isArray(x.status_flags)?x.status_flags:[]}
 function flagHtml(x){const f=arrFlags(x);return '<div class="flags">'+FLAGS.map(([k,ic,label])=>`<label><input type="checkbox" ${f.includes(k)?'checked':''} onchange="toggleFlag(${x.id},'${k}',this.checked)"><span>${ic} ${label}</span></label>`).join('')+'</div>'}
-function render(){const s=q.value.trim().toLowerCase(),t=tf.value;const a=rows.filter(x=>(!t||x.tier===t)&&(!s||(x.player_name+' '+(x.display_name||'')+' '+(x.soop_nickname||'')+' '+(x.soop_user_id||'')).toLowerCase().includes(s)));stat.textContent='연결 '+rows.filter(x=>x.soop_user_id).length+' / '+rows.length;list.innerHTML=a.map(x=>`<div class="row"><div class="race">${x.race}</div><select onchange="updatePlayer(${x.id},{tier:this.value})">${TIERS.map(t=>`<option ${t===x.tier?'selected':''}>${t}</option>`).join('')}</select><div><div class="original">원본: ${e(x.player_name)}</div><div class="nameEdit"><input id="dn-${x.id}" value="${e(x.display_name||x.soop_nickname||x.player_name)}"><button onclick="saveName(${x.id})">이름저장</button></div></div>${flagHtml(x)}<div class="soop">${x.soop_profile_image?`<img src="${e(x.soop_profile_image)}">`:''}<div>${x.soop_user_id?`<b>${e(x.soop_nickname||x.soop_user_id)}</b><div class="ok">${e(x.soop_user_id)} · 연결됨</div>`:'<span class="muted">SOOP 미연결</span>'}</div></div><div class="actions"><button onclick="openSearch(${x.id})">계정 찾기</button><button class="danger" onclick="removePlayer(${x.id})">삭제</button></div></div>`).join('')}
+function render(){const s=q.value.trim().toLowerCase(),t=tf.value;const a=rows.filter(x=>(!t||x.tier===t)&&(!s||(x.player_name+' '+(x.display_name||'')+' '+(x.soop_nickname||'')+' '+(x.soop_user_id||'')).toLowerCase().includes(s)));stat.textContent='연결 '+rows.filter(x=>x.soop_user_id).length+' / '+rows.length;list.innerHTML=a.map(x=>`<div class="row"><div class="race">${x.race}</div><select onchange="updatePlayer(${x.id},{tier:this.value})">${TIERS.map(t=>`<option ${t===x.tier?'selected':''}>${t}</option>`).join('')}</select><div><div class="original">원본: ${e(x.player_name)}</div><div class="nameEdit"><input id="dn-${x.id}" value="${e(x.display_name||x.soop_nickname||x.player_name)}"><button onclick="saveName(${x.id})">이름저장</button></div><select class="univPlayerSelect" onchange="setPlayerUniversity(${x.id},this.value)">${universityOptions(x.university_id)}</select></div>${flagHtml(x)}<div class="soop">${x.soop_profile_image?`<img src="${e(x.soop_profile_image)}">`:''}<div>${x.soop_user_id?`<b>${e(x.soop_nickname||x.soop_user_id)}</b><div class="ok">${e(x.soop_user_id)} · 연결됨</div>`:'<span class="muted">SOOP 미연결</span>'}</div></div><div class="actions"><button onclick="openSearch(${x.id})">계정 찾기</button><button class="danger" onclick="removePlayer(${x.id})">삭제</button></div></div>`).join('')}
 q.oninput=render;tf.onchange=render;
 
-async function updatePlayer(id,data){const j=await api('update',{id,data});if(!j?.row)return false;const i=rows.findIndex(x=>Number(x.id)===Number(id));if(i>=0)rows[i]={...rows[i],...j.row};render();showMsg('저장 완료',true);return true}
+async function updatePlayer(id,data){const j=await api('update',{id,data});if(!j?.row)return false;const i=rows.findIndex(x=>Number(x.id)===Number(id));if(i>=0){
+  const u=j.row.university_id==null?null:universities.find(v=>String(v.id)===String(j.row.university_id));
+  rows[i]={...rows[i],...j.row,university_name:u?.name||'',university_logo:u?.logo_url||''};
+ }
+ render();showMsg('저장 완료',true);return true}
 function saveName(id){updatePlayer(id,{display_name:document.getElementById('dn-'+id).value.trim()})}
 function toggleFlag(id,key,on){const x=rows.find(v=>Number(v.id)===Number(id));if(!x)return;const s=new Set(arrFlags(x));on?s.add(key):s.delete(key);updatePlayer(id,{status_flags:[...s]})}
 async function removePlayer(id){const x=rows.find(v=>Number(v.id)===Number(id));if(!x||!confirm((x.display_name||x.player_name)+' 삭제할까?'))return;const j=await api('delete',{id});if(j?.ok){rows=rows.filter(v=>Number(v.id)!==Number(id));render();showMsg('삭제 완료',true)}}
 
 function openSearch(id){target=rows.find(x=>Number(x.id)===Number(id));sq.value=target.display_name||target.player_name;results.innerHTML='';searchModal.classList.add('on');searchSoop(false)}
 function closeSearch(){searchModal.classList.remove('on')}
-function openAdd(){addName.value='';addTier.value='8티어';addRace.value='T';addSearch.value='';addResults.innerHTML='';addSelected=null;selectedSoop.classList.remove('on');selectedSoop.innerHTML='';addModal.classList.add('on');setTimeout(()=>addName.focus(),20)}
+function openAdd(){addName.value='';addTier.value='8티어';addRace.value='T';addUniversity.innerHTML=universityOptions('');addUniversity.value='';addSearch.value='';addResults.innerHTML='';addSelected=null;selectedSoop.classList.remove('on');selectedSoop.innerHTML='';addModal.classList.add('on');setTimeout(()=>addName.focus(),20)}
 function closeAdd(){addModal.classList.remove('on')}
 
 async function searchSoop(forAdd){
@@ -89,7 +199,7 @@ async function searchSoop(forAdd){
  try{const r=await fetch('/api/soop-search?nickname='+encodeURIComponent(term),{cache:'no-store'});const j=await r.json();const a=Array.isArray(j)?j:(j.results||j.data||j.users||[]);out.innerHTML=a.length?a.map(x=>{const id=x.user_id||x.id||x.userId||'',nick=x.nickname||x.nick||x.user_nick||id,img=x.profile_image||x.profile||x.profileImage||'';const fn=forAdd?'selectAddSoop':'linkSoop';return `<div class="result">${img?`<img src="${e(img)}">`:''}<div class="txt"><b>${e(nick)}</b><div class="muted">${e(id)}</div></div><button onclick='${fn}(${JSON.stringify(id)},${JSON.stringify(nick)},${JSON.stringify(img)})'>${forAdd?'선택':'연결'}</button></div>`}).join(''):'검색 결과 없음'}catch(err){out.textContent='검색 실패: '+err.message}
 }
 function selectAddSoop(id,nick,img){addSelected={id,nick,img};selectedSoop.classList.add('on');selectedSoop.innerHTML=(img?`<img src="${e(img)}">`:'')+`<div><b>${e(nick)}</b><div class="muted">${e(id)} · 신규 선수에 연결 예정</div></div>`}
-async function createPlayer(){const name=addName.value.trim();if(!name)return alert('표시 이름을 입력해');const data={player_name:name,display_name:name,tier:addTier.value,race:addRace.value,status_flags:[]};if(addSelected){data.soop_user_id=addSelected.id;data.soop_nickname=addSelected.nick;data.soop_profile_image=addSelected.img}const j=await api('create',{data});if(!j?.row)return;rows.push(j.row);rows.sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));render();closeAdd();showMsg(name+' 신규 등록 완료',true)}
+async function createPlayer(){const name=addName.value.trim();if(!name)return alert('표시 이름을 입력해');const data={player_name:name,display_name:name,tier:addTier.value,race:addRace.value,status_flags:[],university_id:addUniversity.value?Number(addUniversity.value):null};if(addSelected){data.soop_user_id=addSelected.id;data.soop_nickname=addSelected.nick;data.soop_profile_image=addSelected.img}const j=await api('create',{data});if(!j?.row)return;rows.push(j.row);rows.sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));render();closeAdd();showMsg(name+' 신규 등록 완료',true)}
 async function linkSoop(id,nick,img){if(!target)return;const data={soop_user_id:id,soop_nickname:nick,soop_profile_image:img};if(!target.display_name||target.display_name===target.player_name)data.display_name=nick;const ok=await updatePlayer(target.id,data);if(ok){closeSearch();showMsg('SOOP '+nick+' 연결 완료',true)}}
 
 updateLogin();load();

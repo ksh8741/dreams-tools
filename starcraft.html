@@ -257,6 +257,10 @@ main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
 .livePreviewLive{display:inline-flex;height:18px;padding:0 6px;align-items:center;justify-content:center;margin-bottom:6px;border-radius:5px;background:#ef2947;font-size:8px;font-weight:1000;letter-spacing:.6px}
 .livePreviewTitle{font-size:12px;line-height:1.42;font-weight:900;word-break:keep-all;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .liveStatusLoading{padding:24px;color:#80868e;font-size:12px;text-align:center}
+.univFilterBox{margin:0 1px 7px;padding:7px 3px 8px;border-bottom:1px solid rgba(205,210,216,.8)}
+.univFilterLabel{text-align:center;font-size:7px;font-weight:1000;letter-spacing:.8px;color:#777e86;margin-bottom:5px}
+.univFilterSelect{width:100%;height:28px;border:1px solid #d7dbe0;border-radius:8px;background:#fff;color:#3c424a;font-size:9px;font-weight:900;padding:0 3px;outline:none}
+
 
 </style>
 
@@ -288,7 +292,9 @@ main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
 const TIERS=["갓", "킹", "잭", "조커", "스페이드", "0티어", "1티어", "2티어", "3티어", "4티어", "5티어", "6티어", "7티어", "8티어", "베이비"];
 const RACES=[['T','테란'],['Z','저그'],['P','프로토스']];
 let players=[];
+let universities=[];
 let liveOnly=true;
+let universityFilter='all';
 let railObserver=null;
 
 function e(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -344,9 +350,16 @@ function comparePlayers(a,b){
   return Number(a.sort_order||0)-Number(b.sort_order||0);
 }
 
+function universityMatch(x){
+  if(universityFilter==='all')return true;
+  if(universityFilter==='none')return x.university_id==null;
+  return String(x.university_id||'')===String(universityFilter);
+}
+
 function raceRow(all,race,label){
   const p=all
     .filter(x=>String(x.race||'').toUpperCase()===race)
+    .filter(universityMatch)
     .filter(x=>!liveOnly || x._live || !x._liveKnown)
     .sort(comparePlayers);
 
@@ -357,7 +370,7 @@ function raceRow(all,race,label){
 }
 
 function visibleInTier(all){
-  return all.some(x=>!liveOnly || x._live || !x._liveKnown);
+  return all.some(x=>universityMatch(x) && (!liveOnly || x._live || !x._liveKnown));
 }
 
 function render(){
@@ -375,6 +388,11 @@ function render(){
 
 function buildRail(){
   const visibleTiers=TIERS.filter(t=>visibleInTier(players.filter(x=>x.tier===t)));
+  const univOptions=
+    '<option value="all">전체 대학</option>'+
+    '<option value="none">무소속</option>'+
+    universities.map(u=>`<option value="${u.id}" ${String(universityFilter)===String(u.id)?'selected':''}>${e(u.name)}</option>`).join('');
+
   tierRail.innerHTML=
     '<div class="tierRailTitle">TIER</div>'+
     `<div class="liveOnlyBox">
@@ -384,7 +402,19 @@ function buildRail(){
         <span class="liveSwitchTrack"></span>
       </label>
     </div>`+
+    `<div class="univFilterBox">
+      <div class="univFilterLabel">UNIVERSITY</div>
+      <select id="universityFilterSelect" class="univFilterSelect">${univOptions}</select>
+    </div>`+
     visibleTiers.map(t=>`<a class="tierJump" href="#${tierId(t)}">${t}</a>`).join('');
+
+  universityFilterSelect.value=String(universityFilter);
+  universityFilterSelect.addEventListener('change',ev=>{
+    universityFilter=ev.target.value;
+    localStorage.setItem('star_university_filter',universityFilter);
+    render();
+    buildRail();
+  });
 
   liveOnlyToggle.addEventListener('change',ev=>{
     liveOnly=!!ev.target.checked;
@@ -520,12 +550,15 @@ async function refreshAllLiveStatuses(){
 
 async function load(){
   liveOnly=localStorage.getItem('star_live_only')!=='0';
+  universityFilter=localStorage.getItem('star_university_filter')||'all';
   board.innerHTML='<div class="liveStatusLoading">티어표 불러오는 중...</div>';
 
   const r=await fetch('/api/star-public',{cache:'no-store'});
   if(!r.ok){board.innerHTML='<div class="loading">티어표 불러오기 실패</div>';return}
 
   const j=await r.json();
+  universities=j.universities||[];
+  if(universityFilter!=='all' && universityFilter!=='none' && !universities.some(u=>String(u.id)===String(universityFilter)))universityFilter='all';
   players=(j.players||[]).map(x=>({...x,_liveKnown:!x.soop_user_id,_live:false}));
 
   // DB list is painted immediately. LIVE checking follows in small sequential batches.
