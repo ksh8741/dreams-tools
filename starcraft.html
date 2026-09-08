@@ -16,7 +16,7 @@ body{
   margin:0;background:#f3f4f6;color:#15181c;
   font-family:Inter,Arial,"Noto Sans KR",sans-serif
 }
-main{width:min(1450px,calc(100% - 285px));margin:34px auto 110px}
+main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
 .pageTitleWrap{
   display:flex;align-items:flex-end;justify-content:space-between;
   margin:0 0 22px;padding:0 2px 17px;border-bottom:1px solid #d9dde2
@@ -202,15 +202,7 @@ main{width:min(1450px,calc(100% - 285px));margin:34px auto 110px}
 .playerCard.missing{opacity:.86}
 
 /* fixed menu preserved */
-.tierRail{
-  position:fixed;right:16px;top:50%;transform:translateY(-50%);
-  z-index:9000;width:190px;max-height:96vh;overflow-y:auto;
-  padding:10px 9px 11px;
-  border:1px solid rgba(218,221,226,.9);border-radius:22px;
-  background:rgba(250,250,251,.92);backdrop-filter:blur(18px);
-  box-shadow:0 18px 55px rgba(21,24,30,.13);
-  scrollbar-width:thin
-}
+.tierRail{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:9000;width:82px;padding:9px 7px 10px;border:1px solid rgba(218,221,226,.9);border-radius:22px;background:rgba(250,250,251,.90);backdrop-filter:blur(18px);box-shadow:0 18px 55px rgba(21,24,30,.13)}
 .tierRailTitle{
   height:25px;display:flex;align-items:center;justify-content:center;
   font-size:8px;font-weight:1000;letter-spacing:1.8px;color:#a1a6ad
@@ -260,12 +252,11 @@ main{width:min(1450px,calc(100% - 285px));margin:34px auto 110px}
 .livePreviewTitle{font-size:12px;line-height:1.42;font-weight:900;word-break:keep-all;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .liveStatusLoading{padding:24px;color:#80868e;font-size:12px;text-align:center}
 .univFilterBox{margin:0 1px 7px;padding:7px 3px 8px;border-bottom:1px solid rgba(205,210,216,.8)}
-.univFilterLabel{text-align:center;font-size:7px;font-weight:1000;letter-spacing:.8px;color:#777e86;margin-bottom:5px}
-.univFilterSelect{
-  width:100%;height:34px;border:1px solid #d7dbe0;border-radius:9px;
-  background:#fff;color:#30363d;font-size:11px;font-weight:900;
-  padding:0 9px;outline:none
-}
+.univFilterBtn{width:100%;height:28px;border:1px solid #d7dbe0;border-radius:8px;background:#fff;color:#3c424a;font-size:9px;font-weight:900;cursor:pointer}
+.univPopover{position:fixed;z-index:20050;width:240px;max-height:360px;overflow:auto;display:none;padding:8px;border:1px solid #d9dde2;border-radius:12px;background:#fff;box-shadow:0 16px 40px rgba(20,25,32,.18)}
+.univPopover.on{display:block}
+.univOption{width:100%;min-height:34px;padding:7px 10px;border:0;border-radius:8px;background:transparent;text-align:left;color:#2b3036;font-size:11px;font-weight:800;cursor:pointer}
+.univOption:hover,.univOption.active{background:#f0f2f5;color:#111}
 
 
 </style>
@@ -393,10 +384,10 @@ function render(){
 }
 
 function buildRail(){
-  const univOptions=
-    '<option value="all">전체 대학</option>'+
-    '<option value="none">무소속</option>'+
-    universities.map(u=>`<option value="${u.id}" ${String(universityFilter)===String(u.id)?'selected':''}>${e(u.name)}</option>`).join('');
+  const currentUniv=
+    universityFilter==='all'?'전체':
+    universityFilter==='none'?'무소속':
+    (universities.find(u=>String(u.id)===String(universityFilter))?.name||'전체');
 
   tierRail.innerHTML=
     '<div class="tierRailTitle">TIER</div>'+
@@ -408,18 +399,9 @@ function buildRail(){
       </label>
     </div>`+
     `<div class="univFilterBox">
-      <div class="univFilterLabel">UNIVERSITY</div>
-      <select id="universityFilterSelect" class="univFilterSelect">${univOptions}</select>
+      <button id="univFilterBtn" class="univFilterBtn" title="${e(currentUniv)}">대학 ▾</button>
     </div>`+
     TIERS.map(t=>`<a class="tierJump" href="#${tierId(t)}">${t}</a>`).join('');
-
-  universityFilterSelect.value=String(universityFilter);
-  universityFilterSelect.addEventListener('change',ev=>{
-    universityFilter=ev.target.value;
-    localStorage.setItem('star_university_filter_v2',universityFilter);
-    render();
-    buildRail();
-  });
 
   liveOnlyToggle.addEventListener('change',ev=>{
     liveOnly=!!ev.target.checked;
@@ -427,7 +409,38 @@ function buildRail(){
     render();
     buildRail();
   });
+
+  univFilterBtn.addEventListener('click',ev=>{
+    ev.stopPropagation();
+    openUniversityPopover(univFilterBtn);
+  });
 }
+
+function openUniversityPopover(btn){
+  const options=[
+    {id:'all',name:'전체 대학'},
+    {id:'none',name:'무소속'},
+    ...universities.map(u=>({id:String(u.id),name:u.name}))
+  ];
+  univPopover.innerHTML=options.map(o=>`<button class="univOption ${String(o.id)===String(universityFilter)?'active':''}" data-univ="${e(o.id)}">${e(o.name)}</button>`).join('');
+  const r=btn.getBoundingClientRect(),w=240;
+  univPopover.style.left=Math.max(10,r.left-w-10)+'px';
+  univPopover.style.top=Math.min(innerHeight-370,Math.max(10,r.top-30))+'px';
+  univPopover.classList.add('on');
+
+  univPopover.querySelectorAll('.univOption').forEach(b=>{
+    b.onclick=()=>{
+      universityFilter=b.dataset.univ;
+      localStorage.setItem('star_university_filter_v2',universityFilter);
+      univPopover.classList.remove('on');
+      render();
+      buildRail();
+    };
+  });
+}
+document.addEventListener('click',ev=>{
+  if(!ev.target.closest?.('#univPopover') && !ev.target.closest?.('#univFilterBtn'))univPopover.classList.remove('on');
+});
 
 function updateActiveTierByScroll(){
   const links=[...document.querySelectorAll('.tierJump')];
@@ -471,6 +484,21 @@ function formatLiveElapsed(startAt){
   return `${m}분`;
 }
 
+async function hydrateLiveMeta(x){
+  if(!x?.soop_user_id)return;
+  try{
+    const r=await fetch('/api/soop-live-meta?id='+encodeURIComponent(x.soop_user_id),{cache:'no-store'});
+    if(!r.ok)return;
+    const j=await r.json();
+    if(j.started_at)x._liveStartedAt=j.started_at;
+    if(j.title)x._liveTitle=j.title;
+    if(livePreview.classList.contains('on')){
+      livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
+      if(j.title)livePreviewTitle.textContent=j.title;
+    }
+  }catch(_){}
+}
+
 function showPreview(ev){
   const card=ev.currentTarget.closest('.playerCard');
   const id=Number(card?.dataset?.playerId||0);
@@ -488,6 +516,7 @@ function showPreview(ev){
   }
   livePreview.classList.add('on');
   movePreview(ev);
+  hydrateLiveMeta(x);
 }
 function movePreview(ev){
   const w=320,g=14;
@@ -510,9 +539,7 @@ async function fetchLiveChunk(chunk){
     if(!r.ok)return {};
     const j=await r.json();
     return j.status||{};
-  }catch(_){
-    return {};
-  }
+  }catch(_){return {}}
 }
 
 function orderedLiveIds(){
@@ -533,68 +560,23 @@ function applyStatusChunk(chunk,status){
   players=players.map(x=>{
     if(!set.has(x.soop_user_id))return x;
     const s=status[x.soop_user_id]||{live:false};
-    return {
-      ...x,
-      _liveKnown:true,
-      _live:!!s.live,
-      _liveTitle:s.title||'',
-      _thumbnail:s.thumbnail||'',
-      _bno:s.bno||'',
-      _liveStartedAt:s.started_at||''
-    };
+    return {...x,_liveKnown:true,_live:!!s.live,_liveTitle:s.title||'',_thumbnail:s.thumbnail||'',_bno:s.bno||'',_liveStartedAt:s.started_at||x._liveStartedAt||''};
   });
 }
 
-async function loadLiveStatusesProgressive(){
+async function refreshLiveInBackground(){
   const ids=orderedLiveIds();
-
-  players=players.map(x=>({
-    ...x,
-    _liveKnown:!x.soop_user_id,
-    _live:false,
-    _liveTitle:'',
-    _thumbnail:'',
-    _bno:'',
-    _liveStartedAt:''
-  }));
-
-  render();
-  buildRail();
-
-  // 1차: 화면 맨 위에 보이는 선수들을 최우선으로 바로 확정.
-  const first=ids.slice(0,30);
-  if(first.length){
-    const status=await fetchLiveChunk(first);
-    applyStatusChunk(first,status);
-    render();
-    buildRail();
-  }
-
-  // 2차: 나머지는 70명 단위로 동시에 조회.
-  // 예전처럼 12~18명 묶음을 수십 번 순차 대기하지 않는다.
-  const rest=ids.slice(first.length);
   const chunks=[];
-  for(let i=0;i<rest.length;i+=70)chunks.push(rest.slice(i,i+70));
-
+  for(let i=0;i<ids.length;i+=70)chunks.push(ids.slice(i,i+70));
   await Promise.all(chunks.map(async chunk=>{
     const status=await fetchLiveChunk(chunk);
     applyStatusChunk(chunk,status);
     render();
-    buildRail();
   }));
 }
 
 async function refreshAllLiveStatuses(){
-  const ids=orderedLiveIds();
-  const chunks=[];
-  for(let i=0;i<ids.length;i+=70)chunks.push(ids.slice(i,i+70));
-
-  await Promise.all(chunks.map(async chunk=>{
-    const status=await fetchLiveChunk(chunk);
-    applyStatusChunk(chunk,status);
-  }));
-
-  render();
+  await refreshLiveInBackground();
   buildRail();
 }
 
@@ -609,12 +591,22 @@ async function load(){
   const j=await r.json();
   universities=j.universities||[];
   if(universityFilter!=='all' && universityFilter!=='none' && !universities.some(u=>String(u.id)===String(universityFilter)))universityFilter='all';
-  players=(j.players||[]).map(x=>({...x,_liveKnown:!x.soop_user_id,_live:false}));
 
-  // DB list is painted immediately. LIVE checking follows in small sequential batches.
+  players=(j.players||[]).map(x=>({
+    ...x,
+    _liveKnown:true,
+    _live:!!x.live_cache_live,
+    _liveTitle:x.live_cache_title||'',
+    _thumbnail:x.live_cache_thumbnail||'',
+    _bno:x.live_cache_bno||'',
+    _liveStartedAt:x.live_cache_started_at||''
+  }));
+
   render();
   buildRail();
-  loadLiveStatusesProgressive();
+
+  // 실제 LIVE 재검사는 뒤에서 돌아간다. 첫 화면은 여기서 이미 끝.
+  refreshLiveInBackground();
 }
 
 
@@ -640,6 +632,7 @@ setInterval(async()=>{
 },300000);
 </script>
 
+<div id="univPopover" class="univPopover"></div>
 <div id="livePreview" class="livePreview">
       <img id="livePreviewImg" class="livePreviewImg" alt="">
       <div class="livePreviewBody">
