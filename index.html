@@ -3806,6 +3806,109 @@ html.broadcastOverlay.broadcastVertical .overlayFrame:nth-child(3){
   --frame-accent:rgba(206,220,228,.9);
 }
 
+
+/* v86 — final frame sizing */
+html.broadcastOverlay.broadcastVertical .overlayFrames{
+  left:280px!important;
+  gap:22px!important;
+}
+html.broadcastOverlay.broadcastVertical .overlayFrame{
+  width:132px!important;
+  height:170px!important;
+}
+
+/* ===== HOME PAGE SCOREBOARD: horizontal, simple spreadsheet look =====
+   This affects the normal website view only, never the broadcast overlay. */
+html:not(.broadcastOverlay) #captureStage,
+html:not(.broadcastOverlay) .scoreWrap,
+html:not(.broadcastOverlay) .scoreFrame{
+  background:#fff!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+html:not(.broadcastOverlay) .totalBar{
+  background:#fff!important;
+  color:#000!important;
+  border:1px solid #000!important;
+  border-bottom:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  font-weight:800!important;
+}
+html:not(.broadcastOverlay) .score{
+  display:flex!important;
+  flex-direction:row!important;
+  gap:0!important;
+  align-items:stretch!important;
+  background:#fff!important;
+}
+html:not(.broadcastOverlay) .scoreGroup{
+  display:flex!important;
+  flex-direction:row!important;
+  gap:0!important;
+  align-items:stretch!important;
+}
+html:not(.broadcastOverlay) .team{
+  background:#fff!important;
+  color:#000!important;
+  border:1px solid #000!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  margin-left:-1px!important;
+}
+html:not(.broadcastOverlay) .team:first-child{
+  margin-left:0!important;
+}
+html:not(.broadcastOverlay) .th{
+  background:#fff!important;
+  color:#000!important;
+  border-bottom:1px solid #000!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+html:not(.broadcastOverlay) .total{
+  background:#fff!important;
+  color:#000!important;
+  border-bottom:1px solid #000!important;
+}
+html:not(.broadcastOverlay) .plist{
+  background:#fff!important;
+  padding:0!important;
+}
+html:not(.broadcastOverlay) .slot{
+  background:#fff!important;
+  color:#000!important;
+  border:0!important;
+  border-top:1px solid #000!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+html:not(.broadcastOverlay) .slot:first-child{
+  border-top:0!important;
+}
+html:not(.broadcastOverlay) .name{
+  color:#000!important;
+  background:#fff!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+html:not(.broadcastOverlay) .detail,
+html:not(.broadcastOverlay) .detail b{
+  color:#000!important;
+}
+html:not(.broadcastOverlay) .chi,
+html:not(.broadcastOverlay) .chicken{
+  background:#fff!important;
+  color:#000!important;
+  border-top:1px solid #000!important;
+  border-radius:0!important;
+}
+html:not(.broadcastOverlay) .avatar,
+html:not(.broadcastOverlay) .avatarEmpty{
+  box-shadow:none!important;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
@@ -3884,13 +3987,7 @@ html.broadcastOverlay.broadcastVertical .overlayFrame:nth-child(3){
     </div>
 
     <div class="overlaySettingGrid">
-      <label class="overlaySettingField">
-        <span>레이아웃</span>
-        <select id="overlayLayoutSelect">
-          <option value="vertical">세로형</option>
-          <option value="horizontal">가로형</option>
-        </select>
-      </label>
+      
       <label class="overlaySettingField">
         <span>테마</span>
         <select id="overlayThemeSelect">
@@ -3935,7 +4032,7 @@ html.broadcastOverlay.broadcastVertical .overlayFrame:nth-child(3){
 <script>
 const B='https://llqikrcqavwfbuajykig.supabase.co/rest/v1',K='sb_publishable_aLPzJI_jQLlywmoQsiLRtw_ElX_aslF',H={'apikey':K,'Authorization':'Bearer '+K,'Content-Type':'application/json'},n=x=>Math.max(0,parseInt(x)||0),e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let cur,pick,P=[],RO=[],S=[],poll,editing=false,pickId=null,pickName='',dragId=null,ghost=null;
 const chromaOn=document.getElementById('chromaOn'),chromaColor=document.getElementById('chromaColor'),
-scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),overlayUrlBtn=document.getElementById('overlayUrlBtn'),overlayUrlOv=document.getElementById('overlayUrlOv'),overlayLayoutSelect=document.getElementById('overlayLayoutSelect'),overlayThemeSelect=document.getElementById('overlayThemeSelect'),overlayNameTagSelect=document.getElementById('overlayNameTagSelect'),overlayTeamField=document.getElementById('overlayTeamField'),overlayTeamSelect=document.getElementById('overlayTeamSelect'),overlayFrameCountSelect=document.getElementById('overlayFrameCountSelect'),overlayGeneratedUrl=document.getElementById('overlayGeneratedUrl'),overlayGeneratedCopy=document.getElementById('overlayGeneratedCopy'),overlayCloseBtn=document.getElementById('overlayCloseBtn'),captureStage=document.getElementById('captureStage'),
+scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),overlayUrlBtn=document.getElementById('overlayUrlBtn'),overlayUrlOv=document.getElementById('overlayUrlOv'),overlayThemeSelect=document.getElementById('overlayThemeSelect'),overlayNameTagSelect=document.getElementById('overlayNameTagSelect'),overlayTeamField=document.getElementById('overlayTeamField'),overlayTeamSelect=document.getElementById('overlayTeamSelect'),overlayFrameCountSelect=document.getElementById('overlayFrameCountSelect'),overlayGeneratedUrl=document.getElementById('overlayGeneratedUrl'),overlayGeneratedCopy=document.getElementById('overlayGeneratedCopy'),overlayCloseBtn=document.getElementById('overlayCloseBtn'),captureStage=document.getElementById('captureStage'),
 totalBar=document.getElementById('totalBar'),scoreboard=document.getElementById('scoreboard'),
 killBoard=document.getElementById('killBoard'),
 goalKills=document.getElementById('goalKills'),timerMode=document.getElementById('timerMode'),
@@ -4063,10 +4160,10 @@ function applyScoreWidth(){
   const w=Math.max(202,cur.team_count*202);
   document.documentElement.style.setProperty('--score-width',w+'px');
 }
-function overlayUrlForRoom(layout='vertical',team=1,theme='luxury',nameTag=true,frames=0){
+function overlayUrlForRoom(team=1,theme='luxury',nameTag=true,frames=0){
   if(!cur)return '';
   const u=new URL(location.href);u.search='';u.hash='';
-  u.searchParams.set('overlay',String(cur.id));u.searchParams.set('layout',layout);
+  u.searchParams.set('overlay',String(cur.id));
   u.searchParams.set('team',String(team));u.searchParams.set('theme',theme);u.searchParams.set('nametag',nameTag?'1':'0');u.searchParams.set('frames',String(Math.max(0,Math.min(3,parseInt(frames||0,10)||0))));
   return u.toString();
 }
@@ -4822,25 +4919,22 @@ function syncOverlayNameTagUi(){
 }
 function refreshOverlayGeneratedUrl(){
   if(!cur||!overlayGeneratedUrl)return;
-  const layout=overlayLayoutSelect?.value||'vertical';
   const nameTag=overlayNameTagSelect?.value!=='0';
   const team=Math.max(1,parseInt(overlayTeamSelect?.value||'1',10)||1);
   const theme=overlayThemeSelect?.value||'luxury';
   const frames=Math.max(0,Math.min(3,parseInt(overlayFrameCountSelect?.value||'0',10)||0));
   syncOverlayNameTagUi();
-  overlayGeneratedUrl.value=overlayUrlForRoom(layout,team,theme,nameTag,frames);
+  overlayGeneratedUrl.value=overlayUrlForRoom(team,theme,nameTag,frames);
 }
 if(overlayUrlBtn)overlayUrlBtn.onclick=()=>{
   if(!cur)return;
   rebuildOverlayTeamOptions();
-  if(overlayLayoutSelect)overlayLayoutSelect.value='vertical';
   if(overlayNameTagSelect)overlayNameTagSelect.value='1';
   if(overlayFrameCountSelect)overlayFrameCountSelect.value='0';
   syncOverlayNameTagUi();
   refreshOverlayGeneratedUrl();
   overlayUrlOv.classList.remove('hidden');
 };
-if(overlayLayoutSelect)overlayLayoutSelect.onchange=refreshOverlayGeneratedUrl;
 if(overlayNameTagSelect)overlayNameTagSelect.onchange=refreshOverlayGeneratedUrl;
 if(overlayTeamSelect)overlayTeamSelect.onchange=refreshOverlayGeneratedUrl;
 if(overlayThemeSelect)overlayThemeSelect.onchange=refreshOverlayGeneratedUrl;
@@ -4905,12 +4999,12 @@ const overlayParams=new URLSearchParams(location.search);
 const overlayNameTagEnabled=overlayParams.get('nametag')!=='0';
 const overlayFrameCount=Math.max(0,Math.min(3,parseInt(overlayParams.get('frames')||'0',10)||0));
 const overlayRoomId=overlayParams.get('overlay');
-const overlayLayout=overlayParams.get('layout')==='horizontal'?'horizontal':'vertical';
+const overlayLayout='vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
 const OVERLAY_THEMES=['luxury','lavender','winter_night','mono_stripe','midnight_purple','esports_red'];
 const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'luxury';
 if(overlayRoomId){
-  document.documentElement.classList.add('broadcastOverlay',overlayLayout==='vertical'?'broadcastVertical':'broadcastHorizontal','theme-'+overlayTheme);
+  document.documentElement.classList.add('broadcastOverlay','broadcastVertical','theme-'+overlayTheme);
   (async()=>{
     try{
       const rr=await q('/pubg_rooms?id=eq.'+encodeURIComponent(overlayRoomId)+'&select=*');
