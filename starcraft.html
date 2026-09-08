@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>스타크래프트 티어표</title>
+<link rel="stylesheet" href="navbar.css">
+<style>
+*{box-sizing:border-box}
+html{overflow-y:scroll;scrollbar-gutter:stable}
+body{margin:0;background:#f4f5f7;color:#15171a;font-family:Arial,"Noto Sans KR",sans-serif}
+main{width:min(1180px,calc(100% - 32px));margin:34px auto 70px}
+.pageHead{display:flex;align-items:end;justify-content:space-between;margin-bottom:18px}
+.pageHead h1{margin:0;font-size:24px;letter-spacing:-1px}
+.pageHead p{margin:0;color:#7a8088;font-size:12px}
+.board{border:1px solid #d8dce1;background:#fff}
+.tier{display:grid;grid-template-columns:86px 1fr;min-height:94px;border-bottom:1px solid #e2e5e9}
+.tier:last-child{border-bottom:0}
+.tierLabel{display:flex;align-items:center;justify-content:center;border-right:1px solid #d8dce1;font-size:28px;font-weight:1000;background:#f8f9fa}
+.tier[data-tier="S"] .tierLabel{background:#111;color:#fff}
+.members{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:12px}
+.streamer{position:relative;width:132px;height:66px;border:1px solid #d9dde2;background:#fff;display:flex;align-items:center;padding:8px;gap:8px;cursor:pointer;text-decoration:none;color:inherit;transition:.12s}
+.streamer:hover{border-color:#9299a2;transform:translateY(-1px);z-index:20}
+.avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;background:#eceff2;flex:0 0 auto}
+.info{min-width:0}
+.name{font-size:13px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.state{margin-top:5px;font-size:10px;font-weight:900;display:flex;align-items:center;gap:5px}
+.dot{width:6px;height:6px;border-radius:50%;background:#adb3ba}
+.streamer.live .dot{background:#ff2449;box-shadow:0 0 0 3px rgba(255,36,73,.10)}
+.streamer.live .state{color:#e6163b}
+.streamer.off .state{color:#a1a6ad}
+.streamer.off{opacity:.72}
+.empty{padding:22px;color:#9aa0a7;font-size:12px}
+.preview{position:fixed;display:none;width:300px;background:#111;color:#fff;border:1px solid rgba(255,255,255,.16);box-shadow:0 18px 45px rgba(0,0,0,.28);z-index:99999;pointer-events:none}
+.preview.show{display:block}
+.preview img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#222}
+.previewBody{padding:10px 11px}
+.previewTitle{font-size:12px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.previewMeta{margin-top:5px;font-size:10px;color:#aeb4bb}
+.notice{margin-top:12px;font-size:11px;color:#8a9098}
+@media(max-width:650px){
+  main{width:calc(100% - 18px);margin-top:20px}
+  .tier{grid-template-columns:58px 1fr}
+  .tierLabel{font-size:22px}
+  .streamer{width:120px}
+}
+</style>
+</head>
+<body>
+<nav id="global-navbar" class="globalNav">
+  <div class="globalNavInner">
+    <a class="globalNavBrand" href="index.html">MUJE</a>
+    <div class="globalNavLinks">
+      <a class="globalNavLink" data-page="pubg" href="pubg.html">배틀그라운드</a>
+      <a class="globalNavLink active" data-page="starcraft" href="starcraft.html">스타크래프트</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="pageHead">
+    <div><h1>스타크래프트 티어표</h1></div>
+    <p id="updated">방송 상태 확인 중...</p>
+  </div>
+  <section id="board" class="board"></section>
+  <div class="notice">LIVE 방송은 티어 안에서 앞으로 자동 정렬됩니다.</div>
+</main>
+
+<div id="preview" class="preview">
+  <img id="previewImg" alt="">
+  <div class="previewBody">
+    <div id="previewTitle" class="previewTitle"></div>
+    <div id="previewMeta" class="previewMeta">● LIVE · 클릭하면 방송으로 이동</div>
+  </div>
+</div>
+
+<script>
+/*
+  1차 버전.
+  아래 STREAMERS에 티어/BJ 아이디만 넣으면 됨.
+  /api/soop-search 는 기존 프로젝트에서 사용하던 검색 API를 그대로 사용.
+  라이브 API는 다음 단계에서 실제 SOOP 응답 필드에 맞춰 /api/soop-live 로 붙인다.
+*/
+const TIERS=['S','A','B','C','D','E','F'];
+const STREAMERS=[
+  // {tier:'S', user_id:'bj아이디', nickname:'닉네임'},
+  // {tier:'A', user_id:'bj아이디2', nickname:'닉네임2'},
+];
+
+const state=new Map();
+
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function profile(id){return 'https://profile.img.sooplive.co.kr/LOGO/'+String(id).slice(0,2)+'/'+id+'/'+id+'.jpg'}
+function broadcastUrl(id){return 'https://play.sooplive.co.kr/'+encodeURIComponent(id)}
+
+function render(){
+  const board=document.getElementById('board');
+  board.innerHTML=TIERS.map(tier=>{
+    const rows=STREAMERS.filter(x=>x.tier===tier).map((x,index)=>({...x,_index:index,_live:state.get(x.user_id)||{live:false}}))
+      .sort((a,b)=>Number(b._live.live)-Number(a._live.live)||a._index-b._index);
+
+    return '<div class="tier" data-tier="'+tier+'">'+
+      '<div class="tierLabel">'+tier+'</div>'+
+      '<div class="members">'+(rows.length?rows.map(card).join(''):'<div class="empty">등록된 스트리머 없음</div>')+'</div>'+
+    '</div>';
+  }).join('');
+  wire();
+}
+
+function card(x){
+  const s=x._live;
+  const live=!!s.live;
+  return '<a class="streamer '+(live?'live':'off')+'" data-user="'+esc(x.user_id)+'" href="'+broadcastUrl(x.user_id)+'" target="_blank" rel="noopener">'+
+    '<img class="avatar" src="'+esc(x.profile_image||profile(x.user_id))+'" onerror="this.style.visibility=\'hidden\'">'+
+    '<div class="info"><div class="name">'+esc(x.nickname||x.user_id)+'</div>'+
+    '<div class="state"><span class="dot"></span>'+(live?'LIVE':'OFF')+'</div></div>'+
+  '</a>';
+}
+
+function wire(){
+  document.querySelectorAll('.streamer.live').forEach(el=>{
+    el.addEventListener('mouseenter',()=>showPreview(el));
+    el.addEventListener('mousemove',movePreview);
+    el.addEventListener('mouseleave',hidePreview);
+  });
+}
+
+function showPreview(el){
+  const s=state.get(el.dataset.user)||{};
+  if(!s.live)return;
+  previewImg.src=s.thumbnail||'';
+  previewImg.style.display=s.thumbnail?'block':'none';
+  previewTitle.textContent=s.title||el.querySelector('.name')?.textContent||'LIVE';
+  preview.classList.add('show');
+}
+function movePreview(e){
+  const w=300,gap=14;
+  let x=e.clientX+gap,y=e.clientY+gap;
+  if(x+w>innerWidth-10)x=e.clientX-w-gap;
+  if(y+220>innerHeight-10)y=Math.max(10,e.clientY-220);
+  preview.style.left=x+'px';preview.style.top=y+'px';
+}
+function hidePreview(){preview.classList.remove('show')}
+
+/*
+  라이브 상태 함수.
+  지금은 안전하게 OFF 기본값.
+  다음 단계에서 네가 전에 사용한 SOOP live API 응답을 이 함수 하나에 연결하면
+  정렬 / LIVE 표시 / 썸네일 / 클릭 기능은 그대로 즉시 작동한다.
+*/
+async function fetchLive(userId){
+  try{
+    const r=await fetch('/api/soop-live?user_id='+encodeURIComponent(userId),{cache:'no-store'});
+    if(!r.ok)return {live:false};
+    const j=await r.json();
+    return {
+      live:!!j.live,
+      title:j.title||'',
+      thumbnail:j.thumbnail||''
+    };
+  }catch(_){return {live:false}}
+}
+
+async function refreshLive(){
+  const results=await Promise.all(STREAMERS.map(async x=>[x.user_id,await fetchLive(x.user_id)]));
+  results.forEach(([id,s])=>state.set(id,s));
+  render();
+  updated.textContent='방송 상태 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' 갱신';
+}
+
+render();
+refreshLive();
+setInterval(refreshLive,30000);
+</script>
+<script src="navbar.js"></script>
+</body>
+</html>
