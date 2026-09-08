@@ -8,154 +8,178 @@
 
 
 
+
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scrollbar-gutter:stable}
 body{
-  margin:0;background:#f2f3f5;color:#15181c;
-  font-family:Inter,Arial,"Noto Sans KR",sans-serif;
+  margin:0;background:#f7f8fa;color:#15181d;
+  font-family:Inter,Arial,"Noto Sans KR",sans-serif
 }
-main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
+main{width:min(1480px,calc(100% - 165px));margin:36px auto 110px}
 .pageTitleWrap{
   display:flex;align-items:flex-end;justify-content:space-between;
-  margin:0 0 22px;padding:0 2px 17px;border-bottom:1px solid #d9dde2
+  margin-bottom:20px
 }
-.pageTitleWrap h1{margin:0;font-size:31px;font-weight:1000;letter-spacing:-1.8px}
-.pageSub{margin-top:5px;font-size:9px;font-weight:900;letter-spacing:2px;color:#979da4}
+.pageTitleWrap h1{margin:0;font-size:30px;font-weight:1000;letter-spacing:-1.6px}
+.pageSub{margin-top:5px;color:#9aa0a7;font-size:9px;font-weight:900;letter-spacing:1.8px}
 
-.board{display:flex;flex-direction:column;gap:18px;background:transparent;border:0;box-shadow:none;overflow:visible}
+.board{display:flex;flex-direction:column;gap:16px;background:transparent;border:0;box-shadow:none;overflow:visible}
+
+/* tier: white panel with slim title cap */
 .tier{
-  display:block;overflow:hidden;min-height:0;
-  border:1px solid #dce1e6;border-radius:22px;background:#fff;
-  box-shadow:0 12px 34px rgba(27,33,41,.06);scroll-margin-top:24px
+  overflow:hidden;border:1px solid #e0e4e9;border-radius:18px;
+  background:#fff;box-shadow:0 7px 24px rgba(25,31,40,.045);
+  scroll-margin-top:24px
 }
 .tierLabel{
-  height:55px;padding:0 22px;
+  height:50px;padding:0 20px;
   display:flex;align-items:center;justify-content:flex-start;
-  writing-mode:initial;transform:none;background:#171a1f;color:#fff;
-  font-size:19px;font-weight:1000;letter-spacing:-.5px
+  writing-mode:initial;transform:none;
+  background:#fff;color:#171a1f;border-bottom:1px solid #eceff2;
+  font-size:18px;font-weight:1000;letter-spacing:-.5px
 }
 .tierLabel:before{
-  content:"";width:5px;height:20px;border-radius:99px;background:#fff;margin-right:11px;opacity:.9
+  content:"";width:4px;height:19px;margin-right:10px;border-radius:99px;background:#171a1f
 }
 .tierLabel:after{
-  content:"STARCRAFT TIER";margin-left:auto;
-  font-size:8px;letter-spacing:1.8px;color:#6f7780;font-weight:900
+  content:"";margin-left:auto;width:36px;height:1px;background:#d7dbe0
 }
 
-/* Every race gets its own row */
 .members{display:block;padding:0}
+
+/* race rows */
 .raceGroup{
-  --race:#7c838b;
-  display:grid;grid-template-columns:78px 1fr;
-  min-height:165px;border-bottom:1px solid #eceff2
+  --race:#80868e;
+  display:grid;grid-template-columns:62px 1fr;
+  min-height:172px;border-bottom:1px solid #eff1f4
 }
 .raceGroup:last-child{border-bottom:0}
-.raceGroup.T{--race:#2c78d2}
-.raceGroup.Z{--race:#8050c1}
-.raceGroup.P{--race:#c99a00}
+.raceGroup.T{--race:#2879d4}
+.raceGroup.Z{--race:#7b4bbb}
+.raceGroup.P{--race:#c99600}
 .raceGroup.empty{display:none}
+
 .raceHead{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
-  background:#f7f8fa;border-right:1px solid #e7eaee;
-  color:var(--race);font-weight:1000
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  background:#fafbfc;border-right:1px solid #eceff2
 }
 .raceLetter{
-  width:34px;height:34px;border-radius:50%;
+  width:31px;height:31px;border-radius:9px;
   display:flex;align-items:center;justify-content:center;
-  background:var(--race);color:#fff;font-size:14px;font-weight:1000
+  background:var(--race);color:#fff;font-size:13px;font-weight:1000
 }
-.raceName{font-size:9px;letter-spacing:-.2px;color:#777e86}
+.raceName{display:none}
 .racePlayers{
-  display:flex;align-items:flex-start;flex-wrap:wrap;
-  gap:18px;padding:18px 20px 20px
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(135px,1fr));
+  gap:18px 14px;padding:18px 20px 20px;align-items:start
 }
 
-/* V15: circular medallion player, no conventional rectangular card */
+/* V16 CARD: square photo, bottom caption on a floating glass tab */
 .playerCard{
-  --race:#7c838b;position:relative;width:132px;display:block;
-  text-decoration:none;color:#171a1f;text-align:center;
-  background:transparent;border:0;transition:transform .16s ease
+  --race:#80868e;
+  position:relative;display:block;min-width:0;
+  text-decoration:none;color:#171a1f;
+  transition:transform .16s ease
 }
+.playerCard.T{--race:#2879d4}
+.playerCard.Z{--race:#7b4bbb}
+.playerCard.P{--race:#c99600}
 .playerCard:hover{transform:translateY(-4px)}
-.playerCard.T{--race:#2c78d2}
-.playerCard.Z{--race:#8050c1}
-.playerCard.P{--race:#c99a00}
 
 .portrait{
-  position:relative;width:118px;height:118px;aspect-ratio:1/1;
-  margin:0 auto;overflow:hidden;border-radius:50%;
-  background:#fff;border:5px solid #fff;
-  box-shadow:0 0 0 2px var(--race),0 8px 20px rgba(25,31,39,.12)
+  position:relative;width:100%;aspect-ratio:1/1 !important;
+  overflow:hidden;border-radius:13px;
+  background:#fff;border:1px solid #e0e4e8;
+  box-shadow:0 5px 15px rgba(23,29,38,.075)
 }
 .profileImg{
   position:relative;z-index:1;display:block;width:100%;height:100%;
-  object-fit:cover;border-radius:50%;background:#fff
+  object-fit:cover;background:#fff
 }
-.blankPortrait{position:absolute;inset:0;z-index:0;border-radius:50%;background:#fff}
+.blankPortrait{position:absolute;inset:0;z-index:0;background:#fff}
 
-/* small race tab below the medallion */
-.portrait:after{
-  content:attr(data-race);
-  position:absolute;z-index:6;right:4px;bottom:4px;
-  width:25px;height:25px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--race);color:#fff;border:2px solid #fff;
-  font-size:9px;font-weight:1000
+/* race signature: tiny top edge only */
+.portrait:before{
+  content:"";position:absolute;left:12px;right:12px;top:0;height:3px;
+  z-index:5;border-radius:0 0 4px 4px;background:var(--race)
 }
+.portrait:after{display:none}
 
+/* name area */
 .namePlate{
-  margin:8px 0 0;padding:0 3px;min-height:27px;
+  position:relative;z-index:7;
+  width:calc(100% - 18px);min-height:34px;
+  margin:-10px auto 0;padding:0 9px;
   display:flex;align-items:center;justify-content:center;gap:5px;
-  border:0;background:transparent;box-shadow:none;
-  color:#202328;font-size:12px;font-weight:1000
+  border:1px solid #e1e5e9;border-radius:10px;
+  background:rgba(255,255,255,.97);
+  box-shadow:0 5px 14px rgba(23,29,38,.07);
+  color:#20242a;font-size:12px;font-weight:1000
 }
 .playerName{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.raceText{display:none}
+.raceText{
+  flex:0 0 auto;width:auto;height:auto;border:0;border-radius:0;
+  background:transparent;color:var(--race);font-size:10px;font-weight:1000
+}
+.raceText:before{content:"·";margin-right:4px;color:#bcc1c7}
 
-/* live is attached to name, not photo */
+/* live small strip */
 .liveBadge{
-  position:static;order:-1;height:17px;padding:0 5px;border-radius:5px;
+  position:absolute;left:7px;top:-17px;z-index:10;
+  height:18px;padding:0 6px;border-radius:5px;
   display:inline-flex;align-items:center;justify-content:center;
-  background:#ed2947;color:#fff;font-size:7px;font-weight:1000;letter-spacing:.45px;
-  box-shadow:none
+  background:#ef2e49;color:#fff;font-size:7px;font-weight:1000;letter-spacing:.5px;
+  box-shadow:0 3px 8px rgba(239,46,73,.18)
 }
 .liveBadge:before{display:none}
 
-/* university seal */
+/* university */
 .univBadge{
-  position:absolute;left:2px;top:2px;z-index:8;width:31px;height:31px;
-  display:flex;align-items:center;justify-content:center;border-radius:50%;
-  background:#fff;border:2px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.16);overflow:hidden
+  position:absolute;left:8px;top:8px;z-index:8;width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:8px;background:rgba(255,255,255,.94);
+  border:1px solid rgba(224,228,233,.9);
+  box-shadow:0 3px 9px rgba(0,0,0,.11);overflow:hidden
 }
-.univBadge img{width:26px;height:26px;object-fit:contain}
+.univBadge img{width:27px;height:27px;object-fit:contain}
 
-/* badges fan out at lower right */
+/* statuses */
 .cornerBadges{
-  position:absolute;right:-4px;bottom:5px;top:auto;z-index:9;
-  display:flex;flex-direction:column;align-items:flex-end;gap:3px
+  position:absolute;right:7px;top:7px;z-index:9;
+  display:flex;flex-direction:column;align-items:flex-end;gap:4px
 }
 .stateBadge{
   height:19px;padding:0 6px;border-radius:5px;
   display:inline-flex;align-items:center;justify-content:center;
-  color:#fff;font-size:7px;font-weight:1000;letter-spacing:.55px;
-  border:2px solid #fff;box-shadow:0 2px 7px rgba(0,0,0,.14)
+  color:#fff;font-size:7px;font-weight:1000;letter-spacing:.5px;
+  border:1px solid rgba(255,255,255,.4);
+  box-shadow:0 2px 7px rgba(0,0,0,.13)
 }
-.stateBadge.up{background:#eb3448}
+.stateBadge.up{background:#eb3c4d}
 .stateBadge.new{background:#171a1f}
-.stateBadge.repair{background:#e38b19}
+.stateBadge.repair{background:#df8a1a}
 
-/* promotion = circular halo */
-.playerCard.soon .portrait{animation:halo 1s ease-in-out infinite alternate}
-@keyframes halo{
-  from{box-shadow:0 0 0 2px var(--race),0 8px 20px rgba(25,31,39,.12)}
-  to{box-shadow:0 0 0 3px var(--race),0 0 18px var(--race),0 0 31px color-mix(in srgb,var(--race) 32%,transparent)}
+/* promotion glow: clean edge light */
+.playerCard.soon .portrait{animation:v16Glow .95s ease-in-out infinite alternate}
+@keyframes v16Glow{
+  from{box-shadow:0 5px 15px rgba(23,29,38,.075)}
+  to{
+    box-shadow:
+      0 6px 17px rgba(23,29,38,.08),
+      0 0 0 2px color-mix(in srgb,var(--race) 55%,transparent),
+      0 0 16px color-mix(in srgb,var(--race) 28%,transparent)
+  }
 }
-.playerCard.idle{opacity:.42;filter:grayscale(.92) saturate(.18)}
-.playerCard.idle .portrait{box-shadow:0 0 0 2px #91969c,0 7px 17px rgba(25,31,39,.08)}
+
+.playerCard.idle{opacity:.43;filter:grayscale(.93) saturate(.16)}
+.playerCard.idle .portrait:before{background:#92979d}
+.playerCard.idle .raceText{color:#92979d}
 .playerCard.missing{opacity:.86}
 
-/* fixed menu preserved */
+/* fixed menu: preserved */
 .tierRail{
   position:fixed;right:22px;top:50%;transform:translateY(-50%);
   z-index:9000;width:82px;padding:9px 7px 10px;
@@ -175,17 +199,14 @@ main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
 .tierJump.active:before{background:#fff;height:12px;border-radius:3px}
 .loading{padding:30px;color:#8c929a}
 
-@media(max-width:950px){
-  main{width:calc(100% - 24px)} .tierRail{display:none}
-}
+@media(max-width:950px){main{width:calc(100% - 24px)}.tierRail{display:none}}
 @media(max-width:650px){
-  .raceGroup{grid-template-columns:50px 1fr}
-  .racePlayers{gap:13px;padding:14px 10px}
-  .playerCard{width:110px}
-  .portrait{width:100px;height:100px}
-  .raceName{display:none}
+  .raceGroup{grid-template-columns:43px 1fr}
+  .raceLetter{width:27px;height:27px;border-radius:7px;font-size:11px}
+  .racePlayers{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 10px;padding:13px 10px 17px}
 }
 </style>
+
 
 
 
