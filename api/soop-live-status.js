@@ -48,4 +48,4 @@ export default async function handler(req,res){
   ids.forEach((id,i)=>status[id]=values[i]||{live:false,bno:'',title:'',thumbnail:'',started_at:''});
   const secret=process.env.SUPABASE_SECRET_KEY;if(secret)await writeCache(secret,ids,values);
   res.setHeader('Cache-Control','no-store');return res.status(200).json({status});
-}
+}.
