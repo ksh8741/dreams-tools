@@ -1,3 +1,16 @@
+
+/* Keep navbar at the exact same horizontal position on home, lobby and room view.
+   Entering a room makes the page taller and normally adds a vertical scrollbar,
+   which shifts centered content by a few pixels. Reserve that scrollbar space always. */
+html:not(.broadcastOverlay){
+  overflow-y:scroll!important;
+  scrollbar-gutter:stable!important;
+}
+body{
+  margin-left:0!important;
+  margin-right:0!important;
+}
+
 /* One shared navbar stylesheet for every page */
 #global-navbar.globalNav{
   position:relative!important;
