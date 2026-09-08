@@ -2259,6 +2259,23 @@ html.broadcastOverlay.broadcastVertical .rankRow.killChanged:before{
     0 0 7px color-mix(in srgb,var(--team-color) 72%,transparent),
     0 0 13px color-mix(in srgb,var(--team-color) 42%,transparent)!important;
 }
+
+/* v50 — tighten FX gutters + SCORE sheet bottom */
+html.broadcastOverlay.broadcastVertical .rankOverlay{
+  /* v49: 5px each side -> left 3px, right 4px */
+  width:261px!important;
+  margin-left:-3px!important;
+  padding-left:3px!important;
+  padding-right:4px!important;
+}
+
+/* SCORE cell looked like a separate sheet extending below the row.
+   Keep its background 2px above the row bottom. */
+html.broadcastOverlay.broadcastVertical .rankScore{
+  height:40px!important;       /* row is 42px */
+  align-self:start!important;
+  margin-bottom:2px!important;
+}
 </style></head><body>
 <header><div class="brand">DREAMS</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
