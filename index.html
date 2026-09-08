@@ -10,13 +10,25 @@ html,body{margin:0;min-height:100%;font-family:Arial,"Noto Sans KR",sans-serif;b
 
 main{min-height:calc(100vh - 58px)}
 
+
+.globalNavbarFrame{
+  display:block!important;
+  width:100%!important;
+  height:58px!important;
+  min-height:58px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  position:relative!important;
+  z-index:2147483647!important;
+  background:#0c0e11!important;
+}
+
 </style>
-<link rel="stylesheet" href="navbar.css">
 </head>
 <body>
-<div id="global-navbar"></div>
+<iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
 
 <main></main>
-<script src="navbar.js"></script>
 </body>
 </html>

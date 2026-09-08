@@ -4436,10 +4436,23 @@ html:not(.broadcastOverlay) .teamSummary .miniScore{
 }
 
 
+
+.globalNavbarFrame{
+  display:block!important;
+  width:100%!important;
+  height:58px!important;
+  min-height:58px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  position:relative!important;
+  z-index:2147483647!important;
+  background:#0c0e11!important;
+}
+
 </style><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<link rel="stylesheet" href="navbar.css">
 </head><body>
-<div id="global-navbar"></div>
+<iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
 
 <main>
 <section id="lobby"><div class="top"><div class="title"><h1>배틀그라운드</h1></div><div><button id="refresh" class="btn">새로고침</button> <button id="adminDeleteMode" class="btn">방 삭제</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>팀 구성</div><div>생성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
@@ -5641,5 +5654,5 @@ if(overlayRoomId){
 
 
 
-</script><script src="navbar.js"></script>
+</script>
 </body></html>
