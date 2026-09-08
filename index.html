@@ -2578,6 +2578,132 @@ html.broadcastOverlay.broadcastVertical.theme-lavender .rankRow *,
 html.broadcastOverlay.broadcastVertical.theme-ribbon .rankRow *,
 html.broadcastOverlay.broadcastVertical.theme-garden .rankRow *{color:inherit}
 
+
+/* v66 — FULL THEME COVERAGE.
+   Every themed surface changes: top team-score cards, timer/target,
+   SCORE cells, empty avatars, rows and headers. No original dark leftovers. */
+
+/* ---------- LIGHT THEME VARIABLES ---------- */
+html.broadcastOverlay.broadcastVertical.theme-sakura{
+ --th-bg:#fffdfd;--th-panel:#fff5f8;--th-panel2:#f9e2eb;--th-line:#e6aec3;--th-text:#241d20;--th-muted:#674b56;--th-accent:#df789f;
+}
+html.broadcastOverlay.broadcastVertical.theme-blossom{
+ --th-bg:rgba(255,249,252,.9);--th-panel:rgba(255,231,241,.88);--th-panel2:rgba(245,207,224,.84);--th-line:#dd92b0;--th-text:#2b2025;--th-muted:#694451;--th-accent:#d76c99;
+}
+html.broadcastOverlay.broadcastVertical.theme-rose{
+ --th-bg:#fff8f1;--th-panel:#f9e8e2;--th-panel2:#eac9c8;--th-line:#ca9294;--th-text:#2b2220;--th-muted:#644543;--th-accent:#bd6974;
+}
+html.broadcastOverlay.broadcastVertical.theme-berry{
+ --th-bg:#fff2f7;--th-panel:#ffd8e6;--th-panel2:#ffb6d0;--th-line:#e55b8e;--th-text:#291720;--th-muted:#653047;--th-accent:#e33e7d;
+}
+html.broadcastOverlay.broadcastVertical.theme-peach{
+ --th-bg:#fffaf1;--th-panel:#fff0d7;--th-panel2:#e8f1d9;--th-line:#d7ae8c;--th-text:#292720;--th-muted:#63543e;--th-accent:#dc8c6a;
+}
+html.broadcastOverlay.broadcastVertical.theme-lavender{
+ --th-bg:#fbf7ff;--th-panel:#eee0f5;--th-panel2:#f7dce8;--th-line:#bda1cb;--th-text:#29202d;--th-muted:#5d4966;--th-accent:#a875bd;
+}
+html.broadcastOverlay.broadcastVertical.theme-ribbon{
+ --th-bg:#fff;--th-panel:#fff2f7;--th-panel2:#f8d6e3;--th-line:#e4538c;--th-text:#171719;--th-muted:#5b3947;--th-accent:#e4538c;
+}
+html.broadcastOverlay.broadcastVertical.theme-garden{
+ --th-bg:#fffdfd;--th-panel:#f4e8ed;--th-panel2:#e5f1e3;--th-line:#9fbea3;--th-text:#202923;--th-muted:#48604d;--th-accent:#d37d9e;
+}
+
+/* ---------- ALL LIGHT THEMES: kill every original dark surface ---------- */
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankOverlay,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankHeader,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankHeaderTop,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTeamStrip,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTeamCard,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTeamScore,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTimer,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTarget,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankCols,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankRows,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankRow,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankScore{
+  color:var(--th-text)!important;
+  text-shadow:none!important;
+}
+
+/* top total-score / rotating info area */
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankHeader{
+  background:linear-gradient(110deg,var(--th-panel),var(--th-panel2))!important;
+  border-color:var(--th-line)!important;
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTeamStrip,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTeamCard,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTeamScore{
+  background:var(--th-panel)!important;
+  border-color:var(--th-line)!important;
+  color:var(--th-text)!important;
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTimer,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankTarget{
+  background:var(--th-panel2)!important;
+  border-color:var(--th-line)!important;
+  color:var(--th-text)!important;
+}
+
+/* player table */
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankCols{
+  background:var(--th-panel2)!important;
+  color:var(--th-muted)!important;
+  border-color:var(--th-line)!important;
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankRows{
+  background:var(--th-bg)!important;
+  border-color:var(--th-line)!important;
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankRow{
+  background:linear-gradient(90deg,var(--th-bg),var(--th-panel))!important;
+  border-color:color-mix(in srgb,var(--th-line) 58%,transparent)!important;
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankRow:nth-child(even){
+  background:linear-gradient(90deg,var(--th-panel),var(--th-bg))!important;
+}
+
+/* SCORE paper: explicitly themed instead of original black */
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankScore{
+  background:var(--th-panel2)!important;
+  border-left:1px solid var(--th-line)!important;
+  color:var(--th-text)!important;
+  box-shadow:none!important;
+}
+
+/* no-profile placeholder: themed, not original navy circle */
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankAvatarEmpty{
+  background:linear-gradient(135deg,var(--th-panel2),var(--th-bg))!important;
+  border:2px solid var(--th-line)!important;
+  box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--th-bg) 70%,transparent)!important;
+}
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankAvatar{
+  border:2px solid #fff!important;
+  box-shadow:0 0 0 2px var(--team-color),0 2px 7px color-mix(in srgb,var(--th-accent) 30%,transparent)!important;
+}
+
+/* all textual descendants in light themes use the light-theme palette unless team FX overrides it */
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankRow > *,
+html.broadcastOverlay.broadcastVertical:is(.theme-sakura,.theme-blossom,.theme-rose,.theme-berry,.theme-peach,.theme-lavender,.theme-ribbon,.theme-garden) .rankHeader *{
+  color:inherit;
+}
+
+/* CHERRY NIGHT remains dark, but its score/empty-avatar surfaces must also match */
+html.broadcastOverlay.broadcastVertical.theme-cherry .rankScore{
+  background:#35111ff5!important;color:#fff2f7!important;border-left:1px solid #84324f!important;box-shadow:none!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-cherry .rankAvatarEmpty{
+  background:linear-gradient(135deg,#5a1b34,#210d14)!important;border:2px solid #c64d79!important;box-shadow:none!important;
+}
+
+/* LUXURY NOIR: complete the surfaces that old CSS left original */
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankScore{
+  background:#17130df7!important;color:#f2d68e!important;border-left:1px solid #806a3b!important;box-shadow:none!important;
+}
+html.broadcastOverlay.broadcastVertical.theme-luxury .rankAvatarEmpty{
+  background:linear-gradient(135deg,#332816,#0b0b0b)!important;border:2px solid #b99754!important;box-shadow:none!important;
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
