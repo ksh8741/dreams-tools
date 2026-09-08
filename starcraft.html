@@ -241,6 +241,23 @@ main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
   .portrait{width:100px;height:100px}
   .raceName{display:none}
 }
+
+.liveOnlyBox{margin:5px 1px 8px;padding:7px 4px 8px;border-top:1px solid rgba(205,210,216,.8);border-bottom:1px solid rgba(205,210,216,.8);display:flex;flex-direction:column;align-items:center;gap:5px}
+.liveOnlyLabel{font-size:7px;line-height:1;font-weight:1000;letter-spacing:.8px;color:#777e86;white-space:nowrap}
+.liveSwitch{position:relative;width:34px;height:19px;display:block;cursor:pointer}
+.liveSwitch input{position:absolute;opacity:0;pointer-events:none}
+.liveSwitchTrack{position:absolute;inset:0;border-radius:99px;background:#cfd4da;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);transition:.16s ease}
+.liveSwitchTrack:after{content:"";position:absolute;width:15px;height:15px;left:2px;top:2px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.20);transition:.16s ease}
+.liveSwitch input:checked + .liveSwitchTrack{background:#ef2947}
+.liveSwitch input:checked + .liveSwitchTrack:after{transform:translateX(15px)}
+.livePreview{position:fixed;display:none;width:320px;z-index:20000;pointer-events:none;overflow:hidden;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:#15181d;color:#fff;box-shadow:0 18px 46px rgba(0,0,0,.30)}
+.livePreview.on{display:block}
+.livePreviewImg{width:100%;aspect-ratio:16/9;display:block;object-fit:cover;background:#24282e}
+.livePreviewBody{padding:10px 11px 11px}
+.livePreviewLive{display:inline-flex;height:18px;padding:0 6px;align-items:center;justify-content:center;margin-bottom:6px;border-radius:5px;background:#ef2947;font-size:8px;font-weight:1000;letter-spacing:.6px}
+.livePreviewTitle{font-size:12px;line-height:1.42;font-weight:900;word-break:keep-all;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.liveStatusLoading{padding:24px;color:#80868e;font-size:12px;text-align:center}
+
 </style>
 
 
@@ -266,104 +283,213 @@ main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
       <div class="tierRailTitle">TIER</div>
     </aside>
 
+
 <script>
 const TIERS=["갓", "킹", "잭", "조커", "스페이드", "0티어", "1티어", "2티어", "3티어", "4티어", "5티어", "6티어", "7티어", "8티어", "베이비"];
-const RACE_ORDER={T:0,Z:1,P:2};
+const RACES=[['T','테란'],['Z','저그'],['P','프로토스']];
+let players=[];
+let liveOnly=true;
+let railObserver=null;
+
 function e(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function flags(x){return Array.isArray(x.status_flags)?x.status_flags:[]}
+function tierId(t){return 'tier-'+String(t).replace(/[^0-9A-Za-z가-힣]/g,'-')}
 
 function fallbackOrImage(x){
   const img=(x.soop_profile_image||'').trim();
-  if(!img) return '<div class="blankPortrait" aria-label="프로필 이미지 없음"></div>';
-  return `<img class="profileImg" src="${e(img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div class=&quot;blankPortrait&quot;></div>')">`;
+  if(!img)return '<div class="blankPortrait"></div>';
+  return `<img class="profileImg" src="${e(img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">`;
 }
-
 function universityBadge(x){
   const img=x.university_logo||x.school_logo||'';
   if(!img)return '';
   return `<span class="univBadge" title="${e(x.university_name||x.school_name||'소속')}"><img src="${e(img)}" alt="" onerror="this.parentElement.remove()"></span>`;
 }
 
-function cornerBadges(x){
-  const f=flags(x),arr=[];
-  if(f.includes('up'))arr.push('<span class="stateBadge up">UP</span>');
-  if(f.includes('new'))arr.push('<span class="stateBadge new">NEW</span>');
-  if(f.includes('repair'))arr.push('<span class="stateBadge repair">REPAIR</span>');
-  return arr.length?'<span class="cornerBadges">'+arr.join('')+'</span>':'';
-}
-
 function card(x){
   const f=flags(x);
-  const cls=['playerCard',x.race||'',f.includes('soon')?'soon':'',f.includes('idle')?'idle':'',x.soop_user_id?'':'missing'].filter(Boolean).join(' ');
-  const live=!!(x.live||x.is_live||x.broadcast_live);
-  const href=x.soop_user_id?'https://play.sooplive.co.kr/'+encodeURIComponent(x.soop_user_id):'#';
+  const isLive=!!x._live;
+  const cls=['playerCard',x.race||'',f.includes('soon')?'soon':'',f.includes('idle')?'idle':'',x.soop_user_id?'':'missing',isLive?'live':'off'].filter(Boolean).join(' ');
+  const liveUrl=x.soop_user_id?'https://play.sooplive.co.kr/'+encodeURIComponent(x.soop_user_id):'#';
+  const stationUrl=x.soop_user_id?'https://www.sooplive.co.kr/station/'+encodeURIComponent(x.soop_user_id):'#';
+  const href=isLive?liveUrl:stationUrl;
   const name=e(x.display_name||x.soop_nickname||x.player_name);
+
   const up=f.includes('up')?'<span class="upBadge" title="최근 승급"></span>':'';
   const newly=f.includes('new')?'<span class="newBadge" title="신규">NEW</span>':'';
   const repair=f.includes('repair')?'<span class="repairBadge" title="수리"></span>':'';
 
-  return `<a class="${cls}" href="${href}" ${x.soop_user_id?'target="_blank" rel="noopener"':''}>
+  return `<a class="${cls}" data-player-id="${x.id}" href="${href}" ${x.soop_user_id?'target="_blank" rel="noopener"':''}>
     <div class="portrait">
-      <div class="profileCore">
-        ${fallbackOrImage(x)}
-      </div>
+      <div class="profileCore">${fallbackOrImage(x)}</div>
       ${universityBadge(x)}
-      ${up}
-      ${newly}
-      ${repair}
+      ${up}${newly}${repair}
     </div>
     <div class="namePlate">
-      ${live?'<span class="liveBadge">LIVE</span>':''}
+      ${isLive?'<span class="liveBadge">LIVE</span>':''}
       <span class="playerName">${name}</span>
     </div>
   </a>`;
 }
 
-function tierId(t){return 'tier-'+String(t).replace(/[^0-9A-Za-z가-힣]/g,'-')}
-function buildRail(){
-  tierRail.innerHTML='<div class="tierRailTitle">TIER</div>'+TIERS.map(t=>`<a class="tierJump" href="#${tierId(t)}">${t}</a>`).join('');
+function comparePlayers(a,b){
+  const aIdle=flags(a).includes('idle')?1:0;
+  const bIdle=flags(b).includes('idle')?1:0;
+  if(aIdle!==bIdle)return aIdle-bIdle;
+
+  const aSoon=flags(a).includes('soon')?0:1;
+  const bSoon=flags(b).includes('soon')?0:1;
+  if(aSoon!==bSoon)return aSoon-bSoon;
+
+  return Number(a.sort_order||0)-Number(b.sort_order||0);
 }
+
+function raceRow(all,race,label){
+  const p=all
+    .filter(x=>String(x.race||'').toUpperCase()===race)
+    .filter(x=>!liveOnly || x._live)
+    .sort(comparePlayers);
+
+  return `<div class="raceGroup ${race} ${p.length?'':'empty'}">
+    <div class="raceHead"><span class="raceLetter">${race}</span><span class="raceName">${label}</span></div>
+    <div class="racePlayers">${p.map(card).join('')}</div>
+  </div>`;
+}
+
+function render(){
+  board.innerHTML=TIERS.map(t=>{
+    const all=players.filter(x=>x.tier===t);
+    return `<div class="tier" id="${tierId(t)}">
+      <div class="tierLabel">${t}</div>
+      <div class="members">${RACES.map(([r,l])=>raceRow(all,r,l)).join('')}</div>
+    </div>`;
+  }).join('');
+  wirePreview();
+  setupRailObserver();
+}
+
+function buildRail(){
+  tierRail.innerHTML=
+    '<div class="tierRailTitle">TIER</div>'+
+    `<div class="liveOnlyBox">
+      <div class="liveOnlyLabel">LIVE ONLY</div>
+      <label class="liveSwitch" title="라이브만 보기">
+        <input id="liveOnlyToggle" type="checkbox" ${liveOnly?'checked':''}>
+        <span class="liveSwitchTrack"></span>
+      </label>
+    </div>`+
+    TIERS.map(t=>`<a class="tierJump" href="#${tierId(t)}">${t}</a>`).join('');
+
+  liveOnlyToggle.addEventListener('change',ev=>{
+    liveOnly=!!ev.target.checked;
+    localStorage.setItem('star_live_only',liveOnly?'1':'0');
+    buildRail();
+    render();
+  });
+}
+
 function setupRailObserver(){
+  if(railObserver)railObserver.disconnect();
   const links=[...document.querySelectorAll('.tierJump')];
   const sections=[...document.querySelectorAll('.tier')];
-  if(!sections.length)return;
-  const io=new IntersectionObserver(entries=>{
-    const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+  railObserver=new IntersectionObserver(entries=>{
+    const visible=entries.filter(v=>v.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
     if(!visible)return;
     links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+visible.target.id));
   },{rootMargin:'-35% 0px -50% 0px',threshold:[0,.2,.5,.8]});
-  sections.forEach(s=>io.observe(s));
+  sections.forEach(s=>railObserver.observe(s));
 }
+
+function wirePreview(){
+  document.querySelectorAll('.playerCard.live .portrait').forEach(p=>{
+    p.addEventListener('mouseenter',showPreview);
+    p.addEventListener('mousemove',movePreview);
+    p.addEventListener('mouseleave',hidePreview);
+  });
+}
+function showPreview(ev){
+  const card=ev.currentTarget.closest('.playerCard');
+  const id=Number(card?.dataset?.playerId||0);
+  const x=players.find(v=>Number(v.id)===id);
+  if(!x?._live)return;
+
+  livePreviewTitle.textContent=x._liveTitle||x.display_name||x.soop_nickname||x.player_name||'LIVE';
+  if(x._thumbnail){
+    livePreviewImg.src=x._thumbnail;
+    livePreviewImg.style.display='block';
+  }else{
+    livePreviewImg.removeAttribute('src');
+    livePreviewImg.style.display='none';
+  }
+  livePreview.classList.add('on');
+  movePreview(ev);
+}
+function movePreview(ev){
+  const w=320,g=14;
+  let x=ev.clientX+g,y=ev.clientY+g;
+  if(x+w>innerWidth-10)x=ev.clientX-w-g;
+  if(y+230>innerHeight-10)y=Math.max(10,ev.clientY-230);
+  livePreview.style.left=x+'px';
+  livePreview.style.top=y+'px';
+}
+function hidePreview(){livePreview.classList.remove('on')}
+
+async function loadLiveStatuses(){
+  const ids=players.filter(x=>x.soop_user_id).map(x=>x.soop_user_id);
+  const chunks=[];
+  for(let i=0;i<ids.length;i+=60)chunks.push(ids.slice(i,i+60));
+
+  const status=new Map();
+  for(const chunk of chunks){
+    try{
+      const r=await fetch('/api/soop-live-status',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        cache:'no-store',
+        body:JSON.stringify({ids:chunk})
+      });
+      if(!r.ok)continue;
+      const j=await r.json();
+      for(const [id,s] of Object.entries(j.status||{}))status.set(id,s);
+    }catch(_){}
+  }
+
+  players=players.map(x=>{
+    const s=status.get(x.soop_user_id)||{live:false};
+    return {...x,_live:!!s.live,_liveTitle:s.title||'',_thumbnail:s.thumbnail||'',_bno:s.bno||''};
+  });
+}
+
 async function load(){
+  liveOnly=localStorage.getItem('star_live_only')!=='0';
+  board.innerHTML='<div class="liveStatusLoading">SOOP 방송 상태 확인 중...</div>';
+
   const r=await fetch('/api/star-public',{cache:'no-store'});
   if(!r.ok){board.innerHTML='<div class="loading">티어표 불러오기 실패</div>';return}
-  const j=await r.json(),a=j.players||[];
-  board.innerHTML=TIERS.map(t=>{
-    const all=a.filter(x=>x.tier===t);
-    const raceRow=(race,label)=>{
-      const p=all.filter(x=>String(x.race||'').toUpperCase()===race).sort((a,b)=>{
-        const ai=flags(a).includes('idle')?1:0;
-        const bi=flags(b).includes('idle')?1:0;
-        return ai-bi || (Number(a.sort_order||0)-Number(b.sort_order||0));
-      });
-      return `<div class="raceGroup ${race} ${p.length?'':'empty'}">
-        <div class="raceHead"><span class="raceLetter">${race}</span><span class="raceName">${label}</span></div>
-        <div class="racePlayers">${p.map(card).join('')}</div>
-      </div>`;
-    };
-    return `<div class="tier" id="${tierId(t)}">
-      <div class="tierLabel">${t}</div>
-      <div class="members">
-        ${raceRow('T','테란')}
-        ${raceRow('Z','저그')}
-        ${raceRow('P','프로토스')}
-      </div>
-    </div>`;
-  }).join('');
+
+  const j=await r.json();
+  players=j.players||[];
+
+  await loadLiveStatuses();
   buildRail();
-  setupRailObserver();
+  render();
 }
+
 load();
+
+setInterval(async()=>{
+  if(!players.length)return;
+  await loadLiveStatuses();
+  render();
+},60000);
 </script>
-<script src="navbar.js"></script>
+
+<div id="livePreview" class="livePreview">
+      <img id="livePreviewImg" class="livePreviewImg" alt="">
+      <div class="livePreviewBody">
+        <div class="livePreviewLive">LIVE</div>
+        <div id="livePreviewTitle" class="livePreviewTitle"></div>
+      </div>
+    </div>
+    <script src="navbar.js"></script>
 </body></html>
