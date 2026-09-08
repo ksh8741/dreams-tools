@@ -2183,29 +2183,46 @@ html.broadcastOverlay.broadcastVertical .rankGoal:before{
   font-size:12px;
 }
 
-/* inner-only kill FX — no outer clipping / no extra side gutter */
-html.broadcastOverlay.broadcastVertical .rankRow.killChanged{
-  z-index:6!important;
-  overflow:hidden!important;
+/* v52 — inner kill border ABOVE every cell layer; HUD frames removed */
+
+/* remove the 3 decorative frames completely */
+html.broadcastOverlay.broadcastVertical .hudFrames{
+  display:none!important;
 }
+
+/* player row establishes one stacking context */
+html.broadcastOverlay.broadcastVertical .rankRow{
+  position:relative!important;
+  isolation:isolate!important;
+}
+
+/* all normal cell contents stay below the kill-border layer */
+html.broadcastOverlay.broadcastVertical .rankRow > *{
+  position:relative!important;
+  z-index:2!important;
+}
+
+/* SCORE's sheet/background must never cover the row FX */
+html.broadcastOverlay.broadcastVertical .rankScore{
+  z-index:2!important;
+}
+
+/* kill FX is fully INSIDE the row and sits ABOVE SCORE/background/cells */
 html.broadcastOverlay.broadcastVertical .rankRow.killChanged:before{
   content:""!important;
   position:absolute!important;
-  inset:0!important;
+  left:1px!important;
+  right:1px!important;
+  top:1px!important;
+  bottom:1px!important;
   box-sizing:border-box!important;
   pointer-events:none!important;
+  z-index:50!important;
   border:2px solid var(--team-color)!important;
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb,var(--team-color) 78%,white),
-    inset 0 0 8px var(--team-color),
-    inset 0 0 18px color-mix(in srgb,var(--team-color) 58%,transparent)!important;
+    inset 0 0 6px var(--team-color),
+    inset 0 0 14px color-mix(in srgb,var(--team-color) 58%,transparent)!important;
   animation:rankKillBorderStrong 1.35s ease-out forwards!important;
-}
-html.broadcastOverlay.broadcastVertical .rankOverlay{
-  margin-left:0!important;
-  padding-left:0!important;
-  padding-right:0!important;
-  overflow:hidden!important;
 }
 
 </style></head><body>
@@ -2810,14 +2827,7 @@ function animateVerticalKillChange(playerId,delta){
 
 function renderGameNameplates(){
   if(!cur||!captureStage)return;
-  let frames=document.getElementById('hudFrames');
-  if(!frames){
-    frames=document.createElement('div');
-    frames.id='hudFrames';
-    frames.className='hudFrames';
-    frames.innerHTML='<div class="hudFrame"></div><div class="hudFrame"></div><div class="hudFrame"></div>';
-    captureStage.appendChild(frames);
-  }
+  
   let holder=document.getElementById('gameNameplates');
   if(!holder){
     holder=document.createElement('div');
