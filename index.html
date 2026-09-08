@@ -3707,6 +3707,105 @@ html.broadcastOverlay.broadcastVertical .overlayFrameInner{
   background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0))!important;
 }
 
+
+/* v85 — premium broadcast frame redesign
+   Larger, wider spacing, border-focused because camera content fills the center. */
+html.broadcastOverlay.broadcastVertical .overlayFrames{
+  left:276px!important;
+  bottom:34px!important;
+  gap:18px!important;
+}
+
+/* Larger portrait-oriented frame */
+html.broadcastOverlay.broadcastVertical .overlayFrame{
+  width:122px!important;
+  height:158px!important;
+  background:transparent!important;
+  border:0!important;
+  clip-path:none!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+
+/* Main luxury outer frame */
+html.broadcastOverlay.broadcastVertical .overlayFrame:before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  box-sizing:border-box!important;
+  border:2px solid rgba(224,231,235,.92)!important;
+  clip-path:polygon(
+    10px 0,calc(100% - 10px) 0,
+    100% 10px,100% calc(100% - 10px),
+    calc(100% - 10px) 100%,10px 100%,
+    0 calc(100% - 10px),0 10px
+  )!important;
+  box-shadow:
+    0 0 0 1px rgba(56,68,76,.95),
+    inset 0 0 0 1px rgba(255,255,255,.16),
+    0 0 10px rgba(0,0,0,.28)!important;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.10),transparent 18%),
+    linear-gradient(315deg,rgba(255,255,255,.06),transparent 16%)!important;
+}
+
+/* Inner metallic rail */
+html.broadcastOverlay.broadcastVertical .overlayFrame:after{
+  content:""!important;
+  position:absolute!important;
+  inset:7px!important;
+  box-sizing:border-box!important;
+  border:1px solid rgba(142,160,170,.72)!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(17,25,30,.82),
+    inset 0 0 10px rgba(152,184,199,.06)!important;
+  background:transparent!important;
+}
+
+/* Decorative edge pieces only; center remains visually open for the cam */
+html.broadcastOverlay.broadcastVertical .overlayFrameInner{
+  position:absolute!important;
+  inset:0!important;
+  background:
+    linear-gradient(90deg,
+      transparent 0 15px,
+      rgba(199,211,218,.82) 15px 42px,
+      transparent 42px calc(100% - 42px),
+      rgba(199,211,218,.82) calc(100% - 42px) calc(100% - 15px),
+      transparent calc(100% - 15px) 100%) top/100% 2px no-repeat,
+    linear-gradient(90deg,
+      transparent 0 19px,
+      rgba(102,123,135,.60) 19px 37px,
+      transparent 37px calc(100% - 37px),
+      rgba(102,123,135,.60) calc(100% - 37px) calc(100% - 19px),
+      transparent calc(100% - 19px) 100%) bottom/100% 2px no-repeat,
+    linear-gradient(180deg,
+      transparent 0 18px,
+      rgba(171,190,199,.60) 18px 45px,
+      transparent 45px calc(100% - 45px),
+      rgba(171,190,199,.60) calc(100% - 45px) calc(100% - 18px),
+      transparent calc(100% - 18px) 100%) left/2px 100% no-repeat,
+    linear-gradient(180deg,
+      transparent 0 18px,
+      rgba(171,190,199,.60) 18px 45px,
+      transparent 45px calc(100% - 45px),
+      rgba(171,190,199,.60) calc(100% - 45px) calc(100% - 18px),
+      transparent calc(100% - 18px) 100%) right/2px 100% no-repeat!important;
+  border:0!important;
+  pointer-events:none!important;
+}
+
+/* Corner armor accents */
+html.broadcastOverlay.broadcastVertical .overlayFrame:nth-child(1){
+  --frame-accent:rgba(206,220,228,.9);
+}
+html.broadcastOverlay.broadcastVertical .overlayFrame:nth-child(2){
+  --frame-accent:rgba(178,194,203,.9);
+}
+html.broadcastOverlay.broadcastVertical .overlayFrame:nth-child(3){
+  --frame-accent:rgba(206,220,228,.9);
+}
+
 </style></head><body>
 <header><div class="brand">무제</div><div class="nav"><span>홈</span><span class="on">BATTLEGROUNDS</span><span>빙고</span><span>랜덤팀</span><span>대결미션</span></div></header>
 <main>
