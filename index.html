@@ -2082,7 +2082,7 @@ html.broadcastOverlay.broadcastVertical .gameNameplate:first-child{
 
 /* whole ranking board 5px upward from calculated centered position */
 html.broadcastOverlay.broadcastVertical .rankOverlay{
-  transform:translateY(-5px)!important;
+  transform:none!important;
 }
 
 /* frame group 8px downward */
@@ -2792,21 +2792,44 @@ function positionVerticalRanking(){
   const names=document.querySelector('.gameNameplates');
   if(!board) return;
 
-  const SAFE_TOP=145, MIN_GAP=12;
-  let lower=1080-(34 + 4*39 + 3*13);
+  const SAFE_TOP=145;
+  const MIN_GAP=12;
 
+  /* Fixed centerline for the ranking board.
+     Determine it from the MAXIMUM 16-player board that fits between
+     the 145px top-safe area and the nickname-cover safe boundary.
+     Then every smaller board (4/8/12 players) is centered on that SAME line. */
+  let nameTop=1080-(34 + 4*39 + 3*13);
   if(names){
-    const r=names.getBoundingClientRect();
-    if(r.height>0) lower=r.top;
+    const nr=names.getBoundingClientRect();
+    if(nr.height>0) nameTop=nr.top;
+  }
+  const safeBottom=nameTop-MIN_GAP;
+
+  const header=document.querySelector('.rankHeader');
+  const cols=document.querySelector('.rankCols');
+  const oneRow=document.querySelector('.rankRow');
+  const headerH=header?header.getBoundingClientRect().height:43;
+  const colsH=cols?cols.getBoundingClientRect().height:24;
+  const rowH=oneRow?oneRow.getBoundingClientRect().height:42;
+  const maxBoardH=headerH+colsH+(rowH*16);
+
+  /* Maximum 16-player board is top-aligned to SAFE_TOP.
+     Its visual midpoint becomes the permanent centerline. */
+  let centerY=SAFE_TOP+(maxBoardH/2);
+
+  /* If the actual lower safe boundary is tighter, move the fixed centerline
+     only enough to keep the 16-player layout valid. */
+  if(SAFE_TOP+maxBoardH>safeBottom){
+    centerY=(SAFE_TOP+safeBottom)/2;
   }
 
-  const h=board.getBoundingClientRect().height;
-  const safeBottom=lower-MIN_GAP;
-  const available=Math.max(0,safeBottom-SAFE_TOP);
+  const boardH=board.getBoundingClientRect().height;
+  let y=centerY-(boardH/2);
 
-  let y=SAFE_TOP+Math.max(0,(available-h)/2);
-  y=Math.max(SAFE_TOP,y);
-  if(y+h>safeBottom) y=Math.max(SAFE_TOP,safeBottom-h);
+  /* Safety clamps only; these should not affect normal 4/8/16 layouts. */
+  if(y<SAFE_TOP)y=SAFE_TOP;
+  if(y+boardH>safeBottom)y=safeBottom-boardH;
 
   document.documentElement.style.setProperty('--ranking-top',Math.round(y)+'px');
 }
