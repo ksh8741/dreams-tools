@@ -1,117 +1,82 @@
-/* Shared global navigation */
+/* navbar TEST CSS — page CSS interference check */
 #global-navbar{
+  all:initial !important;
   display:block !important;
   width:100% !important;
-  height:58px !important;
+  height:78px !important;
   margin:0 !important;
   padding:0 !important;
-  border:0 !important;
-  background:transparent !important;
-  font-family:Arial,"Noto Sans KR",sans-serif !important;
-  line-height:normal !important;
+  position:relative !important;
+  z-index:2147483647 !important;
+  font-family:Arial,sans-serif !important;
 }
-#global-navbar *,
-#global-navbar *::before,
-#global-navbar *::after{box-sizing:border-box !important}
+
+#global-navbar,
+#global-navbar *{
+  box-sizing:border-box !important;
+}
 
 #global-navbar .globalNav{
-  position:relative !important;
-  top:auto !important;
-  left:auto !important;
-  right:auto !important;
+  all:unset !important;
+  display:block !important;
   width:100% !important;
-  height:58px !important;
-  min-height:58px !important;
-  margin:0 !important;
-  padding:0 !important;
-  background:rgba(12,14,17,.96) !important;
-  border:0 !important;
-  border-bottom:1px solid rgba(255,255,255,.08) !important;
-  border-radius:0 !important;
-  box-shadow:0 8px 22px rgba(0,0,0,.12) !important;
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
+  height:78px !important;
+  background:#111 !important;
+  border-bottom:5px solid #ff2b2b !important;
+  color:#fff !important;
 }
+
 #global-navbar .globalNavInner{
-  width:min(1180px,calc(100% - 32px)) !important;
-  height:58px !important;
-  min-height:58px !important;
+  all:unset !important;
+  width:900px !important;
+  max-width:calc(100% - 40px) !important;
+  height:73px !important;
   margin:0 auto !important;
-  padding:0 !important;
   display:flex !important;
   align-items:center !important;
   justify-content:space-between !important;
-  gap:0 !important;
 }
+
 #global-navbar .globalNavBrand{
-  position:static !important;
+  all:unset !important;
   display:flex !important;
   align-items:center !important;
-  width:auto !important;
-  height:58px !important;
-  margin:0 !important;
-  padding:0 !important;
-  border:0 !important;
-  background:none !important;
-  color:#fff !important;
-  text-decoration:none !important;
-  font-size:15px !important;
+  height:73px !important;
+  color:#ffe600 !important;
+  font-family:Arial,sans-serif !important;
+  font-size:24px !important;
   font-weight:900 !important;
-  letter-spacing:2.4px !important;
-  line-height:1 !important;
-  white-space:nowrap !important;
+  letter-spacing:4px !important;
+  cursor:pointer !important;
+  text-decoration:none !important;
 }
+
 #global-navbar .globalNavLinks{
-  position:static !important;
+  all:unset !important;
   display:flex !important;
   align-items:center !important;
-  width:auto !important;
-  height:58px !important;
-  margin:0 !important;
-  padding:0 !important;
-  gap:4px !important;
+  height:73px !important;
 }
+
 #global-navbar .globalNavLink{
-  position:relative !important;
+  all:unset !important;
   display:flex !important;
   align-items:center !important;
   justify-content:center !important;
-  width:auto !important;
-  height:58px !important;
-  min-height:58px !important;
-  margin:0 !important;
-  padding:0 16px !important;
-  border:0 !important;
+  height:48px !important;
+  padding:0 24px !important;
+  background:#00d9ff !important;
+  color:#000 !important;
+  border:3px solid #fff !important;
   border-radius:0 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  color:#9ea5ad !important;
-  text-decoration:none !important;
-  font-size:13px !important;
+  font-family:Arial,sans-serif !important;
+  font-size:18px !important;
   font-weight:900 !important;
-  letter-spacing:-.15px !important;
-  line-height:1 !important;
-  white-space:nowrap !important;
+  cursor:pointer !important;
+  text-decoration:none !important;
 }
-#global-navbar .globalNavLink:hover,
+
 #global-navbar .globalNavLink.active{
+  background:#ff00d4 !important;
   color:#fff !important;
-}
-#global-navbar .globalNavLink:hover{
-  background:rgba(255,255,255,.035) !important;
-}
-#global-navbar .globalNavLink.active::after{
-  content:"" !important;
-  position:absolute !important;
-  left:16px !important;
-  right:16px !important;
-  bottom:0 !important;
-  height:2px !important;
-  background:#fff !important;
-}
-@media(max-width:700px){
-  #global-navbar .globalNavInner{width:calc(100% - 18px) !important}
-  #global-navbar .globalNavBrand{font-size:13px !important;letter-spacing:1.8px !important}
-  #global-navbar .globalNavLink{padding:0 10px !important;font-size:12px !important}
-  #global-navbar .globalNavLink.active::after{left:10px !important;right:10px !important}
 }
