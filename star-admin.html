@@ -36,11 +36,19 @@ function render(){
  const s=q.value.trim().toLowerCase(),tier=tf.value;
  const a=rows.filter(x=>(!tier||x.tier===tier)&&(!s||(x.player_name+' '+(x.soop_nickname||'')+' '+(x.soop_user_id||'')).toLowerCase().includes(s)));
  stat.textContent='연결 '+rows.filter(x=>x.soop_user_id).length+' / '+rows.length;
- list.innerHTML=a.map(x=>`<div class="row"><div class="race">${x.race}</div><div>${x.tier}</div><div class="name">${e(x.player_name)}</div><select onchange="changeTier(${x.id},this.value)">${TIERS.map(t=>`<option ${t===x.tier?'selected':''}>${t}</option>`).join('')}</select><div class="soop">${x.soop_profile_image?`<img src="${e(x.soop_profile_image)}">`:''}<div>${x.soop_user_id?`<b>${e(x.soop_nickname||x.soop_user_id)}</b><div class="ok">${e(x.soop_user_id)} · 연결됨</div>`:'<span class="muted">SOOP 미연결</span>'}</div></div><button onclick="openSearch(${x.id})">계정 찾기</button></div>`).join('')
+ list.innerHTML=a.map(x=>`<div class="row"><div class="race">${x.race}</div><div>${x.tier}</div><div><div class="name">${e(x.player_name)}</div><input id="dn-${x.id}" value="${e(x.display_name||x.soop_nickname||x.player_name)}" placeholder="표시 닉네임" style="width:150px;height:28px;margin-top:4px"><button onclick="saveDisplay(${x.id})" style="height:28px;margin-left:4px">이름저장</button></div><select onchange="changeTier(${x.id},this.value)">${TIERS.map(t=>`<option ${t===x.tier?'selected':''}>${t}</option>`).join('')}</select><div class="soop">${x.soop_profile_image?`<img src="${e(x.soop_profile_image)}">`:''}<div>${x.soop_user_id?`<b>${e(x.soop_nickname||x.soop_user_id)}</b><div class="ok">${e(x.soop_user_id)} · 연결됨</div>`:'<span class="muted">SOOP 미연결</span>'}</div></div><button onclick="openSearch(${x.id})">계정 찾기</button></div>`).join('')
 }
 function e(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 q.oninput=render;tf.onchange=render;
-async function patch(id,data){const r=await fetch(sburl.value+'/rest/v1/star_players?id=eq.'+id,{method:'PATCH',headers:hdr({'Prefer':'return=minimal'}),body:JSON.stringify({...data,updated_at:new Date().toISOString()})});if(!r.ok)alert(await r.text());else await load()}
+async function patch(id,data){
+ const password=prompt('관리자 비밀번호');
+ if(password===null)return false;
+ const r=await fetch('/api/star-player-update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password,id,data})});
+ const j=await r.json().catch(()=>({}));
+ if(!r.ok){alert(j.error||'저장 실패');return false}
+ await load();return true
+}
+function saveDisplay(id){const el=document.getElementById('dn-'+id);patch(id,{display_name:el.value.trim()})}
 function changeTier(id,tier){patch(id,{tier})}
 function openSearch(id){target=rows.find(x=>x.id===id);sq.value=target.player_name;results.innerHTML='';modal.classList.add('on');searchSoop()}
 function closeM(){modal.classList.remove('on')}
