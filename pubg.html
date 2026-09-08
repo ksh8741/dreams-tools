@@ -4436,6 +4436,60 @@ html:not(.broadcastOverlay) .teamSummary .miniScore{
 }
 
 
+
+/* v113 — 1-team wall-kill header + exact 134px width lock */
+html:not(.broadcastOverlay) .scoreFrame,
+html:not(.broadcastOverlay) .score,
+html:not(.broadcastOverlay) .totalBar,
+html:not(.broadcastOverlay) .scoreStatusRow{
+  box-sizing:border-box!important;
+}
+html:not(.broadcastOverlay) #scoreboard{
+  box-sizing:border-box!important;
+  width:calc(134px * var(--home-team-count,4))!important;
+  min-width:calc(134px * var(--home-team-count,4))!important;
+  max-width:calc(134px * var(--home-team-count,4))!important;
+}
+html:not(.broadcastOverlay) .score .team{
+  box-sizing:border-box!important;
+}
+html:not(.broadcastOverlay) .scoreFrame{
+  overflow:hidden!important;
+}
+
+/* One-team wall-kill: timer owns the entire first row. */
+html:not(.broadcastOverlay) .scoreFrame[style*="--home-team-count: 1"] .totalBar,
+html:not(.broadcastOverlay) .scoreFrame:has(#scoreboard > .team:only-child) .totalBar{
+  display:flex!important;
+  grid-template-columns:none!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0!important;
+}
+html:not(.broadcastOverlay) .scoreFrame:has(#scoreboard > .team:only-child) .fixedTimer{
+  width:100%!important;
+  height:27px!important;
+  flex:1 1 100%!important;
+  padding:0!important;
+  font-size:13px!important;
+  white-space:nowrap!important;
+}
+html:not(.broadcastOverlay) .teamSummary .miniGoal{
+  position:static!important;
+  transform:none!important;
+  display:inline-block!important;
+  color:#fff!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  line-height:24px!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+}
+html:not(.broadcastOverlay) #scoreboard > .team:only-child .teamSummary{
+  gap:7px!important;
+  padding:0 4px!important;
+}
+
 </style><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link rel="stylesheet" href="navbar.css">
 </head><body>
@@ -4624,6 +4678,8 @@ function refreshScoreTextOnly(){
     const scoreEl=el.querySelector('.miniScore'),chEl=el.querySelector('.miniChicken');
     if(scoreEl)scoreEl.textContent=scores[i]??0;
     if(chEl)chEl.textContent='🍗 '+RO.filter(r=>r.chicken_team===i+1).length;
+    const goalEl=el.querySelector('.miniGoal');
+    if(goalEl)goalEl.textContent='🎯 '+(cur.goal_kills??50)+'킬';
   });
   let center='';
   if(cur.team_count===2){
@@ -4971,7 +5027,7 @@ function renderScore(){
     ps.forEach(p=>{teamScore+=totals(p).score});
     RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
     teamScores.push(teamScore);
-    out+='<div class="team"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span></div><div class="plist">'+
+    out+='<div class="team"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span>'+(cur.team_count===1?'<span class="miniGoal">🎯 '+(cur.goal_kills??50)+'킬</span>':'')+'</div><div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<img class="avatar" src="'+pic(p.soop_user_id)+'">':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름 입력">'+
@@ -4983,7 +5039,7 @@ function renderScore(){
   const mode=scoreViewMode.value||cur.score_mode||'separate';
   const goal=cur.goal_kills??50;
   const fixedTime=timerText()||'00:00';
-  totalBar.innerHTML='<span class="fixedTimer">⏱️ '+e(fixedTime)+'</span><span class="goalBadge">🎯 '+goal+'킬</span>';
+  totalBar.innerHTML='<span class="fixedTimer">⏱️ '+e(fixedTime)+'</span>'+(cur.team_count===1?'':'<span class="goalBadge">🎯 '+goal+'킬</span>');
   const oldStatus=document.getElementById('scoreStatusRow');if(oldStatus)oldStatus.remove();
 
   // Combined total is useful only when each side consists of 2+ parties (5v5+ capacity)
