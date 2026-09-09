@@ -1150,6 +1150,49 @@ body{
   }
 }
 
+
+/* ===== FINAL COLOR / DEPTH TUNE ===== */
+
+/* ChatGPT-like light background */
+body{
+  background:#f7f7f8!important;
+}
+
+/* Main tier board background area */
+#tierBoard,
+.tierBoard,
+.board{
+  background:transparent!important;
+}
+
+/* Each tier frame: pure white interior + subtle depth */
+.tierSection,
+.tierBlock,
+.tier{
+  background:rgb(255,255,255)!important;
+  border:1px solid #e3e3e7!important;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.035),
+    0 8px 24px rgba(0,0,0,.055)!important;
+}
+
+/* Header inside frame also pure white */
+.tierLabel{
+  background:rgb(255,255,255)!important;
+  color:#000!important;
+}
+
+/* Tier title black */
+.tierName{
+  color:#000!important;
+}
+
+/* Player area pure white */
+.tierBody,
+.racePlayers{
+  background:rgb(255,255,255)!important;
+}
+
 </style>
 
 
