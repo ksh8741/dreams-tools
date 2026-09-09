@@ -1401,6 +1401,15 @@ body{
   margin-bottom:0!important;
 }
 
+
+/* ===== FINAL PHOTO ROW SPACING ===== */
+.members{
+  padding-top:14px!important;
+}
+.racePlayers{
+  padding-top:0!important;
+}
+
 </style>
 
 
@@ -1728,6 +1737,27 @@ async function fetchLiveMetaCached(x){
   return job;
 }
 
+
+let liveMetaWarmupStarted=false;
+async function warmupAllLiveMeta(){
+  if(liveMetaWarmupStarted)return;
+  liveMetaWarmupStarted=true;
+
+  const targets=players.filter(x=>x._live&&x.soop_user_id);
+  let cursor=0;
+
+  const worker=async()=>{
+    while(true){
+      const i=cursor++;
+      if(i>=targets.length)return;
+      await fetchLiveMetaCached(targets[i]);
+    }
+  };
+
+  // Background only; board rendering never waits for this.
+  await Promise.all(Array.from({length:Math.min(8,targets.length)},worker));
+}
+
 function setupVisibleMetaPrefetch(){
   metaPrefetchObserver?.disconnect();
 
@@ -1753,9 +1783,10 @@ function setupVisibleMetaPrefetch(){
   cards.forEach(card=>metaPrefetchObserver.observe(card));
 }
 
+let lastPreviewPointer={clientX:0,clientY:0};
 let previewElapsedTimer=null;
 let previewThumbTimer=null;
-function showPreview(ev){
+async function showPreview(ev){
   const card=ev.currentTarget.closest('.playerCard');
   const id=Number(card?.dataset?.playerId||0);
   const x=players.find(v=>Number(v.id)===id);
@@ -1763,8 +1794,17 @@ function showPreview(ev){
 
   currentPreviewPlayerId=id;
   previewRequestSeq++;
+  const mySeq=previewRequestSeq;
 
-  // Paint this player's cached values immediately.
+  // If this player has not been prefetched yet, fetch first.
+  // Do NOT open a preview containing fake "0" while waiting.
+  if(!x._metaFetchedAt){
+    await fetchLiveMetaCached(x);
+
+    // User may already be hovering another player.
+    if(currentPreviewPlayerId!==id || previewRequestSeq!==mySeq)return;
+  }
+
   livePreviewTitle.textContent=x._liveTitle||x.display_name||x.soop_nickname||x.player_name||'LIVE';
   livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
   livePreviewViewers.textContent=formatViewerCount(x._viewerCount);
@@ -1778,34 +1818,29 @@ function showPreview(ev){
   }
 
   livePreview.classList.add('on');
-  movePreview(ev);
+  movePreview(lastPreviewPointer);
 
-  // Refresh only this player in the background.
+  // Refresh in background after the correct cached values are already painted.
   hydrateLiveMeta(x);
 
   clearInterval(previewElapsedTimer);
   clearInterval(previewThumbTimer);
 
   previewElapsedTimer=setInterval(()=>{
-    if(
-      livePreview.classList.contains('on') &&
-      currentPreviewPlayerId===id
-    ){
+    if(livePreview.classList.contains('on') && currentPreviewPlayerId===id){
       livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
     }
   },10000);
 
   previewThumbTimer=setInterval(()=>{
-    if(
-      livePreview.classList.contains('on') &&
-      currentPreviewPlayerId===id
-    ){
+    if(livePreview.classList.contains('on') && currentPreviewPlayerId===id){
       if(x._thumbnail)livePreviewImg.src=freshThumbnailUrl(x._thumbnail);
       hydrateLiveMeta(x);
     }
   },10000);
 }
 function movePreview(ev){
+  if(ev){lastPreviewPointer={clientX:ev.clientX,clientY:ev.clientY};}
   const w=320,g=14;
   let x=ev.clientX+g,y=ev.clientY+g;
   if(x+w>innerWidth-10)x=ev.clientX-w-g;
@@ -1848,6 +1883,10 @@ function applyPublicPayload(j){
 
   render();
   buildRail();
+
+  // Fill viewer/time cache immediately in the background.
+  // This never blocks the tier board itself.
+  warmupAllLiveMeta();
 }
 
 async function load(){
