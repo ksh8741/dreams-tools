@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ko">
 <head>
     <meta charset="utf-8">
@@ -797,6 +797,114 @@ main{width:min(1200px,100%)!important;margin:52px auto 120px!important;padding:0
 @media(max-width:950px){main{width:calc(100% - 30px)!important;margin-top:34px!important}.tierRail{display:none!important}.pageTitleWrap{min-height:122px!important}}
 @media(max-width:650px){main{width:calc(100% - 20px)!important;margin-top:24px!important}.pageTitleWrap{min-height:116px!important;margin-bottom:30px!important;padding-bottom:18px!important}.titleLine h1,.pageTitleWrap h1{font-size:39px!important;letter-spacing:-3px!important}.titleSources{display:none!important}.board{gap:42px!important}.tierLabel{height:58px!important}.tierLabel:after{display:none!important}.tierName{font-size:25px!important}.tierCounts{margin-left:auto!important;margin-right:0!important;font-size:9px!important}.members{padding-top:20px!important}.raceGroup{margin-bottom:24px!important}.racePlayers{min-height:115px!important;padding:4px 2px 0!important;gap:13px!important}.raceName{display:block!important}}
 
+
+/* ===== FINAL REQUEST OVERRIDES ===== */
+
+/* 1. 종족 표시 제거 */
+.raceHead,.raceLetter,.raceName{display:none!important}
+.raceGroup{
+  display:block!important;
+  min-height:0!important;
+  margin:0 0 30px!important;
+  padding:0!important;
+}
+.racePlayers{
+  width:100%!important;
+  min-height:0!important;
+  padding:5px 12px 2px!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  flex-wrap:wrap!important;
+  gap:18px!important;
+}
+
+/* 2. 티어명 헤더 정확히 중앙 */
+.tierLabel{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 26px!important;
+}
+.tierLabel:before{display:none!important}
+.tierNameCenter{
+  position:absolute!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  margin:0!important;
+  white-space:nowrap!important;
+}
+.tierCounts{
+  position:absolute!important;
+  right:26px!important;
+  margin:0!important;
+}
+
+/* 3. 카드 가운데 정렬 */
+.playerCard{
+  flex:0 0 132px!important;
+}
+
+/* 4. 섬네일 상단 정보 */
+.livePreviewMedia{
+  position:relative!important;
+  width:100%!important;
+}
+.livePreviewTop{
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  z-index:2!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  padding:9px!important;
+  background:linear-gradient(180deg,rgba(0,0,0,.55),transparent)!important;
+}
+.livePreviewLive{
+  margin:0!important;
+  height:22px!important;
+  padding:0 7px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  border-radius:6px!important;
+  background:#ef2947!important;
+  color:#fff!important;
+  font-size:9px!important;
+  font-weight:1000!important;
+}
+#livePreviewElapsed{
+  margin-left:0!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  opacity:.96!important;
+}
+.livePreviewViewers{
+  height:22px!important;
+  padding:0 8px!important;
+  display:flex!important;
+  align-items:center!important;
+  border-radius:6px!important;
+  background:rgba(16,18,22,.82)!important;
+  color:#fff!important;
+  font-size:9px!important;
+  font-weight:900!important;
+}
+.livePreviewBody{padding-top:9px!important}
+
+@media(max-width:650px){
+  .racePlayers{
+    justify-content:center!important;
+    gap:13px!important;
+    padding:4px 2px 0!important;
+  }
+  .playerCard{flex:0 0 110px!important}
+  .tierCounts{right:14px!important}
+}
+
 </style>
 
 
@@ -907,7 +1015,6 @@ function raceRow(all,race,label){
     .sort(comparePlayers);
 
   return `<div class="raceGroup ${race} ${p.length?'':'empty'}">
-    <div class="raceHead"><span class="raceLetter">${race}</span><span class="raceName">${label}</span></div>
     <div class="racePlayers">${p.map(card).join('')}</div>
   </div>`;
 }
@@ -927,7 +1034,7 @@ function render(){
     const all=players.filter(x=>x.tier===t);
     const scoped=all.filter(x=>passesUniversity(x));
     return `<div class="tier" id="${tierId(t)}">
-      <div class="tierLabel"><strong class="tierName">${t}</strong><span class="tierCounts">총 ${scoped.length}명 · 방송중 ${scoped.filter(x=>x._live).length}명</span></div>
+      <div class="tierLabel"><strong class="tierName tierNameCenter">${t}</strong><span class="tierCounts">총 ${scoped.length}명 · 방송중 ${scoped.filter(x=>x._live).length}명</span></div>
       <div class="members">${RACES.map(([r,l])=>raceRow(all,r,l)).join('')}</div>
     </div>`;
   }).join('');
@@ -1044,6 +1151,11 @@ function freshThumbnailUrl(url){
   return url+sep+'t='+Math.floor(Date.now()/10000);
 }
 
+function formatViewerCount(v){
+  const n=Number(v||0);
+  return Number.isFinite(n) ? n.toLocaleString('ko-KR')+'명 시청' : '0명 시청';
+}
+
 function formatLiveElapsed(startAt){
   if(!startAt)return '';
   const ms=Date.now()-new Date(startAt).getTime();
@@ -1063,8 +1175,11 @@ async function hydrateLiveMeta(x){
     const j=await r.json();
     if(j.started_at)x._liveStartedAt=j.started_at;
     if(j.title)x._liveTitle=j.title;
+    if(Number.isFinite(Number(j.viewer_count)))x._viewerCount=Number(j.viewer_count);
     if(livePreview.classList.contains('on')){
       livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
+  livePreviewViewers.textContent=formatViewerCount(x._viewerCount);
+      livePreviewViewers.textContent=formatViewerCount(x._viewerCount);
       if(j.title)livePreviewTitle.textContent=j.title;
     }
   }catch(_){}
@@ -1081,7 +1196,7 @@ function showPreview(ev){
   livePreviewTitle.textContent=x._liveTitle||x.display_name||x.soop_nickname||x.player_name||'LIVE';
   livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
   if(x._thumbnail){
-    livePreviewImg.src=x._thumbnail;
+    livePreviewImg.src=freshThumbnailUrl(x._thumbnail);
     livePreviewImg.style.display='block';
   }else{
     livePreviewImg.removeAttribute('src');
@@ -1098,8 +1213,9 @@ function showPreview(ev){
     }
   },10000);
   previewThumbTimer=setInterval(()=>{
-    if(livePreview.classList.contains('on') && x._thumbnail){
-      livePreviewImg.src=freshThumbnailUrl(x._thumbnail);
+    if(livePreview.classList.contains('on')){
+      if(x._thumbnail)livePreviewImg.src=freshThumbnailUrl(x._thumbnail);
+      hydrateLiveMeta(x);
     }
   },10000);
 }
@@ -1133,7 +1249,8 @@ async function load(){
     _liveTitle:x.live_cache_title||'',
     _thumbnail:x.live_cache_thumbnail||'',
     _bno:x.live_cache_bno||'',
-    _liveStartedAt:x.live_cache_started_at||''
+    _liveStartedAt:x.live_cache_started_at||'',
+    _viewerCount:Number(x.live_cache_viewer_count||0)
   }));
 
   render();
@@ -1171,9 +1288,14 @@ setInterval(async()=>{
 
     <div id="univPopover" class="univPopover"></div>
     <div id="livePreview" class="livePreview">
-        <img id="livePreviewImg" class="livePreviewImg" alt="">
+        <div class="livePreviewMedia">
+            <img id="livePreviewImg" class="livePreviewImg" alt="">
+            <div class="livePreviewTop">
+                <div class="livePreviewLive">LIVE <span id="livePreviewElapsed"></span></div>
+                <div id="livePreviewViewers" class="livePreviewViewers">0명 시청</div>
+            </div>
+        </div>
         <div class="livePreviewBody">
-            <div class="livePreviewLive">LIVE <span id="livePreviewElapsed" style="margin-left:6px;opacity:.82"></span></div>
             <div id="livePreviewTitle" class="livePreviewTitle"></div>
         </div>
     </div>
