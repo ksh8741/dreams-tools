@@ -475,6 +475,226 @@ main{
 .raceGroup.Z{--race:#8a55d7}
 .raceGroup.P{--race:#d3a000}
 
+
+/* v8.1 race label: horizontal, minimal, no circle/icon */
+.raceGroup{
+  grid-template-columns:82px 1fr !important;
+}
+.raceHead{
+  width:82px !important;
+  min-width:82px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+.raceLetter{display:none !important}
+.raceHead .raceName{
+  writing-mode:horizontal-tb !important;
+  transform:none !important;
+  width:auto !important;
+  min-height:0 !important;
+  padding:8px 10px 8px 13px !important;
+  margin:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  position:relative !important;
+  font-size:11px !important;
+  font-weight:950 !important;
+  line-height:1 !important;
+  letter-spacing:-.4px !important;
+  color:#313841 !important;
+  white-space:nowrap !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.raceHead .raceName:before{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  top:50% !important;
+  transform:translateY(-50%) !important;
+  width:3px !important;
+  height:24px !important;
+  border-radius:99px !important;
+  background:var(--race) !important;
+  opacity:.95 !important;
+}
+.raceHead .raceName:after{content:none !important;display:none !important}
+
+
+.titleLine{
+  position:relative !important;
+  display:flex !important;
+  align-items:flex-start !important;
+  width:100% !important;
+  min-height:72px !important;
+  box-sizing:border-box !important;
+}
+.titleLine h1{
+  margin:0 !important;
+}
+.titleSources{
+  position:absolute !important;
+  right:0 !important;
+  bottom:8px !important;
+  margin:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-end !important;
+  justify-content:flex-end !important;
+  gap:2px !important;
+  text-align:right !important;
+  white-space:nowrap !important;
+  font-size:9px !important;
+  line-height:1.35 !important;
+}
+.titleSources span,
+.titleSources span+span{
+  display:block !important;
+  padding:0 !important;
+  margin:0 !important;
+  border:0 !important;
+}
+
+
+/* ===== FINAL OVERRIDES ===== */
+
+/* Title sources: exact right-bottom position inside the same header line */
+.pageTitleWrap{
+  position:relative !important;
+  display:flex !important;
+  align-items:flex-end !important;
+  justify-content:space-between !important;
+}
+.pageTitleWrap > div:first-child{
+  min-width:0 !important;
+}
+.titleLine{
+  display:block !important;
+  position:static !important;
+  min-height:0 !important;
+}
+.titleSources{
+  position:static !important;
+  margin-left:auto !important;
+  padding:0 0 1px 24px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-end !important;
+  justify-content:flex-end !important;
+  gap:2px !important;
+  text-align:right !important;
+  white-space:nowrap !important;
+  font-size:9px !important;
+  line-height:1.35 !important;
+  color:#8a9098 !important;
+  font-weight:650 !important;
+}
+.titleSources span,
+.titleSources span+span{
+  display:block !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+}
+.titleSources a{
+  color:#747b84 !important;
+  text-decoration:none !important;
+}
+.titleSources a:hover{
+  color:#111 !important;
+  text-decoration:underline !important;
+}
+
+/* Race marker: NO circle, NO T/Z/P, NO vertical text.
+   Horizontal editorial label with a small color dash. */
+.raceGroup{
+  grid-template-columns:96px 1fr !important;
+}
+.raceHead{
+  width:96px !important;
+  min-width:96px !important;
+  height:100% !important;
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:flex-start !important;
+  justify-content:flex-start !important;
+  padding:22px 0 0 14px !important;
+  box-sizing:border-box !important;
+  background:linear-gradient(90deg,rgba(247,248,250,.96),rgba(247,248,250,.35)) !important;
+  border:0 !important;
+  border-right:1px solid #edf0f3 !important;
+  box-shadow:none !important;
+  overflow:hidden !important;
+  color:#313841 !important;
+}
+.raceLetter{
+  display:none !important;
+}
+.raceHead .raceName{
+  position:relative !important;
+  display:inline-flex !important;
+  width:auto !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  height:auto !important;
+  margin:0 !important;
+  padding:0 0 7px 0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  writing-mode:horizontal-tb !important;
+  text-orientation:mixed !important;
+  transform:none !important;
+  font-size:12px !important;
+  font-weight:1000 !important;
+  line-height:1 !important;
+  letter-spacing:-.55px !important;
+  color:#2c3239 !important;
+  white-space:nowrap !important;
+}
+.raceHead .raceName:before{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  right:auto !important;
+  top:auto !important;
+  bottom:0 !important;
+  width:28px !important;
+  height:3px !important;
+  border-radius:999px !important;
+  background:var(--race) !important;
+  opacity:.95 !important;
+  transform:none !important;
+}
+.raceHead .raceName:after{
+  content:none !important;
+  display:none !important;
+}
+
+/* Narrow screens still keep horizontal race text */
+@media(max-width:650px){
+  .raceGroup{grid-template-columns:74px 1fr !important}
+  .raceHead{
+    width:74px !important;
+    min-width:74px !important;
+    padding:18px 0 0 9px !important;
+  }
+  .raceHead .raceName{
+    display:inline-flex !important;
+    writing-mode:horizontal-tb !important;
+    font-size:10px !important;
+  }
+}
+
 </style>
 
 
@@ -491,12 +711,13 @@ main{
 
       <div class="pageTitleWrap">
         <div>
-          <div class="titleLine"><h1>스타크래프트 티어표</h1><div class="titleSources">
+          <div class="titleLine"><h1>스타크래프트 티어표</h1></div>
+          <div class="pageSub"></div>
+        <div class="titleSources">
 <span>티어표 출처 : <a href="https://www.fmkorea.com/3844139388" target="_blank" rel="noopener">https://www.fmkorea.com/3844139388</a></span>
 <span>전적 출처 : <a href="https://eloboard.com/" target="_blank" rel="noopener">https://eloboard.com/</a></span>
-</div></div>
-          <div class="pageSub"></div>
-        </div>
+</div>
+</div>
       </div>
       <div id="board" class="board"><div class="loading"></div></div>
     </main>
