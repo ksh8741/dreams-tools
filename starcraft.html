@@ -1860,9 +1860,6 @@ async function showPreview(ev){
   livePreview.classList.add('on');
   movePreview(lastPreviewPointer);
 
-  // Refresh in background after the correct cached values are already painted.
-  hydrateLiveMeta(x);
-
   clearInterval(previewElapsedTimer);
   clearInterval(previewThumbTimer);
 
@@ -1875,7 +1872,6 @@ async function showPreview(ev){
   previewThumbTimer=setInterval(()=>{
     if(livePreview.classList.contains('on') && currentPreviewPlayerId===id){
       if(x._thumbnail)livePreviewImg.src=freshThumbnailUrl(x._thumbnail);
-      hydrateLiveMeta(x);
     }
   },10000);
 }
@@ -1926,7 +1922,7 @@ function applyPublicPayload(j){
 
   // Fill viewer/time cache immediately in the background.
   // This never blocks the tier board itself.
-  warmupAllLiveMeta();
+  // LIVE meta is precomputed every minute by Vercel Cron.
 }
 
 async function load(){
