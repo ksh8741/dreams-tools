@@ -899,6 +899,274 @@ main{width:min(1200px,100%)!important;margin:52px auto 120px!important;padding:0
   letter-spacing:.2px!important;
 }
 
+
+/* =========================================================
+   EDITORIAL TIER BOARD — DESIGN ONLY
+   기능/API/로딩 JS는 변경하지 않음
+   ========================================================= */
+
+/* 전체 티어표: 여러 박스가 아니라 하나의 보드 */
+#tierBoard,
+.tierBoard,
+.board{
+  width:1184px!important;
+  max-width:calc(100vw - 16px)!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+/* 각 티어를 독립 카드처럼 보이게 하던 외형 제거 */
+.tierSection,
+.tierBlock,
+.tier{
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+/* 검은 티어 헤더 제거 → 에디토리얼 구분선 */
+.tierLabel{
+  position:relative!important;
+  height:78px!important;
+  min-height:78px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 28px!important;
+  margin:0!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  color:#1d1d1f!important;
+  overflow:visible!important;
+}
+
+.tierLabel:before,
+.tierLabel:after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  top:50%!important;
+  width:calc(50% - 92px)!important;
+  height:1px!important;
+  background:linear-gradient(90deg,transparent,#d9d4d1)!important;
+}
+
+.tierLabel:before{
+  left:28px!important;
+}
+
+.tierLabel:after{
+  right:28px!important;
+  transform:scaleX(-1)!important;
+}
+
+/* 티어명 정확히 가운데 */
+.tierName{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  z-index:2!important;
+  min-width:96px!important;
+  margin:0!important;
+  padding:0 14px!important;
+  background:#fff!important;
+  color:#181716!important;
+  font-size:17px!important;
+  line-height:28px!important;
+  font-weight:900!important;
+  letter-spacing:2.2px!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+}
+
+/* 인원수는 헤더 우측에 조용하게 */
+.tierCounts{
+  position:absolute!important;
+  z-index:3!important;
+  right:28px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  margin:0!important;
+  padding-left:12px!important;
+  background:#fff!important;
+  color:#aaa39e!important;
+  font-size:10px!important;
+  line-height:18px!important;
+  font-weight:700!important;
+  letter-spacing:-.2px!important;
+}
+
+/* 종족별 별도 행 느낌 제거: 선수들이 하나의 티어 그룹처럼 보이게 */
+.raceGroup{
+  display:contents!important;
+}
+
+.raceHead,
+.raceLetter,
+.raceName{
+  display:none!important;
+}
+
+.racePlayers{
+  width:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  display:contents!important;
+}
+
+/* 선수 영역 */
+.tierBody{
+  display:flex!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+  flex-wrap:wrap!important;
+  column-gap:30px!important;
+  row-gap:26px!important;
+  padding:5px 46px 44px!important;
+  background:#fff!important;
+  border:0!important;
+  border-bottom:1px solid #eeeae7!important;
+}
+
+/* 만약 tierBody가 없는 현재 구조에서도 카드 묶음 중앙 유지 */
+.tierSection > .raceGroup,
+.tierBlock > .raceGroup{
+  justify-content:center!important;
+}
+
+/* 카드 자체는 '카드'처럼 보이지 않게 */
+.playerCard{
+  flex:0 0 132px!important;
+  width:132px!important;
+  min-width:132px!important;
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  text-align:center!important;
+  transition:transform .16s ease,opacity .16s ease!important;
+}
+
+.playerCard:hover{
+  transform:translateY(-3px)!important;
+}
+
+/* 원형 프사 유지하되 과한 외곽선 제거 */
+.playerCard .avatar,
+.playerCard .profile,
+.playerCard .playerAvatar{
+  box-shadow:0 5px 18px rgba(25,20,18,.08)!important;
+}
+
+/* 이름 */
+.playerName{
+  margin-top:9px!important;
+  font-size:13px!important;
+  line-height:18px!important;
+  font-weight:850!important;
+  letter-spacing:-.55px!important;
+}
+
+/* 이름은 검정, 종족 문자만 종족색 */
+.playerCard.T .playerName,
+.playerCard.Z .playerName,
+.playerCard.P .playerName{
+  color:#262321!important;
+}
+
+.raceInline{
+  position:relative!important;
+  top:-1px!important;
+  margin-left:3px!important;
+  font-size:9px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  letter-spacing:.2px!important;
+}
+
+.playerCard.T .raceInline{color:#3478c9!important}
+.playerCard.Z .raceInline{color:#a14a93!important}
+.playerCard.P .raceInline{color:#b48a19!important}
+
+/* LIVE 표시는 작고 정돈되게 */
+.playerCard.live .avatar,
+.playerCard.live .profile,
+.playerCard.live .playerAvatar{
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 3px rgba(235,49,77,.55),
+    0 6px 18px rgba(25,20,18,.10)!important;
+}
+
+/* 티어 사이 불필요한 박스 여백 제거 */
+.tierSection + .tierSection,
+.tierBlock + .tierBlock{
+  margin-top:0!important;
+}
+
+/* 전체 보드 바깥 프레임 */
+#tierBoard,
+.tierBoard{
+  background:#fff!important;
+  border:1px solid #ebe6e3!important;
+  border-radius:14px!important;
+  box-shadow:
+    0 1px 2px rgba(31,25,22,.03),
+    0 14px 38px rgba(31,25,22,.055)!important;
+  overflow:hidden!important;
+}
+
+/* 모바일 */
+@media(max-width:650px){
+  .tierLabel{
+    height:64px!important;
+    min-height:64px!important;
+    padding:0 14px!important;
+  }
+
+  .tierLabel:before,
+  .tierLabel:after{
+    width:calc(50% - 72px)!important;
+  }
+
+  .tierLabel:before{left:14px!important}
+  .tierLabel:after{right:14px!important}
+
+  .tierName{
+    min-width:82px!important;
+    padding:0 10px!important;
+    font-size:14px!important;
+    letter-spacing:1.5px!important;
+  }
+
+  .tierCounts{
+    right:14px!important;
+    font-size:9px!important;
+  }
+
+  .tierBody{
+    column-gap:16px!important;
+    row-gap:22px!important;
+    padding:2px 12px 32px!important;
+  }
+
+  .playerCard{
+    flex-basis:110px!important;
+    width:110px!important;
+    min-width:110px!important;
+  }
+}
+
 </style>
 
 
