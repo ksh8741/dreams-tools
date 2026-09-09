@@ -16,7 +16,13 @@ body{
   margin:0;background:#f3f4f6;color:#15181c;
   font-family:Inter,Arial,"Noto Sans KR",sans-serif
 }
-main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
+main{
+  width:min(1200px,calc(100% - 16px));
+  box-sizing:border-box;
+  padding-left:8px;
+  padding-right:8px;
+  margin:34px auto 110px
+}
 .pageTitleWrap{
   display:flex;align-items:flex-end;justify-content:space-between;
   margin:0 0 22px;padding:0 2px 17px;border-bottom:1px solid #d9dde2
@@ -39,10 +45,8 @@ main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
 .tierLabel:before{
   content:"";width:5px;height:20px;border-radius:99px;background:#fff;margin-right:11px;opacity:.9
 }
-.tierLabel:after{
-  content:"STARCRAFT TIER";margin-left:auto;
-  font-size:8px;letter-spacing:1.8px;color:#6f7780;font-weight:900
-}
+.tierLabel:after{content:none}
+.tierCounts{margin-left:auto;font-size:11px;letter-spacing:-.1px;color:#8b929a;font-weight:800}
 
 .members{display:block;padding:0}
 .raceGroup{
@@ -253,12 +257,22 @@ main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
 .liveStatusLoading{padding:24px;color:#80868e;font-size:12px;text-align:center}
 .univFilterBox{margin:0 1px 7px;padding:7px 3px 8px;border-bottom:1px solid rgba(205,210,216,.8)}
 .univFilterBtn{width:100%;height:28px;border:1px solid #d7dbe0;border-radius:8px;background:#fff;color:#3c424a;font-size:9px;font-weight:900;cursor:pointer}
-.univPopover{position:fixed;z-index:20050;width:240px;max-height:360px;overflow:auto;display:none;padding:8px;border:1px solid #d9dde2;border-radius:12px;background:#fff;box-shadow:0 16px 40px rgba(20,25,32,.18)}
+.univPopover{position:fixed;z-index:20050;width:120px;max-height:360px;overflow:auto;display:none;padding:8px;border:1px solid #d9dde2;border-radius:12px;background:#fff;box-shadow:0 16px 40px rgba(20,25,32,.18)}
 .univPopover.on{display:block}
 .univOption{width:100%;min-height:34px;padding:7px 10px;border:0;border-radius:8px;background:transparent;text-align:left;color:#2b3036;font-size:11px;font-weight:800;cursor:pointer}
 .univOption:hover,.univOption.active{background:#f0f2f5;color:#111}
 
 
+
+.livePreviewLive #livePreviewElapsed{
+  display:inline-block;
+  margin-left:7px;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.1px;
+  color:#fff;
+  opacity:.92
+}
 </style>
 
 
@@ -275,10 +289,10 @@ main{width:min(1450px,calc(100% - 165px));margin:34px auto 110px}
       <div class="pageTitleWrap">
         <div>
           <h1>스타크래프트 티어표</h1>
-          <div class="pageSub">SOOP STARCRAFT TIER BOARD</div>
+          <div class="pageSub"></div>
         </div>
       </div>
-      <div id="board" class="board"><div class="loading">티어표 불러오는 중...</div></div>
+      <div id="board" class="board"><div class="loading"></div></div>
     </main>
     <aside id="tierRail" class="tierRail">
       <div class="tierRailTitle">TIER</div>
@@ -375,7 +389,7 @@ function render(){
     const all=players.filter(x=>x.tier===t);
     if(!visibleInTier(all))return '';
     return `<div class="tier" id="${tierId(t)}">
-      <div class="tierLabel">${t}</div>
+      <div class="tierLabel">${t}<span class="tierCounts">총 ${all.length}명 · 방송중 ${all.filter(x=>x._live).length}명</span></div>
       <div class="members">${RACES.map(([r,l])=>raceRow(all,r,l)).join('')}</div>
     </div>`;
   }).join('');
@@ -405,7 +419,6 @@ function buildRail(){
 
   liveOnlyToggle.addEventListener('change',ev=>{
     liveOnly=!!ev.target.checked;
-    localStorage.setItem('star_live_only',liveOnly?'1':'0');
     render();
     buildRail();
   });
@@ -431,7 +444,6 @@ function openUniversityPopover(btn){
   univPopover.querySelectorAll('.univOption').forEach(b=>{
     b.onclick=()=>{
       universityFilter=b.dataset.univ;
-      localStorage.setItem('star_university_filter_v2',universityFilter);
       univPopover.classList.remove('on');
       render();
       buildRail();
@@ -473,6 +485,13 @@ function wirePreview(){
     p.addEventListener('mouseleave',hidePreview);
   });
 }
+
+function freshThumbnailUrl(url){
+  if(!url)return '';
+  const sep=url.includes('?')?'&':'?';
+  return url+sep+'t='+Math.floor(Date.now()/10000);
+}
+
 function formatLiveElapsed(startAt){
   if(!startAt)return '';
   const ms=Date.now()-new Date(startAt).getTime();
@@ -500,6 +519,7 @@ async function hydrateLiveMeta(x){
 }
 
 let previewElapsedTimer=null;
+let previewThumbTimer=null;
 function showPreview(ev){
   const card=ev.currentTarget.closest('.playerCard');
   const id=Number(card?.dataset?.playerId||0);
@@ -519,11 +539,17 @@ function showPreview(ev){
   movePreview(ev);
   hydrateLiveMeta(x);
   clearInterval(previewElapsedTimer);
+  clearInterval(previewThumbTimer);
   previewElapsedTimer=setInterval(()=>{
     if(livePreview.classList.contains('on')){
       livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
     }
-  },30000);
+  },10000);
+  previewThumbTimer=setInterval(()=>{
+    if(livePreview.classList.contains('on') && x._thumbnail){
+      livePreviewImg.src=freshThumbnailUrl(x._thumbnail);
+    }
+  },10000);
 }
 function movePreview(ev){
   const w=320,g=14;
@@ -533,13 +559,13 @@ function movePreview(ev){
   livePreview.style.left=x+'px';
   livePreview.style.top=y+'px';
 }
-function hidePreview(){livePreview.classList.remove('on');clearInterval(previewElapsedTimer);previewElapsedTimer=null}
+function hidePreview(){livePreview.classList.remove('on');clearInterval(previewElapsedTimer);clearInterval(previewThumbTimer);previewElapsedTimer=null;previewThumbTimer=null}
 
 
 
 async function load(){
-  liveOnly=localStorage.getItem('star_live_only')!=='0';
-  universityFilter=localStorage.getItem('star_university_filter_v2')||'all';
+  liveOnly=true;
+  universityFilter='all';
 
   const r=await fetch('/api/star-public',{cache:'no-store'});
   if(!r.ok){board.innerHTML='<div class="loading">티어표 불러오기 실패</div>';return}
