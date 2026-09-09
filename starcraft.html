@@ -1332,27 +1332,32 @@
 .titleSources a{color:#747b84 !important;text-decoration:none !important}
 .titleSources a:hover{color:#111 !important;text-decoration:underline !important}
 
-/* Race v9 — compact badge */
+/* Race v9 — restrained editorial header */
 .raceGroup{
   display:grid !important; grid-template-columns:1fr !important; position:relative !important;
-  padding-top:42px !important; background:#fff !important;
+  padding-top:46px !important; background:#fff !important;
 }
 .raceHead{
-  position:absolute !important; left:16px !important; top:10px !important;
-  width:auto !important; min-width:0 !important; height:25px !important;
+  position:absolute !important; left:20px !important; right:20px !important; top:13px !important;
+  width:auto !important; min-width:0 !important; height:20px !important;
   display:flex !important; flex-direction:row !important; align-items:center !important;
-  justify-content:flex-start !important; padding:0 9px 0 4px !important; margin:0 !important;
-  background:color-mix(in srgb,var(--race) 9%,#fff) !important;
-  border:1px solid color-mix(in srgb,var(--race) 24%,#e7e9ed) !important;
-  border-radius:7px !important; box-shadow:none !important;
+  justify-content:flex-start !important; gap:7px !important; padding:0 !important; margin:0 !important;
+  background:transparent !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
   overflow:visible !important;
+}
+.raceHead:after{
+  content:"" !important; height:1px !important; flex:1 1 auto !important;
+  margin-left:5px !important;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--race) 42%,#dfe3e8),#edf0f3 42%,transparent) !important;
 }
 .raceLetter{display:none !important}
 .raceCode{
-  width:17px !important; height:17px !important; margin-right:6px !important;
+  width:auto !important; height:auto !important; margin:0 !important;
   display:inline-flex !important; align-items:center !important; justify-content:center !important;
-  border-radius:5px !important; background:var(--race) !important; color:#fff !important;
-  font-size:9px !important; font-weight:1000 !important; line-height:1 !important;
+  border:0 !important; border-radius:0 !important; background:transparent !important; color:var(--race) !important;
+  font-family:Arial,"Noto Sans KR",sans-serif !important;
+  font-size:16px !important; font-weight:1000 !important; line-height:1 !important;
+  letter-spacing:-.8px !important;
 }
 .raceHead .raceName{
   position:relative !important; display:inline-flex !important; align-items:center !important;
@@ -1360,14 +1365,15 @@
   margin:0 !important; padding:0 !important;
   writing-mode:horizontal-tb !important; text-orientation:mixed !important; transform:none !important;
   border:0 !important; border-radius:0 !important; background:transparent !important; box-shadow:none !important;
-  color:#343a42 !important; font-size:11px !important; font-weight:900 !important;
-  line-height:1 !important; letter-spacing:-.35px !important; white-space:nowrap !important;
+  color:#6f7680 !important; font-size:10px !important; font-weight:800 !important;
+  line-height:1 !important; letter-spacing:-.3px !important; white-space:nowrap !important;
 }
 .raceHead .raceName:before,.raceHead .raceName:after{content:none !important;display:none !important}
 .racePlayers{grid-column:1 !important; width:100% !important}
 @media(max-width:650px){
- .raceGroup{grid-template-columns:1fr !important;padding-top:38px !important}
- .raceHead{left:9px !important;top:8px !important;width:auto !important;min-width:0 !important}
+ .raceGroup{grid-template-columns:1fr !important;padding-top:40px !important}
+ .raceHead{left:11px !important;right:11px !important;top:10px !important;width:auto !important;min-width:0 !important}
+ .raceCode{font-size:14px !important}
  .raceHead .raceName{writing-mode:horizontal-tb !important;font-size:10px !important}
 }
 
