@@ -377,6 +377,104 @@ main{
  content:"";position:absolute;left:0;bottom:0;width:18px;height:1px;background:var(--race);opacity:.35;
 }
 
+
+.titleLine{
+  display:flex !important;
+  align-items:flex-start !important;
+  width:100% !important;
+}
+.titleSources{
+  margin-left:auto !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-end !important;
+  justify-content:flex-start !important;
+  gap:3px !important;
+  text-align:right !important;
+  white-space:nowrap !important;
+}
+.titleSources span{
+  display:block !important;
+  padding-left:0 !important;
+  border-left:0 !important;
+}
+.titleSources span+span{
+  padding-left:0 !important;
+  border-left:0 !important;
+}
+
+
+/* v8 race rail — actual markup override */
+.raceGroup{
+  grid-template-columns:74px 1fr !important;
+  position:relative;
+}
+.raceHead{
+  width:74px !important;
+  min-width:74px !important;
+  height:100% !important;
+  box-sizing:border-box !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  position:relative !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  overflow:hidden;
+}
+.raceLetter{
+  display:none !important;
+}
+.raceHead .raceName{
+  position:relative !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:46px !important;
+  min-height:92px !important;
+  box-sizing:border-box !important;
+  padding:12px 8px !important;
+  margin:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  writing-mode:vertical-rl !important;
+  transform:none !important;
+  font-size:10px !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+  letter-spacing:2px !important;
+  color:#3e4650 !important;
+}
+.raceHead .raceName:before{
+  content:"" !important;
+  position:absolute !important;
+  top:8px !important;
+  bottom:8px !important;
+  left:2px !important;
+  width:2px !important;
+  height:auto !important;
+  border-radius:2px !important;
+  background:var(--race) !important;
+  opacity:.9 !important;
+}
+.raceHead .raceName:after{
+  content:"" !important;
+  position:absolute !important;
+  top:8px !important;
+  left:2px !important;
+  width:15px !important;
+  height:2px !important;
+  background:var(--race) !important;
+  opacity:.28 !important;
+}
+.raceGroup.T{--race:#2f7ee6}
+.raceGroup.Z{--race:#8a55d7}
+.raceGroup.P{--race:#d3a000}
+
 </style>
 
 
@@ -395,7 +493,6 @@ main{
         <div>
           <div class="titleLine"><h1>스타크래프트 티어표</h1><div class="titleSources">
 <span>티어표 출처 : <a href="https://www.fmkorea.com/3844139388" target="_blank" rel="noopener">https://www.fmkorea.com/3844139388</a></span>
-<span>소속 출처 : <a href="https://www.fmkorea.com/9060359921" target="_blank" rel="noopener">https://www.fmkorea.com/9060359921</a></span>
 <span>전적 출처 : <a href="https://eloboard.com/" target="_blank" rel="noopener">https://eloboard.com/</a></span>
 </div></div>
           <div class="pageSub"></div>
@@ -484,7 +581,7 @@ function raceRow(all,race,label){
     .sort(comparePlayers);
 
   return `<div class="raceGroup ${race} ${p.length?'':'empty'}">
-    <div class="raceHead"><span class="raceLetter">${race}</span><span class="raceName">${label}</span></div>
+    <div class="raceHead"><span class="raceName">${label}</span></div>
     <div class="racePlayers">${p.map(card).join('')}</div>
   </div>`;
 }
