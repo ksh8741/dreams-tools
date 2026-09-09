@@ -66,7 +66,6 @@
              .board {
                  display: flex;
                  flex-direction: column;
-                 gap: 18px;
                  background: transparent;
                  border: 0;
                  box-shadow: none;
@@ -84,7 +83,6 @@ box-shadow: 0 12px 34px rgba(27,33,41,.06);
              }
 
              .tierLabel {
-                 height: 55px;
                  padding: 0 22px;
                  display: flex;
                  align-items: center;
@@ -128,15 +126,12 @@ margin-right: 11px;
 }
 
              .members {
-                 display: block;
-                 padding: 0
-             }
+                 display: block;}
 
              .raceGroup {
                  --race: #7c838b;
                  display: grid;
                  grid-template-columns: 78px 1fr;
-                 min-height: 168px;
                  border-bottom: 1px solid #eceff2
              }
 
@@ -193,10 +188,7 @@ margin-right: 11px;
              .racePlayers {
                  display: flex;
                  align-items: flex-start;
-                 flex-wrap: wrap;
-                 gap: 18px;
-                 padding: 18px 20px 20px
-             }
+                 flex-wrap: wrap;}
 
              /* circular player */
              .playerCard {
@@ -550,10 +542,7 @@ transition: .15s
                      grid-template-columns: 50px 1fr
                  }
 
-                 .racePlayers {
-                     gap: 13px;
-                     padding: 14px 10px
-                 }
+                 .racePlayers {}
 
                  .playerCard {
                      width: 110px
@@ -776,11 +765,11 @@ main{width:min(1200px,100%)!important;margin:52px auto 120px!important;padding:0
 .pageTitleWrap:before{content:none!important;display:none!important}
 .titleLine h1,.pageTitleWrap h1{margin:0!important;color:var(--ink)!important;font-family:Arial,"Noto Sans KR",sans-serif!important;font-size:clamp(38px,4.7vw,66px)!important;font-weight:900!important;line-height:.96!important;letter-spacing:-4.2px!important;text-shadow:3px 3px 0 rgba(217,75,61,.18)!important}
 .pageSub{display:none!important}.titleSources{max-width:430px!important;padding-bottom:2px!important;display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:5px!important;color:#766f64!important;font-size:9px!important;font-weight:800!important}.titleSources a{color:#504b43!important;text-decoration:underline!important;text-decoration-thickness:1px!important;text-underline-offset:2px!important}.titleSources a:hover{color:var(--retro-red)!important}
-.board{display:flex!important;flex-direction:column!important;gap:54px!important;overflow:visible!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.board{display:flex!important;flex-direction:column!important;overflow:visible!important;background:transparent!important;border:0!important;box-shadow:none!important}
 .tier{position:relative!important;display:block!important;min-height:0!important;overflow:hidden!important;scroll-margin-top:28px!important;border:1px solid var(--ink)!important;border-radius:4px!important;background:rgb(255,255,255)!important;box-shadow:6px 6px 0 rgba(25,24,22,.16)!important}
-.tierLabel{position:relative!important;height:70px!important;padding:0 26px!important;display:flex!important;align-items:center!important;gap:14px!important;overflow:visible!important;border:0!important;border-bottom:1px solid var(--ink)!important;border-radius:0!important;background:#fff!important;color:var(--ink)!important;writing-mode:initial!important;transform:none!important}
+.tierLabel{position:relative!important;padding:0 26px!important;display:flex!important;align-items:center!important;gap:14px!important;overflow:visible!important;border:0!important;border-bottom:1px solid var(--ink)!important;border-radius:0!important;background:#fff!important;color:var(--ink)!important;writing-mode:initial!important;transform:none!important}
 .tierLabel:before{content:""!important;width:4px!important;height:25px!important;margin:0 2px 0 0!important;flex:0 0 auto!important;border-radius:0!important;background:var(--ink)!important;opacity:1!important}.tierLabel:after{content:none!important;display:none!important}
-.tierName{color:var(--ink)!important;font-family:Arial,"Noto Sans KR",sans-serif!important;font-size:29px!important;font-weight:900!important;letter-spacing:-1.7px!important}.tierCounts{margin:3px 0 0 auto!important;letter-spacing:-.1px!important;
+.tierName{color:var(--ink)!important;font-family:Arial,"Noto Sans KR",sans-serif!important;font-weight:900!important;letter-spacing:-1.7px!important}.tierCounts{margin:3px 0 0 auto!important;letter-spacing:-.1px!important;
   color:#000!important;
   font-size:12px!important;
   font-weight:900!important;
@@ -791,16 +780,16 @@ main{width:min(1200px,100%)!important;margin:52px auto 120px!important;padding:0
   border-radius:0!important;
   outline:0!important;
 }
-.members{display:block!important;padding:28px 30px 20px!important;background:rgb(255,255,255)!important}
-.raceGroup{--race:#777;position:relative!important;display:block!important;min-height:0!important;margin:0 0 30px!important;padding:0!important;overflow:visible!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}.raceGroup:last-child{margin-bottom:0!important}.raceGroup.empty{display:none!important}.raceGroup.T{--race:#2873d2!important}.raceGroup.Z{--race:#a33898!important}.raceGroup.P{--race:#bb8d00!important}
+.members{display:block!important;background:rgb(255,255,255)!important}
+.raceGroup{--race:#777;position:relative!important;display:block!important;padding:0!important;overflow:visible!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}.raceGroup:last-child{margin-bottom:0!important}.raceGroup.empty{display:none!important}.raceGroup.T{--race:#2873d2!important}.raceGroup.Z{--race:#a33898!important}.raceGroup.P{--race:#bb8d00!important}
 .raceHead{position:relative!important;width:100%!important;height:26px!important;min-height:26px!important;margin:0 0 14px!important;padding:0!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;border:0!important;background:transparent!important;color:var(--race)!important}.raceHead:before{content:none!important;display:none!important}.raceHead:after{content:""!important;position:static!important;display:block!important;width:auto!important;height:1px!important;flex:1 1 auto!important;border:0!important;border-radius:0!important;background:var(--race)!important;opacity:.68!important}.raceHead .raceName{position:relative!important;display:block!important;flex:0 0 auto!important;padding:4px 8px!important;border:1px solid currentColor!important;background:#fff!important;color:var(--race)!important;font-family:Arial,"Noto Sans KR",sans-serif!important;font-size:10px!important;font-weight:900!important;line-height:1!important;letter-spacing:.8px!important;box-shadow:2px 2px 0 color-mix(in srgb,var(--race) 22%,transparent)!important}.raceHead .raceName:after{content:none!important;display:none!important}
-.racePlayers{width:100%!important;min-height:142px!important;padding:5px 12px 2px!important;display:flex!important;align-items:flex-start!important;flex-wrap:wrap!important;gap:18px!important;border:0!important;background:transparent!important}
+.racePlayers{width:100%!important;display:flex!important;align-items:flex-start!important;flex-wrap:wrap!important;border:0!important;background:transparent!important}
 /* Right menu retained, including favorite buttons. */
 .tierRail{right:18px!important;top:50%!important;width:92px!important;padding:10px 9px!important;border:1px solid #dedfe2!important;border-radius:18px!important;background:rgba(255,255,255,.97)!important;box-shadow:0 18px 46px rgba(30,34,40,.14)!important;backdrop-filter:blur(20px)!important}.tierRailTitle{color:#a0a5ad!important}.liveOnlyBox,.univFilterBox{border-color:#eceef1!important}.liveOnlyLabel{color:#777e87!important}.univFilterBtn{background:#f7f8fa!important;color:#3d434b!important;border-color:#dde0e4!important;border-radius:9px!important}
 .tierJumpRow{display:grid!important;grid-template-columns:minmax(0,1fr) 23px!important;align-items:center!important;gap:3px!important;margin:2px 0!important}.tierJump{min-width:0!important;height:27px!important;margin:0!important;padding:0 4px!important;color:#737983!important;border-radius:7px!important;font-size:9px!important}.tierJump:hover{color:#17191d!important}.tierJump.active{color:#fff!important}
 .tierFavorite{display:flex!important;visibility:visible!important;opacity:1!important;width:23px!important;height:23px!important;padding:0!important;align-items:center!important;justify-content:center!important;border:0!important;border-radius:7px!important;background:transparent!important;color:#a4a9b0!important;font-size:13px!important;line-height:1!important;cursor:pointer!important}.tierFavorite:hover{color:#34383e!important}.tierFavorite.on{color:#dca400!important;text-shadow:none!important}.univPopover{width:96px!important;max-height:none!important;height:auto!important;overflow:visible!important;overflow-y:visible!important;border:1px solid #dfe3e8!important;border-radius:12px!important;box-shadow:0 18px 45px rgba(0,0,0,.20)!important}
 @media(max-width:950px){main{width:calc(100% - 30px)!important;margin-top:34px!important}.tierRail{display:none!important}.pageTitleWrap{min-height:122px!important}}
-@media(max-width:650px){main{width:calc(100% - 20px)!important;margin-top:24px!important}.pageTitleWrap{min-height:116px!important;margin-bottom:30px!important;padding-bottom:18px!important}.titleLine h1,.pageTitleWrap h1{font-size:39px!important;letter-spacing:-3px!important}.titleSources{display:none!important}.board{gap:42px!important}.tierLabel{height:58px!important}.tierLabel:after{display:none!important}.tierName{font-size:25px!important}.tierCounts{margin-left:auto!important;margin-right:0!important;
+@media(max-width:650px){main{width:calc(100% - 20px)!important;margin-top:24px!important}.pageTitleWrap{min-height:116px!important;margin-bottom:30px!important;padding-bottom:18px!important}.titleLine h1,.pageTitleWrap h1{font-size:39px!important;letter-spacing:-3px!important}.titleSources{display:none!important}.board{}.tierLabel{}.tierLabel:after{display:none!important}.tierName{}.tierCounts{margin-left:auto!important;margin-right:0!important;
   color:#000!important;
   font-size:12px!important;
   font-weight:900!important;
@@ -810,7 +799,7 @@ main{width:min(1200px,100%)!important;margin:52px auto 120px!important;padding:0
   box-shadow:none!important;
   border-radius:0!important;
   outline:0!important;
-}.members{padding-top:20px!important}.raceGroup{margin-bottom:24px!important}.racePlayers{min-height:115px!important;padding:4px 2px 0!important;gap:13px!important}.raceName{display:block!important}}
+}.members{}.raceGroup{}.racePlayers{}.raceName{display:block!important}}
 
 
 /* ===== LIVE preview + inline race ===== */
@@ -1060,10 +1049,7 @@ border:0!important;
   flex-wrap:wrap!important;
   align-items:flex-start!important;
   justify-content:center!important;
-  gap:26px!important;
   width:100%!important;
-  min-height:0!important;
-  padding:6px 24px 30px!important;
   margin:0!important;
   background:#fff!important;
   border:0!important;
@@ -1146,18 +1132,14 @@ border:0!important;
   .tierSection,
   .tierBlock,
   .tier{
-    margin-bottom:12px!important;
     border-radius:11px!important;
   }
 
   .tierLabel{
-    height:58px!important;
-    min-height:58px!important;
     padding:0 14px!important;
   }
 
   .tierName{
-    font-size:14px!important;
   }
 
   .tierCounts{
@@ -1182,8 +1164,6 @@ border:0!important;
   }
 
   .racePlayers{
-    gap:16px!important;
-    padding:4px 12px 24px!important;
   }
 }
 
@@ -1259,8 +1239,6 @@ body{
   background:transparent;
   border:0;
   color:#000;
-  font-size:18px;
-  line-height:22px;
   font-weight:900;
   letter-spacing:-.35px;
   white-space:nowrap;
@@ -1303,32 +1281,21 @@ body{
 }
 
 .racePlayers{
-  padding-top:4px;
-  padding-bottom:12px;
-  row-gap:8px;
 }
 
 .tierSection,
 .tierBlock,
 .tier{
-  margin-bottom:7px;
 }
 
 @media(max-width:700px){
   .tierLabel{
-    height:42px;
-    min-height:42px;
   }
 
   .tierBody,
   .racePlayers{
-    padding-top:3px;
-    padding-bottom:10px;
-    row-gap:7px;
   }
 }
-
-/* ===== TIGHTER TIER SPACING ===== */
 
 /* 티어 글씨 18px */
 .tierName{
@@ -1343,7 +1310,6 @@ body{
 }
 
 .tier{
-  margin-bottom:0!important;
 }
 
 /* 헤더 높이 소폭 축소 */
@@ -1358,14 +1324,9 @@ body{
 }
 
 .raceGroup{
-  margin:0!important;
-  min-height:0!important;
 }
 
 .racePlayers{
-  min-height:0!important;
-  padding:3px 8px 8px!important;
-  row-gap:6px!important;
 }
 
 /* 카드 아래쪽 여백도 살짝 축소 */
@@ -1375,17 +1336,14 @@ body{
 }
 
 @media(max-width:650px){
-  .board{gap:7px!important}
+  .board{}
   .tierLabel{
-    height:40px!important;
-    min-height:40px!important;
   }
-  .members{padding:5px 8px 7px!important}
-  .racePlayers{padding:2px 4px 7px!important;row-gap:5px!important}
+  .members{}
+  .racePlayers{}
 }
 
 
-/* ===== FINAL TIER SIZE / SPACING ===== */
 .tierName{
   font-size:24px!important;
   line-height:28px!important;
@@ -1402,22 +1360,18 @@ body{
 }
 
 
-/* ===== FINAL PHOTO ROW SPACING ===== */
 .members{
   padding-top:14px!important;
 }
 .racePlayers{
-  padding-top:0!important;
 }
 
 
-/* ===== TIER TITLE -> FIRST PHOTO ROW GAP ===== */
 .members{
   padding-top:42px!important;
 }
 
 
-/* ===== FRAME INNER PADDING 24PX ===== */
 .members{
   padding-left:24px!important;
   padding-right:24px!important;
@@ -1426,7 +1380,6 @@ body{
 }
 
 
-/* ===== FRAME INNER PADDING — CORRECTED ===== */
 .tier{
   padding:24px!important;
   box-sizing:border-box!important;
@@ -1466,11 +1419,52 @@ body{
 }
 
 
-/* ===== PLAYER ROW SPACING ===== */
 .racePlayers{
   row-gap:12px!important;
 }
 
+
+
+/* ===== TIER LAYOUT — SINGLE SOURCE OF TRUTH =====
+   이 블록만 수정하면 간격/크기가 바뀝니다.
+*/
+.board{
+  gap:14px!important;              /* 티어 프레임끼리 간격 */
+}
+
+.tier{
+  margin-bottom:0!important;
+}
+
+.tierLabel{
+  height:42px!important;
+  min-height:42px!important;
+}
+
+.tierName{
+  font-size:24px!important;
+  line-height:28px!important;
+}
+
+.members{
+  margin:0!important;
+  padding:24px 0 0!important;      /* 타이틀바 → 첫 선수행 24px */
+}
+
+.raceGroup{
+  min-height:0!important;
+  margin:0 0 18px!important;       /* 종족 그룹 사이 세로 간격 */
+}
+.raceGroup:last-child{
+  margin-bottom:0!important;
+}
+
+.racePlayers{
+  min-height:0!important;
+  padding:0!important;
+  column-gap:18px!important;        /* 같은 행 선수 좌우 간격 */
+  row-gap:18px!important;           /* 선수 행 ↕ 행 간격 — 이것만 바꾸면 됨 */
+}
 </style>
 
 
