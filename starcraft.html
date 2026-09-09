@@ -1425,6 +1425,31 @@ body{
   padding-top:66px!important; /* 24px frame padding + 42px title→first-row gap */
 }
 
+
+/* ===== FRAME INNER PADDING — CORRECTED ===== */
+.tier{
+  padding:24px!important;
+  box-sizing:border-box!important;
+}
+
+/* title bar itself sits inside the 24px frame padding */
+.tierLabel{
+  margin:0!important;
+}
+
+/* exactly 24px between title bar and first photo row */
+.members{
+  padding:24px 0 0!important;
+  margin:0!important;
+}
+
+/* remove nested extra top padding so the visual gap stays exactly 24px */
+.racePlayers{
+  padding-top:0!important;
+}
+
+/* keep 24px breathing room at the bottom through the tier frame padding */
+
 </style>
 
 
