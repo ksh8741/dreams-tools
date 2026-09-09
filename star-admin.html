@@ -475,8 +475,12 @@ async function saveUniversity(id){
   if(!j?.university)return;
   const i=universities.findIndex(u=>Number(u.id)===Number(id));
   if(i>=0)universities[i]=j.university;
-  refreshUniversityUI();
-  await load();
+  rows=rows.map(x=>Number(x.university_id)===Number(id)?{
+    ...x,
+    university_name:j.university.name||'',
+    university_logo:j.university.logo_url||''
+  }:x);
+  refreshUniversityUI();render();
   showMsg(name+' 대학 저장 완료',true);
 }
 async function deleteUniversity(id){
