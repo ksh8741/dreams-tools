@@ -1193,6 +1193,63 @@ body{
   background:rgb(255,255,255)!important;
 }
 
+
+/* ===== BLACK TIER TITLE BAR + TIGHTER ROW SPACING ===== */
+
+/* 티어 타이틀바: 검정 + 흰 글씨 */
+.tierLabel{
+  height:52px!important;
+  min-height:52px!important;
+  background:#111214!important;
+  color:#fff!important;
+}
+
+.tierName{
+  color:#fff!important;
+  background:transparent!important;
+}
+
+.tierCounts{
+  color:#bfc3ca!important;
+  background:transparent!important;
+}
+
+/* 행간/티어 내부 세로 여백 축소 */
+.tierBody{
+  min-height:92px!important;
+  padding:10px 42px 20px!important;
+  row-gap:14px!important;
+}
+
+.racePlayers{
+  padding:10px 24px 20px!important;
+  row-gap:14px!important;
+}
+
+/* 티어 프레임 사이 간격도 조금 축소 */
+.tierSection,
+.tierBlock,
+.tier{
+  margin-bottom:10px!important;
+}
+
+@media(max-width:700px){
+  .tierLabel{
+    height:48px!important;
+    min-height:48px!important;
+  }
+
+  .tierBody{
+    padding:8px 12px 18px!important;
+    row-gap:12px!important;
+  }
+
+  .racePlayers{
+    padding:8px 12px 18px!important;
+    row-gap:12px!important;
+  }
+}
+
 </style>
 
 
