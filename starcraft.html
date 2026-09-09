@@ -1478,6 +1478,63 @@ body{
   color:#fff!important;
 }
 
+
+/* ===== NAME LINE — LIVE + NAME + RACE AS ONE UNIT ===== */
+.namePlate{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex-wrap:nowrap!important;
+  gap:4px!important;
+  line-height:1!important;
+}
+
+.namePlate .liveBadge,
+.namePlate .playerName,
+.namePlate .raceInline{
+  position:static!important;
+  top:auto!important;
+  bottom:auto!important;
+  left:auto!important;
+  right:auto!important;
+  transform:none!important;
+  margin:0!important;
+  vertical-align:middle!important;
+  line-height:1!important;
+}
+
+.namePlate .playerName,
+.namePlate .raceInline{
+  font-family:inherit!important;
+  font-size:inherit!important;
+  font-weight:inherit!important;
+  letter-spacing:inherit!important;
+  font-style:normal!important;
+  text-transform:none!important;
+}
+
+/* 종족을 별도 아이콘/배지처럼 보이게 하던 스타일 제거 */
+.namePlate .raceInline{
+  display:inline!important;
+  padding:0!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* LIVE도 같은 행 중앙선에 정확히 맞춤 */
+.namePlate .liveBadge{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 auto!important;
+}
+
 </style>
 
 
