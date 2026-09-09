@@ -1,0 +1,34 @@
+< !doctype html >
+    <html lang="ko">
+        <head>
+            <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width,initial-scale=1">
+                    <title>메인</title>
+                    <style>
+                        *{box - sizing:border-box}
+                        html,body{margin:0;min-height:100%;font-family:Arial,"Noto Sans KR",sans-serif;background:#fff;color:#111}
+
+                        main{min - height:calc(100vh - 58px)}
+
+
+                        .globalNavbarFrame{
+                            display:block!important;
+                        width:100%!important;
+                        height:58px!important;
+                        min-height:58px!important;
+                        margin:0!important;
+                        padding:0!important;
+                        border:0!important;
+                        position:relative!important;
+                        z-index:2147483647!important;
+                        background:#0c0e11!important;
+}
+
+                    </style>
+                </head>
+                <body>
+                    <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
+
+                    <main></main>
+                </body>
+            </html>

@@ -1,78 +1,398 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>스타 티어 관리자</title><link rel="stylesheet" href="navbar.css">
-<style>
-*{box-sizing:border-box}body{margin:0;background:#f4f5f7;color:#17191c;font-family:Arial,"Noto Sans KR",sans-serif}
-main{width:min(1320px,calc(100% - 30px));margin:30px auto 70px}h1{font-size:24px;margin:0 0 18px}
-.top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid #ddd;padding:12px;margin-bottom:12px}
-input,select,button{height:34px;border:1px solid #ccd1d7;background:#fff;padding:0 10px}button{cursor:pointer;font-weight:800}
-button.primary{background:#111;color:#fff;border-color:#111}button.danger{color:#b42318;border-color:#e3aaaa}
-#q{width:220px}.stat{margin-left:auto;font-size:12px;color:#666}
-#msg{display:none;margin-bottom:12px;padding:10px 12px;background:#fff;border:1px solid #ddd;font-size:13px}
-.legend{font-size:11px;color:#666;margin:0 0 8px}
-.row{display:grid;grid-template-columns:42px 92px 270px 350px minmax(230px,1fr) 180px;gap:8px;align-items:center;background:#fff;border:1px solid #e0e3e7;border-bottom:0;padding:8px}
-.row:last-child{border-bottom:1px solid #e0e3e7}.race{text-align:center;font-weight:1000}.original{font-size:10px;color:#999;margin-bottom:3px}
-.nameEdit{display:flex;gap:4px}.nameEdit input{width:150px;height:28px}.nameEdit button{height:28px;padding:0 7px}
-.univPlayerSelect{width:210px;height:28px;margin-top:5px;font-size:11px}
-.univManage{margin:0 0 12px;padding:12px;background:#fff;border:1px solid #ddd}
-.univTop{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
-.univTop input[type="text"]{width:180px}
-.univTop input[type="file"]{height:auto;padding:6px;background:#fff}
-.univList{margin-top:10px;display:grid;gap:7px}
-.univRow{display:grid;grid-template-columns:48px 1fr 190px 88px 70px;gap:7px;align-items:center;padding:7px;border:1px solid #e4e7eb}
-.univLogoPreview{width:40px;height:40px;border-radius:8px;object-fit:contain;background:#f5f6f8;border:1px solid #e2e5e9}
-.univNoLogo{width:40px;height:40px;border-radius:8px;background:#f5f6f8;border:1px solid #e2e5e9}
-.univRow input[type="text"]{width:100%}
-.univFile{height:auto!important;padding:4px!important;font-size:10px}
-.univHint{font-size:10px;color:#888;margin-top:6px}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>스타 티어 관리자</title>
+    <link rel="stylesheet" href="navbar.css">
+    <style>
+        * {
+            box-sizing: border-box
+        }
 
-.flags{display:flex;gap:5px 8px;flex-wrap:wrap}.flags label{font-size:11px;display:flex;align-items:center;gap:3px;cursor:pointer;white-space:nowrap}.flags input{width:14px;height:14px;margin:0}
-.soop{display:flex;align-items:center;gap:8px;min-width:0}.soop img{width:38px;height:38px;border-radius:50%;object-fit:cover}
-.ok{font-size:11px;font-weight:900;color:#09864b}.muted{font-size:11px;color:#999}
-.actions{display:flex;gap:5px;justify-content:flex-end}.actions button{padding:0 7px}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:99999}.modal.on{display:flex}
-.box{width:min(680px,calc(100% - 24px));max-height:84vh;overflow:auto;background:#fff;padding:18px}.searchbar{display:flex;gap:7px;margin:10px 0}.searchbar input{flex:1}
-.result{display:flex;align-items:center;gap:10px;padding:9px;border-top:1px solid #eee}.result img{width:48px;height:48px;border-radius:50%;object-fit:cover}.result .txt{flex:1}
-.addgrid{display:grid;grid-template-columns:1fr 130px 100px;gap:8px}.selected{display:none;margin-top:10px;padding:10px;border:1px solid #bcd8c8;background:#f5fff9}.selected.on{display:flex;align-items:center;gap:10px}.selected img{width:42px;height:42px;border-radius:50%;object-fit:cover}
-@media(max-width:950px){.row{grid-template-columns:35px 75px 1fr}.flags,.soop,.actions{grid-column:1/-1}.actions{justify-content:flex-start}}
-</style>
+        body {
+            margin: 0;
+            background: #f4f5f7;
+            color: #17191c;
+            font-family: Arial,"Noto Sans KR",sans-serif
+        }
+
+        main {
+            width: min(1320px,calc(100% - 30px));
+            margin: 30px auto 70px
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 0 0 18px
+        }
+
+        .top {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin-bottom: 12px
+        }
+
+        input, select, button {
+            height: 34px;
+            border: 1px solid #ccd1d7;
+            background: #fff;
+            padding: 0 10px
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: 800
+        }
+
+            button.primary {
+                background: #111;
+                color: #fff;
+                border-color: #111
+            }
+
+            button.danger {
+                color: #b42318;
+                border-color: #e3aaaa
+            }
+
+        #q {
+            width: 220px
+        }
+
+        .stat {
+            margin-left: auto;
+            font-size: 12px;
+            color: #666
+        }
+
+        #msg {
+            display: none;
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            background: #fff;
+            border: 1px solid #ddd;
+            font-size: 13px
+        }
+
+        .legend {
+            font-size: 11px;
+            color: #666;
+            margin: 0 0 8px
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 42px 92px 270px 350px minmax(230px,1fr) 180px;
+            gap: 8px;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #e0e3e7;
+            border-bottom: 0;
+            padding: 8px
+        }
+
+            .row:last-child {
+                border-bottom: 1px solid #e0e3e7
+            }
+
+        .race {
+            text-align: center;
+            font-weight: 1000
+        }
+
+        .original {
+            font-size: 10px;
+            color: #999;
+            margin-bottom: 3px
+        }
+
+        .nameEdit {
+            display: flex;
+            gap: 4px
+        }
+
+            .nameEdit input {
+                width: 150px;
+                height: 28px
+            }
+
+            .nameEdit button {
+                height: 28px;
+                padding: 0 7px
+            }
+
+        .univPlayerSelect {
+            width: 210px;
+            height: 28px;
+            margin-top: 5px;
+            font-size: 11px
+        }
+
+        .univManage {
+            margin: 0 0 12px;
+            padding: 12px;
+            background: #fff;
+            border: 1px solid #ddd
+        }
+
+        .univTop {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+            .univTop input[type="text"] {
+                width: 180px
+            }
+
+            .univTop input[type="file"] {
+                height: auto;
+                padding: 6px;
+                background: #fff
+            }
+
+        .univList {
+            margin-top: 10px;
+            display: grid;
+            gap: 7px
+        }
+
+        .univRow {
+            display: grid;
+            grid-template-columns: 48px 1fr 190px 88px 70px;
+            gap: 7px;
+            align-items: center;
+            padding: 7px;
+            border: 1px solid #e4e7eb
+        }
+
+        .univLogoPreview {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: contain;
+            background: #f5f6f8;
+            border: 1px solid #e2e5e9
+        }
+
+        .univNoLogo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #f5f6f8;
+            border: 1px solid #e2e5e9
+        }
+
+        .univRow input[type="text"] {
+            width: 100%
+        }
+
+        .univFile {
+            height: auto !important;
+            padding: 4px !important;
+            font-size: 10px
+        }
+
+        .univHint {
+            font-size: 10px;
+            color: #888;
+            margin-top: 6px
+        }
+
+        .flags {
+            display: flex;
+            gap: 5px 8px;
+            flex-wrap: wrap
+        }
+
+            .flags label {
+                font-size: 11px;
+                display: flex;
+                align-items: center;
+                gap: 3px;
+                cursor: pointer;
+                white-space: nowrap
+            }
+
+            .flags input {
+                width: 14px;
+                height: 14px;
+                margin: 0
+            }
+
+        .soop {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0
+        }
+
+            .soop img {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                object-fit: cover
+            }
+
+        .ok {
+            font-size: 11px;
+            font-weight: 900;
+            color: #09864b
+        }
+
+        .muted {
+            font-size: 11px;
+            color: #999
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+            justify-content: flex-end
+        }
+
+            .actions button {
+                padding: 0 7px
+            }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999
+        }
+
+            .modal.on {
+                display: flex
+            }
+
+        .box {
+            width: min(680px,calc(100% - 24px));
+            max-height: 84vh;
+            overflow: auto;
+            background: #fff;
+            padding: 18px
+        }
+
+        .searchbar {
+            display: flex;
+            gap: 7px;
+            margin: 10px 0
+        }
+
+            .searchbar input {
+                flex: 1
+            }
+
+        .result {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px;
+            border-top: 1px solid #eee
+        }
+
+            .result img {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                object-fit: cover
+            }
+
+            .result .txt {
+                flex: 1
+            }
+
+        .addgrid {
+            display: grid;
+            grid-template-columns: 1fr 130px 100px;
+            gap: 8px
+        }
+
+        .selected {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #bcd8c8;
+            background: #f5fff9
+        }
+
+            .selected.on {
+                display: flex;
+                align-items: center;
+                gap: 10px
+            }
+
+            .selected img {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                object-fit: cover
+            }
+
+        @media(max-width:950px) {
+            .row {
+                grid-template-columns: 35px 75px 1fr
+            }
+
+            .flags, .soop, .actions {
+                grid-column: 1/-1
+            }
+
+            .actions {
+                justify-content: flex-start
+            }
+        }
+    </style>
 </head>
 <body>
-<nav id="global-navbar" class="globalNav"><div class="globalNavInner"><a class="globalNavBrand" href="index.html">MUJE</a><div class="globalNavLinks"><a class="globalNavLink" href="pubg.html">배틀그라운드</a><a class="globalNavLink" href="starcraft.html">스타크래프트</a></div></div></nav>
-<main>
-<h1>스타 티어 관리자</h1>
-<div class="top"><input id="q" placeholder="선수 검색"><select id="tf"><option value="">전체 티어</option><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><button onclick="load()">새로고침</button><button id="loginBtn" onclick="adminLogin()">관리자 로그인</button><button class="primary" onclick="openAdd()">+ 선수 추가</button><button onclick="toggleUniversityManage()">대학 관리</button><span id="stat" class="stat"></span></div>
-<div class="legend">상태: ⏫ 티어상승임박 · ▲ 최근티어상승 · ⏸ 휴면 · 🔧 수리 · ✦ 신규</div>
-<div id="univManage" class="univManage" style="display:none">
-  <b>대학 관리</b>
-  <div class="univTop" style="margin-top:9px">
-    <input id="newUnivName" type="text" placeholder="대학 이름">
-    <input id="newUnivFile" type="file" accept="image/*">
-    <button class="primary" onclick="createUniversity()">대학 추가</button>
-  </div>
-  <div class="univHint">로고 파일은 관리자 페이지에서 선택하면 128×128 WebP로 줄여서 DB에 저장됨.</div>
-  <div id="univList" class="univList"></div>
-</div>
-<div id="msg"></div><div id="list"></div>
-</main>
+    <nav id="global-navbar" class="globalNav"><div class="globalNavInner"><a class="globalNavBrand" href="index.html">MUJE</a><div class="globalNavLinks"><a class="globalNavLink" href="pubg.html">배틀그라운드</a><a class="globalNavLink" href="starcraft.html">스타크래프트</a></div></div></nav>
+    <main>
+        <h1>스타 티어 관리자</h1>
+        <div class="top"><input id="q" placeholder="선수 검색"><select id="tf"><option value="">전체 티어</option><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><button onclick="load()">새로고침</button><button id="loginBtn" onclick="adminLogin()">관리자 로그인</button><button class="primary" onclick="openAdd()">+ 선수 추가</button><button onclick="toggleUniversityManage()">대학 관리</button><span id="stat" class="stat"></span></div>
+        <div class="legend">상태: ⏫ 티어상승임박 · ▲ 최근티어상승 · ⏸ 휴면 · 🔧 수리 · ✦ 신규</div>
+        <div id="univManage" class="univManage" style="display:none">
+            <b>대학 관리</b>
+            <div class="univTop" style="margin-top:9px">
+                <input id="newUnivName" type="text" placeholder="대학 이름">
+                <input id="newUnivFile" type="file" accept="image/*">
+                <button class="primary" onclick="createUniversity()">대학 추가</button>
+            </div>
+            <div class="univHint">로고 파일은 관리자 페이지에서 선택하면 128×128 WebP로 줄여서 DB에 저장됨.</div>
+            <div id="univList" class="univList"></div>
+        </div>
+        <div id="msg"></div><div id="list"></div>
+    </main>
 
-<div class="modal" id="searchModal" onclick="if(event.target===this)closeSearch()"><div class="box">
-<div class="searchbar"><input id="sq"><button onclick="searchSoop(false)">SOOP 검색</button><button onclick="closeSearch()">닫기</button></div><div id="results"></div>
-</div></div>
+    <div class="modal" id="searchModal" onclick="if(event.target===this)closeSearch()">
+        <div class="box">
+            <div class="searchbar"><input id="sq"><button onclick="searchSoop(false)">SOOP 검색</button><button onclick="closeSearch()">닫기</button></div><div id="results"></div>
+        </div>
+    </div>
 
-<div class="modal" id="addModal" onclick="if(event.target===this)closeAdd()"><div class="box">
-<h3 style="margin-top:0">신규 선수 등록</h3>
-<div class="addgrid"><input id="addName" placeholder="사이트에 표시할 이름"><select id="addTier"><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><select id="addRace"><option>T</option><option>Z</option><option>P</option></select></div>
-<div style="margin-top:8px"><select id="addUniversity" style="width:100%"></select></div>
-<div class="searchbar"><input id="addSearch" placeholder="SOOP 닉네임 검색"><button onclick="searchSoop(true)">SOOP 검색</button></div>
-<div id="addResults"></div>
-<div id="selectedSoop" class="selected"></div>
-<div style="margin-top:14px;display:flex;justify-content:flex-end;gap:7px"><button onclick="closeAdd()">취소</button><button class="primary" onclick="createPlayer()">선수 추가</button></div>
-</div></div>
+    <div class="modal" id="addModal" onclick="if(event.target===this)closeAdd()">
+        <div class="box">
+            <h3 style="margin-top:0">신규 선수 등록</h3>
+            <div class="addgrid"><input id="addName" placeholder="사이트에 표시할 이름"><select id="addTier"><option>갓</option><option>킹</option><option>잭</option><option>조커</option><option>스페이드</option><option>0티어</option><option>1티어</option><option>2티어</option><option>3티어</option><option>4티어</option><option>5티어</option><option>6티어</option><option>7티어</option><option>8티어</option><option>베이비</option></select><select id="addRace"><option>T</option><option>Z</option><option>P</option></select></div>
+            <div style="margin-top:8px"><select id="addUniversity" style="width:100%"></select></div>
+            <div class="searchbar"><input id="addSearch" placeholder="SOOP 닉네임 검색"><button onclick="searchSoop(true)">SOOP 검색</button></div>
+            <div id="addResults"></div>
+            <div id="selectedSoop" class="selected"></div>
+            <div style="margin-top:14px;display:flex;justify-content:flex-end;gap:7px"><button onclick="closeAdd()">취소</button><button class="primary" onclick="createPlayer()">선수 추가</button></div>
+        </div>
+    </div>
 
-<script>
+    <script>
 const TIERS=["갓", "킹", "잭", "조커", "스페이드", "0티어", "1티어", "2티어", "3티어", "4티어", "5티어", "6티어", "7티어", "8티어", "베이비"];
 const FLAGS=[['soon','⏫','티어상승임박'],['up','▲','최근티어상승'],['idle','⏸','휴면'],['repair','🔧','수리'],['new','✦','신규']];
 let rows=[],universities=[],target=null,addSelected=null;
@@ -203,5 +523,7 @@ async function createPlayer(){const name=addName.value.trim();if(!name)return al
 async function linkSoop(id,nick,img){if(!target)return;const data={soop_user_id:id,soop_nickname:nick,soop_profile_image:img};if(!target.display_name||target.display_name===target.player_name)data.display_name=nick;const ok=await updatePlayer(target.id,data);if(ok){closeSearch();showMsg('SOOP '+nick+' 연결 완료',true)}}
 
 updateLogin();load();
-</script><script src="navbar.js"></script>
-</body></html>
+    </script>
+    <script src="navbar.js"></script>
+</body>
+</html>
