@@ -3,7 +3,7 @@
         <head>
             <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width,initial-scale=1">
-                    <title>∏ﬁ¿Œ</title>
+                    <title>Î©îÏù∏</title>
                     <style>
                         *{box - sizing:border-box}
                         html,body{margin:0;min-height:100%;font-family:Arial,"Noto Sans KR",sans-serif;background:#fff;color:#111}
@@ -27,7 +27,7 @@
                     </style>
                 </head>
                 <body>
-                    <iframe class="globalNavbarFrame" src="navbar.html" title="ªÛ¥‹ ∏ﬁ¥∫" scrolling="no"></iframe>
+                    <iframe class="globalNavbarFrame" src="navbar.html" title="ÏÉÅÎã® Î©îÎâ¥" scrolling="no"></iframe>
 
                     <main></main>
                 </body>

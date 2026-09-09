@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
     const secret = process.env.SUPABASE_SECRET_KEY;
-    if (!secret) return res.status(500).json({ error: 'SUPABASE_SECRET_KEY ¹Ì¼³Á¤' });
+    if (!secret) return res.status(500).json({ error: 'SUPABASE_SECRET_KEY ë¯¸ì„¤ì •' });
 
     const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_star_public_payload`, {
         method: 'POST',

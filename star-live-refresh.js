@@ -133,7 +133,7 @@ export default async function handler(req, res) {
     }
 
     const secret = process.env.SUPABASE_SECRET_KEY;
-    if (!secret) return res.status(500).json({ error: 'SUPABASE_SECRET_KEY ¹Ì¼³Á¤' });
+    if (!secret) return res.status(500).json({ error: 'SUPABASE_SECRET_KEY ë¯¸ì„¤ì •' });
 
     const H = {
         'apikey': secret,
