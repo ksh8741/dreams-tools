@@ -1551,6 +1551,74 @@ main{width:min(1180px,calc(100% - 44px)) !important;margin:46px auto 120px !impo
  .raceGroup{grid-template-columns:1fr !important;padding-top:42px !important}.raceHead{left:8px !important;right:0 !important;top:15px !important;inset-block-start:15px !important;width:auto !important;height:16px !important;min-height:0 !important;padding:0 !important;background:transparent !important}
  .raceHead .raceName{font-size:11px !important}.racePlayers{grid-column:1 !important;padding:7px 8px 18px !important;gap:13px !important}
 }
+/* v15 FINAL — midnight gallery. Player-card selectors are intentionally untouched. */
+body{background:radial-gradient(circle at 18% 0,#273244 0,#161c27 34%,#0d1118 100%) fixed !important;color:#f5f7fa !important}
+main{width:min(1200px,calc(100% - 52px)) !important;margin:48px auto 130px !important}
+.pageTitleWrap{
+  position:relative !important;display:grid !important;grid-template-columns:1fr auto !important;align-items:end !important;
+  min-height:156px !important;margin:0 0 34px !important;padding:38px 40px 32px !important;overflow:hidden !important;
+  border:1px solid rgba(255,255,255,.12) !important;border-radius:24px !important;
+  background:linear-gradient(125deg,rgba(255,255,255,.12),rgba(255,255,255,.035)) !important;
+  box-shadow:0 24px 70px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.12) !important;
+  backdrop-filter:blur(18px) !important
+}
+.pageTitleWrap:after{content:"" !important;display:block !important;position:absolute !important;right:-90px !important;top:-150px !important;width:340px !important;height:340px !important;border:70px solid rgba(255,255,255,.025) !important;border-radius:50% !important}
+.pageTitleWrap:before{content:"MUJE  ·  STARCRAFT RANKING" !important;left:40px !important;top:30px !important;color:#8fa1bc !important;font-size:8px !important;letter-spacing:2.4px !important}
+.titleLine h1,.pageTitleWrap h1{color:#fff !important;font-size:43px !important;letter-spacing:-2.8px !important;text-shadow:0 5px 24px rgba(0,0,0,.22) !important}
+.titleSources{position:relative !important;z-index:1 !important;color:#718097 !important}.titleSources a{color:#9eacc0 !important}.titleSources a:hover{color:#fff !important}
+.board{gap:28px !important}
+.tier{
+  display:block !important;overflow:hidden !important;border:1px solid rgba(255,255,255,.11) !important;
+  border-radius:20px !important;background:#f7f8fa !important;
+  box-shadow:0 22px 55px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.8) !important
+}
+.tierLabel{
+  position:relative !important;width:100% !important;height:72px !important;padding:0 28px !important;
+  display:flex !important;flex-direction:row !important;align-items:center !important;gap:14px !important;
+  border:0 !important;border-bottom:1px solid rgba(255,255,255,.08) !important;
+  background:linear-gradient(110deg,#161d29 0%,#202a39 62%,#151b25 100%) !important;color:#fff !important
+}
+.tierLabel:before{content:"TIER" !important;display:inline-flex !important;position:static !important;margin:0 !important;color:#74839a !important;font-size:8px !important;font-weight:1000 !important;letter-spacing:2px !important}
+.tierLabel:after{content:"" !important;display:block !important;position:absolute !important;left:28px !important;bottom:0 !important;width:48px !important;height:3px !important;background:linear-gradient(90deg,#fff,rgba(255,255,255,.18)) !important}
+.tierName{color:#fff !important;font-size:27px !important;letter-spacing:-1.5px !important}
+.tierCounts{margin-left:auto !important;color:#9ba8ba !important;font-size:10px !important}
+.members{padding:13px 14px 17px !important;background:linear-gradient(180deg,#f8f9fb,#f2f4f7) !important}
+.raceGroup{
+  --race:#77808d;display:grid !important;grid-template-columns:108px minmax(0,1fr) !important;align-items:stretch !important;
+  min-height:158px !important;margin:8px 0 !important;padding:0 !important;overflow:hidden !important;
+  border:1px solid #e3e7ec !important;border-radius:14px !important;background:#fff !important;
+  box-shadow:0 7px 18px rgba(25,33,44,.045) !important
+}
+.raceGroup.T{--race:#3979e8 !important}.raceGroup.Z{--race:#b741aa !important}.raceGroup.P{--race:#c79a20 !important}.raceGroup.empty{display:none !important}
+.raceHead{
+  grid-column:1 !important;position:relative !important;inset:auto !important;width:108px !important;height:auto !important;min-height:100% !important;
+  padding:25px 0 0 20px !important;display:flex !important;align-items:flex-start !important;justify-content:flex-start !important;
+  border:0 !important;border-right:1px solid #e8ebef !important;background:linear-gradient(135deg,color-mix(in srgb,var(--race) 8%,#fff),#f7f8fa) !important
+}
+.raceHead:before{content:"" !important;display:block !important;position:absolute !important;left:0 !important;top:19px !important;width:4px !important;height:34px !important;border-radius:0 4px 4px 0 !important;background:var(--race) !important}
+.raceHead:after{content:none !important;display:none !important}
+.raceHead .raceName{color:#303744 !important;font-size:11px !important;font-weight:1000 !important;letter-spacing:-.2px !important}
+.raceHead .raceName:after{content:"" !important;display:block !important;position:absolute !important;left:0 !important;bottom:-10px !important;width:24px !important;height:2px !important;border-radius:2px !important;background:var(--race) !important;opacity:.7 !important}
+.racePlayers{grid-column:2 !important;width:100% !important;padding:20px 22px 22px !important;gap:18px !important;background:#fff !important}
+.tierRail{
+  right:18px !important;width:92px !important;padding:10px 9px !important;border:1px solid rgba(255,255,255,.14) !important;
+  border-radius:18px !important;background:rgba(17,23,33,.9) !important;box-shadow:0 22px 55px rgba(0,0,0,.32) !important;backdrop-filter:blur(20px) !important
+}
+.tierRailTitle{color:#657188 !important}.liveOnlyBox,.univFilterBox{border-color:rgba(255,255,255,.09) !important}.liveOnlyLabel{color:#748097 !important}
+.univFilterBtn{background:rgba(255,255,255,.07) !important;color:#d7dce5 !important;border-color:rgba(255,255,255,.13) !important;border-radius:9px !important}
+.tierJumpRow{display:grid !important;grid-template-columns:minmax(0,1fr) 23px !important;align-items:center !important;gap:3px !important;margin:2px 0 !important}
+.tierJump{min-width:0 !important;height:27px !important;margin:0 !important;padding:0 4px !important;color:#9aa5b5 !important;border-radius:7px !important;font-size:9px !important}
+.tierJump:hover{background:rgba(255,255,255,.08) !important;color:#fff !important}.tierJump.active{background:#fff !important;color:#111722 !important}
+.tierFavorite{width:23px !important;height:23px !important;padding:0 !important;border:0 !important;border-radius:7px !important;background:transparent !important;color:#576276 !important;font-size:13px !important;line-height:1 !important;cursor:pointer !important}
+.tierFavorite:hover{background:rgba(255,255,255,.08) !important;color:#fff !important}.tierFavorite.on{color:#ffc94b !important;text-shadow:0 0 12px rgba(255,201,75,.38) !important}
+.univPopover{width:168px !important;max-height:360px !important;border:1px solid #dfe3e8 !important;border-radius:12px !important;box-shadow:0 18px 45px rgba(0,0,0,.2) !important}
+@media(max-width:950px){main{width:calc(100% - 28px) !important}.tierRail{display:none !important}.raceGroup{grid-template-columns:90px minmax(0,1fr) !important}.raceHead{width:90px !important;padding-left:15px !important}}
+@media(max-width:650px){
+ main{width:calc(100% - 16px) !important;margin-top:22px !important}.pageTitleWrap{grid-template-columns:1fr !important;min-height:142px !important;padding:38px 20px 22px !important;border-radius:17px !important}.pageTitleWrap:before{left:20px !important;top:24px !important}.titleLine h1,.pageTitleWrap h1{font-size:31px !important}.titleSources{align-items:flex-start !important}
+ .tier{border-radius:15px !important}.tierLabel{height:61px !important;padding:0 16px !important;gap:9px !important}.tierLabel:after{left:16px !important}.tierName{font-size:22px !important}.tierCounts{font-size:9px !important}
+ .members{padding:7px !important}.raceGroup{display:block !important;min-height:0 !important;padding-top:38px !important;border-radius:11px !important}.raceHead{position:absolute !important;left:12px !important;right:12px !important;top:12px !important;width:auto !important;height:18px !important;min-height:0 !important;padding:0 0 0 9px !important;border:0 !important;background:transparent !important}.raceHead:before{left:0 !important;top:1px !important;width:3px !important;height:14px !important}.raceHead .raceName:after{display:none !important}
+ .racePlayers{grid-column:1 !important;padding:8px 9px 18px !important;gap:13px !important}
+}
 </style>
 
 
@@ -1590,6 +1658,9 @@ let universities=[];
 let liveOnly=true;
 let universityFilter='all';
 let railObserver=null;
+const FAVORITE_TIER_KEY='starcraft_favorite_tier';
+let favoriteTier=localStorage.getItem(FAVORITE_TIER_KEY)||'';
+let favoriteJumpDone=false;
 
 function e(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function flags(x){return Array.isArray(x.status_flags)?x.status_flags:[]}
@@ -1704,7 +1775,7 @@ function buildRail(){
     `<div class="univFilterBox">
       <button id="univFilterBtn" class="univFilterBtn" title="${e(currentUniv)}">대학 ▾</button>
     </div>`+
-    TIERS.map(t=>`<a class="tierJump" href="#${tierId(t)}">${t}</a>`).join('');
+    TIERS.map(t=>`<div class="tierJumpRow"><a class="tierJump" href="#${tierId(t)}">${t}</a><button class="tierFavorite ${favoriteTier===t?'on':''}" type="button" data-favorite-tier="${e(t)}" title="${favoriteTier===t?'즐겨찾기 해제':'이 티어를 시작 위치로 저장'}">${favoriteTier===t?'★':'☆'}</button></div>`).join('');
 
   liveOnlyToggle.addEventListener('change',ev=>{
     liveOnly=!!ev.target.checked;
@@ -1716,6 +1787,17 @@ function buildRail(){
     ev.stopPropagation();
     openUniversityPopover(univFilterBtn);
   });
+
+  tierRail.querySelectorAll('[data-favorite-tier]').forEach(button=>{
+    button.addEventListener('click',ev=>{
+      ev.preventDefault();ev.stopPropagation();
+      const tier=button.dataset.favoriteTier||'';
+      favoriteTier=favoriteTier===tier?'':tier;
+      if(favoriteTier)localStorage.setItem(FAVORITE_TIER_KEY,favoriteTier);
+      else localStorage.removeItem(FAVORITE_TIER_KEY);
+      buildRail();
+    });
+  });
 }
 
 function openUniversityPopover(btn){
@@ -1725,8 +1807,8 @@ function openUniversityPopover(btn){
     ...universities.map(u=>({id:String(u.id),name:u.name}))
   ];
   univPopover.innerHTML=options.map(o=>`<button class="univOption ${String(o.id)===String(universityFilter)?'active':''}" data-univ="${e(o.id)}">${e(o.name)}</button>`).join('');
-  const r=btn.getBoundingClientRect(),w=240;
-  univPopover.style.left=Math.max(10,r.left-w-10)+'px';
+  const r=btn.getBoundingClientRect(),w=168;
+  univPopover.style.left=Math.max(10,r.left-w-6)+'px';
   univPopover.style.top=Math.min(innerHeight-370,Math.max(10,r.top-30))+'px';
   univPopover.classList.add('on');
 
@@ -1875,6 +1957,12 @@ async function load(){
 
   render();
   buildRail();
+  if(!favoriteJumpDone&&favoriteTier){
+    favoriteJumpDone=true;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      document.getElementById(tierId(favoriteTier))?.scrollIntoView({behavior:'smooth',block:'start'});
+    }));
+  }
 }
 
 
