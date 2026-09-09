@@ -273,6 +273,77 @@ main{
   color:#fff;
   opacity:.92
 }
+
+#universityMenu,.universityMenu,.uniMenu,.universityPopup,.uniPopup{
+  width:120px !important;
+  right:82px !important;
+}
+
+/* v7.7 original race marker: slim vertical tab + oversized watermark letter */
+.raceGroup{
+  position:relative;
+  grid-template-columns:52px 1fr !important;
+  overflow:hidden;
+}
+.raceLabel{
+  position:relative !important;
+  width:52px !important;
+  min-width:52px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
+  font-size:10px !important;
+  font-weight:1000 !important;
+  letter-spacing:2.2px !important;
+  text-transform:uppercase;
+  opacity:.82;
+}
+.raceLabel:before{
+  content:"";
+  position:absolute;
+  right:5px;
+  top:18px;
+  bottom:18px;
+  width:3px;
+  border-radius:999px;
+  background:var(--race);
+  opacity:.9;
+}
+.raceLabel:after{
+  content:attr(data-race);
+  position:absolute;
+  left:-3px;
+  bottom:4px;
+  writing-mode:horizontal-tb;
+  transform:rotate(180deg);
+  font-size:46px;
+  line-height:1;
+  font-weight:1000;
+  color:var(--race);
+  opacity:.07;
+  pointer-events:none;
+}
+
+
+.sourceLines{
+  width:100%;
+  box-sizing:border-box;
+  text-align:right;
+  font-size:10px;
+  line-height:1.55;
+  color:#8b929a;
+  padding:0 2px 10px;
+  font-weight:700;
+}
+.sourceLines a{color:inherit;text-decoration:none}
+.sourceLines a:hover{text-decoration:underline;color:#333}
+
 </style>
 
 
@@ -286,6 +357,11 @@ main{
 <body>
 <nav id="global-navbar" class="globalNav"><div class="globalNavInner"><a class="globalNavBrand" href="index.html">MUJE</a><div class="globalNavLinks"><a class="globalNavLink" href="pubg.html">배틀그라운드</a><a class="globalNavLink active" href="starcraft.html">스타크래프트</a></div></div></nav>
 <main>
+<div class="sourceLines">
+  <div>티어표 출처 : <a href="https://www.fmkorea.com/3844139388" target="_blank" rel="noopener">FMKorea</a></div>
+  <div>소속 출처 : <a href="https://www.fmkorea.com/9060359921" target="_blank" rel="noopener">FMKorea</a></div>
+  <div>전적 출처 : <a href="https://eloboard.com/" target="_blank" rel="noopener">ELOBOARD</a></div>
+</div>
       <div class="pageTitleWrap">
         <div>
           <h1>스타크래프트 티어표</h1>
@@ -380,6 +456,12 @@ function raceRow(all,race,label){
   </div>`;
 }
 
+function passesUniversity(x){
+  if(universityFilter==='all')return true;
+  if(universityFilter==='none')return !x.university_id;
+  return String(x.university_id||'')===String(universityFilter);
+}
+
 function visibleInTier(all){
   return all.some(x=>universityMatch(x) && (!liveOnly || x._live || !x._liveKnown));
 }
@@ -387,9 +469,9 @@ function visibleInTier(all){
 function render(){
   board.innerHTML=TIERS.map(t=>{
     const all=players.filter(x=>x.tier===t);
-    if(!visibleInTier(all))return '';
+    const scoped=all.filter(x=>passesUniversity(x));
     return `<div class="tier" id="${tierId(t)}">
-      <div class="tierLabel">${t}<span class="tierCounts">총 ${all.length}명 · 방송중 ${all.filter(x=>x._live).length}명</span></div>
+      <div class="tierLabel">${t}<span class="tierCounts">총 ${scoped.length}명 · 방송중 ${scoped.filter(x=>x._live).length}명</span></div>
       <div class="members">${RACES.map(([r,l])=>raceRow(all,r,l)).join('')}</div>
     </div>`;
   }).join('');
