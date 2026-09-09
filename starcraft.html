@@ -1327,6 +1327,63 @@ body{
     row-gap:7px;
   }
 }
+
+/* ===== TIGHTER TIER SPACING ===== */
+
+/* 티어 글씨 18px */
+.tierName{
+  font-size:18px!important;
+  line-height:20px!important;
+  font-weight:900!important;
+}
+
+/* 티어 박스 사이 간격 조금 더 축소 */
+.board{
+  gap:8px!important;
+}
+
+.tier{
+  margin-bottom:0!important;
+}
+
+/* 헤더 높이 소폭 축소 */
+.tierLabel{
+  height:42px!important;
+  min-height:42px!important;
+}
+
+/* 선수 영역 위/아래 여백 더 축소 */
+.members{
+  padding:6px 18px 8px!important;
+}
+
+.raceGroup{
+  margin:0!important;
+  min-height:0!important;
+}
+
+.racePlayers{
+  min-height:0!important;
+  padding:3px 8px 8px!important;
+  row-gap:6px!important;
+}
+
+/* 카드 아래쪽 여백도 살짝 축소 */
+.namePlate{
+  min-height:21px!important;
+  margin-top:5px!important;
+}
+
+@media(max-width:650px){
+  .board{gap:7px!important}
+  .tierLabel{
+    height:40px!important;
+    min-height:40px!important;
+  }
+  .members{padding:5px 8px 7px!important}
+  .racePlayers{padding:2px 4px 7px!important;row-gap:5px!important}
+}
+
 </style>
 
 
