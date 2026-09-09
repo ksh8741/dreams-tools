@@ -798,7 +798,8 @@ main{width:min(1200px,100%)!important;margin:52px auto 120px!important;padding:0
 @media(max-width:650px){main{width:calc(100% - 20px)!important;margin-top:24px!important}.pageTitleWrap{min-height:116px!important;margin-bottom:30px!important;padding-bottom:18px!important}.titleLine h1,.pageTitleWrap h1{font-size:39px!important;letter-spacing:-3px!important}.titleSources{display:none!important}.board{gap:42px!important}.tierLabel{height:58px!important}.tierLabel:after{display:none!important}.tierName{font-size:25px!important}.tierCounts{margin-left:auto!important;margin-right:0!important;font-size:9px!important}.members{padding-top:20px!important}.raceGroup{margin-bottom:24px!important}.racePlayers{min-height:115px!important;padding:4px 2px 0!important;gap:13px!important}.raceName{display:block!important}}
 
 
-/* ===== Requested card/preview tweaks ===== */
+/* ===== LIVE preview + inline race ===== */
+.raceHead,.raceLetter,.raceName{display:none!important}
 .raceInline{
   margin-left:1px!important;
   color:#6f6a61!important;
@@ -806,13 +807,13 @@ main{width:min(1200px,100%)!important;margin:52px auto 120px!important;padding:0
   font-weight:1000!important;
   letter-spacing:.2px!important;
 }
-.livePreviewMedia{position:relative!important}
+.livePreviewMedia{position:relative!important;width:100%!important}
 .livePreviewViewer{
   position:absolute!important;
   left:8px!important;
   top:8px!important;
   z-index:3!important;
-  min-height:24px!important;
+  height:24px!important;
   padding:0 8px!important;
   display:flex!important;
   align-items:center!important;
@@ -828,7 +829,6 @@ main{width:min(1200px,100%)!important;margin:52px auto 120px!important;padding:0
   height:7px!important;
   border-radius:50%!important;
   background:#ef2947!important;
-  box-shadow:0 0 0 2px rgba(239,41,71,.16)!important;
 }
 .livePreviewElapsed{
   position:absolute!important;
@@ -1138,7 +1138,7 @@ function showPreview(ev){
   livePreviewTitle.textContent=x._liveTitle||x.display_name||x.soop_nickname||x.player_name||'LIVE';
   livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
   if(x._thumbnail){
-    livePreviewImg.src=x._thumbnail;
+    livePreviewImg.src=freshThumbnailUrl(x._thumbnail);
     livePreviewImg.style.display='block';
   }else{
     livePreviewImg.removeAttribute('src');
