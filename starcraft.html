@@ -847,6 +847,58 @@ main{width:min(1200px,100%)!important;margin:52px auto 120px!important;padding:0
   text-shadow:0 1px 2px rgba(0,0,0,.55)!important;
 }
 
+
+/* ===== STABLE PREVIEW / CENTER / RACE COLOR FIX ===== */
+
+/* Tier title exactly in the visual center regardless of right-side counts */
+.tierLabel{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.tierLabel:before{
+  display:none!important;
+}
+.tierName{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  margin:0!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+}
+.tierCounts{
+  position:absolute!important;
+  right:26px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  margin:0!important;
+}
+
+/* Cards centered inside each race row */
+.racePlayers{
+  justify-content:center!important;
+}
+
+/* Player name + inline race letter use the player's race color */
+.playerCard.T .playerName,
+.playerCard.T .raceInline{color:#2873d2!important}
+
+.playerCard.Z .playerName,
+.playerCard.Z .raceInline{color:#a33898!important}
+
+.playerCard.P .playerName,
+.playerCard.P .raceInline{color:#bb8d00!important}
+
+.raceInline{
+  font-size:10px!important;
+  font-weight:1000!important;
+  margin-left:1px!important;
+  letter-spacing:.2px!important;
+}
+
 </style>
 
 
@@ -982,6 +1034,7 @@ function render(){
   }).join('');
   wirePreview();
   setupRailObserver();
+  setupVisibleMetaPrefetch();
 }
 
 function buildRail(){
@@ -1107,37 +1160,95 @@ function formatLiveElapsed(startAt){
   return `${Math.floor(totalMinutes/60)}시간 전`;
 }
 
+let currentPreviewPlayerId=0;
+let previewRequestSeq=0;
+
 async function hydrateLiveMeta(x){
   if(!x?.soop_user_id)return;
-  try{
-    const r=await fetch('/api/soop-live-meta?id='+encodeURIComponent(x.soop_user_id),{cache:'no-store'});
-    if(!r.ok)return;
-    const j=await r.json();
 
-    if(j.started_at)x._liveStartedAt=j.started_at;
-    if(j.title)x._liveTitle=j.title;
-    if(Number.isFinite(Number(j.viewer_count)))x._viewerCount=Number(j.viewer_count);
+  const targetPlayerId=Number(x.id||0);
+  const seq=++previewRequestSeq;
+  const j=await fetchLiveMetaCached(x);
+  if(!j)return;
 
-    if(livePreview.classList.contains('on')){
-      livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
-      livePreviewViewers.textContent=formatViewerCount(x._viewerCount);
-      if(j.title)livePreviewTitle.textContent=j.title;
-    }
-  }catch(_){}
+  // A response from a previous hover must never overwrite the new hover.
+  if(
+    !livePreview.classList.contains('on') ||
+    currentPreviewPlayerId!==targetPlayerId ||
+    seq!==previewRequestSeq
+  ) return;
+
+  livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
+  livePreviewViewers.textContent=formatViewerCount(x._viewerCount);
+  if(x._liveTitle)livePreviewTitle.textContent=x._liveTitle;
 }
 
 
-async function preloadLiveMeta(){
-  const targets=players.filter(x=>x._live&&x.soop_user_id);
-  let idx=0;
-  const worker=async()=>{
-    while(true){
-      const i=idx++;
-      if(i>=targets.length)return;
-      await hydrateLiveMeta(targets[i]);
+
+
+let metaPrefetchObserver=null;
+const metaFetches=new Map();
+
+async function fetchLiveMetaCached(x){
+  if(!x?.soop_user_id)return null;
+
+  const now=Date.now();
+  if(x._metaFetchedAt && now-x._metaFetchedAt<10000){
+    return {
+      started_at:x._liveStartedAt||'',
+      title:x._liveTitle||'',
+      viewer_count:Number(x._viewerCount||0)
+    };
+  }
+
+  const key=String(x.soop_user_id);
+  if(metaFetches.has(key))return metaFetches.get(key);
+
+  const job=(async()=>{
+    try{
+      const r=await fetch('/api/soop-live-meta?id='+encodeURIComponent(x.soop_user_id),{cache:'no-store'});
+      if(!r.ok)return null;
+      const j=await r.json();
+
+      if(j.started_at)x._liveStartedAt=j.started_at;
+      if(j.title)x._liveTitle=j.title;
+      if(Number.isFinite(Number(j.viewer_count)))x._viewerCount=Number(j.viewer_count);
+      x._metaFetchedAt=Date.now();
+      return j;
+    }catch(_){
+      return null;
+    }finally{
+      metaFetches.delete(key);
     }
-  };
-  await Promise.all(Array.from({length:Math.min(8,targets.length)},worker));
+  })();
+
+  metaFetches.set(key,job);
+  return job;
+}
+
+function setupVisibleMetaPrefetch(){
+  metaPrefetchObserver?.disconnect();
+
+  const cards=[...document.querySelectorAll('.playerCard.live')];
+  if(!cards.length)return;
+
+  metaPrefetchObserver=new IntersectionObserver(entries=>{
+    for(const entry of entries){
+      if(!entry.isIntersecting)continue;
+
+      const card=entry.target;
+      metaPrefetchObserver.unobserve(card);
+
+      const id=Number(card.dataset.playerId||0);
+      const x=players.find(v=>Number(v.id)===id);
+      if(!x)return;
+
+      // Delay very slightly so profile images / initial paint get priority.
+      setTimeout(()=>fetchLiveMetaCached(x),120);
+    }
+  },{root:null,rootMargin:'220px 0px',threshold:0.01});
+
+  cards.forEach(card=>metaPrefetchObserver.observe(card));
 }
 
 let previewElapsedTimer=null;
@@ -1148,27 +1259,45 @@ function showPreview(ev){
   const x=players.find(v=>Number(v.id)===id);
   if(!x?._live)return;
 
+  currentPreviewPlayerId=id;
+  previewRequestSeq++;
+
+  // Paint this player's cached values immediately.
   livePreviewTitle.textContent=x._liveTitle||x.display_name||x.soop_nickname||x.player_name||'LIVE';
   livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
-  livePreviewViewers.textContent=formatViewerCount(x._viewerCount);if(x._thumbnail){
+  livePreviewViewers.textContent=formatViewerCount(x._viewerCount);
+
+  if(x._thumbnail){
     livePreviewImg.src=freshThumbnailUrl(x._thumbnail);
     livePreviewImg.style.display='block';
   }else{
     livePreviewImg.removeAttribute('src');
     livePreviewImg.style.display='none';
   }
+
   livePreview.classList.add('on');
   movePreview(ev);
+
+  // Refresh only this player in the background.
   hydrateLiveMeta(x);
+
   clearInterval(previewElapsedTimer);
   clearInterval(previewThumbTimer);
+
   previewElapsedTimer=setInterval(()=>{
-    if(livePreview.classList.contains('on')){
+    if(
+      livePreview.classList.contains('on') &&
+      currentPreviewPlayerId===id
+    ){
       livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
     }
   },10000);
+
   previewThumbTimer=setInterval(()=>{
-    if(livePreview.classList.contains('on')){
+    if(
+      livePreview.classList.contains('on') &&
+      currentPreviewPlayerId===id
+    ){
       if(x._thumbnail)livePreviewImg.src=freshThumbnailUrl(x._thumbnail);
       hydrateLiveMeta(x);
     }
@@ -1182,7 +1311,15 @@ function movePreview(ev){
   livePreview.style.left=x+'px';
   livePreview.style.top=y+'px';
 }
-function hidePreview(){livePreview.classList.remove('on');clearInterval(previewElapsedTimer);clearInterval(previewThumbTimer);previewElapsedTimer=null;previewThumbTimer=null}
+function hidePreview(){
+  currentPreviewPlayerId=0;
+  previewRequestSeq++;
+  livePreview.classList.remove('on');
+  clearInterval(previewElapsedTimer);
+  clearInterval(previewThumbTimer);
+  previewElapsedTimer=null;
+  previewThumbTimer=null;
+}
 
 
 
@@ -1210,10 +1347,6 @@ async function load(){
 
   render();
   buildRail();
-
-  // Broadcast start time and viewer count are prefetched immediately,
-  // so hovering the thumbnail does not wait for another API request.
-  preloadLiveMeta();
   if(!favoriteJumpDone&&favoriteTier){
     favoriteJumpDone=true;
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
