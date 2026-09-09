@@ -1450,6 +1450,21 @@ body{
 
 /* keep 24px breathing room at the bottom through the tier frame padding */
 
+
+/* ===== TRUE INSTANT HOVER PREVIEW ===== */
+.livePreview{
+  transition:none!important;
+  animation:none!important;
+}
+.livePreview.on{
+  transition:none!important;
+  animation:none!important;
+}
+.livePreviewImg{
+  transition:none!important;
+  animation:none!important;
+}
+
 </style>
 
 
@@ -1826,7 +1841,7 @@ function setupVisibleMetaPrefetch(){
 let lastPreviewPointer={clientX:0,clientY:0};
 let previewElapsedTimer=null;
 let previewThumbTimer=null;
-async function showPreview(ev){
+function showPreview(ev){
   const card=ev.currentTarget.closest('.playerCard');
   const id=Number(card?.dataset?.playerId||0);
   const x=players.find(v=>Number(v.id)===id);
@@ -1834,23 +1849,16 @@ async function showPreview(ev){
 
   currentPreviewPlayerId=id;
   previewRequestSeq++;
-  const mySeq=previewRequestSeq;
 
-  // If this player has not been prefetched yet, fetch first.
-  // Do NOT open a preview containing fake "0" while waiting.
-  if(!x._metaFetchedAt){
-    await fetchLiveMetaCached(x);
-
-    // User may already be hovering another player.
-    if(currentPreviewPlayerId!==id || previewRequestSeq!==mySeq)return;
-  }
-
+  // IMPORTANT:
+  // star-public already contains the 1-minute server cache.
+  // Never call/wait for SOOP on hover.
   livePreviewTitle.textContent=x._liveTitle||x.display_name||x.soop_nickname||x.player_name||'LIVE';
   livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
   livePreviewViewers.textContent=formatViewerCount(x._viewerCount);
 
   if(x._thumbnail){
-    livePreviewImg.src=freshThumbnailUrl(x._thumbnail);
+    livePreviewImg.src=x._thumbnail;
     livePreviewImg.style.display='block';
   }else{
     livePreviewImg.removeAttribute('src');
@@ -1858,7 +1866,7 @@ async function showPreview(ev){
   }
 
   livePreview.classList.add('on');
-  movePreview(lastPreviewPointer);
+  movePreview(ev);
 
   clearInterval(previewElapsedTimer);
   clearInterval(previewThumbTimer);
@@ -1866,12 +1874,6 @@ async function showPreview(ev){
   previewElapsedTimer=setInterval(()=>{
     if(livePreview.classList.contains('on') && currentPreviewPlayerId===id){
       livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
-    }
-  },10000);
-
-  previewThumbTimer=setInterval(()=>{
-    if(livePreview.classList.contains('on') && currentPreviewPlayerId===id){
-      if(x._thumbnail)livePreviewImg.src=freshThumbnailUrl(x._thumbnail);
     }
   },10000);
 }
@@ -1898,6 +1900,19 @@ function hidePreview(){
 
 const STAR_SNAPSHOT_KEY='star_public_snapshot_v1';
 
+
+const liveThumbPreloaded=new Set();
+function preloadLiveThumbnails(){
+  for(const x of players){
+    if(!x?._live || !x._thumbnail || liveThumbPreloaded.has(x._thumbnail))continue;
+    liveThumbPreloaded.add(x._thumbnail);
+    const img=new Image();
+    img.decoding='async';
+    try{img.fetchPriority='high'}catch(_){}
+    img.src=x._thumbnail;
+  }
+}
+
 function applyPublicPayload(j){
   universities=j?.universities||[];
   if(
@@ -1914,9 +1929,11 @@ function applyPublicPayload(j){
     _thumbnail:x.live_cache_thumbnail||'',
     _bno:x.live_cache_bno||'',
     _liveStartedAt:x.live_cache_started_at||'',
-    _viewerCount:Number(x.live_cache_viewer_count||0)
+    _viewerCount:Number(x.live_cache_viewer_count||0),
+    _metaFetchedAt:Date.now()
   }));
 
+  preloadLiveThumbnails();
   render();
   buildRail();
 
