@@ -1332,44 +1332,43 @@
 .titleSources a{color:#747b84 !important;text-decoration:none !important}
 .titleSources a:hover{color:#111 !important;text-decoration:underline !important}
 
-/* Race v8.3 — clean editorial divider, no circle, no icon, no vertical text, no left panel */
+/* Race v9 — compact badge */
 .raceGroup{
   display:grid !important; grid-template-columns:1fr !important; position:relative !important;
-  padding-top:30px !important; background:#fff !important;
+  padding-top:42px !important; background:#fff !important;
 }
 .raceHead{
-  position:absolute !important; left:14px !important; top:9px !important;
-  width:auto !important; min-width:0 !important; height:15px !important;
+  position:absolute !important; left:16px !important; top:10px !important;
+  width:auto !important; min-width:0 !important; height:25px !important;
   display:flex !important; flex-direction:row !important; align-items:center !important;
-  justify-content:flex-start !important; padding:0 !important; margin:0 !important;
-  background:transparent !important; border:0 !important; box-shadow:none !important;
+  justify-content:flex-start !important; padding:0 9px 0 4px !important; margin:0 !important;
+  background:color-mix(in srgb,var(--race) 9%,#fff) !important;
+  border:1px solid color-mix(in srgb,var(--race) 24%,#e7e9ed) !important;
+  border-radius:7px !important; box-shadow:none !important;
   overflow:visible !important;
 }
 .raceLetter{display:none !important}
+.raceCode{
+  width:17px !important; height:17px !important; margin-right:6px !important;
+  display:inline-flex !important; align-items:center !important; justify-content:center !important;
+  border-radius:5px !important; background:var(--race) !important; color:#fff !important;
+  font-size:9px !important; font-weight:1000 !important; line-height:1 !important;
+}
 .raceHead .raceName{
   position:relative !important; display:inline-flex !important; align-items:center !important;
-  width:auto !important; min-width:0 !important; min-height:0 !important; height:15px !important;
-  margin:0 !important; padding:0 0 0 17px !important;
+  width:auto !important; min-width:0 !important; min-height:0 !important; height:auto !important;
+  margin:0 !important; padding:0 !important;
   writing-mode:horizontal-tb !important; text-orientation:mixed !important; transform:none !important;
   border:0 !important; border-radius:0 !important; background:transparent !important; box-shadow:none !important;
-  color:#4c535c !important; font-size:10px !important; font-weight:900 !important;
-  line-height:15px !important; letter-spacing:-.35px !important; white-space:nowrap !important;
+  color:#343a42 !important; font-size:11px !important; font-weight:900 !important;
+  line-height:1 !important; letter-spacing:-.35px !important; white-space:nowrap !important;
 }
-.raceHead .raceName:before{
-  content:"" !important; position:absolute !important; left:0 !important; top:6px !important;
-  width:11px !important; height:3px !important; border-radius:999px !important;
-  background:var(--race) !important; opacity:.95 !important; transform:none !important;
-}
-.raceHead .raceName:after{
-  content:"" !important; display:block !important; position:absolute !important;
-  left:calc(100% + 9px) !important; top:7px !important; width:42px !important; height:1px !important;
-  background:linear-gradient(90deg,var(--race),transparent) !important; opacity:.28 !important;
-}
+.raceHead .raceName:before,.raceHead .raceName:after{content:none !important;display:none !important}
 .racePlayers{grid-column:1 !important; width:100% !important}
 @media(max-width:650px){
- .raceGroup{grid-template-columns:1fr !important;padding-top:27px !important}
- .raceHead{left:9px !important;top:8px !important;width:auto !important;min-width:0 !important;padding:0 !important}
- .raceHead .raceName{writing-mode:horizontal-tb !important;font-size:9px !important;padding-left:15px !important}
+ .raceGroup{grid-template-columns:1fr !important;padding-top:38px !important}
+ .raceHead{left:9px !important;top:8px !important;width:auto !important;min-width:0 !important}
+ .raceHead .raceName{writing-mode:horizontal-tb !important;font-size:10px !important}
 }
 
 </style>
@@ -1479,7 +1478,7 @@ function raceRow(all,race,label){
     .sort(comparePlayers);
 
   return `<div class="raceGroup ${race} ${p.length?'':'empty'}">
-    <div class="raceHead"><span class="raceName">${label}</span></div>
+    <div class="raceHead"><span class="raceCode">${race}</span><span class="raceName">${label}</span></div>
     <div class="racePlayers">${p.map(card).join('')}</div>
   </div>`;
 }
