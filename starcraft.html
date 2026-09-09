@@ -1277,6 +1277,97 @@ body{
   line-height:18px!important;
 }
 
+
+/* ===== FORCE ALL TIER HEADERS WHITE / TIGHTER ===== */
+
+/* 모든 티어 헤더를 예외 없이 흰색으로 강제 */
+.tierLabel,
+.tierSection .tierLabel,
+.tierBlock .tierLabel,
+.tier .tierLabel,
+[class*="tier"] .tierLabel{
+  height:44px!important;
+  min-height:44px!important;
+  background:#fff!important;
+  background-color:#fff!important;
+  background-image:none!important;
+  color:#000!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+/* 혹시 티어별 색을 pseudo-element로 덮는 경우까지 제거 */
+.tierLabel::before,
+.tierLabel::after{
+  display:none!important;
+  content:none!important;
+  background:none!important;
+}
+
+/* 티어명 */
+.tierName{
+  color:#000!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  font-size:18px!important;
+  font-weight:900!important;
+}
+
+/* 총 N명 · 방송중 N명 — 박스/테두리 완전 제거 */
+.tierCounts,
+.tierCounts *,
+.tierLabel .tierCounts{
+  color:#000!important;
+  background:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  padding:0!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  text-decoration:none!important;
+}
+
+/* 선수 영역 세로 간격 더 축소 */
+.tierBody{
+  min-height:76px!important;
+  padding-top:4px!important;
+  padding-bottom:12px!important;
+  row-gap:8px!important;
+}
+
+.racePlayers{
+  padding-top:4px!important;
+  padding-bottom:12px!important;
+  row-gap:8px!important;
+}
+
+/* 티어 프레임 사이 간격도 축소 */
+.tierSection,
+.tierBlock,
+.tier{
+  margin-bottom:7px!important;
+}
+
+@media(max-width:700px){
+  .tierLabel,
+  .tierSection .tierLabel,
+  .tierBlock .tierLabel,
+  .tier .tierLabel{
+    height:42px!important;
+    min-height:42px!important;
+  }
+
+  .tierBody,
+  .racePlayers{
+    padding-top:3px!important;
+    padding-bottom:10px!important;
+    row-gap:7px!important;
+  }
+}
+
 </style>
 
 
