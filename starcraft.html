@@ -1102,11 +1102,9 @@ function formatLiveElapsed(startAt){
   if(!startAt)return '';
   const ms=Date.now()-new Date(startAt).getTime();
   if(!Number.isFinite(ms)||ms<0)return '';
-  const total=Math.floor(ms/1000);
-  const h=Math.floor(total/3600);
-  const m=Math.floor((total%3600)/60);
-  if(h>0)return `${h}시간 ${m}분`;
-  return `${m}분`;
+  const totalMinutes=Math.floor(ms/60000);
+  if(totalMinutes<60)return `${totalMinutes}분 전`;
+  return `${Math.floor(totalMinutes/60)}시간 전`;
 }
 
 async function hydrateLiveMeta(x){
@@ -1115,16 +1113,31 @@ async function hydrateLiveMeta(x){
     const r=await fetch('/api/soop-live-meta?id='+encodeURIComponent(x.soop_user_id),{cache:'no-store'});
     if(!r.ok)return;
     const j=await r.json();
+
     if(j.started_at)x._liveStartedAt=j.started_at;
     if(j.title)x._liveTitle=j.title;
     if(Number.isFinite(Number(j.viewer_count)))x._viewerCount=Number(j.viewer_count);
+
     if(livePreview.classList.contains('on')){
       livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
-  livePreviewViewers.textContent=formatViewerCount(x._viewerCount);
       livePreviewViewers.textContent=formatViewerCount(x._viewerCount);
       if(j.title)livePreviewTitle.textContent=j.title;
     }
   }catch(_){}
+}
+
+
+async function preloadLiveMeta(){
+  const targets=players.filter(x=>x._live&&x.soop_user_id);
+  let idx=0;
+  const worker=async()=>{
+    while(true){
+      const i=idx++;
+      if(i>=targets.length)return;
+      await hydrateLiveMeta(targets[i]);
+    }
+  };
+  await Promise.all(Array.from({length:Math.min(8,targets.length)},worker));
 }
 
 let previewElapsedTimer=null;
@@ -1137,7 +1150,7 @@ function showPreview(ev){
 
   livePreviewTitle.textContent=x._liveTitle||x.display_name||x.soop_nickname||x.player_name||'LIVE';
   livePreviewElapsed.textContent=formatLiveElapsed(x._liveStartedAt);
-  if(x._thumbnail){
+  livePreviewViewers.textContent=formatViewerCount(x._viewerCount);if(x._thumbnail){
     livePreviewImg.src=freshThumbnailUrl(x._thumbnail);
     livePreviewImg.style.display='block';
   }else{
@@ -1197,6 +1210,10 @@ async function load(){
 
   render();
   buildRail();
+
+  // Broadcast start time and viewer count are prefetched immediately,
+  // so hovering the thumbnail does not wait for another API request.
+  preloadLiveMeta();
   if(!favoriteJumpDone&&favoriteTier){
     favoriteJumpDone=true;
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
