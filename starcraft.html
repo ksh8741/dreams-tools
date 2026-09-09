@@ -344,6 +344,39 @@ main{
 .sourceLines a{color:inherit;text-decoration:none}
 .sourceLines a:hover{text-decoration:underline;color:#333}
 
+
+/* Title and requested sources on ONE line */
+.titleLine{display:flex;align-items:flex-end;gap:18px;width:100%;box-sizing:border-box}
+.titleLine h1{margin:0;white-space:nowrap}
+.titleSources{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:13px;white-space:nowrap;font-size:9px;line-height:1.2;color:#8a9098;font-weight:650}
+.titleSources span+span{padding-left:13px;border-left:1px solid #dfe3e8}
+.titleSources a{color:#747b84;text-decoration:none}
+.titleSources a:hover{color:#111;text-decoration:underline}
+
+/* Race design v7.8: typography-only side signature. NO circle, NO T/Z/P icon, NO copied badge. */
+.raceGroup{position:relative;grid-template-columns:64px 1fr !important}
+.raceLabel{
+ width:64px !important;min-width:64px !important;
+ display:flex !important;align-items:center !important;justify-content:flex-start !important;
+ padding:0 0 0 9px !important;box-sizing:border-box;
+ border:0 !important;border-radius:0 !important;background:transparent !important;box-shadow:none !important;
+ writing-mode:horizontal-tb !important;transform:none !important;
+ position:relative !important;overflow:visible;
+}
+.raceLabel:before,.raceLabel:after{content:none !important;display:none !important}
+.raceName{
+ position:relative;display:inline-block;
+ font-size:11px;font-weight:950;letter-spacing:-.7px;line-height:1;
+ color:#252a31;
+ padding:7px 0 6px 10px;
+}
+.raceName:before{
+ content:"";position:absolute;left:0;top:4px;bottom:4px;width:2px;border-radius:2px;background:var(--race);
+}
+.raceName:after{
+ content:"";position:absolute;left:0;bottom:0;width:18px;height:1px;background:var(--race);opacity:.35;
+}
+
 </style>
 
 
@@ -357,14 +390,14 @@ main{
 <body>
 <nav id="global-navbar" class="globalNav"><div class="globalNavInner"><a class="globalNavBrand" href="index.html">MUJE</a><div class="globalNavLinks"><a class="globalNavLink" href="pubg.html">배틀그라운드</a><a class="globalNavLink active" href="starcraft.html">스타크래프트</a></div></div></nav>
 <main>
-<div class="sourceLines">
-  <div>티어표 출처 : <a href="https://www.fmkorea.com/3844139388" target="_blank" rel="noopener">FMKorea</a></div>
-  <div>소속 출처 : <a href="https://www.fmkorea.com/9060359921" target="_blank" rel="noopener">FMKorea</a></div>
-  <div>전적 출처 : <a href="https://eloboard.com/" target="_blank" rel="noopener">ELOBOARD</a></div>
-</div>
+
       <div class="pageTitleWrap">
         <div>
-          <h1>스타크래프트 티어표</h1>
+          <div class="titleLine"><h1>스타크래프트 티어표</h1><div class="titleSources">
+<span>티어표 출처 : <a href="https://www.fmkorea.com/3844139388" target="_blank" rel="noopener">https://www.fmkorea.com/3844139388</a></span>
+<span>소속 출처 : <a href="https://www.fmkorea.com/9060359921" target="_blank" rel="noopener">https://www.fmkorea.com/9060359921</a></span>
+<span>전적 출처 : <a href="https://eloboard.com/" target="_blank" rel="noopener">https://eloboard.com/</a></span>
+</div></div>
           <div class="pageSub"></div>
         </div>
       </div>
