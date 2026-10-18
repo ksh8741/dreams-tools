@@ -8680,6 +8680,52 @@
              #killBoard{overflow-x:auto}
              #killBoard .killUnified{min-width:calc(var(--room-team-count,4) * 240px)}
              .scoreWrap{overflow-x:auto}
+
+             /* Five to ten teams: first half above, second half below. */
+             html:not(.broadcastOverlay) #scoreboard.twoRowTeams:not(.fourTeamWindow){
+                 display:grid !important;
+                 grid-template-columns:repeat(var(--score-columns),134px) !important;
+                 grid-auto-flow:row !important;
+                 grid-auto-rows:auto !important;
+                 gap:0 !important;
+                 width:calc(134px * var(--score-columns)) !important;
+                 min-width:calc(134px * var(--score-columns)) !important;
+                 max-width:calc(134px * var(--score-columns)) !important;
+             }
+             html:not(.broadcastOverlay) .scoreFrame.twoRowScoreFrame,
+             html:not(.broadcastOverlay) .scoreFrame.twoRowScoreFrame .totalBar,
+             html:not(.broadcastOverlay) .scoreFrame.twoRowScoreFrame .scoreStatusRow{
+                 width:calc(134px * var(--score-columns)) !important;
+                 min-width:calc(134px * var(--score-columns)) !important;
+                 max-width:calc(134px * var(--score-columns)) !important;
+             }
+             html:not(.broadcastOverlay) #scoreboard.twoRowTeams:not(.fourTeamWindow) > .team{
+                 margin:0 !important;
+                 border-radius:0 !important;
+                 border:1px solid #242b33 !important;
+                 border-left:0 !important;
+                 width:134px !important;
+                 min-width:134px !important;
+                 max-width:134px !important;
+             }
+             html:not(.broadcastOverlay) #scoreboard.twoRowTeams:not(.fourTeamWindow) > .team[data-score-column="1"]{
+                 border-left:1px solid #242b33 !important;
+             }
+             html:not(.broadcastOverlay) #scoreboard.twoRowTeams:not(.fourTeamWindow) > .team[data-score-row="2"]{
+                 border-top:0 !important;
+             }
+
+             /* Fixed column widths at every viewport; overflow scrolls. */
+             #killBoard .killUnified{
+                 table-layout:fixed !important;
+                 width:var(--kill-table-width) !important;
+                 min-width:var(--kill-table-width) !important;
+                 max-width:var(--kill-table-width) !important;
+             }
+             #killBoard .killUnified .roundCol,#killBoard col.fixedRoundCol{width:40px !important;min-width:40px !important;max-width:40px !important}
+             #killBoard .killUnified .mapCol,#killBoard col.fixedMapCol{width:48px !important;min-width:48px !important;max-width:48px !important}
+             #killBoard .killUnified .playerHead,#killBoard .killUnified .killCell,#killBoard col.fixedPlayerCol{width:79px !important;min-width:79px !important;max-width:79px !important}
+             #killBoard .killUnified .chickenCol,#killBoard col.fixedChickenCol{width:30px !important;min-width:30px !important;max-width:30px !important}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="navbar.css">
@@ -8755,13 +8801,6 @@
             <div class="two">
                 <div class="field"><label>팀 수</label><input id="tc" type="number" min="1" max="10" value="4"></div>
                 <div class="field"><label>팀당 인원</label><input id="pp" type="number" min="1" max="4" value="4"></div>
-            </div>
-            <div class="field">
-                <label>스코어 묶음</label>
-                <select id="scoreMode" style="width:100%;padding:10px;border:1px solid #dce2e7;border-radius:8px">
-                    <option value="separate">각 팀 개별 (예: 4:4:4:4)</option>
-                    <option value="2v2">양측 합산 (앞 절반 vs 뒤 절반 · 최대 20:20)</option>
-                </select>
             </div>
             <div class="field"><label>비밀번호 (선택)</label><input id="cp" type="password"></div>
             <div id="ce" class="err"></div><div class="actions"><button id="cc" class="btn">취소</button><button id="cb" class="btn primary">생성</button></div>
@@ -9042,9 +9081,10 @@ function cfg(a,b){return Array.from({length:a},()=>b).join(':')}
 function teamLetter(i){return String.fromCharCode(64+i)}
 function teamPlayers(team){return P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===team)}
 
+function scoreColumns(count){return count>=4?Math.ceil(count/2):count}
 function applyScoreWidth(){
   if(!cur)return;
-  const w=Math.max(202,cur.team_count*202);
+  const w=Math.max(202,scoreColumns(cur.team_count)*202);
   document.documentElement.style.setProperty('--score-width',w+'px');
 }
 function overlayUrlForRoom(team=1,theme='luxury',nameTag=true,frames=0){
@@ -9075,6 +9115,7 @@ function normalizeMapName(r){
   return r.map_type==='sanhok'?'사녹':'에란겔';
 }
 
+function defaultScoreMode(count){return count>=2&&count<=10&&count%2===0?'2v2':'separate'}
 function canCombineTeams(room=cur){return !!room&&room.team_count>=2&&room.team_count<=10&&room.team_count%2===0}
 function scoreMode(){return canCombineTeams()&&cur.score_mode==='2v2'?'2v2':'separate'}
 function combinedScores(scores){const half=scores.length/2;return [scores.slice(0,half).reduce((a,b)=>a+b,0),scores.slice(half).reduce((a,b)=>a+b,0)]}
@@ -9210,7 +9251,7 @@ async function rooms(){let d=await q('/pubg_rooms?select=id,name,host_name,team_
 showCreate.onclick=()=>{ce.textContent='';createOv.classList.remove('hidden')};
 cc.onclick=()=>createOv.classList.add('hidden');refresh.onclick=rooms;
 cb.onclick=async()=>{
-  let name=cn.value.trim(),host=ch.value.trim(),a=+tc.value,b=+pp.value,mode=document.getElementById('scoreMode')?.value||'separate';
+  let name=cn.value.trim(),host=ch.value.trim(),a=+tc.value,b=+pp.value,mode=defaultScoreMode(a);
   if(!name||!host)return ce.textContent='방제와 방장을 입력하세요';
   if(!Number.isInteger(a)||a<1||a>10)return ce.textContent='팀은 1~10팀까지 가능합니다.';
   if(!Number.isInteger(b)||b<1||b>4)return ce.textContent='한 팀에는 최대 4명까지만 가능합니다.';
@@ -9313,10 +9354,18 @@ async function saveName(x){
   }
 }
 function renderScore(){
-  if(scoreboard)scoreboard.classList.toggle('fourTeamWindow',cur?.team_count===4);
+  if(scoreboard){
+    scoreboard.classList.toggle('fourTeamWindow',cur?.team_count===4);
+    scoreboard.classList.toggle('twoRowTeams',cur?.team_count>=5);
+    scoreboard.style.setProperty('--score-columns',String(scoreColumns(cur.team_count)));
+  }
   {
     const homeScoreFrame=document.querySelector('#captureStage .scoreFrame');
-    if(homeScoreFrame)homeScoreFrame.style.setProperty('--home-team-count',String(Math.max(1,cur?.team_count||1)));
+    if(homeScoreFrame){
+      homeScoreFrame.style.setProperty('--home-team-count',String(Math.max(1,cur?.team_count||1)));
+      homeScoreFrame.style.setProperty('--score-columns',String(scoreColumns(cur.team_count)));
+      homeScoreFrame.classList.toggle('twoRowScoreFrame',cur.team_count>=5);
+    }
   }
 
   applyScoreWidth();
@@ -9328,7 +9377,7 @@ function renderScore(){
     ps.forEach(p=>{teamScore+=totals(p).score});
     RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
     teamScores.push(teamScore);
-    out+='<div class="team"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span>'+(cur.team_count===1?'<span class="miniGoal">🎯 '+(cur.goal_kills??50)+'</span>':'')+'</div><div class="plist">'+
+    out+='<div class="team" data-score-column="'+(((t-1)%scoreColumns(cur.team_count))+1)+'" data-score-row="'+(Math.floor((t-1)/scoreColumns(cur.team_count))+1)+'"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span>'+(cur.team_count===1?'<span class="miniGoal">🎯 '+(cur.goal_kills??50)+'</span>':'')+'</div><div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<img class="avatar" src="'+pic(p.soop_user_id)+'">':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름 입력">'+
@@ -9662,7 +9711,16 @@ function board(){
     body+='</tr>';
   });
 
-  killBoard.innerHTML='<table class="killUnified"><thead>'+teamHeader+colHeader+'</thead><tbody>'+body+'</tbody></table>';
+  const playerCellWidth=79,mapCellWidth=48,chickenCellWidth=30,roundCellWidth=40;
+  const tableWidth=roundCellWidth+teamPlayersList.reduce((sum,ps)=>sum+mapCellWidth+ps.length*playerCellWidth+chickenCellWidth,0);
+  let columns='<col class="fixedRoundCol" style="width:40px">';
+  teamPlayersList.forEach(ps=>{
+    columns+='<col class="fixedMapCol" style="width:48px">';
+    ps.forEach(()=>columns+='<col class="fixedPlayerCol" style="width:79px">');
+    columns+='<col class="fixedChickenCol" style="width:30px">';
+  });
+  killBoard.style.setProperty('--kill-table-width',tableWidth+'px');
+  killBoard.innerHTML='<table class="killUnified"><colgroup>'+columns+'</colgroup><thead>'+teamHeader+colHeader+'</thead><tbody>'+body+'</tbody></table>';
 
   document.querySelectorAll('[data-map]').forEach(x=>x.onchange=()=>{
     touchLocal();
