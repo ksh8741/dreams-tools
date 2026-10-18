@@ -8828,6 +8828,51 @@
 
     <div id="picker" class="overlay hidden"><div class="modal"><h2 id="pt">SOOP 계정 선택</h2><div id="ph" class="meta"></div><div id="cands"></div><div class="actions"><button id="noPhoto" class="btn">사진 없이 사용</button><button id="pc" class="btn">취소</button></div></div></div>
     <script>
+// Synchronization v2: bounded requests, durable per-tab journal and visible health.
+let syncLoading=false,syncRecovering=false,syncLastRead=0,syncReadError='',syncWriteError='',syncStorageError=false;
+let syncTab;
+try{syncTab=sessionStorage.getItem('pubg_sync_tab')||crypto.randomUUID();sessionStorage.setItem('pubg_sync_tab',syncTab)}catch(_){syncTab=crypto.randomUUID();syncStorageError=true}
+const syncJournalKey='pubg_sync_outbox_v2_'+syncTab;
+const syncActive=new Set(),syncChains=new Map();
+let syncOutbox=[];
+try{syncOutbox=JSON.parse(localStorage.getItem(syncJournalKey)||'[]')}catch(_){syncStorageError=true}
+function persistOutbox(){try{localStorage.setItem(syncJournalKey,JSON.stringify(syncOutbox))}catch(_){syncStorageError=true}}
+function syncStatus(){
+  let el=document.getElementById('syncHealth');
+  if(!el){el=document.createElement('div');el.id='syncHealth';el.setAttribute('role','status');el.style.cssText='position:fixed;bottom:8px;right:8px;z-index:1000;background:#18212b;color:white;padding:8px 12px;border-radius:8px;font:12px system-ui;max-width:80vw';document.body.appendChild(el)}
+  const count=syncOutbox.length+(typeof statCache==='undefined'?0:Object.keys(statCache).length);
+  const stale=syncLastRead&&Date.now()-syncLastRead>12000;
+  el.textContent=syncStorageError?'⚠ 임시 저장 공간 오류 · 페이지를 닫지 마세요':!navigator.onLine?'⚠ 오프라인 · 저장 대기 '+count+'건':syncWriteError?'⚠ '+syncWriteError+' ('+count+'건)':count?'저장 중 · '+count+'건':syncReadError||stale?'⚠ 최신 정보 수신 지연':syncLastRead?'● 서버 조회 정상 · '+Math.floor((Date.now()-syncLastRead)/1000)+'초 전':'서버 연결 확인 중';
+}
+async function syncRequest(p,o={},retryable=true){
+  const method=(o.method||'GET').toUpperCase();let last;
+  for(let attempt=0;attempt<(retryable?3:1);attempt++){
+    const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);
+    try{
+      const headers={...H,...(o.headers||{})};
+      if(method==='PATCH')headers.Prefer='return=representation';
+      const res=await fetch(B+p,{...o,headers,signal:controller.signal,cache:'no-store'});
+      const raw=await res.text();let data;try{data=raw?JSON.parse(raw):null}catch(_){throw Error('서버 응답 형식 오류')}
+      if(!res.ok){const err=Error('HTTP '+res.status+' '+(data?.message||''));err.status=res.status;throw err}
+      if(method==='PATCH'&&(!Array.isArray(data)||!data.length)){const err=Error('수정된 행이 없습니다. 권한 또는 삭제 여부 확인 필요');err.status=403;throw err}
+      return data;
+    }catch(err){last=err;if(err.status&&err.status<500&&![408,409,429].includes(err.status))throw err;}
+    finally{clearTimeout(timeout)}
+    if(attempt<2&&retryable)await new Promise(r=>setTimeout(r,400*2**attempt+Math.random()*300));
+  }
+  throw last;
+}
+function applyPendingWrites(){
+  for(const entry of syncOutbox){
+    if(String(entry.room)!==String(cur?.id)||entry.o.method!=='PATCH')continue;
+    const [table,query]=entry.p.split('?'),params=new URLSearchParams(query),body=JSON.parse(entry.o.body||'{}');
+    const rows=table==='/pubg_rooms'?[cur]:table==='/pubg_players'?P:table==='/pubg_rounds'?RO:table==='/pubg_round_player_stats'?S:[];
+    for(const row of rows){if([...params].every(([k,v])=>!v.startsWith('eq.')||String(row[k])===v.slice(3)))Object.assign(row,body)}
+  }
+  for(const [id,patch] of roundPatchDesired){const row=RO.find(x=>String(x.id)===String(id));if(row)Object.assign(row,Object.fromEntries(Object.entries(patch).filter(([k])=>!k.startsWith('_'))))}
+  for(const v of teamMapDesired.values())setTeamMap(v.roundId,v.team,v.name);
+}
+
 const B='https://llqikrcqavwfbuajykig.supabase.co/rest/v1',K='sb_publishable_aLPzJI_jQLlywmoQsiLRtw_ElX_aslF',H={'apikey':K,'Authorization':'Bearer '+K,'Content-Type':'application/json'},n=x=>Math.max(0,parseInt(x)||0),e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let cur,pick,P=[],RO=[],S=[],poll,editing=false,pickId=null,pickName='',dragId=null,ghost=null;
 const chromaOn=document.getElementById('chromaOn'),chromaColor=document.getElementById('chromaColor'),
 scoreViewMode=document.getElementById('scoreViewMode'),pipScore=document.getElementById('pipScore'),overlayUrlBtn=document.getElementById('overlayUrlBtn'),overlayUrlOv=document.getElementById('overlayUrlOv'),overlayThemeSelect=document.getElementById('overlayThemeSelect'),overlayNameTagSelect=document.getElementById('overlayNameTagSelect'),overlayTeamField=document.getElementById('overlayTeamField'),overlayTeamSelect=document.getElementById('overlayTeamSelect'),overlayFrameCountSelect=document.getElementById('overlayFrameCountSelect'),overlayGeneratedUrl=document.getElementById('overlayGeneratedUrl'),overlayGeneratedCopy=document.getElementById('overlayGeneratedCopy'),overlayCloseBtn=document.getElementById('overlayCloseBtn'),captureStage=document.getElementById('captureStage'),
@@ -8948,11 +8993,48 @@ function queueSafeRender(){
   if(renderQueued)return;
   renderQueued=true;
   requestAnimationFrame(()=>{
-    renderQueued=false;
-    if(!uiLocked() && cur){syncTimerControls();renderScore();board();}
+    renderQueued=false;if(!cur)return;
+    if(dragId){pendingRemoteRender=true;return;}
+    const active=document.activeElement;
+    const attrs=['data-k','data-d','data-name','data-map','data-chicken'];
+    const attr=attrs.find(a=>active?.hasAttribute?.(a));
+    const value=attr?active.getAttribute(attr):null;
+    const mapTeam=active?.getAttribute?.('data-map-team');
+    const chickenTeam=active?.getAttribute?.('data-team');
+    // Keep the actual input node and its listeners, selection and draft.
+    const placeholder=attr?document.createComment('editing'):null;
+    if(placeholder)active.replaceWith(placeholder);
+    if(!hasEditableFocus()&&!editing)syncTimerControls();
+    renderScore();board();
+    if(attr){
+      const replacement=[...document.querySelectorAll('['+attr+']')].find(x=>x.getAttribute(attr)===value &&
+        (!mapTeam||x.getAttribute('data-map-team')===mapTeam) &&
+        (!chickenTeam||x.getAttribute('data-team')===chickenTeam));
+      if(replacement){
+        const key=active.getAttribute('data-k')||active.getAttribute('data-d');
+        if(key&&!statCache[key]&&!statDesired.has(key)&&!statSaving.has(key)){
+          if(active.type==='checkbox')active.checked=replacement.checked;else active.value=replacement.value;
+        }
+        replacement.replaceWith(active);active.focus({preventScroll:true});
+      }
+    }
   });
 }
-async function q(p,o={}){const m=(o.method||'GET').toUpperCase();if(m!=='GET')o={...o,keepalive:true};let r=await fetch(B+p,{...o,headers:{...H,...(o.headers||{})}}),t=await r.text();if(!r.ok)throw Error(t);return t?JSON.parse(t):null}function cfg(a,b){return Array.from({length:a},()=>b).join(':')}
+async function q(p,o={}){
+  const method=(o.method||'GET').toUpperCase();
+  const retryable=method==='GET'||method==='PATCH'||method==='DELETE'||(method==='POST'&&p.includes('on_conflict='));
+  const entry=method!=='GET'&&retryable?{id:crypto.randomUUID(),p,o:{...o,method},room:cur?.id}:null;
+  if(entry){syncActive.add(entry.id);syncOutbox.push(entry);persistOutbox();syncStatus();}
+  try{
+    const previous=syncChains.get(p)||Promise.resolve();
+    const work=previous.catch(()=>{}).then(()=>syncRequest(p,o,retryable));syncChains.set(p,work);
+    const result=await work;
+    if(syncChains.get(p)===work)syncChains.delete(p);
+    if(entry){const ix=syncOutbox.findIndex(x=>x.id===entry.id);syncOutbox=syncOutbox.filter((x,i)=>!(x.p===p&&i<=ix));persistOutbox();}
+    syncWriteError='';syncStatus();return result;
+  }catch(err){syncWriteError='저장 실패 · 대기 기록 보관 중';syncStatus();throw err;}finally{if(entry)syncActive.delete(entry.id)}
+}
+function cfg(a,b){return Array.from({length:a},()=>b).join(':')}
 function teamLetter(i){return String.fromCharCode(64+i)}
 function teamPlayers(team){return P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===team)}
 
@@ -9133,12 +9215,13 @@ cb.onclick=async()=>{
   }catch(x){ce.textContent='방 생성 실패'}
 };
 function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team);je.textContent='';jp.value='';jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
-async function ensure(){let a=await q('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds',{method:'POST',body:JSON.stringify(x)})}
+async function ensure(){let a=await q('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds?on_conflict=room_id,round_no',{method:'POST',headers:{Prefer:'resolution=ignore-duplicates'},body:JSON.stringify(x)})}
 async function enter(r){cur=r;applyScoreWidth();loadTeamMaps();loadStatCache();lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),document.documentElement.classList.contains('broadcastOverlay')?1250:1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
 async function load(isPoll=false){
   if(!cur)return;
   const roomId=cur.id,revAtStart=localRevision,isOverlay=document.documentElement.classList.contains('broadcastOverlay');
-  if(isPoll && !isOverlay && (uiLocked() || pendingWrites>0 || Date.now()-lastLocalEditAt<500))return;
+  if(syncLoading)return;
+  syncLoading=true;
   try{
     let[r,p,ro]=await Promise.all([
       q('/pubg_rooms?id=eq.'+roomId+'&select=*'),
@@ -9151,17 +9234,17 @@ async function load(isPoll=false){
       roundIds.length?q('/pubg_round_player_stats?select=*&round_id=in.('+roundIds.join(',')+')'):Promise.resolve([]),
       roundIds.length?q('/pubg_round_team_state?select=round_id,team_no,map_name,updated_at&round_id=in.('+roundIds.join(',')+')'):Promise.resolve([])
     ]);
-    if(!isOverlay && (revAtStart!==localRevision || pendingWrites>0 || uiLocked() || Date.now()-lastLocalEditAt<350)){
-      pendingRemoteRender=true;return;
-    }
-
+    if(revAtStart!==localRevision){lastAppliedSignature='';return;}
     const oldTotals=new Map();
     P.forEach(pl=>oldTotals.set(String(pl.id),totals(pl).score));
 
     const sig=stateSignature(r[0]||cur,p,ro,ss,tm);
-    if(isPoll && sig===lastAppliedSignature)return;
+    if(isPoll && sig===lastAppliedSignature){syncLastRead=Date.now();syncReadError='';syncStatus();return;}
     const prevScoreMode=cur?.score_mode;
-    cur=r[0]||cur;P=p;RO=ro;S=ss;mergeTeamMapRows(tm);reconcileStatCache();lastAppliedSignature=sig;
+    if(!cur || cur.id!==roomId)return;
+    cur=r[0]||cur;P=p;RO=ro;S=ss;mergeTeamMapRows(tm);
+    applyPendingWrites();reconcileStatCache();lastAppliedSignature=sig;
+    syncLastRead=Date.now();syncReadError='';syncStatus();
     if(document.documentElement.classList.contains('broadcastVertical') && prevScoreMode!==cur.score_mode){
       restartRankModeCycle();
     }
@@ -9184,11 +9267,11 @@ async function load(isPoll=false){
       }
     },80);
   }catch(err){
-    console.error('[load]',err);
+    syncReadError='서버 조회 실패';syncStatus();console.error('[load]',err);
     if(document.documentElement.classList.contains('broadcastOverlay')){
-      setTimeout(()=>load(true),700);
+      /* The regular poll retries without overlapping requests. */
     }
-  }
+  }finally{syncLoading=false}
 }
 function st(r,p){return S.find(x=>x.round_id===r&&x.player_id===p)||{kills:0,died:false}}function totals(p){let raw=0,minus=0;RO.forEach(r=>{let s=st(r.id,p.id);raw+=n(s.kills);if(s.died&&!(r.top10&&false))minus+=n(p.death_penalty)});return{raw,minus,score:raw-minus}}
 async function pickProfile(id,name){
@@ -9627,22 +9710,35 @@ function saveStatCache(){
     const all=JSON.parse(localStorage.getItem(STAT_CACHE_KEY)||'{}');
     all[String(cur?.id)]=statCache;
     localStorage.setItem(STAT_CACHE_KEY,JSON.stringify(all));
-  }catch(_){}
+  }catch(_){syncStorageError=true;syncStatus()}
 }
 function cacheStat(key,obj){statCache[key]={...(statCache[key]||{}),...obj};saveStatCache()}
 function reconcileStatCache(){
-  let changed=false;
   for(const [key,v] of Object.entries(statCache)){
     const [r,p]=key.split('|');
-    let o=S.find(x=>String(x.round_id)===String(r)&&String(x.player_id)===String(p));
-    if(!o){o={id:null,round_id:r,player_id:p,kills:0,died:false};S.push(o)}
-    const serverMatches=(v.kills===undefined||n(o.kills)===n(v.kills))&&(v.died===undefined||!!o.died===!!v.died);
-    if(serverMatches){delete statCache[key];changed=true;continue}
+    let o=S.find(x=>String(x.round_id)===r&&String(x.player_id)===p);
+    if(!o){o={round_id:r,player_id:p,kills:0,died:false};S.push(o)}
     if(v.kills!==undefined)o.kills=n(v.kills);
     if(v.died!==undefined)o.died=!!v.died;
-    scheduleStatSave(key,v.kills!==undefined?n(v.kills):null,v.died!==undefined?!!v.died:null);
   }
-  if(changed)saveStatCache();
+}
+async function saveStat(key,k,d){
+  const room=String(cur.id),[r,p]=key.split('|');
+  const patch={};if(k!==null)patch.kills=k;if(d!==null)patch.died=d;
+  // Creating a missing row never replaces another client's existing fields.
+  await q('/pubg_round_player_stats?on_conflict=round_id,player_id',{
+    method:'POST',headers:{Prefer:'resolution=ignore-duplicates'},
+    body:JSON.stringify({round_id:r,player_id:p,kills:0,died:false})
+  });
+  await q('/pubg_round_player_stats?round_id=eq.'+encodeURIComponent(r)+'&player_id=eq.'+encodeURIComponent(p),{
+    method:'PATCH',body:JSON.stringify(patch)
+  });
+  if(String(cur?.id)!==room)return;
+  const cv=statCache[key];if(cv){
+    if(k!==null&&cv.kills===k)delete cv.kills;
+    if(d!==null&&cv.died===d)delete cv.died;
+    if(!Object.keys(cv).length)delete statCache[key];saveStatCache();
+  }
 }
 
 const statSaveTimers=new Map(),statDesired=new Map(),statSaving=new Set();
@@ -9663,24 +9759,6 @@ async function flushStatSave(key){
     if(statDesired.has(key))setTimeout(()=>flushStatSave(key),0);
   }
 }
-async function saveStat(key,k,d){
-  let[r,p]=key.split('|'),o=S.find(x=>String(x.round_id)===String(r)&&String(x.player_id)===String(p));
-  const body={round_id:r,player_id:p,kills:k!==null?k:(o?.kills??0),died:d!==null?d:(o?.died??false)};
-  const created=await q('/pubg_round_player_stats?on_conflict=round_id,player_id',{
-    method:'POST',
-    headers:{Prefer:'resolution=merge-duplicates,return=representation'},
-    body:JSON.stringify(body)
-  });
-  if(Array.isArray(created)&&created[0]){
-    if(o)Object.assign(o,created[0]);else S.push(created[0]);
-  }
-  const cv=statCache[key];
-  if(cv){
-    const same=(cv.kills===undefined||n(cv.kills)===n(body.kills))&&(cv.died===undefined||!!cv.died===!!body.died);
-    if(same){delete statCache[key];saveStatCache();}
-  }
-}
-
 const roundPatchTimers=new Map(),roundPatchDesired=new Map(),roundPatchSaving=new Set();
 function scheduleRoundPatch(id,patch,mapFallback){
   roundPatchDesired.set(id,{...(roundPatchDesired.get(id)||{}),...patch,_mapFallback:mapFallback||false});
@@ -9702,19 +9780,6 @@ async function flushRoundPatch(id){
   }finally{
     pendingWrites--;roundPatchSaving.delete(id);
     if(roundPatchDesired.has(id))setTimeout(()=>flushRoundPatch(id),0);
-  }
-}
-async function saveStat(key,k,d){
-  let[r,p]=key.split('|'),o=S.find(x=>String(x.round_id)===String(r)&&String(x.player_id)===String(p));
-  if(o?.id){
-    let z={};if(k!==null)z.kills=k;if(d!==null)z.died=d;
-    await q('/pubg_round_player_stats?id=eq.'+o.id,{method:'PATCH',body:JSON.stringify(z)});
-  }else{
-    const body={round_id:r,player_id:p,kills:k??o?.kills??0,died:d??o?.died??false};
-    const created=await q('/pubg_round_player_stats',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(body)});
-    if(Array.isArray(created)&&created[0]){
-      if(o)Object.assign(o,created[0]);else S.push(created[0]);
-    }
   }
 }
 ck.oninput=()=>{touchLocal();cur.chicken_kills=n(ck.value);refreshScoreTextOnly()};
@@ -9753,7 +9818,7 @@ if(timerStart)timerStart.onclick=async()=>{
   await q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify(patch)});
   syncTimerControls();renderScore();refreshTimerBadge();
 };
-addRound.onclick=async()=>{await q('/pubg_rounds',{method:'POST',body:JSON.stringify({room_id:cur.id,round_no:RO.length?Math.max(...RO.map(x=>x.round_no))+1:1})});editing=false;load()};back.onclick=()=>{cur=null;clearInterval(poll);clearInterval(timerTick);roomView.classList.add('hidden');lobby.classList.remove('hidden');rooms()};
+addRound.onclick=async()=>{await q('/pubg_rounds',{method:'POST',body:JSON.stringify({room_id:cur.id,round_no:RO.length?Math.max(...RO.map(x=>x.round_no))+1:1})});editing=false;load()};back.onclick=()=>{if(syncOutbox.length||Object.keys(statCache).length||pendingWrites||statDesired.size||teamMapDesired.size||roundPatchDesired.size){alert('저장 대기 중입니다. 동기화 상태를 확인해주세요.');return;}cur=null;clearInterval(poll);clearInterval(timerTick);roomView.classList.add('hidden');lobby.classList.remove('hidden');rooms()};
 
 if(scoreViewMode)scoreViewMode.onchange=()=>{
   if(!cur)return;
@@ -9887,6 +9952,28 @@ document.addEventListener('visibilitychange',()=>{
   }
 });
 
+
+setInterval(async()=>{
+  syncStatus();
+  if(!cur||syncRecovering)return;
+  syncRecovering=true;
+  try{
+    for(const entry of [...syncOutbox]){
+      if(String(entry.room)!==String(cur.id)||syncActive.has(entry.id)||syncChains.has(entry.p))continue;
+      syncActive.add(entry.id);
+      const work=syncRequest(entry.p,entry.o,true);syncChains.set(entry.p,work);
+      try{await work;syncOutbox=syncOutbox.filter(x=>x.id!==entry.id);persistOutbox();syncWriteError='';}
+      catch(err){syncWriteError='저장 재시도 중 · '+err.message;break;}
+      finally{syncActive.delete(entry.id);if(syncChains.get(entry.p)===work)syncChains.delete(entry.p);}
+    }
+    for(const [key,v] of Object.entries(statCache)){
+      if(!statSaving.has(key)&&!statDesired.has(key))scheduleStatSave(key,v.kills??null,v.died??null);
+    }
+  }finally{syncRecovering=false;syncStatus();}
+},5000);
+window.addEventListener('beforeunload',ev=>{
+  if(syncOutbox.length||Object.keys(statCache).length||pendingWrites||statDesired.size||teamMapDesired.size||roundPatchDesired.size){ev.preventDefault();ev.returnValue='';}
+});
 
 const overlayParams=new URLSearchParams(location.search);
 const overlayNameTagEnabled=overlayParams.get('nametag')!=='0';
