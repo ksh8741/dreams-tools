@@ -8922,8 +8922,8 @@
              html.mainScoreOverlay #broadcastScoreRoot .slot .scoreDelta{translate:0 -4px !important}
 
              /* Transfer exactly three pixels from the name column to kills. */
-             html:not(.broadcastOverlay) #scoreboard .playerInline{grid-template-columns:45px minmax(0,1fr) !important}
-             html:not(.broadcastOverlay) #scoreboard .name{width:45px !important;min-width:45px !important;max-width:45px !important}
+             html:not(.broadcastOverlay) #scoreboard .playerInline{grid-template-columns:33px minmax(0,1fr) !important}
+             html:not(.broadcastOverlay) #scoreboard .name{width:33px !important;min-width:33px !important;max-width:33px !important}
              html:not(.broadcastOverlay) #killBoard .killUnified .mapCol{position:relative !important}
              html:not(.broadcastOverlay) #killBoard .killUnified .mapCol:has(select)::after{content:"";position:absolute;right:9px;top:50%;width:4px;height:4px;border-right:1px solid #000000;border-bottom:1px solid #000000;transform:translateY(-70%) rotate(45deg);pointer-events:none}
              html:not(.broadcastOverlay) #killBoard .killUnified select.mapSelect{appearance:none !important;-webkit-appearance:none !important;width:calc(100% - 8px) !important;min-width:0 !important;max-width:calc(100% - 8px) !important;height:28px !important;line-height:26px !important;padding:0 11px !important;margin:0 4px !important;border:1px solid #000000 !important;border-radius:5px !important;background:#FFFFFF !important;color:#000000 !important;font-size:10px !important;text-align:center !important;text-align-last:center !important;cursor:pointer !important}
@@ -9199,21 +9199,21 @@ function updatePlayerScoreText(playerId){
   const detail=slot?.querySelector('.detail');
   if(detail)detail.textContent=scoreText(a);
 }
-function flashPlayerScore(playerId,delta){
-  const slot=scoreboard.querySelector('[data-slot="'+CSS.escape(String(playerId))+'"]');
-  if(!slot)return;
-  slot.classList.remove('scoreFlash');
-  void slot.offsetWidth;
-  slot.classList.add('scoreFlash');
+const scoreCueListeners=new Set();
+function playScoreCue(slot,delta){
+  slot.classList.remove('scoreFlash');void slot.offsetWidth;slot.classList.add('scoreFlash');
   const old=slot.querySelector('.scoreDelta');if(old)old.remove();
   if(delta){
-    const badge=document.createElement('span');badge.className='scoreDelta';
-    badge.textContent=(delta>0?'+':'')+delta;
-    slot.appendChild(badge);
+    const badge=slot.ownerDocument.createElement('span');badge.className='scoreDelta';
+    badge.textContent=(delta>0?'+':'')+delta;slot.appendChild(badge);
     setTimeout(()=>badge.remove(),950);
   }
-  clearTimeout(slot._flashTimer);
-  slot._flashTimer=setTimeout(()=>slot.classList.remove('scoreFlash'),850);
+  clearTimeout(slot._flashTimer);slot._flashTimer=setTimeout(()=>slot.classList.remove('scoreFlash'),850);
+}
+function flashPlayerScore(playerId,delta){
+  const slot=scoreboard.querySelector('[data-slot="'+CSS.escape(String(playerId))+'"]');
+  if(slot)playScoreCue(slot,delta);
+  scoreCueListeners.forEach(listener=>listener(playerId,delta));
 }
 
 function updateLocalStat(key,k,d){
@@ -9320,21 +9320,60 @@ function cloneMainScoreFrame(targetDocument){
   stage.querySelectorAll('[draggable]').forEach(x=>x.draggable=false);
   return stage;
 }
+function patchScoreNode(target,source){
+  if(source.nodeType!==1){if(target.nodeValue!==source.nodeValue)target.nodeValue=source.nodeValue;return;}
+  const activeCue=target.classList.contains('scoreFlash');
+  const sourceClass=(source.getAttribute('class')||'').split(/\s+/).filter(x=>x&&x!=='scoreFlash');
+  if(activeCue)sourceClass.push('scoreFlash');
+  const classValue=sourceClass.join(' ');
+  if((target.getAttribute('class')||'')!==classValue)target.setAttribute('class',classValue);
+  for(const attr of [...source.attributes])if(attr.name!=='class'&&target.getAttribute(attr.name)!==attr.value)target.setAttribute(attr.name,attr.value);
+  for(const attr of [...target.attributes])if(attr.name!=='class'&&!source.hasAttribute(attr.name))target.removeAttribute(attr.name);
+  if(source.tagName==='INPUT'){target.value=source.value;target.readOnly=true;target.tabIndex=-1;}
+  const key=node=>node.nodeType===1?(node.getAttribute('data-slot')?'player:'+node.getAttribute('data-slot'):node.id?'id:'+node.id:node.hasAttribute('data-score-column')?'team:'+node.getAttribute('data-score-row')+':'+node.getAttribute('data-score-column'):null):null;
+  const transient=node=>node.nodeType===1&&node.classList.contains('scoreDelta');
+  const prior=[...target.childNodes].filter(x=>!transient(x)),used=new Set();
+  [...source.childNodes].filter(x=>!transient(x)).forEach((child,index)=>{
+    const k=key(child);
+    let node=k?prior.find(x=>!used.has(x)&&key(x)===k):prior[index];
+    if(node&&(used.has(node)||key(node)!==k||node.nodeType!==child.nodeType||node.nodeName!==child.nodeName))node=null;
+    if(!node)node=target.ownerDocument.importNode(child,true);
+    used.add(node);
+    const at=target.childNodes[index];if(at!==node)target.insertBefore(node,at||null);
+    patchScoreNode(node,child);
+  });
+  prior.forEach(node=>{if(!used.has(node))node.remove()});
+}
+function createScoreMirror(targetDocument,host){
+  let queued=false,last='',stopped=false,cues=[];
+  const scheduleFrame=targetDocument.defaultView?.requestAnimationFrame?.bind(targetDocument.defaultView)||requestAnimationFrame;
+  const run=()=>{
+    queued=false;if(stopped||!cur)return;
+    const stage=cloneMainScoreFrame(targetDocument);if(!stage)return;
+    stage.querySelectorAll('.scoreDelta').forEach(x=>x.remove());
+    stage.querySelectorAll('.scoreFlash').forEach(x=>x.classList.remove('scoreFlash'));
+    const markup=stage.outerHTML;
+    let live=host.firstElementChild;
+    if(!live){host.appendChild(stage);live=stage;last=markup;}
+    else if(markup!==last){patchScoreNode(live,stage);last=markup;}
+    for(const cue of cues.splice(0)){
+      const slot=live.querySelector('[data-slot="'+CSS.escape(String(cue.playerId))+'"]');
+      if(slot)playScoreCue(slot,cue.delta);
+    }
+  };
+  const sync=()=>{if(!stopped&&!queued){queued=true;scheduleFrame(run)}};
+  const cueListener=(playerId,delta)=>{cues.push({playerId,delta});sync()};
+  scoreCueListeners.add(cueListener);
+  const observer=new MutationObserver(sync);observer.observe(captureStage,{subtree:true,childList:true,attributes:true,characterData:true});
+  run();
+  return {sync,disconnect(){stopped=true;observer.disconnect();scoreCueListeners.delete(cueListener);cues=[]}};
+}
+
 function isolateMainScoreOverlay(){
   if(!isMainScoreOverlay())return;
   let root=document.getElementById('broadcastScoreRoot');
   if(!root){root=document.createElement('div');root.id='broadcastScoreRoot';document.body.appendChild(root)}
-  let queued=false,last='';
-  const mirror=()=>{
-    if(queued)return;queued=true;
-    requestAnimationFrame(()=>{
-      queued=false;const frame=captureStage.querySelector('.scoreFrame');if(!frame)return;
-      const markup=frame.outerHTML;if(markup===last)return;last=markup;
-      const copy=cloneMainScoreFrame(document);if(copy)root.replaceChildren(copy);
-    });
-  };
-  new MutationObserver(mirror).observe(captureStage,{subtree:true,childList:true,attributes:true,characterData:true});
-  mirror();
+  createScoreMirror(document,root);
 }
 
 const MAPS=['에란겔','미라마','사녹','카라킨','파라모','태이고','데스턴','비켄디','론도'];
@@ -10218,15 +10257,8 @@ if(pipScore)pipScore.onclick=async()=>{
       '#pipPad{box-sizing:border-box;padding:20px;width:max-content;height:max-content;display:block}'+
       '</style>';
     pip.document.body.innerHTML='<div id="pipPad"></div>';
-    let last='';
-    const sync=()=>{
-      const src=captureStage.querySelector('.scoreFrame'),dst=pip.document.getElementById('pipPad');if(!src||!dst)return;
-      const markup=src.outerHTML;if(markup===last)return;last=markup;
-      const stage=cloneMainScoreFrame(pip.document);if(stage)dst.replaceChildren(stage);
-    };
-    sync();
-    const ob=new MutationObserver(sync);ob.observe(captureStage,{childList:true,subtree:true,characterData:true,attributes:true});
-    pip.addEventListener('pagehide',()=>ob.disconnect());
+    const mirror=createScoreMirror(pip.document,pip.document.getElementById('pipPad'));
+    pip.addEventListener('pagehide',()=>mirror.disconnect());
   }catch(err){console.error('[PiP]',err)}
 };
 
