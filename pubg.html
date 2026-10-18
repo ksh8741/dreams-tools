@@ -8993,6 +8993,21 @@ html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"] .s
              #rosterToastStack .rosterToastClose{appearance:none;flex:0 0 24px;display:flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:0;background:#FFFFFF;color:#000000;font-size:22px;line-height:1;cursor:pointer}
              #rosterToastStack .rosterToastClose:focus-visible{outline:2px solid #000000;outline-offset:2px}
              html.mainScoreOverlay #rosterToastStack{display:none !important}
+
+             /* High-contrast roster notification. */
+             #rosterToastStack{right:24px;bottom:24px;width:390px;gap:12px;max-width:calc(100vw - 32px)}
+             #rosterToastStack .rosterToast{position:relative;display:flex;gap:16px;background:#000000;color:#FFFFFF;border:1px solid #FFFFFF;border-radius:14px;padding:21px 19px 20px 22px;box-shadow:0 0 0 1px #000000;animation:rosterToastEnter .28s cubic-bezier(.2,.8,.2,1) both}
+             #rosterToastStack .rosterToastContent{flex:1;min-width:0}
+             #rosterToastStack .rosterToastLabel{display:inline-block;margin:0 0 12px;border:1px solid #FFFFFF;border-radius:4px;padding:3px 7px;font-size:10px;font-weight:800;letter-spacing:.4px;line-height:1.4}
+             #rosterToastStack .rosterToastNames{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:0;color:#FFFFFF;font-size:21px;font-weight:900;line-height:1.35;letter-spacing:-.5px}
+             #rosterToastStack .rosterToastName{overflow-wrap:anywhere}
+             #rosterToastStack .rosterToastArrow{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;flex:0 0 28px;border-radius:50%;background:#FFFFFF;color:#000000;font-size:20px;font-weight:800;line-height:1}
+             #rosterToastStack .rosterToast p{margin:13px 0 0;padding-top:12px;border-top:1px solid #FFFFFF;color:#FFFFFF;font-size:12px;line-height:1.6;font-weight:600;word-break:keep-all}
+             #rosterToastStack .rosterToastClose{display:flex;align-items:center;justify-content:center;flex:0 0 28px;width:28px;height:28px;background:#000000;color:#FFFFFF;border:1px solid #FFFFFF;border-radius:50%;padding:0;font-size:22px;font-weight:400;line-height:1;cursor:pointer}
+             #rosterToastStack .rosterToastClose:hover{background:#FFFFFF;color:#000000}
+             #rosterToastStack .rosterToastClose:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
+             @keyframes rosterToastEnter{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+             @media(prefers-reduced-motion:reduce){#rosterToastStack .rosterToast{animation:none}}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
@@ -9618,10 +9633,15 @@ function pushRosterToast(players){
   let stack=document.getElementById('rosterToastStack');
   if(!stack){stack=document.createElement('div');stack.id='rosterToastStack';stack.setAttribute('aria-label','선수 위치 변경 알림');document.body.appendChild(stack)}
   const toast=document.createElement('section');toast.className='rosterToast';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');
-  const text=document.createElement('div'),title=document.createElement('strong'),message=document.createElement('p');
-  title.textContent=players.map(p=>p.nickname?.trim()||'이름 미입력').join(' ↔ ')+' 위치가 변경되었습니다.';
-  message.textContent='킬 기록판에서 변경된 위치를 확인해 주세요.';
-  text.append(title,message);
+  const text=document.createElement('div');text.className='rosterToastContent';
+  const label=document.createElement('span');label.className='rosterToastLabel';label.textContent='선수 위치 변경';
+  const title=document.createElement('strong');title.className='rosterToastNames';
+  players.forEach((player,index)=>{
+    if(index){const arrow=document.createElement('span');arrow.className='rosterToastArrow';arrow.textContent='↔';title.appendChild(arrow)}
+    const name=document.createElement('span');name.className='rosterToastName';name.textContent=player.nickname?.trim()||'이름 미입력';title.appendChild(name);
+  });
+  const message=document.createElement('p');message.textContent='킬 기록판에서 변경된 위치를 확인해 주세요.';
+  text.append(label,title,message);
   const close=document.createElement('button');close.type='button';close.className='rosterToastClose';close.textContent='×';close.setAttribute('aria-label','위치 변경 알림 닫기');
   close.onclick=()=>{toast.remove();if(!stack.children.length)stack.remove()};
   toast.append(text,close);stack.appendChild(toast);
