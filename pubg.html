@@ -9019,6 +9019,25 @@ html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"] .s
              #rosterToastStack .rosterToastClose{flex:0 0 20px;width:20px;height:20px;border:0;border-radius:4px;background:transparent;color:#5b4600;font-size:20px;font-weight:400}
              #rosterToastStack .rosterToastClose:hover{background:#332700;color:#fff3b0}
              #rosterToastStack .rosterToastClose:focus-visible{outline:2px solid #332700;outline-offset:2px}
+
+             html:not(.broadcastOverlay) #gameSettingsBody[hidden]{display:none !important}
+             html:not(.broadcastOverlay) .settingsPanel.settingsCollapsed>.sect{margin-bottom:0 !important;padding-bottom:0 !important;border-bottom:0 !important}
+             html:not(.broadcastOverlay) #settingsToggle{padding:5px 10px !important;font-size:11px !important;min-width:68px !important}
+             html:not(.broadcastOverlay) .timelinePanel{margin-top:18px !important;padding:18px !important;background:#FFFFFF !important;color:#000000 !important;border:1px solid #000000 !important;border-radius:10px !important;box-shadow:none !important}
+             .timelinePanel>.sect{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #000000}
+             .timelinePanel h2{font-size:15px !important;margin:0}
+             .timelineScope{font-size:10px;font-weight:500}
+             .timelineList{max-height:320px;overflow-y:auto;overscroll-behavior:contain}
+             .timelineItem{display:grid;grid-template-columns:64px 40px minmax(0,1fr);align-items:start;gap:10px;position:relative;padding:11px 0;border-bottom:1px solid #000000;font-size:12px;line-height:1.6}
+             .timelineItem:last-child{border-bottom:0}
+             .timelineItem time{font-size:10px;line-height:21px;font-variant-numeric:tabular-nums;white-space:nowrap}
+             .timelineType{display:inline-flex;align-items:center;justify-content:center;min-height:21px;border:1px solid #000000;border-radius:4px;font-size:10px;font-weight:800;line-height:19px}
+             .timelineMessage{overflow-wrap:anywhere}
+             .timelineEmpty{padding:24px 0;text-align:center;font-size:12px}
+             #timelineMore{margin-top:10px;width:100%}
+             #timelineMore[hidden]{display:none !important}
+             html.mainScoreOverlay #timelinePanel{display:none !important}
+             @media(max-width:650px){html:not(.broadcastOverlay) .timelinePanel{padding:12px !important}.timelineItem{grid-template-columns:55px 34px minmax(0,1fr);gap:7px;font-size:11px}}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
@@ -9041,8 +9060,8 @@ html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"] .s
                 </div>
             </div>
             <div class="panel sec settingsPanel">
-                <div class="sect"><h2>게임 세팅</h2></div>
-                <div class="settingsDeck">
+                <div class="sect"><h2>게임 세팅</h2><button id="settingsToggle" class="btn settingsToggle" type="button" aria-controls="gameSettingsBody" aria-expanded="true">접기 ▴</button></div>
+                <div id="gameSettingsBody" class="settingsDeck">
                     <section class="settingCard">
                         <div class="settingCardTitle"><span>점수 설정</span></div>
                         <div class="scoreSettingsGrid">
@@ -9079,6 +9098,11 @@ html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"] .s
 
               </div>
               <div class="killUnifiedWrap"><div id="killBoard"></div></div><button id="addRound" class="btn add">추가</button></div>
+            <section id="timelinePanel" class="panel timelinePanel">
+              <div class="sect"><h2>타임라인</h2><span class="timelineScope" title="이 브라우저에서 확인한 변경을 최근 500개까지 저장합니다.">이 브라우저의 기록</span></div>
+              <div id="timelineList" class="timelineList"><div class="timelineEmpty">아직 변경 기록이 없습니다.</div></div>
+              <button id="timelineMore" class="btn timelineMore" type="button" hidden>이전 기록 더 보기</button>
+            </section>
         </section>
     </main>
     <div id="createOv" class="overlay hidden">
@@ -9340,6 +9364,7 @@ function queueSafeRender(){
 }
 async function q(p,o={}){
   const method=(o.method||'GET').toUpperCase();
+  const timelineWriteRoom=cur?.id;
   const retryable=method==='GET'||method==='PATCH'||method==='DELETE'||(method==='POST'&&p.includes('on_conflict='));
   const entry=method!=='GET'&&retryable?{id:crypto.randomUUID(),p,o:{...o,method},room:cur?.id}:null;
   if(entry){syncActive.add(entry.id);syncOutbox.push(entry);persistOutbox();syncStatus();}
@@ -9347,6 +9372,7 @@ async function q(p,o={}){
     const previous=syncChains.get(p)||Promise.resolve();
     const work=previous.catch(()=>{}).then(()=>syncRequest(p,o,retryable));syncChains.set(p,work);
     const result=await work;
+    try{recordTimelineWrite(p,o,result,timelineWriteRoom)}catch(error){console.error('[timeline]',error)}
     if(syncChains.get(p)===work)syncChains.delete(p);
     if(entry){const ix=syncOutbox.findIndex(x=>x.id===entry.id);syncOutbox=syncOutbox.filter((x,i)=>!(x.p===p&&i<=ix));persistOutbox();}
     if(method!=='GET')syncWriteError='';syncStatus();return result;
@@ -9662,9 +9688,113 @@ function checkRosterToasts(players,room){
   if(rosterToastBaseline)changedRosterGroups(rosterToastBaseline,players).forEach(pushRosterToast);
   rosterToastBaseline=players.map(p=>({id:p.id,position:p.position,nickname:p.nickname}));
 }
-async function enter(r){resetRosterToasts(r.id);P=[];cur=r;applyScoreWidth();if(!isMainScoreOverlay()){loadTeamMaps();loadStatCache()}else{teamMapState={};statCache={}};lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · 총 '+r.team_count*r.players_per_team+'명';if(!isMainScoreOverlay())await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),document.documentElement.classList.contains('broadcastOverlay')?1250:1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
+const TIMELINE_STORAGE_KEY='yoning_pubg_timeline_v1',SETTINGS_COLLAPSE_KEY='yoning_pubg_settings_collapsed';
+let timelineRoom=null,timelineRows=[],timelineBaseline=null,timelineVisible=100,timelineMutationRevision=0;
+function copyTimeline(value){return JSON.parse(JSON.stringify(value))}
+function initTimeline(roomId){
+  timelineRoom=String(roomId);timelineBaseline=null;timelineVisible=100;
+  try{timelineRows=JSON.parse(localStorage.getItem(TIMELINE_STORAGE_KEY+':'+timelineRoom)||'[]');if(!Array.isArray(timelineRows))timelineRows=[]}catch(_){timelineRows=[]}
+  renderTimeline();
+}
+function addTimelineRows(rows){
+  if(!rows.length)return;
+  const now=new Date().toISOString();
+  const incoming=rows.map(row=>({id:crypto.randomUUID(),at:now,...row}));
+  timelineRows=[...incoming.reverse(),...timelineRows].slice(0,500);
+  try{localStorage.setItem(TIMELINE_STORAGE_KEY+':'+timelineRoom,JSON.stringify(timelineRows))}catch(_){}
+  renderTimeline();
+}
+function timelineSnapshot(room,players,rounds,stats,maps){
+  const keyed=(rows,key)=>Object.fromEntries(rows.map(row=>[key(row),copyTimeline(row)]));
+  return {room:copyTimeline(room),players:keyed(players,x=>String(x.id)),rounds:keyed(rounds,x=>String(x.id)),stats:keyed(stats,x=>x.round_id+'|'+x.player_id),maps:keyed(maps,x=>x.round_id+'|'+x.team_no)};
+}
+function timelineChanges(before,after){
+  const events=[],push=(type,message)=>events.push({type,message});
+  const name=id=>after.players[id]?.nickname?.trim()||before.players[id]?.nickname?.trim()||'이름 미입력';
+  const round=id=>after.rounds[id]?.round_no??before.rounds[id]?.round_no??'?';
+  const team=value=>value?String.fromCharCode(64+Number(value))+'팀':'없음';
+  for(const [key,row] of Object.entries(after.stats)){
+    const old=before.stats[key]||{kills:0,died:false};
+    if(Number(old.kills)!==Number(row.kills))push('kills',round(row.round_id)+'판 · '+name(row.player_id)+' 킬 '+old.kills+' → '+row.kills);
+    if(!!old.died!==!!row.died)push('death',round(row.round_id)+'판 · '+name(row.player_id)+' 데스 '+(row.died?'체크':'해제'));
+  }
+  for(const [key,row] of Object.entries(after.maps)){
+    const old=before.maps[key]?.map_name||'',next=row.map_name||'';
+    if(old!==next)push('map',round(row.round_id)+'판 · '+team(row.team_no)+' 맵 '+(old||'맵 선택')+' → '+(next||'맵 선택'));
+  }
+  for(const [id,row] of Object.entries(after.rounds)){
+    const old=before.rounds[id];
+    if(!old){push('round',row.round_no+'판 추가');continue;}
+    if((old.chicken_team??null)!==(row.chicken_team??null))push('chicken',row.round_no+'판 · 치킨 '+team(old.chicken_team)+' → '+team(row.chicken_team));
+  }
+  for(const [id,row] of Object.entries(after.players)){
+    const old=before.players[id];if(!old)continue;
+    if((old.nickname||'')!==(row.nickname||''))push('name','이름 '+(old.nickname?.trim()||'이름 미입력')+' → '+(row.nickname?.trim()||'이름 미입력'));
+    if(Number(old.death_penalty??0)!==Number(row.death_penalty??0))push('settings',name(id)+' 데스 감점 '+old.death_penalty+' → '+row.death_penalty);
+    const max=after.room.team_count*after.room.players_per_team;
+    if(Number(old.position)!==Number(row.position)&&row.position>=1&&row.position<=max){
+      const pp=after.room.players_per_team;
+      push('position',name(id)+' 위치 변경 → '+team(Math.floor((row.position-1)/pp)+1)+' '+((row.position-1)%pp+1)+'번');
+    }
+  }
+  const fields={goal_kills:'목표 킬',chicken_kills:'일반 치킨',sanhok_chicken_kills:'사녹 치킨',score_mode:'점수 표시'};
+  for(const [field,label] of Object.entries(fields)){
+    let old=before.room[field],next=after.room[field];
+    if(old!==next){if(field==='score_mode'){old=old==='2v2'?'합산':'팀별';next=next==='2v2'?'합산':'팀별'}push('settings',label+' '+old+' → '+next)}
+  }
+  const timerFields=['timer_mode','timer_started_at','timer_end_at','timer_seconds'];
+  if(timerFields.some(key=>(before.room[key]??null)!==(after.room[key]??null)))push('timer',after.room.timer_mode==='off'?'타이머 끄기':'타이머 설정 변경');
+  return events;
+}
+function observeTimelineSnapshot(room,players,rounds,stats,maps){
+  if(isMainScoreOverlay()||timelineRoom!==String(room.id))return;
+  const next=timelineSnapshot(room,players,rounds,stats,maps);
+  if(timelineBaseline)addTimelineRows(timelineChanges(timelineBaseline,next));
+  timelineBaseline=next;
+}
+function recordTimelineWrite(path,options,result,roomId){
+  if(isMainScoreOverlay()||!timelineBaseline||timelineRoom!==String(roomId)||!cur||String(cur.id)!==timelineRoom)return;
+  const table=path.split('?')[0],method=(options.method||'GET').toUpperCase();if(method==='GET')return;
+  const next=copyTimeline(timelineBaseline);
+  const rows=Array.isArray(result)?result:[];
+  let changed=false;
+  for(const row of rows){
+    if(table==='/pubg_rooms'){next.room=copyTimeline(row);changed=true}
+    if(table==='/pubg_players'){
+      if(row.position<1||row.position>next.room.team_count*next.room.players_per_team)continue;
+      next.players[String(row.id)]=copyTimeline(row);changed=true;
+    }
+    if(table==='/pubg_rounds'){next.rounds[String(row.id)]=copyTimeline(row);changed=true}
+    if(table==='/pubg_round_player_stats'){next.stats[row.round_id+'|'+row.player_id]=copyTimeline(row);changed=true}
+  }
+  if(table==='/pubg_round_team_state'&&options.body){
+    const row=JSON.parse(options.body);next.maps[row.round_id+'|'+row.team_no]=row;changed=true;
+  }
+  if(changed){timelineMutationRevision++;addTimelineRows(timelineChanges(timelineBaseline,next));timelineBaseline=next}
+}
+function renderTimeline(){
+  const list=document.getElementById('timelineList'),more=document.getElementById('timelineMore');if(!list||isMainScoreOverlay())return;
+  const oldTop=list.scrollTop;
+  const labels={kills:'킬',death:'데스',chicken:'치킨',map:'맵',name:'이름',position:'위치',settings:'설정',timer:'시간',round:'판'};
+  if(!timelineRows.length)list.innerHTML='<div class="timelineEmpty">아직 변경 기록이 없습니다.</div>';
+  else list.innerHTML=timelineRows.slice(0,timelineVisible).map(row=>{
+    const date=new Date(row.at),time=Number.isNaN(date.getTime())?'':date.toLocaleTimeString('ko-KR',{hour12:false,timeZone:'Asia/Seoul'});
+    return '<div class="timelineItem"><time datetime="'+e(row.at)+'" title="'+e(date.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'}))+'">'+e(time)+'</time><span class="timelineType">'+e(labels[row.type]||'변경')+'</span><span class="timelineMessage">'+e(row.message)+'</span></div>';
+  }).join('');
+  list.scrollTop=oldTop;
+  if(more){more.hidden=timelineRows.length<=timelineVisible;more.onclick=()=>{timelineVisible+=100;renderTimeline()}}
+}
+function initSettingsToggle(){
+  const button=document.getElementById('settingsToggle'),body=document.getElementById('gameSettingsBody'),panel=document.querySelector('.settingsPanel');if(!button||!body)return;
+  let collapsed=false;try{collapsed=localStorage.getItem(SETTINGS_COLLAPSE_KEY)==='1'}catch(_){}
+  const apply=()=>{body.hidden=collapsed;panel.classList.toggle('settingsCollapsed',collapsed);button.textContent=collapsed?'펼치기 ▾':'접기 ▴';button.setAttribute('aria-expanded',String(!collapsed))};
+  button.onclick=()=>{collapsed=!collapsed;try{localStorage.setItem(SETTINGS_COLLAPSE_KEY,collapsed?'1':'0')}catch(_){}apply()};apply();
+}
+
+async function enter(r){initTimeline(r.id);resetRosterToasts(r.id);P=[];cur=r;applyScoreWidth();if(!isMainScoreOverlay()){loadTeamMaps();loadStatCache()}else{teamMapState={};statCache={}};lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · 총 '+r.team_count*r.players_per_team+'명';if(!isMainScoreOverlay())await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),document.documentElement.classList.contains('broadcastOverlay')?1250:1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
 async function load(isPoll=false){
   if(!cur)return;
+  const timelineReadRevision=timelineMutationRevision;
   const roomId=cur.id,revAtStart=localRevision,isOverlay=isMainScoreOverlay()||document.documentElement.classList.contains('broadcastOverlay');
   if(syncLoading)return;
   syncLoading=true;
@@ -9685,6 +9815,7 @@ async function load(isPoll=false){
     const oldTotals=new Map();
     P.forEach(pl=>oldTotals.set(String(pl.id),totals(pl).score));
 
+    if(timelineReadRevision===timelineMutationRevision)observeTimelineSnapshot(r[0]||cur,p,ro,ss,tm);
     const sig=stateSignature(r[0]||cur,p,ro,ss,tm);
     if(isPoll && sig===lastAppliedSignature){syncLastRead=Date.now();syncReadError='';syncStatus();return;}
     const prevScoreMode=cur?.score_mode;
@@ -10426,7 +10557,7 @@ setInterval(async()=>{
       if(String(entry.room)!==String(cur.id)||syncActive.has(entry.id)||syncChains.has(entry.p))continue;
       syncActive.add(entry.id);
       const work=syncRequest(entry.p,entry.o,true);syncChains.set(entry.p,work);
-      try{await work;syncOutbox=syncOutbox.filter(x=>x.id!==entry.id);persistOutbox();syncWriteError='';}
+      try{const result=await work;try{recordTimelineWrite(entry.p,entry.o,result,entry.room)}catch(error){console.error('[timeline]',error)}syncOutbox=syncOutbox.filter(x=>x.id!==entry.id);persistOutbox();syncWriteError='';}
       catch(err){syncWriteError='저장 오류 · '+err.message;}
       finally{syncActive.delete(entry.id);if(syncChains.get(entry.p)===work)syncChains.delete(entry.p);}
     }
@@ -10437,6 +10568,7 @@ setInterval(async()=>{
 },5000);
 
 
+initSettingsToggle();
 const overlayParams=new URLSearchParams(location.search);
 const overlayNameTagEnabled=false;
 const overlayFrameCount=0;
