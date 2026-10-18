@@ -9046,6 +9046,28 @@ const syncJournalKey='pubg_sync_outbox_v2_'+syncTab;
 const syncActive=new Set(),syncChains=new Map();
 let syncOutbox=[];
 try{syncOutbox=JSON.parse(localStorage.getItem(syncJournalKey)||'[]')}catch(_){syncStorageError=true}
+function compactPendingOutbox(){
+  const compact=[],indices=new Map();
+  for(const entry of syncOutbox){
+    if(syncActive.has(entry.id)){compact.push(entry);continue;}
+    const method=(entry.o.method||'GET').toUpperCase();
+    let key=null,body;
+    try{
+      body=JSON.parse(entry.o.body||'{}');
+      if(method==='PATCH')key=entry.room+'|'+entry.p;
+      else if(method==='POST'){
+        const columns=new URLSearchParams(entry.p.split('?')[1]||'').get('on_conflict');
+        if(columns&&!Array.isArray(body))key=entry.room+'|'+entry.p+'|'+columns.split(',').map(k=>String(body[k])).join('|');
+      }
+    }catch(_){}
+    if(!key){compact.push(entry);continue;}
+    if(indices.has(key)){
+      const i=indices.get(key),old=compact[i];
+      compact[i]={...entry,o:{...entry.o,body:JSON.stringify({...JSON.parse(old.o.body||'{}'),...body})}};
+    }else{indices.set(key,compact.length);compact.push(entry);}
+  }
+  syncOutbox=compact;persistOutbox();
+}
 function persistOutbox(){try{localStorage.setItem(syncJournalKey,JSON.stringify(syncOutbox))}catch(_){syncStorageError=true}}
 function syncStatus(){
   if(document.documentElement.classList.contains('mainScoreOverlay'))return;
@@ -9935,7 +9957,7 @@ function board(){
       ps.forEach(p=>{
         const s=st(r.id,p.id),key=r.id+'|'+p.id;
         body+='<td class="killCell"><div class="killCtrl">'+
-          '<div class="killSquare"><input class="killInput" data-k="'+key+'" type="number" min="0" max="100" value="'+n(s.kills)+'"></div>'+
+          '<div class="killSquare"><input class="killInput" data-k="'+key+'" type="number" min="0" value="'+n(s.kills)+'"></div>'+
           '<div class="killSideStack">'+
             '<button type="button" class="ctrlBtn" data-step="'+key+'" data-dir="1" title="킬 +1">+</button>'+
             '<button type="button" class="ctrlBtn" data-step="'+key+'" data-dir="-1" title="킬 -1">−</button>'+
@@ -9977,7 +9999,7 @@ function board(){
     scheduleRoundPatch(rid,{chicken_team:team},false);
   });
   document.querySelectorAll('[data-k]').forEach(x=>{
-    x.oninput=()=>{const v=Math.min(100,n(x.value));x.value=v;updateLocalStat(x.dataset.k,v,null);scheduleStatSave(x.dataset.k,v,null)}
+    x.oninput=()=>{const v=n(x.value);updateLocalStat(x.dataset.k,v,null);scheduleStatSave(x.dataset.k,v,null)}
   });
   document.querySelectorAll('[data-d]').forEach(x=>x.oninput=()=>{
     updateLocalStat(x.dataset.d,null,x.checked);scheduleStatSave(x.dataset.d,null,x.checked)
@@ -9985,7 +10007,7 @@ function board(){
   document.querySelectorAll('[data-step]').forEach(btn=>btn.onclick=()=>{
     const key=btn.dataset.step,inp=document.querySelector('[data-k="'+CSS.escape(key)+'"]');
     if(!inp)return;
-    const v=Math.min(100,Math.max(0,n(inp.value)+(btn.dataset.dir==='1'?1:-1)));
+    const v=Math.max(0,n(inp.value)+(btn.dataset.dir==='1'?1:-1));
     inp.value=v;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.focus();
   });
 
@@ -10224,6 +10246,7 @@ setInterval(async()=>{
   syncStatus();
   if(!cur||syncRecovering||isMainScoreOverlay())return;
   syncRecovering=true;
+  compactPendingOutbox();
   try{
     for(const entry of [...syncOutbox]){
       if(String(entry.room)!==String(cur.id)||syncActive.has(entry.id)||syncChains.has(entry.p))continue;
