@@ -8726,6 +8726,19 @@
              #killBoard .killUnified .mapCol,#killBoard col.fixedMapCol{width:48px !important;min-width:48px !important;max-width:48px !important}
              #killBoard .killUnified .playerHead,#killBoard .killUnified .killCell,#killBoard col.fixedPlayerCol{width:79px !important;min-width:79px !important;max-width:79px !important}
              #killBoard .killUnified .chickenCol,#killBoard col.fixedChickenCol{width:30px !important;min-width:30px !important;max-width:30px !important}
+
+             .killScrollTools{position:sticky;top:0;z-index:15;background:#fff;padding:6px 0 8px;border-bottom:1px solid #dfe4e8;margin-bottom:6px}
+             .killScrollTools[hidden]{display:none !important}
+             .killScrollActions{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
+             .killScrollActions .btn{font-size:12px;white-space:nowrap;padding:6px 10px}
+             .killScrollActions .btn:disabled{opacity:.35;cursor:default}
+             #killScrollHint{font-size:12px;font-weight:700;color:#52677e;text-align:center}
+             #killTopScroll{width:100%;overflow-x:scroll;overflow-y:hidden;height:20px;scrollbar-color:#66798d #e9edf2;scrollbar-width:auto}
+             #killTopScroll::-webkit-scrollbar{height:14px}
+             #killTopScroll::-webkit-scrollbar-track{background:#e9edf2;border-radius:7px}
+             #killTopScroll::-webkit-scrollbar-thumb{background:#66798d;border-radius:7px;border:2px solid #e9edf2}
+             #killTopTrack{height:1px}
+             @media(max-width:600px){#killScrollHint{font-size:10px}.killScrollActions .btn{font-size:11px;padding:6px}}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="navbar.css">
@@ -8789,7 +8802,12 @@
                     </section>
                 </div>
             </div>
-            <div class="panel kill"><div class="sect"><h2>킬 기록</h2></div><div class="killUnifiedWrap"><div id="killBoard"></div></div><button id="addRound" class="btn add">추가</button></div>
+            <div class="panel kill"><div class="sect"><h2>킬 기록</h2></div>
+              <div id="killScrollTools" class="killScrollTools" hidden>
+                <div class="killScrollActions"><button id="killScrollLeft" type="button" class="btn" aria-label="이전 팀으로 이동">← 이전 팀</button><span id="killScrollHint" aria-live="polite">오른쪽에 더 많은 팀이 있어요 →</span><button id="killScrollRight" type="button" class="btn" aria-label="다음 팀으로 이동">다음 팀 →</button></div>
+                <div id="killTopScroll" tabindex="0" role="region" aria-label="킬 기록 가로 스크롤"><div id="killTopTrack"></div></div>
+              </div>
+              <div class="killUnifiedWrap"><div id="killBoard"></div></div><button id="addRound" class="btn add">추가</button></div>
         </section>
     </main>
     <div id="createOv" class="overlay hidden">
@@ -9670,6 +9688,30 @@ async function flushTeamMapSave(key){
   }
 }
 
+function setupKillScroll(){
+  const scroller=killBoard,bar=document.getElementById('killTopScroll'),track=document.getElementById('killTopTrack');
+  const tools=document.getElementById('killScrollTools'),left=document.getElementById('killScrollLeft'),right=document.getElementById('killScrollRight'),hint=document.getElementById('killScrollHint');
+  if(!bar||!scroller)return;
+  const update=()=>{
+    const max=Math.max(0,scroller.scrollWidth-scroller.clientWidth),pos=scroller.scrollLeft;
+    tools.hidden=max<=1;track.style.width=scroller.scrollWidth+'px';
+    if(Math.abs(bar.scrollLeft-pos)>1)bar.scrollLeft=pos;
+    left.disabled=pos<=1;right.disabled=pos>=max-1;
+    hint.textContent=pos<=1?'오른쪽에 더 많은 팀이 있어요 →':pos>=max-1?'← 왼쪽 팀으로 이동할 수 있어요':'← 좌우로 이동해 다른 팀 기록을 확인하세요 →';
+  };
+  if(!scroller.dataset.scrollControlsBound){
+    scroller.dataset.scrollControlsBound='1';
+    scroller.addEventListener('scroll',update,{passive:true});
+    bar.addEventListener('scroll',()=>{if(Math.abs(scroller.scrollLeft-bar.scrollLeft)>1)scroller.scrollLeft=bar.scrollLeft},{passive:true});
+    const step=()=>48+79*(cur?.players_per_team||4)+30;
+    left.onclick=()=>scroller.scrollBy({left:-step(),behavior:'smooth'});
+    right.onclick=()=>scroller.scrollBy({left:step(),behavior:'smooth'});
+    if(typeof ResizeObserver!=='undefined')new ResizeObserver(update).observe(scroller);
+    window.addEventListener('resize',update,{passive:true});
+  }
+  requestAnimationFrame(update);
+}
+
 function board(){
   killBoard.style.setProperty('--room-team-count',String(cur.team_count));
   const teamPlayersList=[];
@@ -9721,6 +9763,7 @@ function board(){
   });
   killBoard.style.setProperty('--kill-table-width',tableWidth+'px');
   killBoard.innerHTML='<table class="killUnified"><colgroup>'+columns+'</colgroup><thead>'+teamHeader+colHeader+'</thead><tbody>'+body+'</tbody></table>';
+  setupKillScroll();
 
   document.querySelectorAll('[data-map]').forEach(x=>x.onchange=()=>{
     touchLocal();
