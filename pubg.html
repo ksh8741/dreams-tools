@@ -9008,6 +9008,17 @@ html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"] .s
              #rosterToastStack .rosterToastClose:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
              @keyframes rosterToastEnter{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
              @media(prefers-reduced-motion:reduce){#rosterToastStack .rosterToast{animation:none}}
+
+             /* Compact yellow-striped roster toast, matching the supplied reference. */
+             #rosterToastStack{width:280px;right:20px;bottom:20px;max-width:calc(100vw - 28px);gap:9px}
+             #rosterToastStack .rosterToast{gap:8px;background:repeating-linear-gradient(90deg,#ffe77a 0px,#ffe77a 3px,#ffdf61 3px,#ffdf61 5px,#ffe471 5px,#ffe471 8px);color:#332700;border:1px solid #e7bc35;border-radius:10px;padding:14px 11px 14px 15px;box-shadow:0 3px 10px rgba(0,0,0,.12)}
+             #rosterToastStack .rosterToastLabel{display:block;width:auto;margin:0 0 7px;border:0;border-radius:0;padding:0;background:transparent;color:#5b4600;font-size:10px;font-weight:800;letter-spacing:0;line-height:1.3}
+             #rosterToastStack .rosterToastNames{gap:6px;color:#211b06;font-size:18px;font-weight:900;line-height:1.4;letter-spacing:-.4px}
+             #rosterToastStack .rosterToastArrow{display:inline;flex:0 0 auto;width:auto;height:auto;padding:0;margin:0 1px;border:0;border-radius:0;background:transparent;color:#6b5312;font-size:13px;font-weight:500;line-height:inherit}
+             #rosterToastStack .rosterToast p{margin:8px 0 0;padding:0;border:0;color:#4b3a0d;font-size:11px;font-weight:650;line-height:1.55;word-break:keep-all}
+             #rosterToastStack .rosterToastClose{flex:0 0 20px;width:20px;height:20px;border:0;border-radius:4px;background:transparent;color:#5b4600;font-size:20px;font-weight:400}
+             #rosterToastStack .rosterToastClose:hover{background:#332700;color:#fff3b0}
+             #rosterToastStack .rosterToastClose:focus-visible{outline:2px solid #332700;outline-offset:2px}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
