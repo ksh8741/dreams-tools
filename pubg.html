@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
+    <script>if(new URLSearchParams(location.search).has("overlay"))document.documentElement.classList.add("mainScoreOverlay");</script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>무제 PUBG</title>
@@ -8882,6 +8883,19 @@
              html:not(.broadcastOverlay) #captureStage #totalBar.timerOnlyLine .fixedTimer{position:static !important;width:100% !important;flex:1 !important;display:flex !important;align-items:center !important;justify-content:center !important;margin:0 !important;padding:0 !important;border:0 !important;transform:none !important;text-align:center !important}
              html:not(.broadcastOverlay) #captureStage #scoreStatusRow .combinedGoal{border:0 !important;border-right:0 !important;box-shadow:none !important}
              .killScrollActions{justify-content:space-between !important}
+
+             /* Raise the existing score-change cue by two pixels. */
+             html:not(.broadcastOverlay) #scoreboard .slot.scoreFlash::before{translate:0 -2px !important}
+             html:not(.broadcastOverlay) #scoreboard .slot .scoreDelta{translate:0 -2px !important}
+             /* Browser-source view uses the very same main scoreboard renderer. */
+             html.mainScoreOverlay,html.mainScoreOverlay body{margin:0 !important;padding:0 !important;background:transparent !important;overflow:hidden !important}
+             html.mainScoreOverlay header,html.mainScoreOverlay nav,html.mainScoreOverlay .globalNav,html.mainScoreOverlay #lobby,html.mainScoreOverlay #roomView>.top,html.mainScoreOverlay .settingsPanel,html.mainScoreOverlay .panel.kill,html.mainScoreOverlay .scoreToolbarSect,html.mainScoreOverlay #syncHealth,html.mainScoreOverlay .overlay,html.mainScoreOverlay #rankOverlay,html.mainScoreOverlay #gameNameplates,html.mainScoreOverlay #overlayFrames{display:none !important}
+             html.mainScoreOverlay main{display:block !important;width:max-content !important;max-width:none !important;margin:0 !important;padding:0 !important}
+             html.mainScoreOverlay #roomView{width:max-content !important;margin:0 !important;padding:0 !important}
+             html.mainScoreOverlay #roomView .scoreStage{display:block !important;width:max-content !important;margin:0 !important;padding:0 !important}
+             html.mainScoreOverlay #roomView .scorePanel{display:block !important;width:max-content !important;max-width:none !important;border:0 !important;border-radius:0 !important;margin:0 !important;padding:0 !important;box-shadow:none !important;background:transparent !important}
+             html.mainScoreOverlay #captureStage{display:block !important;width:max-content !important;max-width:none !important;margin:0 !important;padding:0 !important;overflow:visible !important}
+             html.mainScoreOverlay #scoreboard{pointer-events:none !important}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="navbar.css">
@@ -8898,7 +8912,7 @@
     </nav>
 
     <main>
-        <section id="lobby"><div class="top"><div class="title"><span class="lobbyEyebrow">PUBG / MATCH ROOMS</span><h1>배틀그라운드</h1></div><div><button id="refresh" class="btn">새로고침</button> <button id="adminDeleteMode" class="btn">방 삭제</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>생성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
+        <section id="lobby"><div class="top"><div class="title"><span class="lobbyEyebrow">MATCH ROOMS</span><h1>배틀그라운드</h1></div><div><button id="refresh" class="btn">새로고침</button> <button id="adminDeleteMode" class="btn">방 삭제</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>생성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
         <section id="roomView" class="hidden">
             <div class="top"><div><h1 id="insideTitle" style="margin:0;font-size:20px"></h1><div id="insideMeta" class="meta"></div></div><button id="back" class="btn">← 방 목록</button></div>
             <div class="scoreStage">
@@ -8983,41 +8997,9 @@
 
     <div id="overlayUrlOv" class="overlay hidden">
         <div class="modal overlayUrlModal">
-            <h2>방송 오버레이 설정</h2>
+            <h2>방송 URL</h2>
             <div class="overlayExplain">
-                OBS 또는 FreecShot에서 <b>웹 URL 추가</b> 버튼을 눌러 아래 생성된 주소를 넣으면 됩니다.
-            </div>
-
-            <div class="overlaySettingGrid">
-
-                <label class="overlaySettingField">
-                    <span>테마</span>
-                    <select id="overlayThemeSelect">
-                        <option value="luxury">GOLD</option>
-                        <option value="lavender">LAVENDER</option>
-                        <option value="winter_night">WINTER</option>
-                        <option value="mono_stripe">MONO</option>
-                        <option value="midnight_purple">PURPLE</option>
-                        <option value="esports_red">RED</option>
-                    </select>
-                </label>
-                <label class="overlaySettingField overlayNameTagField">
-                    <span>네임택 표시</span>
-                    <select id="overlayNameTagSelect">
-                        <option value="1">사용</option>
-                        <option value="0">사용 안함</option>
-                    </select>
-                </label>
-                <label id="overlayTeamField" class="overlaySettingField"><span>내 팀</span><select id="overlayTeamSelect"></select></label>
-                <label class="overlaySettingField">
-                    <span>프레임</span>
-                    <select id="overlayFrameCountSelect">
-                        <option value="0">0개</option>
-                        <option value="1">1개</option>
-                        <option value="2">2개</option>
-                        <option value="3">3개</option>
-                    </select>
-                </label>
+                메인 점수판이 그대로 표시됩니다.
             </div>
 
             <div class="overlayUrlPreview">
@@ -9248,14 +9230,13 @@ function applyScoreWidth(){
   const w=Math.max(202,scoreColumns(cur.team_count)*202);
   document.documentElement.style.setProperty('--score-width',w+'px');
 }
-function overlayUrlForRoom(team=1,theme='luxury',nameTag=true,frames=0){
+function overlayUrlForRoom(){
   if(!cur)return '';
   const u=new URL(location.href);u.search='';u.hash='';
   u.searchParams.set('overlay',String(cur.id));
-  u.searchParams.set('team',String(team));u.searchParams.set('theme',theme);u.searchParams.set('nametag',nameTag?'1':'0');u.searchParams.set('frames',String(Math.max(0,Math.min(3,parseInt(frames||0,10)||0))));
   return u.toString();
 }
-
+function isMainScoreOverlay(){return document.documentElement.classList.contains('mainScoreOverlay')}
 
 const MAPS=['에란겔','미라마','사녹','카라킨','파라모','태이고','데스턴','비켄디','론도'];
 let teamMapState={};
@@ -9430,12 +9411,12 @@ cb.onclick=async()=>{
     enter(rr||{id,name,host_name:host,team_count:a,players_per_team:b,chicken_kills:8,sanhok_chicken_kills:5,top10_no_death_penalty:false,score_mode:mode,timer_mode:'off',timer_seconds:0,timer_started_at:null,timer_end_at:null});
   }catch(x){ce.textContent='방 생성 실패'}
 };
-function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team);je.textContent='';jp.value='';jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
+function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · 총 '+r.team_count*r.players_per_team+'명';je.textContent='';jp.value='';jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
 async function ensure(){let a=await q('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds?on_conflict=room_id,round_no',{method:'POST',headers:{Prefer:'resolution=ignore-duplicates'},body:JSON.stringify(x)})}
-async function enter(r){cur=r;applyScoreWidth();loadTeamMaps();loadStatCache();lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · '+cfg(r.team_count,r.players_per_team)+' · 총 '+r.team_count*r.players_per_team+'명 · 팀당 최대 4명';await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),document.documentElement.classList.contains('broadcastOverlay')?1250:1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
+async function enter(r){cur=r;applyScoreWidth();if(!isMainScoreOverlay()){loadTeamMaps();loadStatCache()}else{teamMapState={};statCache={}};lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · 총 '+r.team_count*r.players_per_team+'명';if(!isMainScoreOverlay())await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),document.documentElement.classList.contains('broadcastOverlay')?1250:1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
 async function load(isPoll=false){
   if(!cur)return;
-  const roomId=cur.id,revAtStart=localRevision,isOverlay=document.documentElement.classList.contains('broadcastOverlay');
+  const roomId=cur.id,revAtStart=localRevision,isOverlay=isMainScoreOverlay()||document.documentElement.classList.contains('broadcastOverlay');
   if(syncLoading)return;
   syncLoading=true;
   try{
@@ -9459,7 +9440,7 @@ async function load(isPoll=false){
     const prevScoreMode=cur?.score_mode;
     if(!cur || cur.id!==roomId)return;
     cur=r[0]||cur;P=p;RO=ro;S=ss;mergeTeamMapRows(tm);
-    applyPendingWrites();reconcileStatCache();syncScoreModeControl();lastAppliedSignature=sig;
+    if(!isMainScoreOverlay()){applyPendingWrites();reconcileStatCache()}syncScoreModeControl();lastAppliedSignature=sig;
     syncLastRead=Date.now();syncReadError='';syncStatus();
     if(document.documentElement.classList.contains('broadcastVertical') && prevScoreMode!==cur.score_mode){
       restartRankModeCycle();
@@ -9550,6 +9531,10 @@ function renderScore(){
       '</div></div>';
   }
   scoreboard.innerHTML=out;
+  if(isMainScoreOverlay()){
+    scoreboard.querySelectorAll('input').forEach(x=>{x.readOnly=true;x.tabIndex=-1});
+    scoreboard.querySelectorAll('[draggable]').forEach(x=>x.draggable=false);
+  }
   renderVerticalRanking(false);
   const mode=scoreMode();
   const goal=cur.goal_kills??50;
@@ -9730,7 +9715,7 @@ function renderGameNameplates(){
 
 
 function renderVerticalRanking(animate=true){
-  if(!cur||!captureStage)return;
+  if(isMainScoreOverlay()||!cur||!captureStage)return;
 
   let box=document.getElementById('rankOverlay');
   if(!box){
@@ -10093,45 +10078,13 @@ if(scoreViewMode)scoreViewMode.onchange=()=>{
 
 
 
-function rebuildOverlayTeamOptions(){
-  if(!overlayTeamSelect||!cur)return;
-  const current=overlayTeamSelect.value||'1';
-  overlayTeamSelect.innerHTML='';
-  for(let i=1;i<=cur.team_count;i++){
-    const o=document.createElement('option');
-    o.value=String(i);
-    o.textContent=(captainName(i)||teamLetter(i)+'팀');
-    overlayTeamSelect.appendChild(o);
-  }
-  if([...overlayTeamSelect.options].some(o=>o.value===current))overlayTeamSelect.value=current;
-}
-function syncOverlayNameTagUi(){
-  const on=overlayNameTagSelect?.value!=='0';
-  if(overlayTeamSelect)overlayTeamSelect.disabled=!on;
-  if(overlayTeamField)overlayTeamField.classList.toggle('isDisabled',!on);
-}
 function refreshOverlayGeneratedUrl(){
-  if(!cur||!overlayGeneratedUrl)return;
-  const nameTag=overlayNameTagSelect?.value!=='0';
-  const team=Math.max(1,parseInt(overlayTeamSelect?.value||'1',10)||1);
-  const theme=overlayThemeSelect?.value||'luxury';
-  const frames=Math.max(0,Math.min(3,parseInt(overlayFrameCountSelect?.value||'0',10)||0));
-  syncOverlayNameTagUi();
-  overlayGeneratedUrl.value=overlayUrlForRoom(team,theme,nameTag,frames);
+  if(cur&&overlayGeneratedUrl)overlayGeneratedUrl.value=overlayUrlForRoom();
 }
 if(overlayUrlBtn)overlayUrlBtn.onclick=()=>{
   if(!cur)return;
-  rebuildOverlayTeamOptions();
-  if(overlayNameTagSelect)overlayNameTagSelect.value='1';
-  if(overlayFrameCountSelect)overlayFrameCountSelect.value='0';
-  syncOverlayNameTagUi();
-  refreshOverlayGeneratedUrl();
-  overlayUrlOv.classList.remove('hidden');
+  refreshOverlayGeneratedUrl();overlayUrlOv.classList.remove('hidden');
 };
-if(overlayNameTagSelect)overlayNameTagSelect.onchange=refreshOverlayGeneratedUrl;
-if(overlayTeamSelect)overlayTeamSelect.onchange=refreshOverlayGeneratedUrl;
-if(overlayThemeSelect)overlayThemeSelect.onchange=refreshOverlayGeneratedUrl;
-if(overlayFrameCountSelect)overlayFrameCountSelect.onchange=refreshOverlayGeneratedUrl;
 if(overlayCloseBtn)overlayCloseBtn.onclick=()=>overlayUrlOv.classList.add('hidden');
 if(overlayGeneratedCopy)overlayGeneratedCopy.onclick=async()=>{
   const v=overlayGeneratedUrl?.value||'';
@@ -10219,7 +10172,7 @@ document.addEventListener('visibilitychange',()=>{
 
 setInterval(async()=>{
   syncStatus();
-  if(!cur||syncRecovering)return;
+  if(!cur||syncRecovering||isMainScoreOverlay())return;
   syncRecovering=true;
   try{
     for(const entry of [...syncOutbox]){
@@ -10240,15 +10193,15 @@ window.addEventListener('beforeunload',ev=>{
 });
 
 const overlayParams=new URLSearchParams(location.search);
-const overlayNameTagEnabled=overlayParams.get('nametag')!=='0';
-const overlayFrameCount=Math.max(0,Math.min(3,parseInt(overlayParams.get('frames')||'0',10)||0));
+const overlayNameTagEnabled=false;
+const overlayFrameCount=0;
 const overlayRoomId=overlayParams.get('overlay');
 const overlayLayout='vertical';
 const overlayTeam=Math.max(1,parseInt(overlayParams.get('team')||'1',10)||1);
 const OVERLAY_THEMES=['luxury','lavender','winter_night','mono_stripe','midnight_purple','esports_red'];
 const overlayTheme=OVERLAY_THEMES.includes(overlayParams.get('theme'))?overlayParams.get('theme'):'luxury';
 if(overlayRoomId){
-  document.documentElement.classList.add('broadcastOverlay','broadcastVertical','theme-'+overlayTheme);
+  document.documentElement.classList.add('mainScoreOverlay');
   (async()=>{
     try{
       const rr=await q('/pubg_rooms?id=eq.'+encodeURIComponent(overlayRoomId)+'&select=*');
