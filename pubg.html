@@ -8766,16 +8766,40 @@
              html:not(.broadcastOverlay) #killBoard .killUnified .teamNameRow [data-team-no]{background:var(--team-color) !important;color:#fff !important;font-weight:900 !important}
              html:not(.broadcastOverlay) #killBoard .killUnified .colHeadRow [data-team-no]{background:color-mix(in srgb,var(--team-color) 15%,white) !important;color:#171717 !important}
              html:not(.broadcastOverlay) #killBoard .killUnified .teamStart{border-left:3px solid var(--team-color) !important}
-             html:not(.broadcastOverlay) #scoreboard > .team[data-team-no] .teamSummary{border-top:4px solid var(--team-color) !important;background:#171717 !important;color:#fff !important}
-             html:not(.broadcastOverlay) #scoreboard > .team[data-team-no] .slot{background:#fff !important;color:#171717 !important}
-             html:not(.broadcastOverlay) #scoreboard > .team[data-team-no] .slot:hover{background:#f2f2f2 !important}
 
-             html:not(.broadcastOverlay){--ink:#171717;--soft:#fafafa;--pink:#e5e5e5;--pink2:#f5f5f5;--lav:#e5e5e5;--mint:#ededed;--yellow:#e5e5e5;--line:#d4d4d4}
              html:not(.broadcastOverlay) .nav .on{color:#fff !important;border-bottom-color:#fff !important}
              html:not(.broadcastOverlay) .sect h2:before{color:#171717 !important}
-             html:not(.broadcastOverlay) .avatar{box-shadow:0 0 0 2px #fff,0 0 0 3px #ccc !important}
-             html:not(.broadcastOverlay) #scoreboard .slot{--team-accent:var(--team-color,#333) !important}
-             html:not(.broadcastOverlay) .total,html:not(.broadcastOverlay) .chi,html:not(.broadcastOverlay) .chicken{background:#f5f5f5 !important;color:#171717 !important}
+
+             /* Battlegrounds inspired UI: charcoal, olive steel and yellow. */
+             html:not(.broadcastOverlay) body{background:#191d1a !important;color:#eceee7 !important}
+             html:not(.broadcastOverlay) header{background:#111511 !important;color:#f3c84b !important;border-bottom:2px solid #a68e44 !important}
+             html:not(.broadcastOverlay) .brand:before{content:"" !important}
+             html:not(.broadcastOverlay) .panel,html:not(.broadcastOverlay) .modal,html:not(.broadcastOverlay) .rooms,html:not(.broadcastOverlay) .settingsDeck,html:not(.broadcastOverlay) .settingsCard,html:not(.broadcastOverlay) .set{background:#252b25 !important;color:#eceee7 !important;border-color:#50594b !important;box-shadow:0 3px 12px #0003 !important}
+             html:not(.broadcastOverlay) .top,html:not(.broadcastOverlay) .sect,html:not(.broadcastOverlay) .sectionTitle,html:not(.broadcastOverlay) .settingsTitle,html:not(.broadcastOverlay) .sect h2:before{color:#eee9d5 !important;background:transparent !important;border-color:#50594b !important}
+             html:not(.broadcastOverlay) .meta,html:not(.broadcastOverlay) .sub,html:not(.broadcastOverlay) .host,html:not(.broadcastOverlay) .createdAt{color:#b0b6a9 !important}
+             html:not(.broadcastOverlay) .btn{background:#343c31 !important;color:#f0eee3 !important;border:1px solid #647056 !important;border-radius:4px !important}
+             html:not(.broadcastOverlay) .btn:hover{background:#48523e !important;border-color:#e0ba48 !important;color:#fff !important}
+             html:not(.broadcastOverlay) .btn.primary,html:not(.broadcastOverlay) button.primary{background:#e1b944 !important;color:#191c16 !important;border-color:#e1b944 !important}
+             html:not(.broadcastOverlay) .rh{background:#111710 !important;color:#e4c76a !important}
+             html:not(.broadcastOverlay) .room{border-color:#424a3c !important}
+             html:not(.broadcastOverlay) .room:hover{background:#343d30 !important}
+             html:not(.broadcastOverlay) .settings input,html:not(.broadcastOverlay) .settings select,html:not(.broadcastOverlay) .settingsPanel input,html:not(.broadcastOverlay) .settingsPanel select,html:not(.broadcastOverlay) .field input,html:not(.broadcastOverlay) .field select,html:not(.broadcastOverlay) .di input{background:#171e17 !important;color:#f1efdf !important;border:1px solid #65705a !important;caret-color:#f1cf61 !important;accent-color:#d7b54a !important}
+             html:not(.broadcastOverlay) .killScrollTools{background:#252b25 !important;border-color:#50594b !important}
+             html:not(.broadcastOverlay) #killScrollHint{color:#e0c770 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified [data-team-no]{background:color-mix(in srgb,var(--team-color) 13%,#20271f) !important;color:#f0f0e5 !important;border-color:#56604c !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .teamNameRow [data-team-no]{background:var(--team-color) !important;color:#fff !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .colHeadRow [data-team-no]{background:color-mix(in srgb,var(--team-color) 25%,#242d23) !important;color:#fff !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .roundCol{background:#171e16 !important;color:#e6c769 !important;border-color:#58614d !important;text-align:center !important;vertical-align:middle !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .ctrlBtn{background:#343e2c !important;background-image:none !important;color:#f3d477 !important;border:1px solid #78815d !important;box-shadow:none !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .ctrlBtn:hover{background:#626b40 !important;color:#fff !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .killSquare,html:not(.broadcastOverlay) #killBoard .killUnified .killInput{background:#182016 !important;color:#fff !important;border-color:#65734e !important;box-shadow:none !important;caret-color:#fff !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .deathBtn{background:#242c22 !important;border-color:#7c896a !important;box-shadow:none !important;accent-color:#d7b54a !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .deathBtn:checked{background:#d7b54a !important;border-color:#d7b54a !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .deathBtn:checked:after{color:#151a12 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .chickenCheck{accent-color:#d7b54a !important}
+             #killBoard .killUnified .mapCol,#killBoard col.fixedMapCol{width:72px !important;min-width:72px !important;max-width:72px !important;text-align:center !important;vertical-align:middle !important;padding:0 !important;overflow:hidden !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified select.mapSelect{appearance:none !important;-webkit-appearance:none !important;display:block !important;width:100% !important;min-width:0 !important;max-width:100% !important;height:32px !important;line-height:32px !important;box-sizing:border-box !important;margin:0 auto !important;padding:0 2px !important;text-align:center !important;text-align-last:center !important;font-size:11px !important;background:transparent !important;color:#f2ecd2 !important;border:0 !important;border-radius:0 !important;box-shadow:none !important;cursor:pointer}
+             html:not(.broadcastOverlay) #killBoard .killUnified select.mapSelect option{background:#252d22 !important;color:#fff !important}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="navbar.css">
@@ -8842,7 +8866,7 @@
             <div class="panel kill"><div class="sect"><h2>킬 기록</h2></div>
               <div id="killScrollTools" class="killScrollTools" hidden>
                 <div class="killScrollActions"><button id="killScrollLeft" type="button" class="btn" aria-label="이전 팀으로 이동">← 이전 팀</button><span id="killScrollHint" aria-live="polite">오른쪽에 더 많은 팀이 있어요 →</span><button id="killScrollRight" type="button" class="btn" aria-label="다음 팀으로 이동">다음 팀 →</button></div>
-                <div id="killTopScroll" tabindex="0" role="region" aria-label="킬 기록 가로 스크롤"><div id="killTopTrack"></div></div>
+
               </div>
               <div class="killUnifiedWrap"><div id="killBoard"></div></div><button id="addRound" class="btn add">추가</button></div>
         </section>
@@ -9440,7 +9464,6 @@ function renderScore(){
       '</div></div>';
   }
   scoreboard.innerHTML=out;
-  scoreboard.querySelectorAll(':scope > .team').forEach((el,i)=>markTeamCell(el,i+1,true));
   renderVerticalRanking(false);
   const mode=scoreMode();
   const goal=cur.goal_kills??50;
@@ -9742,30 +9765,24 @@ function colorKillTeams(teamLists){
   });
 }
 function setupKillScroll(){
-  const scroller=killBoard.closest('.killUnifiedWrap'),bar=document.getElementById('killTopScroll'),track=document.getElementById('killTopTrack');
+  const scroller=killBoard.closest('.killUnifiedWrap');
   const tools=document.getElementById('killScrollTools'),left=document.getElementById('killScrollLeft'),right=document.getElementById('killScrollRight'),hint=document.getElementById('killScrollHint');
-  if(!bar||!scroller)return;
+  if(!scroller||!tools)return;
   const update=()=>{
     const max=Math.max(0,scroller.scrollWidth-scroller.clientWidth),pos=scroller.scrollLeft;
-    tools.hidden=max<=1;track.style.width=scroller.scrollWidth+'px';
-    if(Math.abs(bar.scrollLeft-pos)>1)bar.scrollLeft=pos;
-    left.disabled=pos<=1;right.disabled=pos>=max-1;
+    tools.hidden=max<=1;left.disabled=pos<=1;right.disabled=pos>=max-1;
     hint.textContent=pos<=1?'오른쪽에 더 많은 팀이 있어요 →':pos>=max-1?'← 왼쪽 팀으로 이동할 수 있어요':'← 좌우로 이동해 다른 팀 기록을 확인하세요 →';
   };
   if(!scroller.dataset.scrollControlsBound){
     scroller.dataset.scrollControlsBound='1';
     scroller.addEventListener('scroll',update,{passive:true});
-    bar.addEventListener('scroll',()=>{if(Math.abs(scroller.scrollLeft-bar.scrollLeft)>1)scroller.scrollLeft=bar.scrollLeft},{passive:true});
     const jump=direction=>{
-      const step=48+79*(cur?.players_per_team||4)+30;
-      const max=Math.max(0,scroller.scrollWidth-scroller.clientWidth);
-      const pos=scroller.scrollLeft;
-      const target=direction>0?Math.min(max,(Math.floor((pos+2)/step)+1)*step):Math.max(0,(Math.ceil((pos-2)/step)-1)*step);
-      // Instant movement avoids feedback between two synchronized smooth scrollers.
-      scroller.scrollLeft=target;bar.scrollLeft=target;update();
+      const step=72+79*(cur?.players_per_team||4)+30;
+      const max=Math.max(0,scroller.scrollWidth-scroller.clientWidth),pos=scroller.scrollLeft;
+      scroller.scrollLeft=direction>0?Math.min(max,(Math.floor((pos+2)/step)+1)*step):Math.max(0,(Math.ceil((pos-2)/step)-1)*step);
+      update();
     };
-    left.onclick=()=>jump(-1);
-    right.onclick=()=>jump(1);
+    left.onclick=()=>jump(-1);right.onclick=()=>jump(1);
     if(typeof ResizeObserver!=='undefined')new ResizeObserver(update).observe(scroller);
     window.addEventListener('resize',update,{passive:true});
   }
@@ -9813,11 +9830,11 @@ function board(){
     body+='</tr>';
   });
 
-  const playerCellWidth=79,mapCellWidth=48,chickenCellWidth=30,roundCellWidth=40;
+  const playerCellWidth=79,mapCellWidth=72,chickenCellWidth=30,roundCellWidth=40;
   const tableWidth=roundCellWidth+teamPlayersList.reduce((sum,ps)=>sum+mapCellWidth+ps.length*playerCellWidth+chickenCellWidth,0);
   let columns='<col class="fixedRoundCol" style="width:40px">';
   teamPlayersList.forEach(ps=>{
-    columns+='<col class="fixedMapCol" style="width:48px">';
+    columns+='<col class="fixedMapCol" style="width:72px">';
     ps.forEach(()=>columns+='<col class="fixedPlayerCol" style="width:79px">');
     columns+='<col class="fixedChickenCol" style="width:30px">';
   });
