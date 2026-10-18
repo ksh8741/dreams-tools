@@ -4,7 +4,7 @@
     <script>if(new URLSearchParams(location.search).has("overlay"))document.documentElement.classList.add("mainScoreOverlay");</script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>무제 PUBG</title>
+    <title>요닝 방송도구함</title>
     <style>
              * {
                  box-sizing: border-box
@@ -8979,6 +8979,8 @@ html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="14"].sc
 html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="14"] .scoreDelta{background:rgb(65,55,38) !important;color:rgb(255,200,117) !important;border:1px solid #ffb340 !important;text-shadow:0 0 7px rgba(255,179,64,.55) !important;}
 html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"].scoreFlash::before{box-shadow:0 0 0 2px #65c93f,0 0 10px rgba(101,201,63,.75),0 0 22px rgba(101,201,63,.35) !important;}
 html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"] .scoreDelta{background:rgb(34,59,38) !important;color:rgb(144,216,117) !important;border:1px solid #65c93f !important;text-shadow:0 0 7px rgba(101,201,63,.55) !important;}
+
+             #global-navbar .globalNavBrand,.globalNavBrand,#syncHealth{display:none !important}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="navbar.css">
@@ -8986,7 +8988,6 @@ html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"] .s
 <body>
     <nav id="global-navbar" class="globalNav">
         <div class="globalNavInner">
-            <a class="globalNavBrand" href="index.html">MUJE</a>
             <div class="globalNavLinks">
                 <a class="globalNavLink" data-page="pubg" href="pubg.html">배틀그라운드</a>
                 <a class="globalNavLink" data-page="starcraft" href="starcraft.html">스타크래프트</a>
@@ -9129,13 +9130,7 @@ function compactPendingOutbox(){
 }
 function persistOutbox(){try{localStorage.setItem(syncJournalKey,JSON.stringify(syncOutbox))}catch(_){syncStorageError=true}}
 function syncStatus(){
-  if(document.documentElement.classList.contains('mainScoreOverlay'))return;
-  let el=document.getElementById('syncHealth');
-  if(!el){el=document.createElement('div');el.id='syncHealth';el.setAttribute('role','status');el.style.cssText='position:fixed;bottom:8px;right:8px;z-index:1000;background:#000000;color:white;padding:8px 12px;border-radius:8px;font:12px system-ui;max-width:80vw';document.body.appendChild(el)}
-  const currentRoom=typeof cur==='undefined'?null:cur?.id;
-  const count=currentRoom?syncOutbox.filter(x=>String(x.room)===String(currentRoom)).length+(typeof statCache==='undefined'?0:Object.keys(statCache).length):0;
-  const stale=syncLastRead&&Date.now()-syncLastRead>12000;
-  el.textContent=syncStorageError?'⚠ 임시 저장 공간 오류 · 페이지를 닫지 마세요':!navigator.onLine?'⚠ 오프라인 · 저장 대기 '+count+'건':syncWriteError?'⚠ '+syncWriteError+' ('+count+'건)':count?'저장 중 · '+count+'건':syncReadError||stale?'⚠ 최신 정보 수신 지연':syncLastRead?'● 서버 조회 정상 · '+Math.floor((Date.now()-syncLastRead)/1000)+'초 전':'서버 연결 확인 중';
+  document.getElementById('syncHealth')?.remove();
 }
 async function syncRequest(p,o={},retryable=true){
   const method=(o.method||'GET').toUpperCase();let last;
