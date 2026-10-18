@@ -8739,6 +8739,43 @@
              #killTopScroll::-webkit-scrollbar-thumb{background:#66798d;border-radius:7px;border:2px solid #e9edf2}
              #killTopTrack{height:1px}
              @media(max-width:600px){#killScrollHint{font-size:10px}.killScrollActions .btn{font-size:11px;padding:6px}}
+
+             /* One scroll owner: the wrapper, shared by top scrollbar and buttons. */
+             .panel.kill{min-width:0 !important;max-width:100% !important}
+             .killUnifiedWrap{width:100% !important;min-width:0 !important;max-width:100% !important;overflow-x:auto !important;scroll-behavior:auto !important}
+             #killBoard{overflow:visible !important;width:var(--kill-table-width) !important;min-width:var(--kill-table-width) !important;max-width:none !important;scroll-behavior:auto !important}
+             #killTopScroll{scroll-behavior:auto !important}
+             /* Monochrome application surfaces; team colors are navigational accents. */
+             html:not(.broadcastOverlay) body{background:#f4f4f4 !important;color:#171717 !important}
+             html:not(.broadcastOverlay) header{background:#111 !important;color:#fff !important;border-color:#333 !important;box-shadow:none !important}
+             html:not(.broadcastOverlay) .panel,html:not(.broadcastOverlay) .modal,html:not(.broadcastOverlay) .set,html:not(.broadcastOverlay) .settingsDeck,html:not(.broadcastOverlay) .settingsCard,html:not(.broadcastOverlay) .rooms{background:#fff !important;color:#171717 !important;border-color:#d4d4d4 !important;box-shadow:0 2px 8px #00000008 !important}
+             html:not(.broadcastOverlay) .btn{background:#fff !important;color:#171717 !important;border:1px solid #bdbdbd !important;box-shadow:none !important}
+             html:not(.broadcastOverlay) .btn:hover{background:#ededed !important;border-color:#171717 !important}
+             html:not(.broadcastOverlay) .btn.primary,html:not(.broadcastOverlay) button.primary{background:#171717 !important;color:#fff !important;border-color:#171717 !important}
+             html:not(.broadcastOverlay) input,html:not(.broadcastOverlay) select,html:not(.broadcastOverlay) textarea{accent-color:#171717 !important;caret-color:#171717 !important}
+             html:not(.broadcastOverlay) .settings input,html:not(.broadcastOverlay) .settings select,html:not(.broadcastOverlay) .field input,html:not(.broadcastOverlay) .field select{background:#fff !important;color:#171717 !important;border-color:#bbb !important}
+             html:not(.broadcastOverlay) .sectionTitle,html:not(.broadcastOverlay) .sect,html:not(.broadcastOverlay) .top,html:not(.broadcastOverlay) .settingsTitle{background:transparent !important;color:#171717 !important;border-color:#ddd !important}
+             html:not(.broadcastOverlay) .rh{background:#171717 !important;color:#fff !important}
+             html:not(.broadcastOverlay) .room:hover{background:#f0f0f0 !important}
+             html:not(.broadcastOverlay) .killScrollTools{background:#fff !important;border-color:#ccc !important}
+             html:not(.broadcastOverlay) #killScrollHint{color:#333 !important}
+             html:not(.broadcastOverlay) #killTopScroll{scrollbar-color:#333 #e5e5e5 !important}
+             html:not(.broadcastOverlay) #killTopScroll::-webkit-scrollbar-thumb{background:#333 !important;border-color:#e5e5e5 !important}
+             html:not(.broadcastOverlay) #killTopScroll::-webkit-scrollbar-track{background:#e5e5e5 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified [data-team-no]{background:color-mix(in srgb,var(--team-color) 6%,white) !important;color:#171717 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .teamNameRow [data-team-no]{background:var(--team-color) !important;color:#fff !important;font-weight:900 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .colHeadRow [data-team-no]{background:color-mix(in srgb,var(--team-color) 15%,white) !important;color:#171717 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .teamStart{border-left:3px solid var(--team-color) !important}
+             html:not(.broadcastOverlay) #scoreboard > .team[data-team-no] .teamSummary{border-top:4px solid var(--team-color) !important;background:#171717 !important;color:#fff !important}
+             html:not(.broadcastOverlay) #scoreboard > .team[data-team-no] .slot{background:#fff !important;color:#171717 !important}
+             html:not(.broadcastOverlay) #scoreboard > .team[data-team-no] .slot:hover{background:#f2f2f2 !important}
+
+             html:not(.broadcastOverlay){--ink:#171717;--soft:#fafafa;--pink:#e5e5e5;--pink2:#f5f5f5;--lav:#e5e5e5;--mint:#ededed;--yellow:#e5e5e5;--line:#d4d4d4}
+             html:not(.broadcastOverlay) .nav .on{color:#fff !important;border-bottom-color:#fff !important}
+             html:not(.broadcastOverlay) .sect h2:before{color:#171717 !important}
+             html:not(.broadcastOverlay) .avatar{box-shadow:0 0 0 2px #fff,0 0 0 3px #ccc !important}
+             html:not(.broadcastOverlay) #scoreboard .slot{--team-accent:var(--team-color,#333) !important}
+             html:not(.broadcastOverlay) .total,html:not(.broadcastOverlay) .chi,html:not(.broadcastOverlay) .chicken{background:#f5f5f5 !important;color:#171717 !important}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="navbar.css">
@@ -9403,6 +9440,7 @@ function renderScore(){
       '</div></div>';
   }
   scoreboard.innerHTML=out;
+  scoreboard.querySelectorAll(':scope > .team').forEach((el,i)=>markTeamCell(el,i+1,true));
   renderVerticalRanking(false);
   const mode=scoreMode();
   const goal=cur.goal_kills??50;
@@ -9688,8 +9726,23 @@ async function flushTeamMapSave(key){
   }
 }
 
+const TEAM_BOUNDARY_COLORS=['#2563eb','#047857','#a16207','#7c3aed','#0e7490','#c2410c','#475569','#0f766e','#b91c1c','#4338ca'];
+function markTeamCell(cell,team,start=false){
+  if(!cell)return;
+  cell.dataset.teamNo=String(team);cell.style.setProperty('--team-color',TEAM_BOUNDARY_COLORS[(team-1)%10]);
+  cell.classList.toggle('teamStart',start);
+}
+function colorKillTeams(teamLists){
+  const rows=killBoard.querySelectorAll('tr');
+  rows.forEach((row,rowIndex)=>{
+    const cells=[...row.children];
+    if(rowIndex===0){cells.slice(1).forEach((cell,i)=>markTeamCell(cell,i+1,true));return;}
+    let index=rowIndex===1?0:1;
+    teamLists.forEach((ps,team)=>{for(let k=0;k<ps.length+2;k++)markTeamCell(cells[index++],team+1,k===0)});
+  });
+}
 function setupKillScroll(){
-  const scroller=killBoard,bar=document.getElementById('killTopScroll'),track=document.getElementById('killTopTrack');
+  const scroller=killBoard.closest('.killUnifiedWrap'),bar=document.getElementById('killTopScroll'),track=document.getElementById('killTopTrack');
   const tools=document.getElementById('killScrollTools'),left=document.getElementById('killScrollLeft'),right=document.getElementById('killScrollRight'),hint=document.getElementById('killScrollHint');
   if(!bar||!scroller)return;
   const update=()=>{
@@ -9703,9 +9756,16 @@ function setupKillScroll(){
     scroller.dataset.scrollControlsBound='1';
     scroller.addEventListener('scroll',update,{passive:true});
     bar.addEventListener('scroll',()=>{if(Math.abs(scroller.scrollLeft-bar.scrollLeft)>1)scroller.scrollLeft=bar.scrollLeft},{passive:true});
-    const step=()=>48+79*(cur?.players_per_team||4)+30;
-    left.onclick=()=>scroller.scrollBy({left:-step(),behavior:'smooth'});
-    right.onclick=()=>scroller.scrollBy({left:step(),behavior:'smooth'});
+    const jump=direction=>{
+      const step=48+79*(cur?.players_per_team||4)+30;
+      const max=Math.max(0,scroller.scrollWidth-scroller.clientWidth);
+      const pos=scroller.scrollLeft;
+      const target=direction>0?Math.min(max,(Math.floor((pos+2)/step)+1)*step):Math.max(0,(Math.ceil((pos-2)/step)-1)*step);
+      // Instant movement avoids feedback between two synchronized smooth scrollers.
+      scroller.scrollLeft=target;bar.scrollLeft=target;update();
+    };
+    left.onclick=()=>jump(-1);
+    right.onclick=()=>jump(1);
     if(typeof ResizeObserver!=='undefined')new ResizeObserver(update).observe(scroller);
     window.addEventListener('resize',update,{passive:true});
   }
@@ -9763,6 +9823,7 @@ function board(){
   });
   killBoard.style.setProperty('--kill-table-width',tableWidth+'px');
   killBoard.innerHTML='<table class="killUnified"><colgroup>'+columns+'</colgroup><thead>'+teamHeader+colHeader+'</thead><tbody>'+body+'</tbody></table>';
+  colorKillTeams(teamPlayersList);
   setupKillScroll();
 
   document.querySelectorAll('[data-map]').forEach(x=>x.onchange=()=>{
