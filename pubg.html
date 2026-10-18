@@ -8676,7 +8676,11 @@
                  html:not(.broadcastOverlay) .scoreStage .scorePanel {
                      pointer-events: auto !important;
                  }
-    </style>
+    /* Large rooms retain usable cell widths and scroll horizontally. */
+             #killBoard{overflow-x:auto}
+             #killBoard .killUnified{min-width:calc(var(--room-team-count,4) * 240px)}
+             .scoreWrap{overflow-x:auto}
+</style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="navbar.css">
 </head>
@@ -8699,7 +8703,7 @@
                 <div class="panel sec scorePanel">
                     <div class="sect scoreToolbarSect">
                         <div class="captureTools">
-                            <select id="scoreViewMode"><option value="separate">팀별</option><option value="2v2">A+B vs C+D</option></select>
+                            <select id="scoreViewMode"><option value="separate">팀별</option><option value="2v2">양측 합산</option></select>
                             <button id="saveResult" class="btn resultSaveBtn">결과 저장</button><button id="pipScore" class="btn">팝업</button><button id="overlayUrlBtn" class="btn overlayUrlBtn">방송 URL</button>
                         </div>
                     </div>
@@ -8745,18 +8749,18 @@
     <div id="createOv" class="overlay hidden">
         <div class="modal">
             <h2>방 생성</h2>
-            <div class="meta" style="margin-bottom:10px">1~4팀 · 팀당 최대 4명 · 총 16명</div>
+            <div class="meta" style="margin-bottom:10px">1~10팀 · 팀당 최대 4명 · 총 40명 (20 대 20)</div>
             <div class="field"><label>방제</label><input id="cn"></div>
             <div class="field"><label>방장</label><input id="ch"></div>
             <div class="two">
-                <div class="field"><label>팀 수</label><input id="tc" type="number" min="1" max="4" value="4"></div>
+                <div class="field"><label>팀 수</label><input id="tc" type="number" min="1" max="10" value="4"></div>
                 <div class="field"><label>팀당 인원</label><input id="pp" type="number" min="1" max="4" value="4"></div>
             </div>
             <div class="field">
                 <label>스코어 묶음</label>
                 <select id="scoreMode" style="width:100%;padding:10px;border:1px solid #dce2e7;border-radius:8px">
                     <option value="separate">각 팀 개별 (예: 4:4:4:4)</option>
-                    <option value="2v2">A+B vs C+D (예: 8:8)</option>
+                    <option value="2v2">양측 합산 (앞 절반 vs 뒤 절반 · 최대 20:20)</option>
                 </select>
             </div>
             <div class="field"><label>비밀번호 (선택)</label><input id="cp" type="password"></div>
@@ -8926,9 +8930,9 @@ function refreshScoreTextOnly(){
     if(goalEl)goalEl.textContent='🎯 '+(cur.goal_kills??50);
   });
   let center='';
-  const mode=scoreViewMode?.value||cur.score_mode||'separate';
-  if(mode==='2v2'&&cur.team_count===4){
-    center=((scores[0]||0)+(scores[1]||0))+' : '+((scores[2]||0)+(scores[3]||0));
+  const mode=scoreMode();
+  if(mode==='2v2'&&canCombineTeams()){
+    center=combinedScores(scores).join(' : ');
   }else if(cur.team_count===2){
     center=(scores[0]||0)+' : '+(scores[1]||0);
   }else{
@@ -9071,10 +9075,16 @@ function normalizeMapName(r){
   return r.map_type==='sanhok'?'사녹':'에란겔';
 }
 
-function scoreMode(){
-  const manual=document.getElementById('scoreViewMode')?.value;
-  if(manual&&manual!=='auto') return manual;
-  return cur.score_mode||'separate';
+function canCombineTeams(room=cur){return !!room&&room.team_count>=2&&room.team_count<=10&&room.team_count%2===0}
+function scoreMode(){return canCombineTeams()&&cur.score_mode==='2v2'?'2v2':'separate'}
+function combinedScores(scores){const half=scores.length/2;return [scores.slice(0,half).reduce((a,b)=>a+b,0),scores.slice(half).reduce((a,b)=>a+b,0)]}
+function combinedLabel(count){const half=count/2;return Array.from({length:half},(_,i)=>teamLetter(i+1)).join('+')+' vs '+Array.from({length:half},(_,i)=>teamLetter(i+half+1)).join('+')}
+function syncScoreModeControl(){
+  if(!scoreViewMode||!cur)return;
+  scoreViewMode.style.display=canCombineTeams()?'':'none';
+  scoreViewMode.value=scoreMode();
+  const option=scoreViewMode.querySelector('option[value="2v2"]');
+  if(option)option.textContent=canCombineTeams()?combinedLabel(cur.team_count):'양측 합산';
 }
 function pic(id){return 'https://stimg.sooplive.com/LOGO/'+id.slice(0,2)+'/'+id+'/m/'+id+'.webp'}
 
@@ -9202,10 +9212,10 @@ cc.onclick=()=>createOv.classList.add('hidden');refresh.onclick=rooms;
 cb.onclick=async()=>{
   let name=cn.value.trim(),host=ch.value.trim(),a=+tc.value,b=+pp.value,mode=document.getElementById('scoreMode')?.value||'separate';
   if(!name||!host)return ce.textContent='방제와 방장을 입력하세요';
-  if(a<1||a>4)return ce.textContent='팀은 1~4팀까지만 가능합니다.';
-  if(b<1||b>4)return ce.textContent='한 팀에는 최대 4명까지만 가능합니다.';
-  if(a*b>16)return ce.textContent='최대 참여 인원은 16명입니다.';
-  if(mode==='2v2'&&a!==4)return ce.textContent='A+B vs C+D 모드는 4팀일 때만 사용할 수 있습니다.';
+  if(!Number.isInteger(a)||a<1||a>10)return ce.textContent='팀은 1~10팀까지 가능합니다.';
+  if(!Number.isInteger(b)||b<1||b>4)return ce.textContent='한 팀에는 최대 4명까지만 가능합니다.';
+  if(a*b>40)return ce.textContent='최대 참여 인원은 40명입니다.';
+  if(mode==='2v2'&&(a<2||a%2))return ce.textContent='양측 합산은 2·4·6·8·10팀일 때 사용할 수 있습니다.';
   try{
     let id=await q('/rpc/create_pubg_room',{method:'POST',body:JSON.stringify({room_name:name,room_password:cp.value,room_host:host,room_team_count:a,room_players_per_team:b})});
     createOv.classList.add('hidden');
@@ -9243,7 +9253,7 @@ async function load(isPoll=false){
     const prevScoreMode=cur?.score_mode;
     if(!cur || cur.id!==roomId)return;
     cur=r[0]||cur;P=p;RO=ro;S=ss;mergeTeamMapRows(tm);
-    applyPendingWrites();reconcileStatCache();lastAppliedSignature=sig;
+    applyPendingWrites();reconcileStatCache();syncScoreModeControl();lastAppliedSignature=sig;
     syncLastRead=Date.now();syncReadError='';syncStatus();
     if(document.documentElement.classList.contains('broadcastVertical') && prevScoreMode!==cur.score_mode){
       restartRankModeCycle();
@@ -9310,10 +9320,7 @@ function renderScore(){
   }
 
   applyScoreWidth();
-  if(scoreViewMode){
-    scoreViewMode.style.display=cur.team_count===4?'':'none';
-    if(cur.team_count!==4) scoreViewMode.value='separate';
-  }
+  syncScoreModeControl();
   ck.value=cur.chicken_kills;sk.value=cur.sanhok_chicken_kills;
   let teamScores=[],out='';
   for(let t=1;t<=cur.team_count;t++){
@@ -9330,18 +9337,16 @@ function renderScore(){
   }
   scoreboard.innerHTML=out;
   renderVerticalRanking(false);
-  const mode=scoreViewMode.value||cur.score_mode||'separate';
+  const mode=scoreMode();
   const goal=cur.goal_kills??50;
   const fixedTime=timerText();
   totalBar.innerHTML=(fixedTime?'<span class="fixedTimer">⏱️ '+e(fixedTime)+'</span>':'')+(cur.team_count===1?'':'<span class="goalBadge">🎯 '+goal+'</span>');
   const oldStatus=document.getElementById('scoreStatusRow');if(oldStatus)oldStatus.remove();
 
-  // In 4-party rooms, show the combined A+B vs C+D total whenever that mode is selected.
-  // This includes 1:1:1:1 and 2:2:2:2 rooms.
-  const showCombined=(mode==='2v2' && cur.team_count===4);
+  // Split even team counts equally between the two sides.
+  const showCombined=(mode==='2v2' && canCombineTeams());
   if(showCombined){
-    const left=(teamScores[0]||0)+(teamScores[1]||0);
-    const right=(teamScores[2]||0)+(teamScores[3]||0);
+    const [left,right]=combinedScores(teamScores);
     totalBar.insertAdjacentHTML('afterend','<div id="scoreStatusRow" class="scoreStatusRow killCompareRow"><span class="statusLeft"></span><span class="statusCenter">'+left+' : '+right+'</span><span class="statusRight"></span></div>');
   }
   deathItems.innerHTML=P.map(p=>'<div class="di"><span>'+e(p.nickname||'PLAYER '+p.position)+'</span><input data-death="'+p.id+'" type="number" value="'+n(p.death_penalty)+'"></div>').join('');
@@ -9360,13 +9365,7 @@ let previousTeamKills=new Map();
 let rankDisplayPhase=0;
 let rankModeTimer=null;
 
-function rankHasVersusPhase(){
-  if(!cur || cur.team_count!==4)return false;
-  if(document.documentElement.classList.contains('broadcastOverlay')){
-    return cur.score_mode==='2v2';
-  }
-  return (scoreViewMode?.value||cur.score_mode)==='2v2';
-}
+function rankHasVersusPhase(){return canCombineTeams()&&scoreMode()==='2v2'}
 function restartRankModeCycle(){
   if(rankModeTimer)clearInterval(rankModeTimer);
   rankDisplayPhase=0;
@@ -9432,11 +9431,8 @@ function applyRankTotalMode(){
   const totalsWrap=box.querySelector('.rankTotals');if(!totalsWrap)return;
 
   if(rankDisplayPhase===2 && rankHasVersusPhase()){
-    const byTeam=new Map(teamData.map(x=>[x.team,x]));
-    const a=byTeam.get(1),b=byTeam.get(2),c=byTeam.get(3),d=byTeam.get(4);
-    const left=(a?.score||0)+(b?.score||0);
-    const right=(c?.score||0)+(d?.score||0);
-    const ca=RANK_TEAM_COLORS[0],cc=RANK_TEAM_COLORS[2];
+    const [left,right]=combinedScores(teamData.map(x=>x.score));
+    const ca=RANK_TEAM_COLORS[0],cc=RANK_TEAM_COLORS[(cur.team_count/2)%RANK_TEAM_COLORS.length];
     totalsWrap.style.setProperty('--rank-count','2');
     totalsWrap.innerHTML=
       '<div class="rankTotal versusMode" style="--team-color:'+ca+'"><span class="rankTotalInfo rankTotalLabel">'+left+'</span></div>'+
@@ -9626,6 +9622,7 @@ async function flushTeamMapSave(key){
 }
 
 function board(){
+  killBoard.style.setProperty('--room-team-count',String(cur.team_count));
   const teamPlayersList=[];
   for(let tt=1;tt<=cur.team_count;tt++)teamPlayersList.push(teamPlayers(tt));
 
