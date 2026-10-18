@@ -3,8 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>스타크래프트 티어표</title>
-    <link rel="stylesheet" href="navbar.css">
+    <title>요닝 방송도구함</title>
 
 
 
@@ -1576,6 +1575,9 @@ body{
   color:#666!important;
 }
 
+
+.globalNavbarFrame{display:block!important;width:100%!important;height:58px!important;min-height:58px!important;margin:0!important;padding:0!important;border:0!important;position:relative!important;z-index:9999!important;background:#0c0e11!important}
+html{overflow-y:scroll!important;scrollbar-gutter:stable!important}
 </style>
 
 
@@ -1587,7 +1589,7 @@ body{
 
 </head>
 <body>
-    <nav id="global-navbar" class="globalNav"><div class="globalNavInner"><a class="globalNavBrand" href="index.html">MUJE</a><div class="globalNavLinks"><a class="globalNavLink" href="pubg.html">배틀그라운드</a><a class="globalNavLink active" href="starcraft.html">스타크래프트</a></div></div></nav>
+    <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
     <main>
 
         <div class="pageTitleWrap">
@@ -2132,6 +2134,5 @@ setInterval(async()=>{
             <div id="livePreviewTitle" class="livePreviewTitle"></div>
         </div>
     </div>
-    <script src="navbar.js"></script>
 </body>
 </html>
