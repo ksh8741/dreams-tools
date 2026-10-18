@@ -1,46 +1,19 @@
 <!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>요닝 방송도구함</title>
-    <link rel="stylesheet" href="navbar.css">
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            margin: 0;
-            min-height: 100%;
-            font-family: "Nanum Square Round","Noto Sans KR",system-ui,sans-serif;
-            background: #FFFFFF;
-            color: #000000;
-        }
-
-        main {
-            min-height: calc(100vh - 58px);
-        }
-
-        #global-navbar .globalNavBrand,
-        .globalNavBrand {
-            display: none !important;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>요닝 방송도구함</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Arial,"Noto Sans KR",sans-serif;background:#fff;color:#111}
+html{overflow-y:scroll;scrollbar-gutter:stable}
+main{min-height:calc(100vh - 58px)}
+.globalNavbarFrame{display:block!important;width:100%!important;height:58px!important;min-height:58px!important;margin:0!important;padding:0!important;border:0!important;position:relative!important;z-index:9999!important;background:#0c0e11!important}
+</style>
 </head>
 <body>
-    <nav id="global-navbar" class="globalNav">
-        <div class="globalNavInner">
-            <div class="globalNavLinks">
-                <a class="globalNavLink" data-page="pubg"
-                   href="pubg.html">배틀그라운드</a>
-                <a class="globalNavLink" data-page="starcraft"
-                   href="starcraft.html">스타크래프트</a>
-            </div>
-        </div>
-    </nav>
-
-    <main></main>
-    <script src="navbar.js"></script>
+<iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
+<main></main>
 </body>
 </html>
