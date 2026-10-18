@@ -8981,19 +8981,15 @@ html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"].sc
 html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"] .scoreDelta{background:rgb(34,59,38) !important;color:rgb(144,216,117) !important;border:1px solid #65c93f !important;text-shadow:0 0 7px rgba(101,201,63,.55) !important;}
 
              #global-navbar .globalNavBrand,.globalNavBrand,#syncHealth{display:none !important}
+
+             .globalNavbarFrame{display:block !important;width:100% !important;height:58px !important;min-height:58px !important;margin:0 !important;padding:0 !important;border:0 !important;position:relative !important;z-index:9999 !important;background:#0c0e11 !important}
+             html:not(.broadcastOverlay):not(.mainScoreOverlay){overflow-y:scroll !important;scrollbar-gutter:stable !important}
+             html.mainScoreOverlay .globalNavbarFrame{display:none !important}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <link rel="stylesheet" href="navbar.css">
 </head>
 <body>
-    <nav id="global-navbar" class="globalNav">
-        <div class="globalNavInner">
-            <div class="globalNavLinks">
-                <a class="globalNavLink" data-page="pubg" href="pubg.html">배틀그라운드</a>
-                <a class="globalNavLink" data-page="starcraft" href="starcraft.html">스타크래프트</a>
-            </div>
-        </div>
-    </nav>
+    <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
 
     <main>
         <section id="lobby"><div class="top"><div class="title"><span class="lobbyEyebrow">MATCH ROOMS</span><h1>배틀그라운드</h1></div><div><button id="refresh" class="btn">새로고침</button> <button id="adminDeleteMode" class="btn">방 삭제</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>생성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
@@ -10393,6 +10389,6 @@ if(overlayRoomId){
 
 
     </script>
-    <script>if(!new URLSearchParams(location.search).has('overlay')){const navScript=document.createElement('script');navScript.src='navbar.js';document.body.appendChild(navScript)}</script>
+
 </body>
 </html>
