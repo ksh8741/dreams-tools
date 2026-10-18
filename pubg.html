@@ -8936,6 +8936,49 @@
              html:not(.broadcastOverlay) #captureStage #scoreStatusRow .combinedGoal{font-size:14px !important;border:0 !important;border-right:0 !important}
              html.mainScoreOverlay,html.mainScoreOverlay body{width:100vw !important;height:100vh !important;overflow:hidden !important;scrollbar-width:none !important}
              html.mainScoreOverlay::-webkit-scrollbar,html.mainScoreOverlay body::-webkit-scrollbar{display:none !important;width:0 !important;height:0 !important}
+
+             /* Browser-source compatibility: explicit RGB colors, no color-mix(). */
+             html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot.scoreFlash::before{
+                 content:"" !important;display:block !important;position:absolute !important;inset:3px !important;
+                 border-radius:9px !important;background:transparent !important;pointer-events:none !important;
+                 animation:vividOutline .9s ease-out forwards !important;translate:none !important;
+             }
+             html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot .scoreDelta{
+                 top:0 !important;translate:none !important;background-image:none !important;
+                 box-shadow:0 4px 11px rgba(13,67,51,.18) !important;
+             }
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="0"].scoreFlash::before{box-shadow:0 0 0 2px #00d69f,0 0 10px rgba(0,214,159,.75),0 0 22px rgba(0,214,159,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="0"] .scoreDelta{background:rgb(14,62,57) !important;color:rgb(71,225,186) !important;border:1px solid #00d69f !important;text-shadow:0 0 7px rgba(0,214,159,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="1"].scoreFlash::before{box-shadow:0 0 0 2px #2f8cff,0 0 10px rgba(47,140,255,.75),0 0 22px rgba(47,140,255,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="1"] .scoreDelta{background:rgb(23,47,77) !important;color:rgb(105,172,255) !important;border:1px solid #2f8cff !important;text-shadow:0 0 7px rgba(47,140,255,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="2"].scoreFlash::before{box-shadow:0 0 0 2px #8b5cff,0 0 10px rgba(139,92,255,.75),0 0 22px rgba(139,92,255,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="2"] .scoreDelta{background:rgb(41,38,77) !important;color:rgb(171,138,255) !important;border:1px solid #8b5cff !important;text-shadow:0 0 7px rgba(139,92,255,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="3"].scoreFlash::before{box-shadow:0 0 0 2px #ff4f8b,0 0 10px rgba(255,79,139,.75),0 0 22px rgba(255,79,139,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="3"] .scoreDelta{background:rgb(65,35,53) !important;color:rgb(255,128,171) !important;border:1px solid #ff4f8b !important;text-shadow:0 0 7px rgba(255,79,139,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="4"].scoreFlash::before{box-shadow:0 0 0 2px #ff9f1c,0 0 10px rgba(255,159,28,.75),0 0 22px rgba(255,159,28,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="4"] .scoreDelta{background:rgb(65,51,31) !important;color:rgb(255,186,92) !important;border:1px solid #ff9f1c !important;text-shadow:0 0 7px rgba(255,159,28,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="5"].scoreFlash::before{box-shadow:0 0 0 2px #9bdc28,0 0 10px rgba(155,220,40,.75),0 0 22px rgba(155,220,40,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="5"] .scoreDelta{background:rgb(45,63,34) !important;color:rgb(183,230,100) !important;border:1px solid #9bdc28 !important;text-shadow:0 0 7px rgba(155,220,40,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="6"].scoreFlash::before{box-shadow:0 0 0 2px #00c8e8,0 0 10px rgba(0,200,232,.75),0 0 22px rgba(0,200,232,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="6"] .scoreDelta{background:rgb(14,59,72) !important;color:rgb(71,215,238) !important;border:1px solid #00c8e8 !important;text-shadow:0 0 7px rgba(0,200,232,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="7"].scoreFlash::before{box-shadow:0 0 0 2px #6f5cff,0 0 10px rgba(111,92,255,.75),0 0 22px rgba(111,92,255,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="7"] .scoreDelta{background:rgb(36,38,77) !important;color:rgb(151,138,255) !important;border:1px solid #6f5cff !important;text-shadow:0 0 7px rgba(111,92,255,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="8"].scoreFlash::before{box-shadow:0 0 0 2px #ff6b4a,0 0 10px rgba(255,107,74,.75),0 0 22px rgba(255,107,74,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="8"] .scoreDelta{background:rgb(65,41,40) !important;color:rgb(255,148,125) !important;border:1px solid #ff6b4a !important;text-shadow:0 0 7px rgba(255,107,74,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="9"].scoreFlash::before{box-shadow:0 0 0 2px #e2c534,0 0 10px rgba(226,197,52,.75),0 0 22px rgba(226,197,52,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="9"] .scoreDelta{background:rgb(59,59,36) !important;color:rgb(234,213,109) !important;border:1px solid #e2c534 !important;text-shadow:0 0 7px rgba(226,197,52,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="10"].scoreFlash::before{box-shadow:0 0 0 2px #20c07a,0 0 10px rgba(32,192,122,.75),0 0 22px rgba(32,192,122,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="10"] .scoreDelta{background:rgb(20,58,50) !important;color:rgb(94,210,159) !important;border:1px solid #20c07a !important;text-shadow:0 0 7px rgba(32,192,122,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="11"].scoreFlash::before{box-shadow:0 0 0 2px #4f7cff,0 0 10px rgba(79,124,255,.75),0 0 22px rgba(79,124,255,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="11"] .scoreDelta{background:rgb(29,44,77) !important;color:rgb(128,161,255) !important;border:1px solid #4f7cff !important;text-shadow:0 0 7px rgba(79,124,255,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="12"].scoreFlash::before{box-shadow:0 0 0 2px #b45cff,0 0 10px rgba(180,92,255,.75),0 0 22px rgba(180,92,255,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="12"] .scoreDelta{background:rgb(50,38,77) !important;color:rgb(201,138,255) !important;border:1px solid #b45cff !important;text-shadow:0 0 7px rgba(180,92,255,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="13"].scoreFlash::before{box-shadow:0 0 0 2px #ff6da8,0 0 10px rgba(255,109,168,.75),0 0 22px rgba(255,109,168,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="13"] .scoreDelta{background:rgb(65,41,59) !important;color:rgb(255,150,192) !important;border:1px solid #ff6da8 !important;text-shadow:0 0 7px rgba(255,109,168,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="14"].scoreFlash::before{box-shadow:0 0 0 2px #ffb340,0 0 10px rgba(255,179,64,.75),0 0 22px rgba(255,179,64,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="14"] .scoreDelta{background:rgb(65,55,38) !important;color:rgb(255,200,117) !important;border:1px solid #ffb340 !important;text-shadow:0 0 7px rgba(255,179,64,.55) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"].scoreFlash::before{box-shadow:0 0 0 2px #65c93f,0 0 10px rgba(101,201,63,.75),0 0 22px rgba(101,201,63,.35) !important;}
+html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"] .scoreDelta{background:rgb(34,59,38) !important;color:rgb(144,216,117) !important;border:1px solid #65c93f !important;text-shadow:0 0 7px rgba(101,201,63,.55) !important;}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="navbar.css">
@@ -9664,7 +9707,7 @@ function renderScore(){
     out+='<div class="team" data-score-column="'+(((t-1)%scoreColumns(cur.team_count))+1)+'" data-score-row="'+(Math.floor((t-1)/scoreColumns(cur.team_count))+1)+'"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span>'+(cur.team_count===1?'<span class="miniGoal">🎯 '+(cur.goal_kills??50)+'</span>':'')+'</div><div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<img class="avatar" src="'+pic(p.soop_user_id)+'">':'<span class="avatarEmpty"></span>')+
-      '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름 입력">'+
+      '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름✎">'+
       '<div class="detail">'+e(scoreText(a))+'</div></div></div>'}).join('')+
       '</div></div>';
   }
