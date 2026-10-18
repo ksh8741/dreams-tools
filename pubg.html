@@ -8818,8 +8818,47 @@
              html:not(.broadcastOverlay) #killBoard .killUnified .ctrlBtn:hover,html:not(.broadcastOverlay) #killBoard .killUnified .deathBtn:checked{background:#000000 !important;color:#FFFFFF !important}
              html:not(.broadcastOverlay) #killBoard .killUnified .deathBtn:checked:after{color:#FFFFFF !important}
              html:not(.broadcastOverlay) #killBoard .killUnified select.mapSelect,html:not(.broadcastOverlay) #killBoard .killUnified select.mapSelect option{background:#FFFFFF !important;color:#000000 !important}
-             html:not(.broadcastOverlay) *,html:not(.broadcastOverlay) *::before,html:not(.broadcastOverlay) *::after{box-shadow:none !important;text-shadow:none !important;background-image:none !important}
+             html:not(.broadcastOverlay) *,html:not(.broadcastOverlay) *::before,html:not(.broadcastOverlay) *::after{text-shadow:none !important;background-image:none !important}
              html:not(.broadcastOverlay) .btn:disabled{opacity:1 !important;border-style:dashed !important}
+
+             /* Reference theme: sky blue, navy panels, crisp retro borders. */
+             html:not(.broadcastOverlay){--ink:#fff5cf;--soft:#153775;--line:#b9e5ff}
+             html:not(.broadcastOverlay) body{background:#4199f5 !important;color:#fff5cf !important;font-family:"Noto Sans KR",system-ui,sans-serif !important}
+             html:not(.broadcastOverlay) header{background:#2525ec !important;color:#fff9db !important;border-bottom:2px solid #92cbff !important;box-shadow:none !important}
+             html:not(.broadcastOverlay) .panel,html:not(.broadcastOverlay) .modal,html:not(.broadcastOverlay) .rooms,html:not(.broadcastOverlay) .set,html:not(.broadcastOverlay) .settingsDeck,html:not(.broadcastOverlay) .settingsCard{background:#12316b !important;color:#fff5d7 !important;border:2px solid #c8eaff !important;border-radius:0 !important;box-shadow:none !important}
+             html:not(.broadcastOverlay) #lobby .panel.rooms{box-shadow:1px 2px 0 #173a79 !important}
+             html:not(.broadcastOverlay) .top,html:not(.broadcastOverlay) .sect,html:not(.broadcastOverlay) .sectionTitle,html:not(.broadcastOverlay) .settingsTitle{background:transparent !important;color:#ffe457 !important;border-color:#78b8f8 !important}
+             html:not(.broadcastOverlay) .title h1,html:not(.broadcastOverlay) .sect h2{color:#ffe457 !important;font-weight:900 !important}
+             html:not(.broadcastOverlay) .sect h2:before{content:"" !important}
+             html:not(.broadcastOverlay) .meta,html:not(.broadcastOverlay) .sub,html:not(.broadcastOverlay) .host,html:not(.broadcastOverlay) .createdAt{background:transparent !important;color:#e0edff !important}
+             html:not(.broadcastOverlay) .btn{background:#102a5e !important;color:#fff4cc !important;border:1px solid #b5ddff !important;border-radius:0 !important;box-shadow:none !important;font-weight:800 !important}
+             html:not(.broadcastOverlay) .btn:hover{background:#24549d !important;color:#ffeb69 !important;border-color:#ffeb69 !important}
+             html:not(.broadcastOverlay) .btn.primary,html:not(.broadcastOverlay) button.primary{background:#ffe458 !important;color:#102a5e !important;border-color:#fff6ac !important}
+             html:not(.broadcastOverlay) #lobby .rh,html:not(.broadcastOverlay) #lobby .room{grid-template-columns:42px minmax(150px,1fr) 110px 92px 56px !important}
+             html:not(.broadcastOverlay) #lobby .rh{background:#091e4c !important;color:#ffe458 !important;border-color:#8ecaff !important}
+             html:not(.broadcastOverlay) #lobby .room{background:#12316b !important;color:#fff5d7 !important;border-color:#699ed8 !important;box-shadow:none !important}
+             html:not(.broadcastOverlay) #lobby .room:hover{background:#1d468e !important}
+             html:not(.broadcastOverlay) #lobby .lock{color:#ffe458 !important;display:flex;justify-content:center;align-items:center}
+             html:not(.broadcastOverlay) .settings input,html:not(.broadcastOverlay) .settings select,html:not(.broadcastOverlay) .settingsPanel input,html:not(.broadcastOverlay) .settingsPanel select,html:not(.broadcastOverlay) .field input,html:not(.broadcastOverlay) .field select,html:not(.broadcastOverlay) .di input,html:not(.broadcastOverlay) #scoreViewMode{background:#071a40 !important;color:#fff5d7 !important;border:1px solid #9bd5ff !important;border-radius:0 !important;accent-color:#ffe458 !important;caret-color:#fff5d7 !important}
+             html:not(.broadcastOverlay) .killScrollTools{background:#12316b !important;border-color:#94ceff !important}
+             html:not(.broadcastOverlay) #killScrollHint{background:transparent !important;color:#ffe458 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified [data-team-no],html:not(.broadcastOverlay) #killBoard .killUnified .colHeadRow [data-team-no]{background:#12316b !important;color:#fff5d7 !important;border-color:#78aee6 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .teamNameRow [data-team-no]{background:#1c4389 !important;color:#ffe458 !important;border-bottom:2px solid #ffe458 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .roundCol{background:#081c45 !important;color:#ffe458 !important;border-color:#79b8f2 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .teamStart{border-left:3px solid #c6e8ff !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .ctrlBtn,html:not(.broadcastOverlay) #killBoard .killUnified .killSquare,html:not(.broadcastOverlay) #killBoard .killUnified .killInput,html:not(.broadcastOverlay) #killBoard .killUnified .deathBtn{background:#071b43 !important;color:#ffe96e !important;border-color:#a0cfff !important;box-shadow:none !important;caret-color:#fff !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .ctrlBtn:hover,html:not(.broadcastOverlay) #killBoard .killUnified .deathBtn:checked{background:#ffe458 !important;color:#102650 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .deathBtn:checked:after{color:#102650 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified select.mapSelect,html:not(.broadcastOverlay) #killBoard .killUnified select.mapSelect option{background:#12316b !important;color:#fff5d7 !important}
+             html:not(.broadcastOverlay) #captureStage,html:not(.broadcastOverlay) .scoreWrap,html:not(.broadcastOverlay) .scoreFrame,html:not(.broadcastOverlay) #scoreboard{background:#12316b !important}
+             html:not(.broadcastOverlay) #scoreboard .team{background:#12316b !important;border-color:#afd9ff !important;color:#fff5d7 !important}
+             html:not(.broadcastOverlay) #scoreboard .slot,html:not(.broadcastOverlay) #scoreboard .total,html:not(.broadcastOverlay) #scoreboard .chi{background:#12316b !important;color:#fff5d7 !important;border-color:#78aee6 !important}
+             html:not(.broadcastOverlay) #scoreboard .name,html:not(.broadcastOverlay) #scoreboard .detail,html:not(.broadcastOverlay) #scoreboard .detail b{color:#fff5d7 !important;caret-color:#fff5d7 !important}
+             html:not(.broadcastOverlay) #scoreboard .teamSummary,html:not(.broadcastOverlay) #totalBar{background:#081c45 !important;color:#ffe458 !important;border-color:#b7dfff !important}
+             html:not(.broadcastOverlay) .scoreStatusRow.killCompareRow{display:grid !important;grid-template-columns:72px minmax(0,1fr) 72px !important;background:#081c45 !important;color:#fff5d7 !important;height:30px !important;min-height:30px !important;border-color:#b7dfff !important}
+             html:not(.broadcastOverlay) .scoreStatusRow.killCompareRow .statusLeft.combinedGoal{display:flex !important;position:static !important;align-items:center !important;justify-content:center !important;width:72px !important;height:100% !important;padding:0 !important;box-sizing:border-box !important;background:#ffe458 !important;color:#102650 !important;border-right:1px solid #b7dfff !important;font-size:11px !important;font-weight:900 !important;white-space:nowrap !important}
+             html:not(.broadcastOverlay) .scoreStatusRow.killCompareRow .statusCenter{background:#081c45 !important;color:#fff5d7 !important;display:flex !important;align-items:center !important;justify-content:center !important}
+             html:not(.broadcastOverlay) .scoreStatusRow.killCompareRow .statusRight{background:#081c45 !important}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="navbar.css">
@@ -8836,14 +8875,14 @@
     </nav>
 
     <main>
-        <section id="lobby"><div class="top"><div class="title"><h1>배틀그라운드</h1></div><div><button id="refresh" class="btn">새로고침</button> <button id="adminDeleteMode" class="btn">방 삭제</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>팀 구성</div><div>생성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
+        <section id="lobby"><div class="top"><div class="title"><h1>배틀그라운드</h1></div><div><button id="refresh" class="btn">새로고침</button> <button id="adminDeleteMode" class="btn">방 삭제</button> <button id="showCreate" class="btn primary">＋ 방 생성</button></div></div><div class="panel rooms"><div class="rh"><div>#</div><div>방제</div><div>방장</div><div>생성</div><div>잠금</div></div><div id="roomList"><div class="empty">불러오는 중...</div></div></div></section>
         <section id="roomView" class="hidden">
             <div class="top"><div><h1 id="insideTitle" style="margin:0;font-size:20px"></h1><div id="insideMeta" class="meta"></div></div><button id="back" class="btn">← 방 목록</button></div>
             <div class="scoreStage">
                 <div class="panel sec scorePanel">
                     <div class="sect scoreToolbarSect">
                         <div class="captureTools">
-                            <select id="scoreViewMode"><option value="separate">팀별</option><option value="2v2">양측 합산</option></select>
+                            <select id="scoreViewMode"><option value="2v2">합산</option><option value="separate">팀별</option></select>
                             <button id="saveResult" class="btn resultSaveBtn">결과 저장</button><button id="pipScore" class="btn">팝업</button><button id="overlayUrlBtn" class="btn overlayUrlBtn">방송 URL</button>
                         </div>
                     </div>
@@ -9224,7 +9263,7 @@ function syncScoreModeControl(){
   scoreViewMode.style.display=canCombineTeams()?'':'none';
   scoreViewMode.value=scoreMode();
   const option=scoreViewMode.querySelector('option[value="2v2"]');
-  if(option)option.textContent=canCombineTeams()?combinedLabel(cur.team_count):'양측 합산';
+  if(option)option.textContent='합산';
 }
 function pic(id){return 'https://stimg.sooplive.com/LOGO/'+id.slice(0,2)+'/'+id+'/m/'+id+'.webp'}
 
@@ -9255,6 +9294,8 @@ function timerText(){
 
 function refreshStatusRow(){
   if(!cur)return;
+  const goalCell=document.querySelector('#scoreStatusRow .combinedGoal');
+  if(goalCell)goalCell.textContent='목표 '+String(cur.goal_kills??50);
   const topTimer=totalBar?.querySelector('.fixedTimer');
   if(topTimer){
     const text=timerText();
@@ -9341,7 +9382,8 @@ function roomCreatedText(v){
   return pad(d.getMonth()+1)+'/'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes());
 }
 
-async function rooms(){let d=await q('/pubg_rooms?select=id,name,host_name,team_count,players_per_team,password_hash,created_at&order=created_at.desc');roomList.innerHTML=d.length?'':'<div class="empty">생성된 방이 없습니다.</div>';d.forEach((r,i)=>{let x=document.createElement('div');x.className='room';x.innerHTML='<div>'+(d.length-i)+'</div><div class="roomName">'+e(r.name)+'</div><div class="host">'+e(r.host_name)+'</div><div>'+cfg(r.team_count,r.players_per_team)+'</div><div class="createdAt">'+roomCreatedText(r.created_at)+'</div><div class="lock">'+(r.password_hash?'●':'○')+'</div>';x.onclick=()=>{
+function lockIcon(locked){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-label="'+(locked?'잠김':'열림')+'"><rect x="5" y="10" width="14" height="11" rx="1"/>'+(locked?'<path d="M8 10V6a4 4 0 0 1 8 0v4"/>':'<path d="M8 10V6a4 4 0 0 1 8 0"/>')+'<path d="M12 14v3"/></svg>'}
+async function rooms(){let d=await q('/pubg_rooms?select=id,name,host_name,team_count,players_per_team,password_hash,created_at&order=created_at.desc');roomList.innerHTML=d.length?'':'<div class="empty">생성된 방이 없습니다.</div>';d.forEach((r,i)=>{let x=document.createElement('div');x.className='room';x.innerHTML='<div>'+(d.length-i)+'</div><div class="roomName">'+e(r.name)+'</div><div class="host">'+e(r.host_name)+'</div><div class="createdAt">'+roomCreatedText(r.created_at)+'</div><div class="lock">'+lockIcon(!!r.password_hash)+'</div>';x.onclick=()=>{
   if(adminDeleteModeOn){
     adminDeleteTarget=r;adminDeletePw.value='';adminDeleteErr.textContent='';
     adminDeleteOv.classList.remove('hidden');setTimeout(()=>adminDeletePw.focus(),0);
@@ -9488,14 +9530,14 @@ function renderScore(){
   const mode=scoreMode();
   const goal=cur.goal_kills??50;
   const fixedTime=timerText();
-  totalBar.innerHTML=(fixedTime?'<span class="fixedTimer">⏱️ '+e(fixedTime)+'</span>':'')+(cur.team_count===1?'':'<span class="goalBadge">🎯 '+goal+'</span>');
+  totalBar.innerHTML=(fixedTime?'<span class="fixedTimer">⏱️ '+e(fixedTime)+'</span>':'')+(cur.team_count===1||mode==='2v2'?'':'<span class="goalBadge">🎯 '+goal+'</span>');
   const oldStatus=document.getElementById('scoreStatusRow');if(oldStatus)oldStatus.remove();
 
   // Split even team counts equally between the two sides.
   const showCombined=(mode==='2v2' && canCombineTeams());
   if(showCombined){
     const [left,right]=combinedScores(teamScores);
-    totalBar.insertAdjacentHTML('afterend','<div id="scoreStatusRow" class="scoreStatusRow killCompareRow"><span class="statusLeft"></span><span class="statusCenter">'+left+' : '+right+'</span><span class="statusRight"></span></div>');
+    totalBar.insertAdjacentHTML('afterend','<div id="scoreStatusRow" class="scoreStatusRow killCompareRow"><span class="statusLeft combinedGoal">목표 '+goal+'</span><span class="statusCenter">'+left+' : '+right+'</span><span class="statusRight"></span></div>');
   }
   deathItems.innerHTML=P.map(p=>'<div class="di"><span>'+e(p.nickname||'PLAYER '+p.position)+'</span><input data-death="'+p.id+'" type="number" value="'+n(p.death_penalty)+'"></div>').join('');
   document.querySelectorAll('[data-name]').forEach(x=>{x.onfocus=()=>editing=true;x.onkeydown=a=>{if(a.key==='Enter'){a.preventDefault();x.blur()}};x.onblur=()=>saveName(x)});
@@ -9985,7 +10027,7 @@ sk.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringif
 if(goalKills){
   goalKills.oninput=()=>{
     if(!cur)return;touchLocal();cur.goal_kills=n(goalKills.value);
-    const b=totalBar.querySelector('.goalBadge');if(b)b.textContent='🎯 '+String(cur.goal_kills);
+    const b=totalBar.querySelector('.goalBadge');if(b)b.textContent='🎯 '+String(cur.goal_kills);refreshStatusRow();
   };
   goalKills.onchange=()=>q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({goal_kills:n(goalKills.value)})}).catch(console.error);
 }
