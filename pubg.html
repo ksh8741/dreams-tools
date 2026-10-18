@@ -8985,6 +8985,14 @@ html.mainScoreOverlay #broadcastScoreRoot #scoreboard .slot[data-accent="15"] .s
              .globalNavbarFrame{display:block !important;width:100% !important;height:58px !important;min-height:58px !important;margin:0 !important;padding:0 !important;border:0 !important;position:relative !important;z-index:9999 !important;background:#0c0e11 !important}
              html:not(.broadcastOverlay):not(.mainScoreOverlay){overflow-y:scroll !important;scrollbar-gutter:stable !important}
              html.mainScoreOverlay .globalNavbarFrame{display:none !important}
+
+             #rosterToastStack{position:fixed;right:20px;bottom:20px;z-index:10000;width:360px;max-width:calc(100vw - 32px);max-height:70vh;overflow-y:auto;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+             #rosterToastStack .rosterToast{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:#FFFFFF;color:#000000;border:1px solid #000000;border-radius:9px;padding:15px 14px 14px 16px;pointer-events:auto}
+             #rosterToastStack .rosterToast strong{display:block;font-size:13px;font-weight:800;line-height:1.5;word-break:keep-all}
+             #rosterToastStack .rosterToast p{margin:5px 0 0;font-size:11px;line-height:1.6}
+             #rosterToastStack .rosterToastClose{appearance:none;flex:0 0 24px;display:flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:0;background:#FFFFFF;color:#000000;font-size:22px;line-height:1;cursor:pointer}
+             #rosterToastStack .rosterToastClose:focus-visible{outline:2px solid #000000;outline-offset:2px}
+             html.mainScoreOverlay #rosterToastStack{display:none !important}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
@@ -9585,7 +9593,45 @@ cb.onclick=async()=>{
 };
 function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · 총 '+r.team_count*r.players_per_team+'명';je.textContent='';jp.value='';jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
 async function ensure(){let a=await q('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds?on_conflict=room_id,round_no',{method:'POST',headers:{Prefer:'resolution=ignore-duplicates'},body:JSON.stringify(x)})}
-async function enter(r){P=[];cur=r;applyScoreWidth();if(!isMainScoreOverlay()){loadTeamMaps();loadStatCache()}else{teamMapState={};statCache={}};lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · 총 '+r.team_count*r.players_per_team+'명';if(!isMainScoreOverlay())await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),document.documentElement.classList.contains('broadcastOverlay')?1250:1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
+let rosterToastRoom=null,rosterToastBaseline=null;
+function resetRosterToasts(roomId){
+  rosterToastRoom=String(roomId);rosterToastBaseline=null;
+  document.getElementById('rosterToastStack')?.remove();
+}
+function rosterSnapshotValid(players,room){
+  const max=room.team_count*room.players_per_team;
+  return players.every(p=>Number.isInteger(Number(p.position))&&p.position>=1&&p.position<=max)&&new Set(players.map(p=>Number(p.position))).size===players.length;
+}
+function changedRosterGroups(previous,next){
+  const prior=new Map(previous.map(p=>[String(p.id),p]));
+  const changed=next.filter(p=>prior.has(String(p.id))&&Number(prior.get(String(p.id)).position)!==Number(p.position));
+  const done=new Set(),groups=[];
+  for(const a of changed){
+    if(done.has(String(a.id)))continue;
+    const oldA=prior.get(String(a.id));
+    const b=changed.find(b=>String(b.id)!==String(a.id)&&!done.has(String(b.id))&&Number(b.position)===Number(oldA.position)&&Number(prior.get(String(b.id)).position)===Number(a.position));
+    done.add(String(a.id));if(b){done.add(String(b.id));groups.push([a,b])}else groups.push([a]);
+  }
+  return groups;
+}
+function pushRosterToast(players){
+  let stack=document.getElementById('rosterToastStack');
+  if(!stack){stack=document.createElement('div');stack.id='rosterToastStack';stack.setAttribute('aria-label','선수 위치 변경 알림');document.body.appendChild(stack)}
+  const toast=document.createElement('section');toast.className='rosterToast';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');
+  const text=document.createElement('div'),title=document.createElement('strong'),message=document.createElement('p');
+  title.textContent=players.map(p=>p.nickname?.trim()||'이름 미입력').join(' ↔ ')+' 위치가 변경되었습니다.';
+  message.textContent='킬 기록판에서 변경된 위치를 확인해 주세요.';
+  text.append(title,message);
+  const close=document.createElement('button');close.type='button';close.className='rosterToastClose';close.textContent='×';close.setAttribute('aria-label','위치 변경 알림 닫기');
+  close.onclick=()=>{toast.remove();if(!stack.children.length)stack.remove()};
+  toast.append(text,close);stack.appendChild(toast);
+}
+function checkRosterToasts(players,room){
+  if(isMainScoreOverlay()||String(room.id)!==rosterToastRoom||!rosterSnapshotValid(players,room))return;
+  if(rosterToastBaseline)changedRosterGroups(rosterToastBaseline,players).forEach(pushRosterToast);
+  rosterToastBaseline=players.map(p=>({id:p.id,position:p.position,nickname:p.nickname}));
+}
+async function enter(r){resetRosterToasts(r.id);P=[];cur=r;applyScoreWidth();if(!isMainScoreOverlay()){loadTeamMaps();loadStatCache()}else{teamMapState={};statCache={}};lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · 총 '+r.team_count*r.players_per_team+'명';if(!isMainScoreOverlay())await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),document.documentElement.classList.contains('broadcastOverlay')?1250:1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
 async function load(isPoll=false){
   if(!cur)return;
   const roomId=cur.id,revAtStart=localRevision,isOverlay=isMainScoreOverlay()||document.documentElement.classList.contains('broadcastOverlay');
@@ -9598,6 +9644,7 @@ async function load(isPoll=false){
       q('/pubg_rounds?room_id=eq.'+roomId+'&select=*&order=round_no.asc')
     ]);
     if(!cur || cur.id!==roomId)return;
+    if(!rosterSnapshotValid(p,r[0]||cur))return;
     const roundIds=ro.map(x=>x.id);
     let[ss,tm]=await Promise.all([
       roundIds.length?q('/pubg_round_player_stats?select=*&round_id=in.('+roundIds.join(',')+')'):Promise.resolve([]),
@@ -9611,6 +9658,7 @@ async function load(isPoll=false){
     if(isPoll && sig===lastAppliedSignature){syncLastRead=Date.now();syncReadError='';syncStatus();return;}
     const prevScoreMode=cur?.score_mode;
     if(!cur || cur.id!==roomId)return;
+    checkRosterToasts(p,r[0]||cur);
     cur=r[0]||cur;P=p;RO=ro;S=ss;mergeTeamMapRows(tm);
     if(!isMainScoreOverlay()){applyPendingWrites();reconcileStatCache()}syncScoreModeControl();lastAppliedSignature=sig;
     syncLastRead=Date.now();syncReadError='';syncStatus();
@@ -10244,6 +10292,7 @@ addRound.onclick=async()=>{await q('/pubg_rounds',{method:'POST',body:JSON.strin
   const tasks=[...statDesired.keys()].map(k=>flushStatSave(k));
   tasks.push(...[...teamMapDesired.keys()].map(k=>flushTeamMapSave(k)),...[...roundPatchDesired.keys()].map(k=>flushRoundPatch(k)));
   await Promise.allSettled(tasks);
+  document.getElementById('rosterToastStack')?.remove();rosterToastBaseline=null;
   cur=null;clearInterval(poll);clearInterval(timerTick);roomView.classList.add('hidden');lobby.classList.remove('hidden');rooms();
 };
 
