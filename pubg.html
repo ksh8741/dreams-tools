@@ -9644,7 +9644,7 @@ cb.onclick=async()=>{
   }catch(x){ce.textContent='방 생성 실패'}
 };
 function ask(r){pick=r;jt.textContent=r.name;jm.textContent='방장 '+r.host_name+' · 총 '+r.team_count*r.players_per_team+'명';je.textContent='';jp.value='';jpf.classList.toggle('hidden',!r.password_hash);joinOv.classList.remove('hidden')}jc.onclick=()=>joinOv.classList.add('hidden');jb.onclick=async()=>{let id=await q('/rpc/join_pubg_room',{method:'POST',body:JSON.stringify({room_name:pick.name,room_password:jp.value})});if(!id)return je.textContent='비밀번호가 맞지 않습니다';joinOv.classList.add('hidden');enter((await q('/pubg_rooms?id=eq.'+id+'&select=*'))[0])};
-async function ensure(){let a=await q('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds?on_conflict=room_id,round_no',{method:'POST',headers:{Prefer:'resolution=ignore-duplicates'},body:JSON.stringify(x)})}
+async function ensure(){let a=await queryAllRows('/pubg_rounds?room_id=eq.'+cur.id+'&select=round_no&order=round_no.asc,id.asc'),s=new Set(a.map(x=>x.round_no)),x=[];for(let i=1;i<=20;i++)if(!s.has(i))x.push({room_id:cur.id,round_no:i});if(x.length)await q('/pubg_rounds?on_conflict=room_id,round_no',{method:'POST',headers:{Prefer:'resolution=ignore-duplicates'},body:JSON.stringify(x)})}
 let rosterToastRoom=null,rosterToastBaseline=null;
 function resetRosterToasts(roomId){
   rosterToastRoom=String(roomId);rosterToastBaseline=null;
@@ -9791,6 +9791,27 @@ function initSettingsToggle(){
   button.onclick=()=>{collapsed=!collapsed;try{localStorage.setItem(SETTINGS_COLLAPSE_KEY,collapsed?'1':'0')}catch(_){}apply()};apply();
 }
 
+// Fetch every page in a deterministic order. Advance by the actual response
+// length so a server cap below 500 cannot silently truncate the result.
+async function queryAllRows(path){
+  const rows=[];
+  for(let offset=0;;){
+    const page=await q(path+'&limit=500&offset='+offset);
+    if(!Array.isArray(page))throw new Error('Invalid paginated response');
+    if(!page.length)return rows;
+    rows.push(...page);offset+=page.length;
+  }
+}
+async function queryRoundRows(table,select,roundIds,order){
+  const rows=[];
+  // Keep the in-filter short even when a room has many rounds.
+  for(let start=0;start<roundIds.length;start+=50){
+    const ids=roundIds.slice(start,start+50);
+    rows.push(...await queryAllRows('/'+table+'?select='+select+'&round_id=in.('+ids.join(',')+')&order='+order));
+  }
+  return rows;
+}
+
 async function enter(r){initTimeline(r.id);resetRosterToasts(r.id);P=[];cur=r;applyScoreWidth();if(!isMainScoreOverlay()){loadTeamMaps();loadStatCache()}else{teamMapState={};statCache={}};lobby.classList.add('hidden');roomView.classList.remove('hidden');insideTitle.textContent=r.name;insideMeta.textContent='방장 '+r.host_name+' · 총 '+r.team_count*r.players_per_team+'명';if(!isMainScoreOverlay())await ensure();await load();clearInterval(poll);poll=setInterval(()=>load(true),document.documentElement.classList.contains('broadcastOverlay')?1250:1500);clearInterval(timerTick);timerTick=setInterval(refreshTimerBadge,250)}
 async function load(isPoll=false){
   if(!cur)return;
@@ -9802,14 +9823,14 @@ async function load(isPoll=false){
     let[r,p,ro]=await Promise.all([
       q('/pubg_rooms?id=eq.'+roomId+'&select=*'),
       q('/pubg_players?room_id=eq.'+roomId+'&select=*&order=position.asc'),
-      q('/pubg_rounds?room_id=eq.'+roomId+'&select=*&order=round_no.asc')
+      queryAllRows('/pubg_rounds?room_id=eq.'+roomId+'&select=*&order=round_no.asc,id.asc')
     ]);
     if(!cur || cur.id!==roomId)return;
     if(!rosterSnapshotValid(p,r[0]||cur))return;
     const roundIds=ro.map(x=>x.id);
     let[ss,tm]=await Promise.all([
-      roundIds.length?q('/pubg_round_player_stats?select=*&round_id=in.('+roundIds.join(',')+')'):Promise.resolve([]),
-      roundIds.length?q('/pubg_round_team_state?select=round_id,team_no,map_name,updated_at&round_id=in.('+roundIds.join(',')+')'):Promise.resolve([])
+      queryRoundRows('pubg_round_player_stats','*',roundIds,'round_id.asc,player_id.asc'),
+      queryRoundRows('pubg_round_team_state','round_id,team_no,map_name,updated_at',roundIds,'round_id.asc,team_no.asc')
     ]);
     if(revAtStart!==localRevision){lastAppliedSignature='';return;}
     const oldTotals=new Map();
