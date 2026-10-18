@@ -10184,6 +10184,7 @@ function board(){
     scheduleRoundPatch(rid,{chicken_team:team},false);
   });
   document.querySelectorAll('[data-k]').forEach(x=>{
+    x.addEventListener('wheel',()=>{if(x===document.activeElement)x.blur()},{passive:true});
     x.oninput=()=>{const v=n(x.value);updateLocalStat(x.dataset.k,v,null);scheduleStatSave(x.dataset.k,v,null)}
   });
   document.querySelectorAll('[data-d]').forEach(x=>x.oninput=()=>{
