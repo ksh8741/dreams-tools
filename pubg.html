@@ -8920,6 +8920,22 @@
              html.mainScoreOverlay #broadcastScoreRoot .combinedGoal{border:0 !important;border-right:0 !important}
              html.mainScoreOverlay #broadcastScoreRoot .slot.scoreFlash::before{translate:none !important}
              html.mainScoreOverlay #broadcastScoreRoot .slot .scoreDelta{translate:0 -4px !important}
+
+             /* Transfer exactly three pixels from the name column to kills. */
+             html:not(.broadcastOverlay) #scoreboard .playerInline{grid-template-columns:45px minmax(0,1fr) !important}
+             html:not(.broadcastOverlay) #scoreboard .name{width:45px !important;min-width:45px !important;max-width:45px !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .mapCol{position:relative !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .mapCol:has(select)::after{content:"";position:absolute;right:9px;top:50%;width:4px;height:4px;border-right:1px solid #000000;border-bottom:1px solid #000000;transform:translateY(-70%) rotate(45deg);pointer-events:none}
+             html:not(.broadcastOverlay) #killBoard .killUnified select.mapSelect{appearance:none !important;-webkit-appearance:none !important;width:calc(100% - 8px) !important;min-width:0 !important;max-width:calc(100% - 8px) !important;height:28px !important;line-height:26px !important;padding:0 11px !important;margin:0 4px !important;border:1px solid #000000 !important;border-radius:5px !important;background:#FFFFFF !important;color:#000000 !important;font-size:10px !important;text-align:center !important;text-align-last:center !important;cursor:pointer !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified input.chickenCheck{appearance:none !important;-webkit-appearance:none !important;display:inline-block !important;position:relative !important;vertical-align:middle !important;width:14px !important;height:14px !important;min-width:14px !important;min-height:14px !important;margin:0 !important;padding:0 !important;border:1px solid #000000 !important;border-radius:3px !important;background:#FFFFFF !important;accent-color:#000000 !important;cursor:pointer !important;box-shadow:none !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified input.chickenCheck:checked{background:#000000 !important;border-color:#000000 !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified input.chickenCheck:checked::after{content:"" !important;position:absolute !important;width:4px !important;height:7px !important;left:4px !important;top:1px !important;border:solid #FFFFFF !important;border-width:0 2px 2px 0 !important;transform:rotate(45deg) !important;background:transparent !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified input.chickenCheck:focus-visible{outline:2px solid #000000 !important;outline-offset:2px !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .colHeadRow th{height:28px !important;min-height:28px !important;padding:2px !important;line-height:20px !important}
+             html:not(.broadcastOverlay) #killBoard .killUnified .colHeadRow .playerHead{font-weight:900 !important;font-size:12px !important}
+             html:not(.broadcastOverlay) #captureStage #scoreStatusRow .combinedGoal{font-size:14px !important;border:0 !important;border-right:0 !important}
+             html.mainScoreOverlay,html.mainScoreOverlay body{width:100vw !important;height:100vh !important;overflow:hidden !important;scrollbar-width:none !important}
+             html.mainScoreOverlay::-webkit-scrollbar,html.mainScoreOverlay body::-webkit-scrollbar{display:none !important;width:0 !important;height:0 !important}
 </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="navbar.css">
@@ -9285,6 +9301,25 @@ function overlayUrlForRoom(){
   return u.toString();
 }
 function isMainScoreOverlay(){return document.documentElement.classList.contains('mainScoreOverlay')}
+function alignScoreFrame(frame,teamCount){
+  if(!frame)return;
+  const columns=scoreColumns(teamCount),width=(134*columns)+'px';
+  frame.style.setProperty('--home-team-count',String(teamCount));
+  frame.style.setProperty('--score-columns',String(columns));
+  for(const box of [frame,...frame.querySelectorAll('.score,.totalBar,.scoreStatusRow')]){
+    for(const name of ['width','min-width','max-width'])box.style.setProperty(name,width,'important');
+    box.style.setProperty('box-sizing','border-box','important');
+  }
+}
+function cloneMainScoreFrame(targetDocument){
+  const source=captureStage.querySelector('.scoreFrame');if(!source)return null;
+  const stage=targetDocument.createElement('div');stage.id='captureStage';stage.className='scoreWrap';
+  stage.style.cssText='width:max-content!important;max-width:none!important;margin:0!important;padding:0!important;overflow:visible!important';
+  const frame=source.cloneNode(true);alignScoreFrame(frame,cur.team_count);stage.appendChild(frame);
+  stage.querySelectorAll('input').forEach(x=>{x.readOnly=true;x.tabIndex=-1});
+  stage.querySelectorAll('[draggable]').forEach(x=>x.draggable=false);
+  return stage;
+}
 function isolateMainScoreOverlay(){
   if(!isMainScoreOverlay())return;
   let root=document.getElementById('broadcastScoreRoot');
@@ -9295,10 +9330,7 @@ function isolateMainScoreOverlay(){
     requestAnimationFrame(()=>{
       queued=false;const frame=captureStage.querySelector('.scoreFrame');if(!frame)return;
       const markup=frame.outerHTML;if(markup===last)return;last=markup;
-      const copy=captureStage.cloneNode(false);copy.removeAttribute('id');copy.className='scoreWrap broadcastCapture';
-      copy.appendChild(frame.cloneNode(true));root.replaceChildren(copy);
-      root.querySelectorAll('input').forEach(x=>{x.readOnly=true;x.tabIndex=-1});
-      root.querySelectorAll('[draggable]').forEach(x=>x.draggable=false);
+      const copy=cloneMainScoreFrame(document);if(copy)root.replaceChildren(copy);
     });
   };
   new MutationObserver(mirror).observe(captureStage,{subtree:true,childList:true,attributes:true,characterData:true});
@@ -9623,6 +9655,7 @@ function renderScore(){
     x.oninput=()=>{touchLocal();const p=P.find(p=>String(p.id)===String(x.dataset.death));if(p){p.death_penalty=n(x.value);updatePlayerScoreText(p.id)}refreshScoreTextOnly()};
     x.onchange=()=>q('/pubg_players?id=eq.'+x.dataset.death,{method:'PATCH',body:JSON.stringify({death_penalty:n(x.value)})}).catch(console.error)
   });
+  alignScoreFrame(captureStage.querySelector('.scoreFrame'),cur.team_count);
   drag();
 }
 
@@ -10175,33 +10208,27 @@ if(pipScore)pipScore.onclick=async()=>{
   if(!cur)return;
   if(!('documentPictureInPicture' in window))return alert('이 브라우저는 현황판 팝업을 지원하지 않습니다.');
   try{
-    const node=document.querySelector('#captureStage .scoreFrame');if(!node)return;
+    const node=captureStage.querySelector('.scoreFrame');if(!node)return;
+    alignScoreFrame(node,cur.team_count);
     const rect=node.getBoundingClientRect();
-    const targetW=Math.ceil(rect.width+40),targetH=Math.ceil(rect.height+40);
-    const pip=await documentPictureInPicture.requestWindow({width:targetW,height:targetH});
+    const pip=await documentPictureInPicture.requestWindow({width:Math.ceil(rect.width+40),height:Math.ceil(rect.height+40)});
     const style=[...document.querySelectorAll('style')].map(x=>x.textContent).join('\n');
-    const chroma='transparent';
     pip.document.head.innerHTML='<style>'+style+
-      'html,body{margin:0!important;padding:0!important;width:100%;height:100%;overflow:hidden!important;background:'+chroma+'!important}'+
-      '#pipPad{box-sizing:border-box;padding:20px;width:max-content;height:max-content;min-width:100%;min-height:100%;display:flex;align-items:flex-start;justify-content:flex-start}'+
+      'html,body{margin:0!important;padding:0!important;width:100%;height:100%;overflow:hidden!important;background:transparent!important}'+
+      '#pipPad{box-sizing:border-box;padding:20px;width:max-content;height:max-content;display:block}'+
       '</style>';
     pip.document.body.innerHTML='<div id="pipPad"></div>';
+    let last='';
     const sync=()=>{
-      const src=document.querySelector('#captureStage .scoreFrame'),dst=pip.document.getElementById('pipPad');
-      if(src&&dst)dst.innerHTML=src.outerHTML;
-      pip.document.body.style.background='transparent';
+      const src=captureStage.querySelector('.scoreFrame'),dst=pip.document.getElementById('pipPad');if(!src||!dst)return;
+      const markup=src.outerHTML;if(markup===last)return;last=markup;
+      const stage=cloneMainScoreFrame(pip.document);if(stage)dst.replaceChildren(stage);
     };
     sync();
     const ob=new MutationObserver(sync);ob.observe(captureStage,{childList:true,subtree:true,characterData:true,attributes:true});
-    pip.addEventListener('pagehide',()=>{
-      ob.disconnect();
-
-    });
-  }catch(e){console.error('[PiP]',e)}
+    pip.addEventListener('pagehide',()=>ob.disconnect());
+  }catch(err){console.error('[PiP]',err)}
 };
-
-
-
 
 if(saveResult)saveResult.onclick=async()=>{
   const node=document.querySelector('#captureStage .scoreFrame');
