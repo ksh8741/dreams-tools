@@ -20,18 +20,24 @@ function normalize(payload,channelNickname){
 }
 async function handler(req,res){
  if(req.method!=='GET'){res.setHeader('Allow','GET');return res.status(405).json({error:'Method not allowed'})}
+ if(req.query?.profile==='1'){
+  try{
+   const response=await fetch(HOSTS[0]+'/v1.1/channel/tjgpdus97/station',{headers:{Accept:'application/json','User-Agent':'Mozilla/5.0',Referer:BOARD},signal:AbortSignal.timeout(12000),redirect:'error'});
+   if(!response.ok)throw Error('SOOP profile '+response.status);
+   const profile=await response.json();res.setHeader('Cache-Control','public, max-age=0, s-maxage=60, stale-while-revalidate=60');
+   return res.status(200).json({channelNickname:String(profile.station?.userNick||'')});
+  }catch(error){console.error('[notice profile]',error.message);res.setHeader('Cache-Control','no-store');return res.status(502).json({error:'Nickname unavailable'})}
+ }
  const page=Number(req.query?.page??1);
  if(!Number.isInteger(page)||page<1||page>10000)return res.status(400).json({error:'Invalid page'});
  for(const host of HOSTS){
   try{
-   const nicknameRequest=page===1?fetch(host+'/v1.1/channel/tjgpdus97/station',{headers:{Accept:'application/json','User-Agent':'Mozilla/5.0',Referer:BOARD},signal:AbortSignal.timeout(12000),redirect:'error'})
-    .then(async response=>{if(!response.ok)return '';const profile=await response.json();return String(profile.station?.userNick||'')}).catch(()=>''):Promise.resolve('');
    const response=await fetch(host+'/v1.1/channel/tjgpdus97/board?bbsNo=41833817&perPage=20&page='+page+'&field=title,contents,user_nick,user_id,hashtags',{
     headers:{Accept:'application/json','User-Agent':'Mozilla/5.0',Referer:BOARD},
     signal:AbortSignal.timeout(7000),redirect:'error'
    });
    if(!response.ok)throw new Error('SOOP '+response.status);
-   const payload=await response.json(),channelNickname=await nicknameRequest,posts=normalize(payload,channelNickname);
+   const payload=await response.json(),channelNickname='',posts=normalize(payload);
    res.setHeader('Cache-Control',page===1?'public, max-age=0, s-maxage=20, stale-while-revalidate=30':'public, max-age=0, s-maxage=300, stale-while-revalidate=30');
    return res.status(200).json({posts,channelNickname,page,hasMore:Number(payload.meta?.totalPages)>page,totalPages:Number(payload.meta?.totalPages)||1,totalItems:Number(payload.meta?.totalItems)||posts.length,regularIds:payload.contents.map(row=>String(row.titleNo)),boardUrl:BOARD});
   }catch(error){console.error('[notices]',host,error.message)}

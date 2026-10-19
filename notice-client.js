@@ -3,7 +3,8 @@
 if(window.__yoningNotices)return;window.__yoningNotices=true;
 if(new URLSearchParams(location.search).has('overlay'))return;
 const KEY='yoning_notices_v1',API=new URL('api/notices',document.currentScript.src).href;
-let state={latest:0,pending:null},busy=false,visibleCount=20,posts=[],more=false,loaded=false;
+let state={latest:0,pending:null},busy=false,visibleCount=20,posts=[],more=false,loaded=false,sourcePage=0,sourceMore=true,sourceVersion='',channelNickname='';
+let regularRows=new Map(),pinnedRows=new Map();
 try{Object.assign(state,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(_){}
 const list=document.getElementById('noticeList'),status=document.getElementById('noticeStatus'),moreButton=document.getElementById('noticeMore');
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(_){}};
@@ -29,6 +30,7 @@ async function moveNotice(direction){
  const id=dialog.dataset.postId;
  let index=posts.findIndex(p=>p.id===id);
  if(index<0)return;
+ if(direction===1&&index===posts.length-1&&sourceMore&&!busy)await refresh(true);
 
  if(!dialog.open||dialog.dataset.postId!==id)return;
  index=posts.findIndex(p=>p.id===id);
@@ -103,7 +105,7 @@ function openNotice(post){
  previous.type=next.type='button';previous.className='detailNav detailPrev';next.className='detailNav detailNext';
  previous.textContent='‹';next.textContent='›';previous.setAttribute('aria-label','이전 공지 (더 최신 글)');next.setAttribute('aria-label','다음 공지 (더 오래된 글)');
  const index=posts.findIndex(p=>p.id===post.id);
- previous.disabled=index<=0;next.disabled=index<0||(index===posts.length-1);
+ previous.disabled=index<=0;next.disabled=index<0||(index===posts.length-1&&!sourceMore);
  previous.onclick=()=>moveNotice(-1);next.onclick=()=>moveNotice(1);
  content.append(title,meta,body);dialog.append(top,content,previous,next);dialog.scrollTop=0;
  if(!dialog.open)dialog.showModal();
@@ -145,63 +147,70 @@ function render(){
 function sortNoticeRows(rows){
  return [...new Map(rows.map(row=>[row.id,row])).values()].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||Number(b.id)-Number(a.id));
 }
+function rebuildNoticeRows(){
+ const normal=[...regularRows.values()];
+ const floor=normal.reduce((min,p)=>String(p.date||'')<min?String(p.date||''):min,'9999');
+ // A pin is released only when its date is in the already-loaded interval.
+ const pins=[...pinnedRows.values()].filter(p=>!sourceMore||String(p.date||'')>=floor);
+ posts=sortNoticeRows([...normal,...pins]).map(p=>channelNickname&&p.authorId==='tjgpdus97'?{...p,author:channelNickname}:p);
+ more=visibleCount<posts.length||sourceMore;
+}
+function mergeNoticePage(data,first=false){
+ const normalIds=new Set(data.regularIds||[]);
+ if(!Array.isArray(data.regularIds))throw Error('Missing page boundary');
+ const normal=data.posts.filter(p=>normalIds.has(p.id));
+ const pins=data.posts.filter(p=>!normalIds.has(p.id));
+ if(first){
+  const floor=normal.reduce((min,p)=>p.date<min?p.date:min,'9999');
+  for(const [id,p]of regularRows)if(p.date>=floor&&!normalIds.has(id))regularRows.delete(id);
+  pinnedRows=new Map(pins.map(p=>[p.id,p]));
+  sourceVersion=normal.reduce((max,p)=>Math.max(max,Number(p.id)),0).toString();
+ }
+ normal.forEach(p=>regularRows.set(p.id,p));
+ if(!first)pins.forEach(p=>{if(!pinnedRows.has(p.id))pinnedRows.set(p.id,p)});
+ if(!loaded||!first){sourcePage=data.page;sourceMore=!!data.hasMore}
+ else if(sourcePage===1)sourceMore=!!data.hasMore;
+ rebuildNoticeRows();
+}
 async function fetchNoticePage(page){
- const response=await fetch(API+'?page='+page,{signal:AbortSignal.timeout(20000)});
+ const response=await fetch(API+'?page='+page+(page>1&&sourceVersion?'&v='+encodeURIComponent(sourceVersion):''),{signal:AbortSignal.timeout(20000)});
  if(!response.ok)throw Error('HTTP '+response.status);
  const data=await response.json();
  if(!Array.isArray(data.posts)||!data.posts.every(validPost))throw Error('Invalid notice response');
  return data;
 }
-async function collectAllNotices(first){
- const total=Number(first.totalPages);
- if(!Number.isInteger(total)||total<1||total>10000)throw Error('Invalid total pages');
- const pages=new Array(total);pages[0]=first.posts;
- let nextPage=2,completed=1,failed=false;
- const update=()=>{if(status&&!loaded){status.hidden=false;status.textContent='전체 공지를 불러오는 중입니다. ('+completed+' / '+total+')'}};
- update();
- await Promise.all(Array.from({length:Math.min(3,total-1)},async()=>{
-  while(!failed&&nextPage<=total){
-   const page=nextPage++;
-   try{const data=await fetchNoticePage(page);pages[page-1]=data.posts;completed++;update()}catch(error){failed=true;throw error}
-  }
- }));
- if(pages.filter(Boolean).length!==total)throw Error('Incomplete notice collection');
- return sortNoticeRows(pages.flat());
+async function refreshProfile(){
+ try{
+  const response=await fetch(API+'?profile=1',{signal:AbortSignal.timeout(15000)});
+  if(!response.ok)return;const data=await response.json();
+  if(!data.channelNickname)return;channelNickname=String(data.channelNickname);
+  rebuildNoticeRows();render();
+  const label=document.querySelector('#noticeDetail .detailLabel');if(label)label.textContent=channelNickname;
+ }catch(_){}
 }
 async function refresh(append=false){
- if(append){visibleCount+=20;more=visibleCount<posts.length;render();return}
  if(busy)return;busy=true;if(moreButton)moreButton.disabled=true;
  try{
-  const first=await fetchNoticePage(1);
-  let incoming;
-  if(list&&!loaded){
-   // Commit the list only after every source page succeeds.
-   incoming=await collectAllNotices(first);
+  if(append){
+   const target=visibleCount+20;
+   while(posts.length<target&&sourceMore){
+    const data=await fetchNoticePage(sourcePage+1);
+    mergeNoticePage(data);
+   }
+   visibleCount=target;rebuildNoticeRows();
   }else{
-   const existing=new Map(posts.map(p=>[p.id,p]));
-   // Pinned posts do not define a page's date boundary.
-   const normalIds=new Set(first.regularIds||[]);
-   const normal=first.posts.filter(p=>normalIds.has(p.id));
-   const floor=normal.reduce((min,p)=>p.date<min?p.date:min,'9999');
-   const freshIds=new Set(first.posts.map(p=>p.id));
-   for(const [id,p]of existing)if(p.date>=floor&&!freshIds.has(id))existing.delete(id);
-   first.posts.forEach(p=>existing.set(p.id,p));
-   incoming=sortNoticeRows([...existing.values()]);
+   const first=await fetchNoticePage(1);
+   mergeNoticePage(first,true);
+   const latest=first.posts.reduce((max,p)=>Math.max(max,Number(p.id)),0);
+   if(state.latest>0){
+    const added=first.posts.filter(p=>Number(p.id)>state.latest);
+    if(added.length){state.pending={...sortNoticeRows(added)[0],count:added.length};toast()}
+   }
+   state.latest=Math.max(state.latest,latest);save();loaded=true;
   }
-  if(first.channelNickname){
-   incoming=incoming.map(p=>p.authorId==='tjgpdus97'?{...p,author:first.channelNickname}:p);
-   const detailLabel=document.querySelector('#noticeDetail .detailLabel');
-   if(detailLabel)detailLabel.textContent=first.channelNickname;
-  }
-  const latest=first.posts.reduce((max,p)=>Math.max(max,Number(p.id)),0);
-  if(state.latest>0){
-   const added=first.posts.filter(p=>Number(p.id)>state.latest);
-   if(added.length){state.pending={...sortNoticeRows(added)[0],count:added.length};toast()}
-  }
-  state.latest=Math.max(state.latest,latest);save();
-  posts=incoming;loaded=true;more=visibleCount<posts.length;
   render();if(status){status.textContent=posts.length?'':'아직 등록된 공지가 없어요.';status.hidden=posts.length>0}
- }catch(_){if(status){status.hidden=false;status.textContent='전체 공지를 불러오지 못했어요. 잠시 후 다시 시도할게요.'}}
+  if(!append)refreshProfile();
+ }catch(_){if(status){status.hidden=false;status.textContent='공지를 불러오지 못했어요. 잠시 후 다시 시도할게요.'}}
  finally{busy=false;if(moreButton)moreButton.disabled=false}
 }
 
