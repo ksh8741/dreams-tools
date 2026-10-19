@@ -15,7 +15,7 @@
 'use strict';
 const feed=document.getElementById('clipFeed'),status=document.getElementById('clipStatus'),counter=document.getElementById('clipCounter');
 const prev=document.getElementById('clipPrev'),next=document.getElementById('clipNext'),ORIGIN='https://vod.sooplive.com';
-let clips=[],page=0,hasMore=true,loading=false,active=-1,frame=null,ready=false,currentTime=0,raf=0,loadedVideoId='',sort='popular',generation=0,requestController=null;
+let clips=[],page=0,hasMore=true,loading=false,active=-1,frame=null,ready=false,currentTime=0,raf=0,loadedVideoId='',readyVideoId='',sort='popular',generation=0,requestController=null;
 const autoButton=document.getElementById('clipAutoplay');
 let autoNext=false,endedForId='',loadPromise=null;
 try{autoNext=localStorage.getItem('yoning_clips_autoplay')==='1'}catch(_){}
@@ -57,7 +57,7 @@ function activate(index){
  if(index<0||index>=clips.length)return;
  if(index===active&&frame){positionPlayer();return}
  // Keep one SOOP player alive: its in-memory volume survives clip changes.
- active=index;endedForId='';currentTime=0;updateProgress();
+ active=index;readyVideoId='';endedForId='';currentTime=0;updateProgress();
  const clip=clips[index];
  if(!frame){
   ready=false;loadedVideoId='';
@@ -143,7 +143,13 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('message',event=>{
  if(event.origin!==ORIGIN||event.source!==frame?.contentWindow||!event.data||typeof event.data!=='object')return;
  const data=event.data;
- if(data.cmd==='PonReady'&&!ready){ready=true;configure()}
+ if(data.cmd==='PonReady'){
+  const id=String(data.id??'');
+  if(id!==clips[active]?.id||readyVideoId===id)return;
+  // SOOP navigates internally on the first Pload for another ID.
+  // That new route sends PonReady again and needs its own initial Pload.
+  ready=true;readyVideoId=id;loadedVideoId='';configure();
+ }
  if(data.cmd==='PupdateMediaEvent'){
   if(data.id!==undefined&&String(data.id)!==clips[active]?.id)return;
   const media=data.event||{};
