@@ -24,7 +24,7 @@
 
 </style></head><body>
 <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
-<div id="clipToolbar" class="clipToolbar" hidden><div class="clipHeading"><div class="clipSort" role="group" aria-label="클립 정렬"><button type="button" data-clip-sort="popular" aria-pressed="true">인기순</button><button type="button" data-clip-sort="reg_date" aria-pressed="false">최신순</button></div><button id="clipAutoplay" type="button" role="switch" aria-checked="false" aria-label="영상 종료 후 다음 클립 자동재생"><span>자동재생</span><span class="autoState">OFF</span></button></div></div>
+<div id="clipToolbar" class="clipToolbar" hidden><div class="clipHeading"><div class="clipSort" role="group" aria-label="클립 정렬"><button type="button" data-clip-sort="popular" aria-pressed="true">인기순</button><button type="button" data-clip-sort="reg_date" aria-pressed="false">최신순</button><button type="button" data-clip-sort="random" aria-pressed="false">랜덤</button></div><button id="clipAutoplay" type="button" role="switch" aria-checked="false" aria-label="영상 종료 후 다음 클립 자동재생"><span>자동재생</span><span class="autoState">OFF</span></button></div></div>
 <main id="clipFeed" tabindex="0" aria-label="클립 피드"></main>
 <div class="clipNav"><button id="clipPrev" type="button" aria-label="이전 클립">↑</button><button id="clipNext" type="button" aria-label="다음 클립">↓</button></div>
 <p id="clipStatus" role="status" hidden></p>
@@ -36,22 +36,42 @@ const feed=document.getElementById('clipFeed'),status=document.getElementById('c
 const prev=document.getElementById('clipPrev'),next=document.getElementById('clipNext');
 const autoButton=document.getElementById('clipAutoplay'),toolbar=document.getElementById('clipToolbar');
 let clips=[],page=0,hasMore=true,loading=false,active=-1,raf=0,sort='popular',generation=0,requestController=null;
-let autoNext=false,endedForId='',loadPromise=null,video=null,hls=null,mediaController=null,mediaGeneration=0,savedVolume=1;
+let autoNext=false,endedForId='',loadPromise=null,video=null,hls=null,mediaController=null,mediaGeneration=0,savedVolume=1,randomSeed=Math.floor(Math.random()*4294967296).toString(16),randomPages=0,resumeReady=false,lastSavedAt=0;
 try{autoNext=localStorage.getItem('yoning_clips_autoplay')==='1';const v=localStorage.getItem('yoning_clips_volume');if(v!==null&&Number.isFinite(Number(v)))savedVolume=Math.max(0,Math.min(1,Number(v)))}catch(_){}
 function updateAutoplay(){autoButton.setAttribute('aria-checked',String(autoNext));autoButton.querySelector('.autoState').textContent=autoNext?'ON':'OFF'}
 autoButton.onclick=()=>{autoNext=!autoNext;try{localStorage.setItem('yoning_clips_autoplay',autoNext?'1':'0')}catch(_){}updateAutoplay()};updateAutoplay();
 function say(text){status.textContent=text;status.hidden=!text}
 function valid(c){return c&&/^\d+$/.test(c.id)&&typeof c.title==='string'}
-function stopVideo(){mediaGeneration++;mediaController?.abort();mediaController=null;if(video){video.pause();video.removeAttribute('src');video.load();video.remove();video=null}if(hls){hls.destroy();hls=null}}
-async function activate(index){
+const RESUME_KEY='yoning_clips_resume_v1';
+function saveResume(time=null,completed=false){
+ if(active<0||!clips[active]||time===null&&!resumeReady)return;
+ try{localStorage.setItem(RESUME_KEY,JSON.stringify({version:1,sort,seed:randomSeed,totalPages:randomPages,page,hasMore,clips:clips.slice(active),time:Math.max(0,Number(time===null?video?.currentTime:time)||0),completed}))}catch(_){}
+}
+function restoreSession(){
+ let saved;try{saved=JSON.parse(localStorage.getItem(RESUME_KEY)||'null')}catch(_){}
+ if(saved?.version===1&&['popular','reg_date','random'].includes(saved.sort)&&Array.isArray(saved.clips)&&saved.clips.length&&saved.clips.every(valid)&&Number.isInteger(saved.page)&&saved.page>=1&&saved.page<=1000&&/^[a-f0-9]{1,8}$/.test(saved.seed)){
+  sort=saved.sort;randomSeed=saved.seed;randomPages=Number(saved.totalPages)||0;page=saved.page;hasMore=!!saved.hasMore;
+  clips=saved.completed?saved.clips.slice(1):saved.clips;
+  if(clips.length){renderNew(clips);updateSortButtons();activate(0,saved.completed?0:Math.max(0,Number(saved.time)||0));return}
+  if(hasMore){updateSortButtons();loadMore();return}
+  page=0;hasMore=true;
+ }
+ updateSortButtons();loadMore();
+}
+function stopVideo(){saveResume();resumeReady=false;mediaGeneration++;mediaController?.abort();mediaController=null;if(video){video.pause();video.removeAttribute('src');video.load();video.remove();video=null}if(hls){hls.destroy();hls=null}}
+async function activate(index,initialTime=0){
  if(index<0||index>=clips.length||index===active&&video)return;
  stopVideo();active=index;endedForId='';const clip=clips[index],token=mediaGeneration;
  const stage=feed.children[index].querySelector('.clipStage');
  stage.parentElement.querySelector('.clipMeta').appendChild(toolbar);toolbar.hidden=false;
  const player=document.createElement('video');video=player;player.className='clipPlayer';player.controls=true;player.playsInline=true;player.preload='auto';player.poster=clip.thumbnail||'';player.volume=savedVolume;player.muted=savedVolume===0;stage.appendChild(player);
- prev.disabled=index===0;next.disabled=index===clips.length-1&&!hasMore;renderUpcoming();
+ prev.disabled=index===0;next.disabled=index===clips.length-1&&!hasMore;renderUpcoming();saveResume(initialTime);
+ player.addEventListener('loadedmetadata',()=>{if(video!==player)return;if(initialTime>0&&Number.isFinite(player.duration))player.currentTime=Math.min(initialTime,Math.max(0,player.duration-.25));resumeReady=true;saveResume()},{once:true});
+ player.addEventListener('timeupdate',()=>{if(video===player&&Date.now()-lastSavedAt>=2000){lastSavedAt=Date.now();saveResume()}});
+ player.addEventListener('pause',()=>{if(video===player)saveResume()});
+ player.addEventListener('seeked',()=>{if(video===player)saveResume()});
  player.addEventListener('volumechange',()=>{if(video!==player)return;savedVolume=player.muted?0:player.volume;try{localStorage.setItem('yoning_clips_volume',String(savedVolume))}catch(_){}});
- player.addEventListener('ended',()=>{if(video===player&&autoNext&&!document.hidden&&endedForId!==clip.id){endedForId=clip.id;move(1,true)}});
+ player.addEventListener('ended',()=>{if(video===player){saveResume(0,true);resumeReady=false}if(video===player&&autoNext&&!document.hidden&&endedForId!==clip.id){endedForId=clip.id;move(1,true)}});
  const play=()=>{if(video!==player||document.hidden)return;player.play().catch(()=>{/* Start with the native play control if a browser gesture is required. */})};
  const controller=new AbortController();mediaController=controller;say('');status.onclick=null;
  try{
@@ -104,14 +124,14 @@ async function fetchNextPage(){
  const requestGeneration=generation,requestSort=sort;
  const controller=new AbortController();requestController=controller;
  try{
-  const response=await fetch('/api/clips?page='+(page+1)+'&sort='+requestSort,{signal:AbortSignal.any([controller.signal,AbortSignal.timeout(18000)])});
+  const response=await fetch('/api/clips?page='+(page+1)+'&sort='+requestSort+(requestSort==='random'?'&seed='+randomSeed+(randomPages?'&pages='+randomPages:''):''),{signal:AbortSignal.any([controller.signal,AbortSignal.timeout(18000)])});
   if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();
   if(requestGeneration!==generation)return;
   if(!Array.isArray(data.clips)||!data.clips.every(valid))throw Error('Invalid clip response');
-  const ids=new Set(clips.map(c=>c.id)),added=data.clips.filter(c=>{if(ids.has(c.id))return false;ids.add(c.id);return true});clips.push(...added);page=data.page;hasMore=!!data.hasMore;
+  const ids=new Set(clips.map(c=>c.id)),added=data.clips.filter(c=>{if(ids.has(c.id))return false;ids.add(c.id);return true});clips.push(...added);page=data.page;hasMore=!!data.hasMore;if(requestSort==='random')randomPages=Number(data.totalPages)||randomPages;
   renderNew(added);say(clips.length?'':'등록된 클립이 없습니다.');
   if(active<0&&clips.length)activate(0);
-  if(active>=0){next.disabled=active===clips.length-1&&!hasMore;renderUpcoming()}
+  if(active>=0){next.disabled=active===clips.length-1&&!hasMore;renderUpcoming();saveResume()}
  }catch(_){if(requestGeneration!==generation)return;say('클립을 불러오지 못했습니다. 눌러서 다시 시도해주세요.');status.onclick=()=>{say('');loadMore()}}
  finally{if(requestGeneration===generation){loading=false;if(requestController===controller)requestController=null}}
 }
@@ -127,8 +147,8 @@ function updateSortButtons(){
  }
 }
 function changeSort(value){
- if(!['popular','reg_date'].includes(value)||value===sort)return;
- stopVideo();generation++;requestController?.abort();requestController=null;loading=false;loadPromise=null;sort=value;
+ if(!['popular','reg_date','random'].includes(value)||value===sort)return;
+ stopVideo();generation++;requestController?.abort();requestController=null;loading=false;loadPromise=null;sort=value;randomSeed=Math.floor(Math.random()*4294967296).toString(16);randomPages=0;
  clips=[];page=0;hasMore=true;active=-1;
  document.body.appendChild(toolbar);toolbar.hidden=true;feed.replaceChildren();feed.scrollTop=0;prev.disabled=true;next.disabled=true;
  updateSortButtons();say('');loadMore();
@@ -149,10 +169,10 @@ window.addEventListener('keydown',event=>{
  if(space){if(video){if(video.paused||video.ended)video.play().catch(()=>{});else video.pause()}}
  else move(event.key==='ArrowDown'?1:-1);
 },true);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)video?.pause()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){saveResume();video?.pause()}});
 window.addEventListener('pagehide',stopVideo);
 window.addEventListener('pageshow',event=>{if(event.persisted&&active>=0&&!video)activate(active)});
-loadMore();
+restoreSession();
 })();
 
 </script>
