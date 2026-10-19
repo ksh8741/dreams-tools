@@ -2,33 +2,31 @@
 'use strict';
 const feed=document.getElementById('clipFeed'),status=document.getElementById('clipStatus'),counter=document.getElementById('clipCounter');
 const prev=document.getElementById('clipPrev'),next=document.getElementById('clipNext'),ORIGIN='https://vod.sooplive.com';
-let clips=[],page=0,hasMore=true,loading=false,active=-1,frame=null,ready=false,paused=false,muted=true,native=false,currentTime=0,raf=0;
+let clips=[],page=0,hasMore=true,loading=false,active=-1,frame=null,ready=false,currentTime=0,raf=0;
 function say(text){status.textContent=text;status.hidden=!text}
 function valid(c){return c&&/^\d+$/.test(c.id)&&typeof c.title==='string'}
 function command(data){if(frame?.contentWindow)frame.contentWindow.postMessage(data,ORIGIN)}
 function configure(){
  const clip=clips[active];if(!ready||!clip)return;
- command({cmd:'Pload',id:clip.id,no:null,mutePlay:muted,showChat:false,autoPlay:!document.hidden,isAdShow:true,isAdPause:false,isViewCnt:true,isRecommendShow:false,isEndRecommendShow:false,showQualityBox:true,startVideoSeconds:currentTime,endVideoSeconds:0,fromApi:1,apiKey:''});
+ command({cmd:'Pload',id:clip.id,no:null,mutePlay:true,showChat:false,autoPlay:!document.hidden,isAdShow:true,isAdPause:false,isViewCnt:true,isRecommendShow:false,isEndRecommendShow:false,showQualityBox:true,startVideoSeconds:currentTime,endVideoSeconds:0,fromApi:1,apiKey:''});
 }
-function controls(){
- const card=feed.children[active];if(!card)return;
- card.querySelector('[data-play]').textContent=paused?'재생':'일시정지';
- const sound=card.querySelector('[data-sound]');sound.textContent=muted?'소리 켜기':'소리 끄기';sound.setAttribute('aria-pressed',String(!muted));
- const toggle=card.querySelector('[data-native]');toggle.textContent=native?'스크롤 모드':'영상 조작';toggle.setAttribute('aria-pressed',String(native));
- card.querySelector('.clipGesture').hidden=native;
- if(frame)frame.style.pointerEvents=native?'auto':'none';
+function updateProgress(){
+ const bar=feed.children[active]?.querySelector('.clipProgress');
+ if(!bar)return;
+ const duration=Number(clips[active]?.duration)||0;
+ const ratio=duration>0?Math.max(0,Math.min(1,currentTime/duration)):0;
+ bar.querySelector('.clipProgressFill').style.transform='scaleX('+ratio+')';
+ bar.setAttribute('aria-valuenow',String(Math.round(ratio*100)));
 }
-function togglePlay(){if(!frame)return;paused=!paused;command({cmd:paused?'Ppause':'Pplay'});controls()}
 function activate(index){
  if(index<0||index>=clips.length||index===active&&frame)return;
  // Removing the old iframe tears down its player and stops all audio.
  if(frame){frame.remove();frame=null}
- const old=feed.children[active];if(old)old.querySelector('.clipGesture').hidden=false;
- active=index;ready=false;paused=false;native=false;currentTime=0;
+ active=index;ready=false;currentTime=0;updateProgress();
  const slide=feed.children[index],clip=clips[index];
  frame=document.createElement('iframe');frame.className='clipPlayer';frame.title=clip.title;frame.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';frame.allowFullscreen=true;
  frame.src=ORIGIN+'/player/'+clip.id+'/embed?fromApi=1';slide.querySelector('.clipStage').appendChild(frame);
- controls();prev.disabled=index===0;next.disabled=index===clips.length-1&&!hasMore;counter.textContent=(index+1)+' / '+clips.length+(hasMore?' +':'');
+ prev.disabled=index===0;next.disabled=index===clips.length-1&&!hasMore;counter.textContent=(index+1)+' / '+clips.length+(hasMore?' +':'');
  if(index>=clips.length-4)loadMore();
 }
 async function move(direction){
@@ -43,14 +41,12 @@ function renderNew(items){
   const card=document.createElement('article');card.className='clipCard';
   const stage=document.createElement('div');stage.className='clipStage';
   if(clip.thumbnail){const poster=document.createElement('img');poster.className='clipPoster';poster.alt='';poster.loading='lazy';poster.src=clip.thumbnail;stage.appendChild(poster)}
-  const gesture=document.createElement('button');gesture.type='button';gesture.className='clipGesture';gesture.setAttribute('aria-label','재생 또는 일시정지');gesture.onclick=togglePlay;stage.appendChild(gesture);
+  const progress=document.createElement('div');progress.className='clipProgress';
+  progress.setAttribute('role','progressbar');progress.setAttribute('aria-label','영상 재생 진행률');progress.setAttribute('aria-valuemin','0');progress.setAttribute('aria-valuemax','100');progress.setAttribute('aria-valuenow','0');
+  const fill=document.createElement('div');fill.className='clipProgressFill';progress.appendChild(fill);
   const meta=document.createElement('div');meta.className='clipMeta';const info=document.createElement('div');info.className='clipInfo';
   const title=document.createElement('h2');title.textContent=clip.title;const detail=document.createElement('p');detail.textContent=[clip.author,clip.date.slice(0,10),Number(clip.views).toLocaleString('ko-KR')+'회'].filter(Boolean).join(' · ');info.append(title,detail);
-  const actions=document.createElement('div');actions.className='clipControls';
-  for(const [key,label,fn]of [['play','일시정지',togglePlay],['sound','소리 켜기',()=>{muted=!muted;configure();paused=false;controls()}],['native','영상 조작',()=>{native=!native;controls()}]]){
-   const b=document.createElement('button');b.type='button';b.dataset[key]='';b.textContent=label;b.onclick=fn;actions.appendChild(b);
-  }
-  meta.append(info,actions);card.append(stage,meta);section.appendChild(card);feed.appendChild(section);
+  meta.appendChild(info);card.append(stage,progress,meta);section.appendChild(card);feed.appendChild(section);
  }
 }
 async function loadMore(){
@@ -77,14 +73,14 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('message',event=>{
  if(event.origin!==ORIGIN||event.source!==frame?.contentWindow||!event.data||typeof event.data!=='object')return;
  const data=event.data;
- if(data.cmd==='PonReady'){ready=true;configure()}
+ if(data.cmd==='PonReady'&&!ready){ready=true;configure()}
  if(data.cmd==='PupdateMediaEvent'){
   const media=data.event||{};
-  if(media.type==='timeUpdate'&&Number.isFinite(media.currentTime))currentTime=media.currentTime;
-  if(media.type==='play'||media.type==='pause'){paused=media.type==='pause';controls()}
+  if(media.type==='timeUpdate'&&Number.isFinite(media.currentTime)){currentTime=media.currentTime;updateProgress()}
+  if(media.type==='end'){currentTime=Number(clips[active]?.duration)||0;updateProgress()}
  }
 });
-document.addEventListener('visibilitychange',()=>{if(document.hidden){command({cmd:'Ppause'});paused=true;controls()}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){command({cmd:'Ppause'})}});
 window.addEventListener('pagehide',()=>{if(frame){frame.remove();frame=null}});
 loadMore();
 })();
