@@ -8,12 +8,13 @@ function normalize(payload){
 }
 async function handler(req,res){
  if(req.method!=='GET'){res.setHeader('Allow','GET');return res.status(405).json({error:'Method not allowed'})}
+ const sort=String(req.query?.sort??'popular');if(!['popular','reg_date'].includes(sort))return res.status(400).json({error:'Invalid sort'});
  const page=Number(req.query?.page??1);if(!Number.isInteger(page)||page<1||page>1000)return res.status(400).json({error:'Invalid page'});
  try{
-  const response=await fetch('https://api-channel.sooplive.com/v1.1/channel/tjgpdus97/vod/clip?page='+page+'&perPage=20&orderBy=reg_date',{headers:{Accept:'application/json','User-Agent':'Mozilla/5.0',Referer:'https://www.sooplive.com/station/tjgpdus97/vod/clip'},signal:AbortSignal.timeout(12000),redirect:'error'});
+  const response=await fetch('https://api-channel.sooplive.com/v1.1/channel/tjgpdus97/vod/clip?page='+page+'&perPage=20&orderBy='+sort,{headers:{Accept:'application/json','User-Agent':'Mozilla/5.0',Referer:'https://www.sooplive.com/station/tjgpdus97/vod/clip'},signal:AbortSignal.timeout(12000),redirect:'error'});
   if(!response.ok)throw Error('SOOP '+response.status);
   const payload=await response.json(),clips=normalize(payload);res.setHeader('Cache-Control','public, max-age=0, s-maxage=30, stale-while-revalidate=30');
-  return res.status(200).json({clips,page,hasMore:Number(payload.meta?.totalPages)>page});
+  return res.status(200).json({clips,page,sort,hasMore:Number(payload.meta?.totalPages)>page});
  }catch(error){console.error('[clips]',error.message);res.setHeader('Cache-Control','no-store');return res.status(502).json({error:'클립을 불러오지 못했습니다.'})}
 }
 module.exports=handler;module.exports.normalize=normalize;
