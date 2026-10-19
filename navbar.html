@@ -26,13 +26,14 @@ a:focus-visible{outline:2px solid #fff;outline-offset:-5px}
 <a data-page="clips" href="clips.html" target="_top">클립</a>
 <a data-page="quiz" href="quiz.html" target="_top">닝잘알</a>
 <a data-page="menu" href="menu.html" target="_top">모먹지</a>
+<a data-page="sig" href="sig.html" target="_top">시그표</a>
 </div></div></nav>
 <script>
 (()=>{
 let path='';
 try{path=window.parent.location.pathname}catch(_){try{path=new URL(document.referrer).pathname}catch(_){}}
 const file=path.split('/').pop().toLowerCase();
-const current=file==='pubg.html'?'pubg':file==='starcraft.html'?'starcraft':file==='notices.html'?'notices':file==='clips.html'?'clips':file==='quiz.html'?'quiz':file==='menu.html'?'menu':'';
+const current=file==='pubg.html'?'pubg':file==='starcraft.html'?'starcraft':file==='notices.html'?'notices':file==='clips.html'?'clips':file==='quiz.html'?'quiz':file==='menu.html'?'menu':file==='sig.html'?'sig':'';
 for(const link of document.querySelectorAll('[data-page]')){
 const active=link.dataset.page===current;
 link.classList.toggle('active',active);
