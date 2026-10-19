@@ -13,11 +13,11 @@ function toast(){
  document.getElementById('yoningNoticeToast')?.remove();
  const p=state.pending;if(!validPost(p))return;
  const box=document.createElement('aside');box.id='yoningNoticeToast';box.setAttribute('role','status');
- Object.assign(box.style,{position:'fixed',right:'20px',bottom:'24px',width:'300px',maxWidth:'calc(100vw - 32px)',background:'#fff',color:'#000',border:'2px solid #000',borderRadius:'12px',padding:'18px',zIndex:'2147483646',fontFamily:'Arial,"Noto Sans KR",sans-serif',boxShadow:'0 4px 12px #0001'});
+ Object.assign(box.style,{position:'fixed',right:'20px',bottom:'24px',width:'300px',maxWidth:'calc(100vw - 32px)',background:'#fffaff',color:'#594166',border:'1px solid #e3cfee',borderRadius:'12px',padding:'18px',zIndex:'2147483646',fontFamily:'Arial,"Noto Sans KR",sans-serif',boxShadow:'0 7px 26px #9976b026'});
  const top=document.createElement('div');Object.assign(top.style,{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'10px'});
  const label=document.createElement('strong');label.textContent=p.count>1?'새 공지 '+p.count+'개':'새 공지가 등록되었습니다';label.style.fontSize='12px';
- const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','공지 알림 닫기');Object.assign(close.style,{border:'0',background:'#fff',color:'#000',fontSize:'24px',cursor:'pointer',lineHeight:'1',padding:'0 0 0 10px'});close.onclick=closeToast;top.append(label,close);
- const link=document.createElement('a');link.href=p.url;link.onclick=event=>{event.preventDefault();openNotice(p)};link.textContent=p.title;Object.assign(link.style,{display:'block',fontSize:'15px',fontWeight:'700',lineHeight:'1.5',color:'#000',overflowWrap:'anywhere'});
+ const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','공지 알림 닫기');Object.assign(close.style,{border:'0',background:'transparent',color:'#aa87bf',fontSize:'24px',cursor:'pointer',lineHeight:'1',padding:'0 0 0 10px'});close.onclick=closeToast;top.append(label,close);
+ const link=document.createElement('a');link.href=p.url;link.onclick=event=>{event.preventDefault();openNotice(p)};link.textContent=p.title;Object.assign(link.style,{display:'block',fontSize:'15px',fontWeight:'700',lineHeight:'1.5',color:'#594166',overflowWrap:'anywhere'});
  box.append(top,link);document.body.appendChild(box);
 }
 function isNoticeImage(value){
@@ -27,19 +27,19 @@ function openNotice(post){
  let dialog=document.getElementById('noticeDetail');
  if(!dialog){
   const style=document.createElement('style');style.textContent=`
-#noticeDetail{box-sizing:border-box;width:min(700px,calc(100vw - 28px));max-height:86vh;padding:0;border:1.5px solid #000;border-radius:25px;background:#fff;color:#000;box-shadow:5px 6px 0 #000;font-family:"Nanum Square Round","Noto Sans KR",Arial,sans-serif;overflow:auto}
-#noticeDetail::backdrop{background:rgba(0,0,0,.4)}
-#noticeDetail .detailTop{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;background:#fff;padding:15px 23px;border-bottom:1px solid #000;z-index:1}
+#noticeDetail{box-sizing:border-box;width:min(700px,calc(100vw - 28px));max-height:86vh;padding:0;border:1px solid #e5dbf4;border-radius:25px;background:#fffdfb;color:#40334e;box-shadow:0 18px 70px #69518a30;font-family:"Nanum Square Round","Noto Sans KR",Arial,sans-serif;overflow:auto}
+#noticeDetail::backdrop{background:rgba(62,43,80,.3);backdrop-filter:blur(4px)}
+#noticeDetail .detailTop{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;background:#f2eaff;padding:15px 23px;border-bottom:1px solid #e8dcf6;z-index:1}
 #noticeDetail .detailLabel{font-size:12px;font-weight:800}
-#noticeDetail .detailClose{border:1px solid #000;border-radius:50%;width:30px;height:30px;background:#fff;color:#000;font-size:22px;cursor:pointer;display:grid;place-items:center;line-height:1}
+#noticeDetail .detailClose{border:1px solid #ded0ed;border-radius:50%;width:30px;height:30px;background:#fff;color:#80669d;font-size:22px;cursor:pointer;display:grid;place-items:center;line-height:1}
 #noticeDetail .detailContent{padding:26px 28px 32px}
 #noticeDetail h2{font-size:22px;line-height:1.5;margin:0 0 12px;overflow-wrap:anywhere}
-#noticeDetail .detailMeta{font-size:11px;margin-bottom:26px}
+#noticeDetail .detailMeta{font-size:11px;margin-bottom:26px;color:#93839f}
 #noticeDetail .detailBody{font-size:15px;line-height:1.9;overflow-wrap:anywhere}
 #noticeDetail .detailBody p{margin:0 0 12px}
 #noticeDetail .detailBody img{display:block;max-width:100%;height:auto;margin:18px auto;border-radius:12px}
-#noticeDetail .detailBody a{color:#000;text-decoration:underline}
-#noticeDetail .detailBody blockquote{margin:12px 0;padding-left:16px;border-left:2px solid #000}
+#noticeDetail .detailBody a{color:#8664ae;text-decoration:underline}
+#noticeDetail .detailBody blockquote{margin:12px 0;padding-left:16px;border-left:2px solid #d4b9ed}
 @media(max-width:500px){#noticeDetail .detailContent{padding:22px 20px}#noticeDetail h2{font-size:19px}}
 `;document.head.appendChild(style);
   dialog=document.createElement('dialog');dialog.id='noticeDetail';dialog.setAttribute('aria-labelledby','noticeDetailTitle');
@@ -48,11 +48,11 @@ function openNotice(post){
  }
  dialog.replaceChildren();
  const top=document.createElement('div');top.className='detailTop';
- const label=document.createElement('span');label.className='detailLabel';label.textContent='♡ 요닝의 소식';
+ const label=document.createElement('span');label.className='detailLabel';label.textContent=post.author||'';
  const close=document.createElement('button');close.type='button';close.className='detailClose';close.textContent='×';close.setAttribute('aria-label','공지 닫기');close.onclick=()=>dialog.close();top.append(label,close);
  const content=document.createElement('article');content.className='detailContent';
  const title=document.createElement('h2');title.id='noticeDetailTitle';title.textContent=post.title;
- const meta=document.createElement('div');meta.className='detailMeta';meta.textContent=[post.author,post.date].filter(Boolean).join(' · ');
+ const meta=document.createElement('div');meta.className='detailMeta';meta.textContent=post.date||'';
  const body=document.createElement('div');body.className='detailBody';
  // Rebuild approved nodes rather than injecting third-party HTML.
  const source=new DOMParser().parseFromString(String(post.body||''),'text/html');
@@ -94,15 +94,14 @@ function render(){
    }catch(_){}
   }
   body.className='noticeBody';
-  const badge=document.createElement('span');badge.className='noticeBadge';badge.textContent='요닝의 소식';
+  const badge=document.createElement('span');badge.className='noticeBadge';badge.textContent=p.author||'';
   title.className='title';title.textContent=p.title;
   body.append(badge,title);
   if(p.summary){const preview=document.createElement('p');preview.className='preview';preview.textContent=p.summary;body.appendChild(preview)}
   meta.className='meta';
   const date=document.createElement('time');date.textContent=String(p.date||'').slice(0,10).replaceAll('-','.');
-  const author=document.createElement('span');author.textContent=p.author||'요닝';
   const arrow=document.createElement('span');arrow.className='cardArrow';arrow.textContent='↗';arrow.setAttribute('aria-hidden','true');
-  meta.append(author,date,arrow);body.appendChild(meta);a.appendChild(body);li.appendChild(a);list.appendChild(li);
+  meta.append(date,arrow);body.appendChild(meta);a.appendChild(body);li.appendChild(a);list.appendChild(li);
  }
  if(moreButton)moreButton.hidden=!more;
 }
@@ -117,6 +116,10 @@ async function refresh(append=false){
   if(!response.ok)throw Error('HTTP '+response.status);
   const data=await response.json();if(!Array.isArray(data.posts)||!data.posts.every(validPost))throw Error('Invalid notice response');
   const incoming=data.posts;
+  if(data.channelNickname){
+   const detailLabel=document.querySelector('#noticeDetail .detailLabel');
+   if(detailLabel)detailLabel.textContent=data.channelNickname;
+  }
   if(!append){
    // First successful visit establishes the baseline; old posts never notify.
    const latest=incoming.reduce((m,p)=>Math.max(m,Number(p.id)),0);

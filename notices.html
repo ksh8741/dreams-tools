@@ -2,6 +2,24 @@
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>공지 · 요닝 방송도구함</title>
 <style>
 *{box-sizing:border-box}html{overflow-y:scroll;scrollbar-gutter:stable}body{margin:0;background:#fff;color:#000;font-family:"Nanum Square Round","Noto Sans KR",Arial,sans-serif}.globalNavbarFrame{display:block;width:100%;height:58px;border:0}main{max-width:990px;margin:46px auto 72px;padding:0 24px}.noticeHeader{display:flex;align-items:center;gap:15px;margin-bottom:32px}.headerIcon{display:grid;place-items:center;width:54px;height:54px;border:1.5px solid #000;border-radius:19px;transform:rotate(-7deg);font-size:30px;box-shadow:3px 3px 0 #000}.noticeHeader h1{font-size:27px;font-weight:900;letter-spacing:-1px;margin:0}.headerSpark{font-size:23px;margin-left:auto;transform:rotate(12deg)}#noticeStatus{font-size:13px;text-align:center;padding:28px 10px;border:1px dashed #000;border-radius:20px}#noticeStatus[hidden]{display:none}#noticeList{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start}#noticeList li{min-width:0}.noticeCard{display:block;border:1.5px solid #000;border-radius:25px;background:#fff;overflow:hidden;color:#000;text-decoration:none;box-shadow:3px 4px 0 #000;transition:transform .18s,box-shadow .18s}.noticeCard:hover{transform:translateY(-3px);box-shadow:4px 7px 0 #000}.noticeCard:focus-visible{outline:3px solid #000;outline-offset:5px}.noticePhoto{aspect-ratio:16/10;overflow:hidden;border-bottom:1.5px solid #000;background:#fff}.noticePhoto img{width:100%;height:100%;object-fit:cover;display:block}.noticeBody{padding:23px 24px 19px}.noticeBadge{display:inline-block;border:1px solid #000;border-radius:30px;padding:5px 9px;font-size:10px;font-weight:800;line-height:1;letter-spacing:.1px}.noticeBadge:before{content:"♡";margin-right:5px;font-size:12px}.title{font-size:19px;line-height:1.5;font-weight:900;letter-spacing:-.5px;margin:13px 0 10px;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}.preview{font-size:13px;line-height:1.85;margin:0 0 22px;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}.meta{display:flex;align-items:center;gap:10px;font-size:10px;font-weight:700;margin-top:19px}.meta time{font-weight:400}.cardArrow{margin-left:auto;display:grid;place-items:center;width:27px;height:27px;border:1px solid #000;border-radius:50%;font-size:16px}#noticeMore{display:block;margin:34px auto 0;padding:12px 28px;border:1.5px solid #000;background:#fff;color:#000;border-radius:24px;box-shadow:2px 3px 0 #000;font:inherit;font-size:12px;font-weight:800;cursor:pointer}#noticeMore:hover{transform:translateY(-2px)}#noticeMore[hidden]{display:none}#noticeMore:disabled{cursor:wait}@media(prefers-reduced-motion:reduce){.noticeCard{transition:none}.noticeCard:hover,#noticeMore:hover{transform:none}}@media(max-width:620px){main{margin:30px auto 50px;padding:0 18px}#noticeList{grid-template-columns:1fr;gap:22px}.noticeHeader{margin-bottom:25px}.noticeHeader h1{font-size:24px}.noticeBody{padding:20px}.headerIcon{width:47px;height:47px;font-size:26px}}
+
+/* Soft stationery colors, scoped to the notice page. */
+body{background:#fcf8ff;color:#493950}
+.headerIcon{background:#f2e6ff;border-color:#e1ccef;color:#ae85ce;box-shadow:3px 3px 0 #ead7f6}
+.headerSpark{color:#d4b0e8}
+.noticeHeader h1{color:#594166}
+.noticeCard{border:1px solid #e9def0;background:#fff;box-shadow:0 4px 16px #a183b017}
+.noticeCard:hover{border-color:#d1b5e3;box-shadow:0 9px 25px #a183b028}
+.noticeCard:focus-visible{outline-color:#b895d1}
+.noticePhoto{border-bottom:1px solid #f0e7f5;background:#f6effb}
+.noticeBadge{border-color:#e4d0f3;background:#f5ecff;color:#9571b5}
+.noticeBadge:before{content:none}
+#noticeList li:nth-child(3n+2) .noticeBadge{background:#fff0e8;border-color:#f3d9cc;color:#bd8976}
+#noticeList li:nth-child(3n+3) .noticeBadge{background:#eaf7f2;border-color:#d0e9de;color:#6a9d88}
+.title{color:#493950}.preview{color:#88788e}.meta{color:#ac9caf}
+.cardArrow{border-color:#e9ddf1;background:#faf5ff;color:#ae8cc4}
+#noticeMore{border-color:#dec9ef;background:#f2e6ff;color:#8c68a9;box-shadow:0 3px 12px #ac8bb31a}
+#noticeStatus{border-color:#dfcdec;color:#a38ab1}
 </style></head><body>
 <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
 <main><header class="noticeHeader"><span class="headerIcon" aria-hidden="true">♡</span><h1>공지</h1><span class="headerSpark" aria-hidden="true">✦</span></header>

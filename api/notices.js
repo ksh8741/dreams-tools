@@ -3,7 +3,7 @@ const HOSTS=['https://api-channel.sooplive.com'];
 function safeImage(value){
  try{const u=new URL(value);return u.protocol==='https:' && ['sooplive.com','sooplive.co.kr','afreecatv.com'].some(host=>u.hostname===host||u.hostname.endsWith('.'+host))?u.href:null}catch(_){return null}
 }
-function normalize(payload){
+function normalize(payload,channelNickname){
  const raw=Array.isArray(payload.contents)?[...payload.contents,...(Array.isArray(payload.noticeData)?payload.noticeData:[])]:null;
  if(!raw)throw new Error('Unexpected SOOP response');
  return [...new Map(raw.filter(row=>Number(row.bbsNo)===41833817 && Number(row.authNo)===101).map(row=>[String(row.titleNo),row])).values()].map(row=>{
@@ -15,7 +15,7 @@ function normalize(payload){
   const thumbnail=(Array.isArray(row.photos)?row.photos:[]).map(photo=>safeImage(photo.url)).find(Boolean)||null;
   const body=String(row.content?.content??'');
   const photos=(Array.isArray(row.photos)?row.photos:[]).map(photo=>safeImage(photo.url)).filter(Boolean);
-  return {id,title,summary,thumbnail,body,photos,date:String(row.regDate??''),author:String(row.userNick??''),url:'https://www.sooplive.com/station/tjgpdus97/post/'+id};
+  return {id,title,summary,thumbnail,body,photos,date:String(row.regDate??''),author:String(row.userId==='tjgpdus97'&&channelNickname?channelNickname:row.userNick??''),url:'https://www.sooplive.com/station/tjgpdus97/post/'+id};
  }).filter(Boolean).sort((a,b)=>Number(b.id)-Number(a.id));
 }
 async function handler(req,res){
@@ -24,14 +24,16 @@ async function handler(req,res){
  if(!Number.isInteger(page)||page<1||page>100)return res.status(400).json({error:'Invalid page'});
  for(const host of HOSTS){
   try{
+   const nicknameRequest=fetch(host+'/v1.1/channel/tjgpdus97/station',{headers:{Accept:'application/json','User-Agent':'Mozilla/5.0',Referer:BOARD},signal:AbortSignal.timeout(12000),redirect:'error'})
+    .then(async response=>{if(!response.ok)return '';const profile=await response.json();return String(profile.station?.userNick||'')}).catch(()=>'');
    const response=await fetch(host+'/v1.1/channel/tjgpdus97/board?bbsNo=41833817&perPage=20&page='+page+'&field=title,contents,user_nick,user_id,hashtags',{
     headers:{Accept:'application/json','User-Agent':'Mozilla/5.0',Referer:BOARD},
     signal:AbortSignal.timeout(7000),redirect:'error'
    });
    if(!response.ok)throw new Error('SOOP '+response.status);
-   const payload=await response.json(),posts=normalize(payload);
+   const payload=await response.json(),channelNickname=await nicknameRequest,posts=normalize(payload,channelNickname);
    res.setHeader('Cache-Control','public, max-age=0, s-maxage=20, stale-while-revalidate=30');
-   return res.status(200).json({posts,page,hasMore:Number(payload.meta?.totalPages)>page,boardUrl:BOARD});
+   return res.status(200).json({posts,channelNickname,page,hasMore:Number(payload.meta?.totalPages)>page,boardUrl:BOARD});
   }catch(error){console.error('[notices]',host,error.message)}
  }
  res.setHeader('Cache-Control','no-store');
