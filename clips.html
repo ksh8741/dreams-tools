@@ -15,89 +15,64 @@
 .clipSeek{position:absolute;inset:0;z-index:1;width:100%;height:14px;margin:0;opacity:0;cursor:pointer;touch-action:none}
 .clipProgress:focus-within{outline:1px solid #fff;outline-offset:2px}
 @media(max-width:640px){#clipFeed{height:calc(100dvh - 58px)}.clipToolbar{padding:6px 8px;gap:8px;margin-top:12px;width:max-content;max-width:100%}.clipToolbar .clipHeading{gap:8px}.clipToolbar .clipCounter{display:none}.clipStage{max-height:calc(100dvh - 255px)}}
+.clipVolume{display:flex;align-items:center;gap:7px;font-size:11px;color:#bbb}.clipVolume input{width:85px;accent-color:#fff;cursor:pointer}.clipVolume span{min-width:32px;font-variant-numeric:tabular-nums}.clipToolbar{flex-wrap:wrap;justify-content:flex-end;max-width:100%}.clipMeta{flex-wrap:wrap}.clipPlayer{object-fit:contain}.clipStage{max-height:calc(100dvh - 255px)}
 </style></head><body>
 <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
-<div id="clipToolbar" class="clipToolbar" hidden><div class="clipHeading"><div class="clipSort" role="group" aria-label="클립 정렬"><button type="button" data-clip-sort="popular" aria-pressed="true">인기순</button><button type="button" data-clip-sort="reg_date" aria-pressed="false">최신순</button></div><button id="clipAutoplay" type="button" role="switch" aria-checked="false" aria-label="영상 종료 후 다음 클립 자동재생"><span>자동재생</span><span class="autoState">OFF</span></button></div><span id="clipCounter" class="clipCounter"></span></div>
+<div id="clipToolbar" class="clipToolbar" hidden><div class="clipHeading"><div class="clipSort" role="group" aria-label="클립 정렬"><button type="button" data-clip-sort="popular" aria-pressed="true">인기순</button><button type="button" data-clip-sort="reg_date" aria-pressed="false">최신순</button></div><button id="clipAutoplay" type="button" role="switch" aria-checked="false" aria-label="영상 종료 후 다음 클립 자동재생"><span>자동재생</span><span class="autoState">OFF</span></button></div><label class="clipVolume">소리 <input id="clipVolume" type="range" min="0" max="100" step="1" aria-label="소리 크기"><span id="clipVolumeValue">100%</span></label></div>
 <main id="clipFeed" tabindex="0" aria-label="클립 피드"></main>
 <div class="clipNav"><button id="clipPrev" type="button" aria-label="이전 클립">↑</button><button id="clipNext" type="button" aria-label="다음 클립">↓</button></div>
 <p id="clipStatus" role="status">클립을 불러오는 중입니다.</p>
+<script src="vendor/hls.min.js"></script>
 <script>
 (()=>{
 'use strict';
-const feed=document.getElementById('clipFeed'),status=document.getElementById('clipStatus'),counter=document.getElementById('clipCounter');
-const prev=document.getElementById('clipPrev'),next=document.getElementById('clipNext'),ORIGIN='https://vod.sooplive.com';
-let clips=[],page=0,hasMore=true,loading=false,active=-1,frame=null,ready=false,currentTime=0,raf=0,loadedVideoId='',readyVideoId='',sort='popular',generation=0,requestController=null;
+const feed=document.getElementById('clipFeed'),status=document.getElementById('clipStatus');
+const prev=document.getElementById('clipPrev'),next=document.getElementById('clipNext');
 const autoButton=document.getElementById('clipAutoplay'),toolbar=document.getElementById('clipToolbar');
-let autoNext=false,endedForId='',loadPromise=null,seekDragging=false;
-try{autoNext=localStorage.getItem('yoning_clips_autoplay')==='1'}catch(_){}
-function updateAutoplay(){
- if(!autoButton)return;
- autoButton.setAttribute('aria-checked',String(autoNext));
- autoButton.querySelector('.autoState').textContent=autoNext?'ON':'OFF';
-}
-if(autoButton)autoButton.onclick=()=>{
- autoNext=!autoNext;
- try{localStorage.setItem('yoning_clips_autoplay',autoNext?'1':'0')}catch(_){}
- updateAutoplay();
-};
-updateAutoplay();
+const volumeInput=document.getElementById('clipVolume'),volumeText=document.getElementById('clipVolumeValue');
+let clips=[],page=0,hasMore=true,loading=false,active=-1,raf=0,sort='popular',generation=0,requestController=null;
+let autoNext=false,endedForId='',loadPromise=null,seekDragging=false,video=null,hls=null,mediaController=null,mediaGeneration=0,savedVolume=1;
+try{autoNext=localStorage.getItem('yoning_clips_autoplay')==='1';const v=localStorage.getItem('yoning_clips_volume');if(v!==null&&Number.isFinite(Number(v)))savedVolume=Math.max(0,Math.min(1,Number(v)))}catch(_){}
+function updateAutoplay(){autoButton.setAttribute('aria-checked',String(autoNext));autoButton.querySelector('.autoState').textContent=autoNext?'ON':'OFF'}
+autoButton.onclick=()=>{autoNext=!autoNext;try{localStorage.setItem('yoning_clips_autoplay',autoNext?'1':'0')}catch(_){}updateAutoplay()};updateAutoplay();
+function updateVolume(){volumeInput.value=String(Math.round(savedVolume*100));volumeText.textContent=volumeInput.value+'%'}
+volumeInput.oninput=()=>{savedVolume=Math.max(0,Math.min(1,Number(volumeInput.value)/100));if(video){video.volume=savedVolume;video.muted=savedVolume===0}try{localStorage.setItem('yoning_clips_volume',String(savedVolume))}catch(_){}updateVolume()};updateVolume();
 function say(text){status.textContent=text;status.hidden=!text}
 function valid(c){return c&&/^\d+$/.test(c.id)&&typeof c.title==='string'}
-function command(data){if(frame?.contentWindow)frame.contentWindow.postMessage(data,ORIGIN)}
-let pendingPlaybackId='',playTimers=[];
-function cancelPlaybackStart(){
- pendingPlaybackId='';playTimers.forEach(clearTimeout);playTimers=[];
-}
-function requestPlaybackStart(id){
- if(pendingPlaybackId!==id||clips[active]?.id!==id||readyVideoId!==id||document.hidden)return;
- command({cmd:'Pplay'});
-}
-function armPlaybackStart(id){
- cancelPlaybackStart();if(document.hidden)return;
- pendingPlaybackId=id;
- // Allow the new route's Pload state to settle before asking it to play.
- for(const delay of [120,700,1800])playTimers.push(setTimeout(()=>requestPlaybackStart(id),delay));
-}
-function configure(){
- const clip=clips[active];if(!ready||!clip||loadedVideoId===clip.id)return;
- loadedVideoId=clip.id;
- command({cmd:'Pload',id:clip.id,no:null,mutePlay:false,showChat:false,autoPlay:!document.hidden,isAdShow:true,isAdPause:false,isViewCnt:true,isRecommendShow:false,isEndRecommendShow:false,showQualityBox:true,startVideoSeconds:currentTime,endVideoSeconds:0,fromApi:1,apiKey:''});
-}
+function duration(){return video&&Number.isFinite(video.duration)&&video.duration>0?video.duration:Number(clips[active]?.duration)||0}
 function updateProgress(){
- const bar=feed.children[active]?.querySelector('.clipProgress');
- if(!bar)return;
- const duration=Number(clips[active]?.duration)||0;
- const ratio=duration>0?Math.max(0,Math.min(1,currentTime/duration)):0;
- bar.querySelector('.clipProgressFill').style.transform='scaleX('+ratio+')';
- bar.setAttribute('aria-valuenow',String(Math.round(ratio*100)));
+ const bar=feed.children[active]?.querySelector('.clipProgress');if(!bar)return;
+ const ratio=duration()>0?Math.max(0,Math.min(1,(video?.currentTime||0)/duration())):0;
+ bar.querySelector('.clipProgressFill').style.transform='scaleX('+ratio+')';bar.setAttribute('aria-valuenow',String(Math.round(ratio*100)));
  const seek=bar.querySelector('.clipSeek');if(seek&&!seekDragging)seek.value=String(Math.round(ratio*1000));
 }
-function positionPlayer(){
- if(!frame||active<0||document.fullscreenElement)return;
- const stage=feed.children[active]?.querySelector('.clipStage');if(!stage)return;
- const rect=stage.getBoundingClientRect(),bounds=feed.getBoundingClientRect();
- Object.assign(frame.style,{position:'fixed',inset:'auto',left:rect.left+'px',top:rect.top+'px',width:rect.width+'px',height:rect.height+'px',zIndex:'2',borderRadius:'12px 12px 0 0',
-  clipPath:'inset('+Math.max(0,bounds.top-rect.top)+'px 0 '+Math.max(0,rect.bottom-bounds.bottom)+'px 0)'});
-
-
-}
-function activate(index){
- if(index<0||index>=clips.length)return;
- if(index===active&&frame){positionPlayer();return}
- // Each clip gets a fresh SOOP document so video, audio and controls agree.
- cancelPlaybackStart();active=index;ready=false;loadedVideoId='';readyVideoId='';endedForId='';currentTime=0;seekDragging=false;updateProgress();
- const clip=clips[index];
- if(!frame){
-  frame=document.createElement('iframe');frame.className='clipPlayer';frame.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';frame.allowFullscreen=true;
-  document.body.appendChild(frame);
- }
- frame.src=ORIGIN+'/player/'+clip.id+'/embed?fromApi=1';
- if(toolbar){feed.children[index].querySelector('.clipMeta').appendChild(toolbar);toolbar.hidden=false}
- frame.hidden=false;frame.title=clip.title;positionPlayer();
- prev.disabled=index===0;next.disabled=index===clips.length-1&&!hasMore;counter.textContent=(index+1)+' / '+clips.length+(hasMore?' +':'');
+function stopVideo(){mediaGeneration++;mediaController?.abort();mediaController=null;if(video){video.pause();video.removeAttribute('src');video.load();video.remove();video=null}if(hls){hls.destroy();hls=null}}
+async function activate(index){
+ if(index<0||index>=clips.length||index===active&&video)return;
+ stopVideo();active=index;seekDragging=false;endedForId='';const clip=clips[index],token=mediaGeneration;
+ const stage=feed.children[index].querySelector('.clipStage');
+ stage.parentElement.querySelector('.clipMeta').appendChild(toolbar);toolbar.hidden=false;
+ const player=document.createElement('video');video=player;player.className='clipPlayer';player.controls=true;player.playsInline=true;player.preload='auto';player.poster=clip.thumbnail||'';player.volume=savedVolume;player.muted=savedVolume===0;stage.appendChild(player);
+ prev.disabled=index===0;next.disabled=index===clips.length-1&&!hasMore;
+ player.addEventListener('timeupdate',()=>{if(video===player&&!seekDragging)updateProgress()});
+ player.addEventListener('volumechange',()=>{if(video!==player)return;savedVolume=player.muted?0:player.volume;try{localStorage.setItem('yoning_clips_volume',String(savedVolume))}catch(_){}updateVolume()});
+ player.addEventListener('ended',()=>{if(video===player&&autoNext&&!document.hidden&&endedForId!==clip.id){endedForId=clip.id;move(1,true)}});
+ player.addEventListener('loadedmetadata',()=>{if(video===player)updateProgress()});
+ const play=()=>{if(video!==player||document.hidden)return;player.play().catch(()=>{/* Native play control remains available if the browser requires a gesture. */})};
+ const controller=new AbortController();mediaController=controller;say('영상을 불러오는 중입니다.');
+ try{
+  const response=await fetch('/api/clip-media?id='+encodeURIComponent(clip.id),{signal:AbortSignal.any([controller.signal,AbortSignal.timeout(20000)])});
+  if(!response.ok)throw Error('Media HTTP '+response.status);const media=await response.json();if(token!==mediaGeneration||video!==player)return;
+  const url=new URL(media.url);if(url.protocol!=='https:'||!url.hostname.endsWith('.sooplive.com'))throw Error('Invalid media');
+  if(player.canPlayType('application/vnd.apple.mpegurl')){player.src=url.href;player.addEventListener('loadeddata',play,{once:true})}
+  else if(window.Hls?.isSupported()){
+   const engine=new Hls({maxBufferLength:20,capLevelToPlayerSize:true});hls=engine;engine.loadSource(url.href);engine.attachMedia(player);engine.on(Hls.Events.MANIFEST_PARSED,play);
+   engine.on(Hls.Events.ERROR,(_,data)=>{if(data.fatal&&video===player)say('영상을 재생하지 못했습니다. 다른 클립으로 이동해주세요.')});
+  }else throw Error('HLS unsupported');
+  say('');
+ }catch(error){if(token===mediaGeneration&&!controller.signal.aborted)say('영상을 불러오지 못했습니다. 다른 클립으로 이동해주세요.')}
  if(index>=clips.length-4)loadMore();
 }
-
 async function move(direction,automatic=false){
  const moveGeneration=generation,fromId=clips[active]?.id;
  let index=active+direction;
@@ -118,9 +93,8 @@ function renderNew(items){
   seek.onpointerdown=()=>{if(clips[active]?.id===clip.id)seekDragging=true};
   const finishSeek=()=>{seekDragging=false};seek.onpointerup=finishSeek;seek.onpointercancel=finishSeek;seek.onblur=finishSeek;
   seek.oninput=()=>{
-   if(clips[active]?.id!==clip.id||!ready||readyVideoId!==clip.id)return;
-   currentTime=Math.max(0,Math.min(1,Number(seek.value)/1000))*Number(clip.duration||0);
-   updateProgress();command({cmd:'PseekTo',seconds:{time:currentTime,seekType:'timelink'}});
+   if(clips[active]?.id!==clip.id||!video||video.readyState<1)return;
+   video.currentTime=Math.max(0,Math.min(1,Number(seek.value)/1000))*duration();updateProgress();
   };
   progress.appendChild(seek);
   const meta=document.createElement('div');meta.className='clipMeta';const info=document.createElement('div');info.className='clipInfo';
@@ -140,7 +114,7 @@ async function fetchNextPage(){
   const ids=new Set(clips.map(c=>c.id)),added=data.clips.filter(c=>{if(ids.has(c.id))return false;ids.add(c.id);return true});clips.push(...added);page=data.page;hasMore=!!data.hasMore;
   renderNew(added);say(clips.length?'':'등록된 클립이 없습니다.');
   if(active<0&&clips.length)activate(0);
-  if(active>=0){next.disabled=active===clips.length-1&&!hasMore;counter.textContent=(active+1)+' / '+clips.length+(hasMore?' +':'')}
+  if(active>=0){next.disabled=active===clips.length-1&&!hasMore}
  }catch(_){if(requestGeneration!==generation)return;say('클립을 불러오지 못했습니다. 눌러서 다시 시도해주세요.');status.onclick=()=>{say('클립을 불러오는 중입니다.');loadMore()}}
  finally{if(requestGeneration===generation){loading=false;if(requestController===controller)requestController=null}}
 }
@@ -157,10 +131,9 @@ function updateSortButtons(){
 }
 function changeSort(value){
  if(!['popular','reg_date'].includes(value)||value===sort)return;
- cancelPlaybackStart();generation++;requestController?.abort();requestController=null;loading=false;loadPromise=null;sort=value;
- command({cmd:'Ppause'});if(frame)frame.hidden=true;
- clips=[];page=0;hasMore=true;active=-1;currentTime=0;loadedVideoId='';
- feed.replaceChildren();feed.scrollTop=0;counter.textContent='';prev.disabled=true;next.disabled=true;
+ stopVideo();generation++;requestController?.abort();requestController=null;loading=false;loadPromise=null;sort=value;
+ clips=[];page=0;hasMore=true;active=-1;
+ document.body.appendChild(toolbar);toolbar.hidden=true;feed.replaceChildren();feed.scrollTop=0;prev.disabled=true;next.disabled=true;
  updateSortButtons();say('클립을 불러오는 중입니다.');loadMore();
 }
 for(const button of document.querySelectorAll('[data-clip-sort]'))button.onclick=()=>changeSort(button.dataset.clipSort);
@@ -169,38 +142,13 @@ feed.addEventListener('scroll',()=>{
  if(raf)return;raf=requestAnimationFrame(()=>{raf=0;if(feed.clientHeight)activate(Math.max(0,Math.min(clips.length-1,Math.round(feed.scrollTop/feed.clientHeight))))});
 },{passive:true});
 prev.onclick=()=>move(-1);next.onclick=()=>move(1);
-window.addEventListener('resize',positionPlayer);
 window.addEventListener('keydown',event=>{
- if(['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName)||event.altKey||event.ctrlKey||event.metaKey)return;
+ if(['INPUT','TEXTAREA','SELECT','VIDEO'].includes(event.target.tagName)||event.altKey||event.ctrlKey||event.metaKey)return;
  if(['ArrowDown','PageDown','ArrowUp','PageUp'].includes(event.key)){event.preventDefault();move(['ArrowDown','PageDown'].includes(event.key)?1:-1)}
 });
-window.addEventListener('message',event=>{
- if(event.origin!==ORIGIN||event.source!==frame?.contentWindow||!event.data||typeof event.data!=='object')return;
- const data=event.data;
- if(data.cmd==='PonReady'){
-  const id=String(data.id??'');
-  if(id!==clips[active]?.id||readyVideoId===id)return;
-  // SOOP navigates internally on the first Pload for another ID.
-  // That new route sends PonReady again and needs its own initial Pload.
-  ready=true;readyVideoId=id;loadedVideoId='';configure();armPlaybackStart(id);
- }
- if(data.cmd==='PupdateMediaEvent'){
-  if(data.id!==undefined&&String(data.id)!==clips[active]?.id)return;
-  const media=data.event||{};
-  if(media.type==='play')cancelPlaybackStart();
-  if(media.type==='buffer'&&pendingPlaybackId)requestPlaybackStart(pendingPlaybackId);
-  if(media.type==='timeUpdate'&&Number.isFinite(media.currentTime)&&!seekDragging){currentTime=media.currentTime;updateProgress()}
-  if(media.type==='end'){
-   cancelPlaybackStart();
-   currentTime=Number(clips[active]?.duration)||0;updateProgress();
-   const id=clips[active]?.id;
-   if(autoNext&&!document.hidden&&id&&endedForId!==id){endedForId=id;move(1,true)}
-  }
- }
-});
-document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelPlaybackStart();command({cmd:'Ppause'})}});
-window.addEventListener('pagehide',()=>{cancelPlaybackStart();if(frame){frame.remove();frame=null;ready=false;loadedVideoId=''}});
-window.addEventListener('pageshow',event=>{if(event.persisted&&active>=0&&!frame)activate(active)});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)video?.pause()});
+window.addEventListener('pagehide',stopVideo);
+window.addEventListener('pageshow',event=>{if(event.persisted&&active>=0&&!video)activate(active)});
 loadMore();
 })();
 
