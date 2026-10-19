@@ -15,7 +15,7 @@ function normalize(payload,channelNickname){
   const thumbnail=(Array.isArray(row.photos)?row.photos:[]).map(photo=>safeImage(photo.url)).find(Boolean)||null;
   const body=String(row.content?.content??'');
   const photos=(Array.isArray(row.photos)?row.photos:[]).map(photo=>safeImage(photo.url)).filter(Boolean);
-  return {id,title,summary,thumbnail,body,photos,date:String(row.regDate??''),author:String(row.userId==='tjgpdus97'&&channelNickname?channelNickname:row.userNick??''),url:'https://www.sooplive.com/station/tjgpdus97/post/'+id};
+  return {id,title,summary,thumbnail,body,photos,avatar:safeImage(row.profileImage),date:String(row.regDate??''),author:String(row.userId==='tjgpdus97'&&channelNickname?channelNickname:row.userNick??''),url:'https://www.sooplive.com/station/tjgpdus97/post/'+id};
  }).filter(Boolean).sort((a,b)=>Number(b.id)-Number(a.id));
 }
 async function handler(req,res){
