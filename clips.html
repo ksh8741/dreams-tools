@@ -42,17 +42,19 @@ function updateAutoplay(){autoButton.setAttribute('aria-checked',String(autoNext
 autoButton.onclick=()=>{autoNext=!autoNext;try{localStorage.setItem('yoning_clips_autoplay',autoNext?'1':'0')}catch(_){}updateAutoplay()};updateAutoplay();
 function say(text){status.textContent=text;status.hidden=!text}
 function valid(c){return c&&/^\d+$/.test(c.id)&&typeof c.title==='string'}
+function isGift(c){return /개\s*선물/.test(c.title)}
 const RESUME_KEY='yoning_clips_resume_v1';
 function saveResume(time=null,completed=false){
  if(active<0||!clips[active]||time===null&&!resumeReady)return;
- try{localStorage.setItem(RESUME_KEY,JSON.stringify({version:1,sort,seed:randomSeed,totalPages:randomPages,page,hasMore,clips:clips.slice(active),time:Math.max(0,Number(time===null?video?.currentTime:time)||0),completed}))}catch(_){}
+ try{localStorage.setItem(RESUME_KEY,JSON.stringify({version:1,randomVersion:2,sort,seed:randomSeed,totalPages:randomPages,page,hasMore,clips:clips.slice(active),time:Math.max(0,Number(time===null?video?.currentTime:time)||0),completed}))}catch(_){}
 }
 function restoreSession(){
  let saved;try{saved=JSON.parse(localStorage.getItem(RESUME_KEY)||'null')}catch(_){}
- if(saved?.version===1&&['popular','reg_date','random'].includes(saved.sort)&&Array.isArray(saved.clips)&&saved.clips.length&&saved.clips.every(valid)&&Number.isInteger(saved.page)&&saved.page>=1&&saved.page<=1000&&/^[a-f0-9]{1,8}$/.test(saved.seed)){
+ if(saved?.version===1&&['popular','reg_date','random'].includes(saved.sort)&&Array.isArray(saved.clips)&&saved.clips.length&&saved.clips.every(valid)&&Number.isInteger(saved.page)&&saved.page>=0&&saved.page<=25000&&/^[a-f0-9]{1,8}$/.test(saved.seed)){
   sort=saved.sort;randomSeed=saved.seed;randomPages=Number(saved.totalPages)||0;page=saved.page;hasMore=!!saved.hasMore;
-  clips=saved.completed?saved.clips.slice(1):saved.clips;
-  if(clips.length){renderNew(clips);updateSortButtons();activate(0,saved.completed?0:Math.max(0,Number(saved.time)||0));return}
+  clips=(saved.completed?saved.clips.slice(1):saved.clips).filter(c=>!isGift(c));
+  if(sort==='random'&&saved.randomVersion!==2){clips=clips.slice(0,1);page=0;randomPages=0;hasMore=true}
+  if(clips.length){renderNew(clips);updateSortButtons();activate(0,saved.completed||clips[0].id!==saved.clips[0].id?0:Math.max(0,Number(saved.time)||0));return}
   if(hasMore){updateSortButtons();loadMore();return}
   page=0;hasMore=true;
  }
@@ -122,18 +124,18 @@ function renderNew(items){
 async function fetchNextPage(){
  if(loading||!hasMore)return;loading=true;
  const requestGeneration=generation,requestSort=sort;
- const controller=new AbortController();requestController=controller;
+ const controller=new AbortController();requestController=controller;let emptyBatch=false;
  try{
-  const response=await fetch('/api/clips?page='+(page+1)+'&sort='+requestSort+(requestSort==='random'?'&seed='+randomSeed+(randomPages?'&pages='+randomPages:''):''),{signal:AbortSignal.any([controller.signal,AbortSignal.timeout(18000)])});
+  const response=await fetch('/api/clips?page='+(page+1)+'&sort='+requestSort+(requestSort==='random'?'&seed='+randomSeed+(randomPages?'&pages='+randomPages:''):''),{signal:AbortSignal.any([controller.signal,AbortSignal.timeout(30000)])});
   if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();
   if(requestGeneration!==generation)return;
   if(!Array.isArray(data.clips)||!data.clips.every(valid))throw Error('Invalid clip response');
-  const ids=new Set(clips.map(c=>c.id)),added=data.clips.filter(c=>{if(ids.has(c.id))return false;ids.add(c.id);return true});clips.push(...added);page=data.page;hasMore=!!data.hasMore;if(requestSort==='random')randomPages=Number(data.totalPages)||randomPages;
-  renderNew(added);say(clips.length?'':'등록된 클립이 없습니다.');
+  const ids=new Set(clips.map(c=>c.id)),added=data.clips.filter(c=>{if(isGift(c)||ids.has(c.id))return false;ids.add(c.id);return true});clips.push(...added);page=data.page;hasMore=!!data.hasMore;if(requestSort==='random')randomPages=Number(data.totalPages)||randomPages;
+  emptyBatch=!added.length&&hasMore;renderNew(added);say(clips.length||hasMore?'':'등록된 클립이 없습니다.');
   if(active<0&&clips.length)activate(0);
   if(active>=0){next.disabled=active===clips.length-1&&!hasMore;renderUpcoming();saveResume()}
  }catch(_){if(requestGeneration!==generation)return;say('클립을 불러오지 못했습니다. 눌러서 다시 시도해주세요.');status.onclick=()=>{say('');loadMore()}}
- finally{if(requestGeneration===generation){loading=false;if(requestController===controller)requestController=null}}
+ finally{if(requestGeneration===generation){loading=false;if(requestController===controller)requestController=null;if(emptyBatch)setTimeout(()=>{if(requestGeneration===generation)loadMore()},0)}}
 }
 function loadMore(){
  if(loadPromise)return loadPromise;
