@@ -1,5 +1,8 @@
 const BOARD='https://www.sooplive.com/station/tjgpdus97/board/41833817';
 const HOSTS=['https://api-channel.sooplive.com'];
+function safeImage(value){
+ try{const u=new URL(value);return u.protocol==='https:' && ['sooplive.com','sooplive.co.kr','afreecatv.com'].some(host=>u.hostname===host||u.hostname.endsWith('.'+host))?u.href:null}catch(_){return null}
+}
 function normalize(payload){
  const raw=Array.isArray(payload.contents)?[...payload.contents,...(Array.isArray(payload.noticeData)?payload.noticeData:[])]:null;
  if(!raw)throw new Error('Unexpected SOOP response');
@@ -8,7 +11,11 @@ function normalize(payload){
   if(!/^\d+$/.test(id))return null;
   const title=String(row.titleName??'').trim();
   if(!title)return null;
-  return {id,title,date:String(row.regDate??''),author:String(row.userNick??''),url:'https://www.sooplive.com/station/tjgpdus97/post/'+id};
+  const summary=String(row.content?.textContent??row.content?.summary??'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,280);
+  const thumbnail=(Array.isArray(row.photos)?row.photos:[]).map(photo=>safeImage(photo.url)).find(Boolean)||null;
+  const body=String(row.content?.content??'');
+  const photos=(Array.isArray(row.photos)?row.photos:[]).map(photo=>safeImage(photo.url)).filter(Boolean);
+  return {id,title,summary,thumbnail,body,photos,date:String(row.regDate??''),author:String(row.userNick??''),url:'https://www.sooplive.com/station/tjgpdus97/post/'+id};
  }).filter(Boolean).sort((a,b)=>Number(b.id)-Number(a.id));
 }
 async function handler(req,res){

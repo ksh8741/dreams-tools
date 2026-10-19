@@ -17,17 +17,96 @@ function toast(){
  const top=document.createElement('div');Object.assign(top.style,{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'10px'});
  const label=document.createElement('strong');label.textContent=p.count>1?'새 공지 '+p.count+'개':'새 공지가 등록되었습니다';label.style.fontSize='12px';
  const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','공지 알림 닫기');Object.assign(close.style,{border:'0',background:'#fff',color:'#000',fontSize:'24px',cursor:'pointer',lineHeight:'1',padding:'0 0 0 10px'});close.onclick=closeToast;top.append(label,close);
- const link=document.createElement('a');link.href=p.url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=p.title;Object.assign(link.style,{display:'block',fontSize:'15px',fontWeight:'700',lineHeight:'1.5',color:'#000',overflowWrap:'anywhere'});
+ const link=document.createElement('a');link.href=p.url;link.onclick=event=>{event.preventDefault();openNotice(p)};link.textContent=p.title;Object.assign(link.style,{display:'block',fontSize:'15px',fontWeight:'700',lineHeight:'1.5',color:'#000',overflowWrap:'anywhere'});
  box.append(top,link);document.body.appendChild(box);
+}
+function isNoticeImage(value){
+ try{const u=new URL(value);return u.protocol==='https:'&&['sooplive.com','sooplive.co.kr','afreecatv.com'].some(host=>u.hostname===host||u.hostname.endsWith('.'+host))}catch(_){return false}
+}
+function openNotice(post){
+ let dialog=document.getElementById('noticeDetail');
+ if(!dialog){
+  const style=document.createElement('style');style.textContent=`
+#noticeDetail{box-sizing:border-box;width:min(700px,calc(100vw - 28px));max-height:86vh;padding:0;border:1.5px solid #000;border-radius:25px;background:#fff;color:#000;box-shadow:5px 6px 0 #000;font-family:"Nanum Square Round","Noto Sans KR",Arial,sans-serif;overflow:auto}
+#noticeDetail::backdrop{background:rgba(0,0,0,.4)}
+#noticeDetail .detailTop{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;background:#fff;padding:15px 23px;border-bottom:1px solid #000;z-index:1}
+#noticeDetail .detailLabel{font-size:12px;font-weight:800}
+#noticeDetail .detailClose{border:1px solid #000;border-radius:50%;width:30px;height:30px;background:#fff;color:#000;font-size:22px;cursor:pointer;display:grid;place-items:center;line-height:1}
+#noticeDetail .detailContent{padding:26px 28px 32px}
+#noticeDetail h2{font-size:22px;line-height:1.5;margin:0 0 12px;overflow-wrap:anywhere}
+#noticeDetail .detailMeta{font-size:11px;margin-bottom:26px}
+#noticeDetail .detailBody{font-size:15px;line-height:1.9;overflow-wrap:anywhere}
+#noticeDetail .detailBody p{margin:0 0 12px}
+#noticeDetail .detailBody img{display:block;max-width:100%;height:auto;margin:18px auto;border-radius:12px}
+#noticeDetail .detailBody a{color:#000;text-decoration:underline}
+#noticeDetail .detailBody blockquote{margin:12px 0;padding-left:16px;border-left:2px solid #000}
+@media(max-width:500px){#noticeDetail .detailContent{padding:22px 20px}#noticeDetail h2{font-size:19px}}
+`;document.head.appendChild(style);
+  dialog=document.createElement('dialog');dialog.id='noticeDetail';dialog.setAttribute('aria-labelledby','noticeDetailTitle');
+  dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()}});
+  document.body.appendChild(dialog);
+ }
+ dialog.replaceChildren();
+ const top=document.createElement('div');top.className='detailTop';
+ const label=document.createElement('span');label.className='detailLabel';label.textContent='♡ 요닝의 소식';
+ const close=document.createElement('button');close.type='button';close.className='detailClose';close.textContent='×';close.setAttribute('aria-label','공지 닫기');close.onclick=()=>dialog.close();top.append(label,close);
+ const content=document.createElement('article');content.className='detailContent';
+ const title=document.createElement('h2');title.id='noticeDetailTitle';title.textContent=post.title;
+ const meta=document.createElement('div');meta.className='detailMeta';meta.textContent=[post.author,post.date].filter(Boolean).join(' · ');
+ const body=document.createElement('div');body.className='detailBody';
+ // Rebuild approved nodes rather than injecting third-party HTML.
+ const source=new DOMParser().parseFromString(String(post.body||''),'text/html');
+ const seen=new Set(),allowed=new Set(['P','BR','STRONG','B','EM','I','U','S','UL','OL','LI','BLOCKQUOTE','H2','H3']);
+ function copy(node,parent){
+  if(node.nodeType===3){parent.appendChild(document.createTextNode(node.textContent));return}
+  if(node.nodeType!==1||['SCRIPT','STYLE','IFRAME','OBJECT','EMBED','FORM','INPUT','BUTTON','SVG','MATH'].includes(node.tagName))return;
+  if(node.tagName==='IMG'){
+   const src=node.getAttribute('src');if(!isNoticeImage(src))return;
+   const image=document.createElement('img');image.src=src;image.alt=node.getAttribute('alt')||'';image.loading='lazy';image.referrerPolicy='no-referrer';image.onerror=()=>image.remove();seen.add(new URL(src).href);parent.appendChild(image);return;
+  }
+  let target=parent;
+  if(allowed.has(node.tagName)){target=document.createElement(node.tagName.toLowerCase());parent.appendChild(target)}
+  else if(node.tagName==='A'){
+   try{const u=new URL(node.getAttribute('href'));if(['https:','http:'].includes(u.protocol)){target=document.createElement('a');target.href=u.href;target.target='_blank';target.rel='noopener noreferrer';parent.appendChild(target)}}catch(_){}
+  }
+  for(const child of node.childNodes)copy(child,target);
+ }
+ for(const child of source.body.childNodes)copy(child,body);
+ if(!body.textContent.trim()&&!body.querySelector('img'))body.textContent=post.summary||'본문 내용이 없습니다.';
+ for(const src of Array.isArray(post.photos)?post.photos:[]){
+  if(!isNoticeImage(src)||seen.has(new URL(src).href))continue;
+  const image=document.createElement('img');image.src=src;image.alt='공지 사진';image.loading='lazy';image.referrerPolicy='no-referrer';image.onerror=()=>image.remove();body.appendChild(image);
+ }
+ content.append(title,meta,body);dialog.append(top,content);dialog.scrollTop=0;
+ if(!dialog.open)dialog.showModal();
 }
 function render(){
  if(!list)return;list.replaceChildren();
  for(const p of posts){
-  const li=document.createElement('li'),a=document.createElement('a'),title=document.createElement('div'),meta=document.createElement('div');
-  a.href=p.url;a.target='_blank';a.rel='noopener noreferrer';title.className='title';title.textContent=p.title;meta.className='meta';meta.textContent=[p.date,p.author].filter(Boolean).join(' · ');a.append(title,meta);li.appendChild(a);list.appendChild(li);
+  const li=document.createElement('li'),a=document.createElement('a'),body=document.createElement('div'),title=document.createElement('h2'),meta=document.createElement('div');
+  a.href='#notice-'+p.id;a.onclick=event=>{event.preventDefault();openNotice(p)};a.className='noticeCard';
+  if(p.thumbnail){
+   try{
+    const url=new URL(p.thumbnail);
+    if(url.protocol==='https:'&&['sooplive.com','sooplive.co.kr','afreecatv.com'].some(host=>url.hostname===host||url.hostname.endsWith('.'+host))){
+     const wrap=document.createElement('div'),img=document.createElement('img');wrap.className='noticePhoto';img.src=url.href;img.alt='';img.loading='lazy';img.decoding='async';img.referrerPolicy='no-referrer';img.onerror=()=>wrap.remove();wrap.appendChild(img);a.appendChild(wrap);
+    }
+   }catch(_){}
+  }
+  body.className='noticeBody';
+  const badge=document.createElement('span');badge.className='noticeBadge';badge.textContent='요닝의 소식';
+  title.className='title';title.textContent=p.title;
+  body.append(badge,title);
+  if(p.summary){const preview=document.createElement('p');preview.className='preview';preview.textContent=p.summary;body.appendChild(preview)}
+  meta.className='meta';
+  const date=document.createElement('time');date.textContent=String(p.date||'').slice(0,10).replaceAll('-','.');
+  const author=document.createElement('span');author.textContent=p.author||'요닝';
+  const arrow=document.createElement('span');arrow.className='cardArrow';arrow.textContent='↗';arrow.setAttribute('aria-hidden','true');
+  meta.append(author,date,arrow);body.appendChild(meta);a.appendChild(body);li.appendChild(a);list.appendChild(li);
  }
  if(moreButton)moreButton.hidden=!more;
 }
+
 async function refresh(append=false){
  if(busy)return;busy=true;
  const refreshButton=document.getElementById('noticeRefresh');
@@ -54,8 +133,8 @@ async function refresh(append=false){
   }else{
    const byId=new Map(posts.map(p=>[p.id,p]));incoming.forEach(p=>byId.set(p.id,p));posts=[...byId.values()].sort((a,b)=>Number(b.id)-Number(a.id));page=requestedPage;more=!!data.hasMore;
   }
-  render();if(status)status.textContent=posts.length?'최근 확인 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' · 30초마다 자동 갱신':'등록된 공지가 없습니다.';
- }catch(_){if(status)status.textContent='공지를 불러오지 못했습니다. 잠시 후 다시 시도하거나 SOOP 원문을 확인해주세요.'}
+  render();if(status){status.textContent=posts.length?'':'아직 등록된 공지가 없어요.';status.hidden=posts.length>0}
+ }catch(_){if(status){status.hidden=false;status.textContent='공지를 불러오지 못했어요. 잠시 후 다시 확인할게요.'}}
  finally{busy=false;if(refreshButton)refreshButton.disabled=false;if(moreButton)moreButton.disabled=false}
 }
 document.getElementById('noticeRefresh')?.addEventListener('click',()=>refresh());
