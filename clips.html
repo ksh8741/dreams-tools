@@ -1,12 +1,100 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>클립 · 요닝 방송도구함</title><style>
 *{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden;background:#101010;color:#fff;font-family:"Nanum Square Round","Noto Sans KR",Arial,sans-serif}.globalNavbarFrame{display:block;width:100%;height:58px;border:0}.clipHeader{height:52px;display:flex;align-items:center;justify-content:space-between;max-width:1120px;margin:auto;padding:0 24px}.clipHeader h1{font-size:17px;margin:0}.clipHeader span{font-size:11px;color:#aaa}#clipFeed{height:calc(100vh - 110px);height:calc(100dvh - 110px);overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior-y:contain;outline:none}#clipFeed::-webkit-scrollbar{display:none}.clipSlide{height:100%;scroll-snap-align:start;scroll-snap-stop:always;padding:12px 66px 22px;display:flex;align-items:center;justify-content:center}.clipCard{width:min(100%,1040px);min-width:0}.clipStage{position:relative;aspect-ratio:16/9;max-height:calc(100dvh - 238px);background:#000;border-radius:15px 15px 0 0;overflow:hidden}.clipPoster,.clipPlayer{position:absolute;inset:0;width:100%;height:100%}.clipPoster{object-fit:contain}.clipPlayer{border:0;pointer-events:auto;background:#000}.clipMeta{display:flex;align-items:flex-start;gap:16px;padding-top:17px}.clipInfo{min-width:0;flex:1}.clipInfo h2{font-size:16px;line-height:1.45;margin:0 0 7px;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.clipInfo p{font-size:11px;color:#aaa;margin:0;line-height:1.6}.clipNav{position:fixed;right:18px;top:50%;display:flex;flex-direction:column;gap:12px;z-index:10}.clipNav button{width:38px;height:38px;border:1px solid #555;border-radius:50%;background:#222;color:#fff;font-size:22px;cursor:pointer}.clipNav button:disabled{opacity:.3;cursor:default}#clipStatus{position:fixed;left:50%;top:130px;transform:translateX(-50%);z-index:20;font-size:12px;background:#303030;padding:12px 18px;border-radius:9px;max-width:calc(100vw - 40px);text-align:center}#clipStatus[hidden]{display:none}@media(max-width:640px){.clipHeader{height:45px;padding:0 16px}.clipHeader span{font-size:10px}#clipFeed{height:calc(100dvh - 103px)}.clipSlide{padding:0 12px 22px;align-items:center}.clipStage{aspect-ratio:9/13;max-height:calc(100dvh - 265px);border-radius:12px 12px 0 0}.clipMeta{padding:14px 2px 0;display:block}.clipInfo h2{font-size:14px}.clipNav{right:13px;top:auto;bottom:14px;flex-direction:row}.clipNav button{width:32px;height:32px;font-size:17px}}
-.clipProgress{width:100%;height:3px;background:#3a3a3a;overflow:hidden}.clipProgressFill{height:100%;width:100%;background:#ff3040;transform:scaleX(0);transform-origin:left center;transition:transform .15s linear}.clipNav button:focus-visible{outline:2px solid #fff;outline-offset:3px}@media(prefers-reduced-motion:reduce){.clipProgressFill{transition:none}}
+.clipProgress{width:100%;height:5px;background:#3a3a3a;overflow:hidden}.clipProgressFill{height:100%;width:100%;background:#ff3040;transform:scaleX(0);transform-origin:left center;transition:transform .15s linear}.clipNav button:focus-visible{outline:2px solid #fff;outline-offset:3px}@media(prefers-reduced-motion:reduce){.clipProgressFill{transition:none}}
 </style></head><body>
 <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
 <header class="clipHeader"><h1>클립</h1><span id="clipCounter"></span></header>
 <main id="clipFeed" tabindex="0" aria-label="클립 피드"></main>
 <div class="clipNav"><button id="clipPrev" type="button" aria-label="이전 클립">↑</button><button id="clipNext" type="button" aria-label="다음 클립">↓</button></div>
 <p id="clipStatus" role="status">클립을 불러오는 중입니다.</p>
-<script src="clips.js"></script>
+<script>
+(()=>{
+'use strict';
+const feed=document.getElementById('clipFeed'),status=document.getElementById('clipStatus'),counter=document.getElementById('clipCounter');
+const prev=document.getElementById('clipPrev'),next=document.getElementById('clipNext'),ORIGIN='https://vod.sooplive.com';
+let clips=[],page=0,hasMore=true,loading=false,active=-1,frame=null,ready=false,currentTime=0,raf=0;
+function say(text){status.textContent=text;status.hidden=!text}
+function valid(c){return c&&/^\d+$/.test(c.id)&&typeof c.title==='string'}
+function command(data){if(frame?.contentWindow)frame.contentWindow.postMessage(data,ORIGIN)}
+function configure(){
+ const clip=clips[active];if(!ready||!clip)return;
+ command({cmd:'Pload',id:clip.id,no:null,mutePlay:true,showChat:false,autoPlay:!document.hidden,isAdShow:true,isAdPause:false,isViewCnt:true,isRecommendShow:false,isEndRecommendShow:false,showQualityBox:true,startVideoSeconds:currentTime,endVideoSeconds:0,fromApi:1,apiKey:''});
+}
+function updateProgress(){
+ const bar=feed.children[active]?.querySelector('.clipProgress');
+ if(!bar)return;
+ const duration=Number(clips[active]?.duration)||0;
+ const ratio=duration>0?Math.max(0,Math.min(1,currentTime/duration)):0;
+ bar.querySelector('.clipProgressFill').style.transform='scaleX('+ratio+')';
+ bar.setAttribute('aria-valuenow',String(Math.round(ratio*100)));
+}
+function activate(index){
+ if(index<0||index>=clips.length||index===active&&frame)return;
+ // Removing the old iframe tears down its player and stops all audio.
+ if(frame){frame.remove();frame=null}
+ active=index;ready=false;currentTime=0;updateProgress();
+ const slide=feed.children[index],clip=clips[index];
+ frame=document.createElement('iframe');frame.className='clipPlayer';frame.title=clip.title;frame.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';frame.allowFullscreen=true;
+ frame.src=ORIGIN+'/player/'+clip.id+'/embed?fromApi=1';slide.querySelector('.clipStage').appendChild(frame);
+ prev.disabled=index===0;next.disabled=index===clips.length-1&&!hasMore;counter.textContent=(index+1)+' / '+clips.length+(hasMore?' +':'');
+ if(index>=clips.length-4)loadMore();
+}
+async function move(direction){
+ let index=active+direction;
+ if(index>=clips.length&&hasMore){await loadMore();index=active+direction}
+ if(index<0||index>=clips.length)return;
+ feed.children[index].scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+}
+function renderNew(items){
+ for(const clip of items){
+  const section=document.createElement('section');section.className='clipSlide';section.setAttribute('aria-label',clip.title);
+  const card=document.createElement('article');card.className='clipCard';
+  const stage=document.createElement('div');stage.className='clipStage';
+  if(clip.thumbnail){const poster=document.createElement('img');poster.className='clipPoster';poster.alt='';poster.loading='lazy';poster.src=clip.thumbnail;stage.appendChild(poster)}
+  const progress=document.createElement('div');progress.className='clipProgress';
+  progress.setAttribute('role','progressbar');progress.setAttribute('aria-label','영상 재생 진행률');progress.setAttribute('aria-valuemin','0');progress.setAttribute('aria-valuemax','100');progress.setAttribute('aria-valuenow','0');
+  const fill=document.createElement('div');fill.className='clipProgressFill';progress.appendChild(fill);
+  const meta=document.createElement('div');meta.className='clipMeta';const info=document.createElement('div');info.className='clipInfo';
+  const title=document.createElement('h2');title.textContent=clip.title;const detail=document.createElement('p');detail.textContent=[clip.author,clip.date.slice(0,10),Number(clip.views).toLocaleString('ko-KR')+'회'].filter(Boolean).join(' · ');info.append(title,detail);
+  meta.appendChild(info);card.append(stage,progress,meta);section.appendChild(card);feed.appendChild(section);
+ }
+}
+async function loadMore(){
+ if(loading||!hasMore)return;loading=true;
+ try{
+  const response=await fetch('/api/clips?page='+(page+1),{signal:AbortSignal.timeout(18000)});
+  if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();
+  if(!Array.isArray(data.clips)||!data.clips.every(valid))throw Error('Invalid clip response');
+  const ids=new Set(clips.map(c=>c.id)),added=data.clips.filter(c=>{if(ids.has(c.id))return false;ids.add(c.id);return true});clips.push(...added);page=data.page;hasMore=!!data.hasMore;
+  renderNew(added);say(clips.length?'':'등록된 클립이 없습니다.');
+  if(active<0&&clips.length)activate(0);
+  if(active>=0){next.disabled=active===clips.length-1&&!hasMore;counter.textContent=(active+1)+' / '+clips.length+(hasMore?' +':'')}
+ }catch(_){say('클립을 불러오지 못했습니다. 눌러서 다시 시도해주세요.');status.onclick=()=>{say('클립을 불러오는 중입니다.');loadMore()}}
+ finally{loading=false}
+}
+feed.addEventListener('scroll',()=>{
+ if(raf)return;raf=requestAnimationFrame(()=>{raf=0;if(feed.clientHeight)activate(Math.max(0,Math.min(clips.length-1,Math.round(feed.scrollTop/feed.clientHeight))))});
+},{passive:true});
+prev.onclick=()=>move(-1);next.onclick=()=>move(1);
+window.addEventListener('keydown',event=>{
+ if(['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName)||event.altKey||event.ctrlKey||event.metaKey)return;
+ if(['ArrowDown','PageDown','ArrowUp','PageUp'].includes(event.key)){event.preventDefault();move(['ArrowDown','PageDown'].includes(event.key)?1:-1)}
+});
+window.addEventListener('message',event=>{
+ if(event.origin!==ORIGIN||event.source!==frame?.contentWindow||!event.data||typeof event.data!=='object')return;
+ const data=event.data;
+ if(data.cmd==='PonReady'&&!ready){ready=true;configure()}
+ if(data.cmd==='PupdateMediaEvent'){
+  const media=data.event||{};
+  if(media.type==='timeUpdate'&&Number.isFinite(media.currentTime)){currentTime=media.currentTime;updateProgress()}
+  if(media.type==='end'){currentTime=Number(clips[active]?.duration)||0;updateProgress()}
+ }
+});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){command({cmd:'Ppause'})}});
+window.addEventListener('pagehide',()=>{if(frame){frame.remove();frame=null}});
+loadMore();
+})();
+
+</script>
 </body></html>
