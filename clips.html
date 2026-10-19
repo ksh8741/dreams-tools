@@ -33,6 +33,20 @@ updateAutoplay();
 function say(text){status.textContent=text;status.hidden=!text}
 function valid(c){return c&&/^\d+$/.test(c.id)&&typeof c.title==='string'}
 function command(data){if(frame?.contentWindow)frame.contentWindow.postMessage(data,ORIGIN)}
+let pendingPlaybackId='',playTimers=[];
+function cancelPlaybackStart(){
+ pendingPlaybackId='';playTimers.forEach(clearTimeout);playTimers=[];
+}
+function requestPlaybackStart(id){
+ if(pendingPlaybackId!==id||clips[active]?.id!==id||readyVideoId!==id||document.hidden)return;
+ command({cmd:'Pplay'});
+}
+function armPlaybackStart(id){
+ cancelPlaybackStart();if(document.hidden)return;
+ pendingPlaybackId=id;
+ // Allow the new route's Pload state to settle before asking it to play.
+ for(const delay of [120,700,1800])playTimers.push(setTimeout(()=>requestPlaybackStart(id),delay));
+}
 function configure(){
  const clip=clips[active];if(!ready||!clip||loadedVideoId===clip.id)return;
  loadedVideoId=clip.id;
@@ -57,7 +71,7 @@ function activate(index){
  if(index<0||index>=clips.length)return;
  if(index===active&&frame){positionPlayer();return}
  // Keep one SOOP player alive: its in-memory volume survives clip changes.
- active=index;readyVideoId='';endedForId='';currentTime=0;updateProgress();
+ cancelPlaybackStart();active=index;readyVideoId='';endedForId='';currentTime=0;updateProgress();
  const clip=clips[index];
  if(!frame){
   ready=false;loadedVideoId='';
@@ -123,7 +137,7 @@ function updateSortButtons(){
 }
 function changeSort(value){
  if(!['popular','reg_date'].includes(value)||value===sort)return;
- generation++;requestController?.abort();requestController=null;loading=false;loadPromise=null;sort=value;
+ cancelPlaybackStart();generation++;requestController?.abort();requestController=null;loading=false;loadPromise=null;sort=value;
  command({cmd:'Ppause'});if(frame)frame.hidden=true;
  clips=[];page=0;hasMore=true;active=-1;currentTime=0;loadedVideoId='';
  feed.replaceChildren();feed.scrollTop=0;counter.textContent='';prev.disabled=true;next.disabled=true;
@@ -148,21 +162,24 @@ window.addEventListener('message',event=>{
   if(id!==clips[active]?.id||readyVideoId===id)return;
   // SOOP navigates internally on the first Pload for another ID.
   // That new route sends PonReady again and needs its own initial Pload.
-  ready=true;readyVideoId=id;loadedVideoId='';configure();
+  ready=true;readyVideoId=id;loadedVideoId='';configure();armPlaybackStart(id);
  }
  if(data.cmd==='PupdateMediaEvent'){
   if(data.id!==undefined&&String(data.id)!==clips[active]?.id)return;
   const media=data.event||{};
+  if(media.type==='play')cancelPlaybackStart();
+  if(media.type==='buffer'&&pendingPlaybackId)requestPlaybackStart(pendingPlaybackId);
   if(media.type==='timeUpdate'&&Number.isFinite(media.currentTime)){currentTime=media.currentTime;updateProgress()}
   if(media.type==='end'){
+   cancelPlaybackStart();
    currentTime=Number(clips[active]?.duration)||0;updateProgress();
    const id=clips[active]?.id;
    if(autoNext&&!document.hidden&&id&&endedForId!==id){endedForId=id;move(1,true)}
   }
  }
 });
-document.addEventListener('visibilitychange',()=>{if(document.hidden){command({cmd:'Ppause'})}});
-window.addEventListener('pagehide',()=>{if(frame){frame.remove();frame=null;ready=false;loadedVideoId=''}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelPlaybackStart();command({cmd:'Ppause'})}});
+window.addEventListener('pagehide',()=>{cancelPlaybackStart();if(frame){frame.remove();frame=null;ready=false;loadedVideoId=''}});
 window.addEventListener('pageshow',event=>{if(event.persisted&&active>=0&&!frame)activate(active)});
 loadMore();
 })();
