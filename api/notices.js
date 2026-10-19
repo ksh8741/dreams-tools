@@ -1,14 +1,14 @@
 const BOARD='https://www.sooplive.com/station/tjgpdus97/board/41833817';
-const HOSTS=['https://chapi.sooplive.com','https://chapi.sooplive.co.kr'];
+const HOSTS=['https://api-channel.sooplive.com'];
 function normalize(payload){
- const raw=Array.isArray(payload.data)?payload.data:Array.isArray(payload.data?.data)?payload.data.data:null;
+ const raw=Array.isArray(payload.contents)?[...payload.contents,...(Array.isArray(payload.noticeData)?payload.noticeData:[])]:null;
  if(!raw)throw new Error('Unexpected SOOP response');
- return raw.map(row=>{
-  const id=String(row.title_no??row.id??'');
+ return [...new Map(raw.filter(row=>Number(row.bbsNo)===41833817 && Number(row.authNo)===101).map(row=>[String(row.titleNo),row])).values()].map(row=>{
+  const id=String(row.titleNo??'');
   if(!/^\d+$/.test(id))return null;
-  const title=String(row.title??row.subject??'').trim();
+  const title=String(row.titleName??'').trim();
   if(!title)return null;
-  return {id,title,date:String(row.reg_date??row.created_at??row.write_dt??''),author:String(row.user_nick??row.writer_nick??''),url:'https://www.sooplive.com/station/tjgpdus97/post/'+id};
+  return {id,title,date:String(row.regDate??''),author:String(row.userNick??''),url:'https://www.sooplive.com/station/tjgpdus97/post/'+id};
  }).filter(Boolean).sort((a,b)=>Number(b.id)-Number(a.id));
 }
 async function handler(req,res){
@@ -17,14 +17,14 @@ async function handler(req,res){
  if(!Number.isInteger(page)||page<1||page>100)return res.status(400).json({error:'Invalid page'});
  for(const host of HOSTS){
   try{
-   const response=await fetch(host+'/api/tjgpdus97/board/41833817?page='+page+'&per_page=50',{
-    headers:{Accept:'application/json','User-Agent':'YoningNoticeReader/1.0',Referer:BOARD},
+   const response=await fetch(host+'/v1.1/channel/tjgpdus97/board?bbsNo=41833817&perPage=20&page='+page+'&field=title,contents,user_nick,user_id,hashtags',{
+    headers:{Accept:'application/json','User-Agent':'Mozilla/5.0',Referer:BOARD},
     signal:AbortSignal.timeout(7000),redirect:'error'
    });
    if(!response.ok)throw new Error('SOOP '+response.status);
    const payload=await response.json(),posts=normalize(payload);
    res.setHeader('Cache-Control','public, max-age=0, s-maxage=20, stale-while-revalidate=30');
-   return res.status(200).json({posts,page,hasMore:!!payload.links?.next||!!payload.next_page_url||(Number(payload.last_page)>page),boardUrl:BOARD});
+   return res.status(200).json({posts,page,hasMore:Number(payload.meta?.totalPages)>page,boardUrl:BOARD});
   }catch(error){console.error('[notices]',host,error.message)}
  }
  res.setHeader('Cache-Control','no-store');
