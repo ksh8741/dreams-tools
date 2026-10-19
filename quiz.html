@@ -1,0 +1,548 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>닝잘알 · 요닝 방송도구함</title><style>
+*{box-sizing:border-box}body{margin:0;background:#faf7f3;color:#243f37;font-family:Arial,"Noto Sans KR",sans-serif}button,select{font:inherit}button{cursor:pointer}button:disabled{cursor:default}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #df9478;outline-offset:4px}[hidden]{display:none!important}.nav{width:100%;height:58px;border:0;display:block;background:#0c0e11}main{max-width:790px;margin:64px auto;padding:0 24px 60px}.topline{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#66776c}.tag{padding:8px 12px;border:1px solid #cad3c9;border-radius:30px;letter-spacing:1.2px}.best{font-weight:700}header{margin:27px 0 32px}h1{font-size:clamp(40px,9vw,66px);letter-spacing:-3px;margin:0 0 15px;line-height:1.1}h1 span{color:#db9176}header p{color:#758177;font-size:14px;line-height:1.8;margin:0}.card{background:#fff;border:1px solid #e5e6dd;border-radius:24px;padding:34px;box-shadow:0 10px 35px #33452c05}.intro-art{height:125px;position:relative;display:flex;align-items:center;justify-content:center;gap:14px}.tile{display:grid;place-items:center;width:70px;height:80px;background:#e9eee5;border:1px solid #d7dfd0;border-radius:16px;color:#42634f;font-size:34px;font-weight:800;transform:rotate(-12deg)}.tile:nth-child(2){background:#f5e0d5;color:#b86b51;transform:translateY(-12px) rotate(7deg)}.tile:nth-child(3){transform:rotate(15deg);background:#f4efda;color:#918144}.intro h2{font-size:23px;text-align:center;margin:17px 0 12px}.intro p{text-align:center;font-size:14px;line-height:1.9;color:#738075}.settings{display:flex;justify-content:center;gap:12px;align-items:center;margin:24px 0;font-size:13px}.settings select{padding:10px 32px 10px 15px;border-radius:9px;border:1px solid #d5dccf;background:white;color:#294737}.primary{display:block;border:0;border-radius:12px;background:#2f5142;color:#fff;padding:16px 22px;font-weight:700;width:100%;transition:background .15s}.primary:hover{background:#203f31}.secondary{border:1px solid #cdd8cb;background:#fff;border-radius:10px;padding:13px 18px;color:#345541;font-weight:700}.qmeta{display:flex;justify-content:space-between;font-size:12px;align-items:center}.category{background:#edf1e8;color:#526b51;padding:7px 10px;border-radius:7px}.progress{height:5px;background:#eceee7;border-radius:8px;overflow:hidden;margin:18px 0 32px}.progress i{display:block;height:100%;background:#d7a187;transition:width .2s}.question{font-size:clamp(20px,4vw,26px);line-height:1.55;letter-spacing:-.6px;margin:0 0 27px;min-height:75px}.options{display:grid;gap:11px}.option{display:flex;align-items:center;gap:15px;width:100%;text-align:left;background:#fff;border:1px solid #dfe4db;padding:16px;border-radius:12px;color:#344b3b;line-height:1.5;transition:background .12s,border-color .12s}.option:not(:disabled):hover{background:#f5f7f1;border-color:#90a18a}.option .letter{display:grid;place-items:center;border:1px solid #dfe4da;border-radius:7px;min-width:29px;height:29px;font-size:12px;color:#7b8b76}.option.correct{border-color:#648b68;background:#eef5eb}.option.correct .letter{background:#527c56;border-color:#527c56;color:white}.option.wrong{background:#fcf0eb;border-color:#d69c86}.option.wrong .letter{background:#c0846c;border-color:#c0846c;color:white}.feedback{margin-top:22px;padding:18px;border-radius:12px;background:#f6f6f0;font-size:14px;line-height:1.8}.feedback b{display:block;margin-bottom:5px}.feedback p{margin:0;color:#687663}.feedback .primary{margin-top:17px}.result{text-align:center}.result .eyebrow{font-size:11px;letter-spacing:2px;color:#7c8d74}.score{font-size:80px;line-height:1.2;font-weight:800;letter-spacing:-5px;margin:15px 0;color:#2f5142}.score small{font-size:22px;letter-spacing:0;color:#95a18a}.result h2{font-size:23px}.result p{color:#73816d;font-size:14px;line-height:1.8}.actions{display:flex;gap:10px;margin-top:25px}.actions button{flex:1}.review{text-align:left;margin-top:28px;border-top:1px solid #e5e8df;padding-top:22px}.review h3{font-size:15px}.review article{padding:16px 0;border-bottom:1px solid #e9ece4;font-size:13px;line-height:1.8}.review article b{font-size:14px}.review article p{margin:6px 0;color:#6c7964}.source{font-size:11px;line-height:1.8;color:#8b9486;margin:23px 4px}.source a{color:inherit}.quit{display:block;margin:18px auto 0;border:0;background:none;color:#8c9786;font-size:12px}.note{font-size:11px!important;color:#8b9686!important}footer{text-align:center;font-size:11px;letter-spacing:2px;color:#a3ab99;margin-top:45px}@media(max-width:550px){main{margin:30px auto;padding:0 17px 35px}.card{padding:23px 19px;border-radius:18px}.question{min-height:70px}.option{font-size:14px;padding:13px}.actions{flex-direction:column}header{margin-bottom:23px}}
+</style></head><body><iframe class="nav" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe><main><div class="topline"><span class="tag">NINGJALAL QUIZ</span><span class="best" id="best"></span></div><header><h1>닝잘알<span>?</span></h1><p>알고 보면 더 재밌는 요닝 이야기.<br>당신의 요닝력을 확인해 보세요.</p></header><section class="card intro" id="intro"><div class="intro-art" aria-hidden="true"><span class="tile">요</span><span class="tile">닝</span><span class="tile">?</span></div><h2>나의 닝잘알 등급은?</h2><p>방송의 시작부터 스타크래프트 명장면까지.<br>매번 새로운 문제 조합으로 만나요.</p><div class="settings"><label for="count">문제 수</label><select id="count"><option value="5">가볍게 5문제</option><option value="10" selected>딱 좋게 10문제</option><option value="20">도전! 20문제</option></select></div><button class="primary" id="start">퀴즈 시작하기 →</button><p class="note">44개 문제에서 무작위 출제 · 보기 순서도 랜덤</p></section><section class="card" id="play" hidden aria-label="퀴즈"><div class="qmeta"><span class="category" id="category"></span><span id="counter"></span></div><div class="progress" role="progressbar" aria-label="문제 진행" aria-valuemin="0" aria-valuemax="100" id="progress"><i id="bar"></i></div><h2 class="question" id="question" tabindex="-1"></h2><div class="options" id="options"></div><div class="feedback" id="feedback" aria-live="polite" hidden><b id="verdict"></b><p id="explanation"></p><button class="primary" id="next">다음 문제 →</button></div><button class="quit" id="quit">처음으로</button></section><section class="card result" id="result" hidden><div class="eyebrow">YOUR YONING SCORE</div><div class="score"><span id="score"></span><small> / 100</small></div><h2 id="resultTitle"></h2><p id="resultText"></p><div class="actions"><button class="primary" id="again">새로운 문제로 다시!</button><button class="secondary" id="retry">틀린 문제 다시 풀기</button></div><div class="review" id="review"></div><button class="quit" id="home">문제 수 바꾸기</button></section><p class="source">사용자가 제공한 <a href="https://namu.wiki/w/%EC%9A%94%EB%8B%9D" target="_blank" rel="noopener noreferrer">나무위키 「요닝」</a> 내용 기준 · 실시간으로 갱신되는 정보는 아닙니다.<br>답변은 제공된 문서 내용을 기준으로 판정합니다. 최신 소속·누적 전적·추측성 정보는 출제에서 제외했습니다.</p><footer>HOW WELL DO YOU KNOW YONING?</footer></main>
+<script id="questionData" type="application/json">[
+  {
+    "id": 1,
+    "q": "요닝의 본명은?",
+    "answer": "서혜연",
+    "wrong": [
+      "서혜진",
+      "김혜연",
+      "이서연"
+    ],
+    "explanation": "프로필에 본명이 서혜연으로 기재되어 있어요.",
+    "category": "프로필"
+  },
+  {
+    "id": 2,
+    "q": "요닝이 태어난 해는?",
+    "answer": "2000년",
+    "wrong": [
+      "1998년",
+      "1999년",
+      "2001년"
+    ],
+    "explanation": "출생일은 2000년 9월 22일이에요.",
+    "category": "프로필"
+  },
+  {
+    "id": 3,
+    "q": "요닝의 생일은?",
+    "answer": "9월 22일",
+    "wrong": [
+      "9월 12일",
+      "10월 22일",
+      "12월 27일"
+    ],
+    "explanation": "프로필에 기재된 생일은 9월 22일이에요.",
+    "category": "프로필"
+  },
+  {
+    "id": 4,
+    "q": "제공된 프로필에 적힌 요닝의 MBTI는?",
+    "answer": "ESTP",
+    "wrong": [
+      "ENFP",
+      "ISTP",
+      "ESFP"
+    ],
+    "explanation": "제공된 문서 기준 MBTI는 ESTP예요.",
+    "category": "프로필"
+  },
+  {
+    "id": 5,
+    "q": "요닝의 첫 방송일은?",
+    "answer": "2020년 12월 27일",
+    "wrong": [
+      "2020년 9월 22일",
+      "2021년 2월 27일",
+      "2021년 12월 27일"
+    ],
+    "explanation": "첫 방송일은 2020년 12월 27일로 기재되어 있어요.",
+    "category": "방송"
+  },
+  {
+    "id": 6,
+    "q": "방송 초기에 사용했던 BJ명은?",
+    "answer": "요닝이얌",
+    "wrong": [
+      "요닝왔닝",
+      "요닝이닷",
+      "요닝하이"
+    ],
+    "explanation": "처음에는 요닝이얌이라는 이름을 사용했어요.",
+    "category": "방송"
+  },
+  {
+    "id": 7,
+    "q": "요닝이 스타크래프트를 접하게 된 시기는?",
+    "answer": "2021년 2월",
+    "wrong": [
+      "2020년 2월",
+      "2021년 8월",
+      "2022년 2월"
+    ],
+    "explanation": "2021년 2월 롤 방송 중 스타크래프트를 접했어요.",
+    "category": "방송"
+  },
+  {
+    "id": 8,
+    "q": "요닝의 스타 입문 계기가 된 돌격 콘텐츠를 진행한 사람은?",
+    "answer": "박성진",
+    "wrong": [
+      "감스트",
+      "이제동",
+      "깨박이"
+    ],
+    "explanation": "문서에서는 박성진의 돌격 콘텐츠를 계기로 소개해요.",
+    "category": "방송"
+  },
+  {
+    "id": 9,
+    "q": "스타크래프트를 주 콘텐츠로 바꾸기 전 하던 게임은?",
+    "answer": "리그 오브 레전드",
+    "wrong": [
+      "오버워치",
+      "메이플스토리",
+      "서든어택"
+    ],
+    "explanation": "롤을 하던 중 스타크래프트를 접하게 됐어요.",
+    "category": "방송"
+  },
+  {
+    "id": 10,
+    "q": "요닝의 스타크래프트 주 종족은?",
+    "answer": "저그",
+    "wrong": [
+      "테란",
+      "프로토스",
+      "랜덤"
+    ],
+    "explanation": "문서에서 요닝은 저그 선수로 소개돼요.",
+    "category": "스타"
+  },
+  {
+    "id": 11,
+    "q": "스타 여캠 입문 시기 구분에서 요닝이 속한 티어는?",
+    "answer": "떡국 티어",
+    "wrong": [
+      "송편 티어",
+      "만두 티어",
+      "수박 티어"
+    ],
+    "explanation": "입문 시기에 따른 구분은 떡국 티어예요. CK 실력 티어와는 다른 분류예요.",
+    "category": "스타"
+  },
+  {
+    "id": 12,
+    "q": "문서에서 요닝의 스타 입문 동기로 언급한 사람은?",
+    "answer": "무찌",
+    "wrong": [
+      "디임",
+      "기룡이",
+      "보혜"
+    ],
+    "explanation": "떡국 티어의 동기로 무찌가 언급돼요.",
+    "category": "스타"
+  },
+  {
+    "id": 13,
+    "q": "2021년 8월 초 요닝이 들어간 스타대학은?",
+    "answer": "점문예대",
+    "wrong": [
+      "바스포드",
+      "JSA",
+      "철기대"
+    ],
+    "explanation": "2021년 8월 초 점문예대에 들어갔다고 기록되어 있어요.",
+    "category": "대학"
+  },
+  {
+    "id": 14,
+    "q": "요닝이 바스포드에 입학한 날은?",
+    "answer": "2021년 11월 30일",
+    "wrong": [
+      "2021년 8월 30일",
+      "2022년 1월 30일",
+      "2022년 11월 30일"
+    ],
+    "explanation": "바스포드 입학일은 2021년 11월 30일이에요.",
+    "category": "대학"
+  },
+  {
+    "id": 15,
+    "q": "바스포드에서 요닝과 함께 마지막까지 남은 1기 학생은?",
+    "answer": "하얀눈길",
+    "wrong": [
+      "무찌",
+      "라미",
+      "양양"
+    ],
+    "explanation": "하얀눈길과 요닝은 마지막까지 남은 두 명의 1기 학생으로 소개돼요.",
+    "category": "대학"
+  },
+  {
+    "id": 16,
+    "q": "바스포드에서 끝까지 살아남아 붙었던 별명은?",
+    "answer": "피닉닝",
+    "wrong": [
+      "닝가드",
+      "닝시코기",
+      "닝두기"
+    ],
+    "explanation": "숱한 변화에도 살아남았다는 뜻에서 피닉닝이라는 별명이 생겼어요.",
+    "category": "별명"
+  },
+  {
+    "id": 17,
+    "q": "2021년 12월 19일 염석대전에서 요닝이 꺾은 상대는?",
+    "answer": "기룡이",
+    "wrong": [
+      "디임",
+      "보혜",
+      "지두두"
+    ],
+    "explanation": "4:0 매치포인트에서 기룡이를 꺾으며 팀 승리를 마무리했어요.",
+    "category": "경기"
+  },
+  {
+    "id": 18,
+    "q": "2022년 조용히사라배 결승 에이스 결정전에서 이긴 상대는?",
+    "answer": "디임",
+    "wrong": [
+      "기룡이",
+      "무찌",
+      "라미"
+    ],
+    "explanation": "앞선 경기에서 패했던 디임에게 에이스 결정전에서 승리했어요.",
+    "category": "경기"
+  },
+  {
+    "id": 19,
+    "q": "2022년 조용히사라배 결승 에이스 결정전은 몇 경기였을까?",
+    "answer": "9경기",
+    "wrong": [
+      "5경기",
+      "7경기",
+      "11경기"
+    ],
+    "explanation": "문서는 7경기 패배 뒤 9경기 에이스 결정전 승리를 설명해요.",
+    "category": "경기"
+  },
+  {
+    "id": 20,
+    "q": "2022년 조용히사라배 결승에서 요닝이 받은 개인상은?",
+    "answer": "결승전 MVP",
+    "wrong": [
+      "신인상",
+      "최다 킬상",
+      "베스트 코치상"
+    ],
+    "explanation": "우승과 함께 결승전 MVP를 차지했어요.",
+    "category": "경기"
+  },
+  {
+    "id": 21,
+    "q": "2022년 10월 철감봉남 스타대학대전에서 기록한 연승은?",
+    "answer": "4연승",
+    "wrong": [
+      "2연승",
+      "3연승",
+      "5연승"
+    ],
+    "explanation": "대회에서 4연승을 거두며 결승 진출에 기여했어요.",
+    "category": "경기"
+  },
+  {
+    "id": 22,
+    "q": "요닝이 바스포드 해체와 함께 졸업한 날짜는?",
+    "answer": "2022년 12월 16일",
+    "wrong": [
+      "2021년 12월 16일",
+      "2022년 11월 30일",
+      "2023년 12월 16일"
+    ],
+    "explanation": "2022년 12월 16일 바스포드 해체와 함께 졸업했어요.",
+    "category": "대학"
+  },
+  {
+    "id": 23,
+    "q": "2023년 11월 28일 요닝이 합류한 대학은?",
+    "answer": "JSA",
+    "wrong": [
+      "점문예대",
+      "바스포드",
+      "드림즈"
+    ],
+    "explanation": "해당 날짜에 JSA에 합류했다고 기록되어 있어요.",
+    "category": "대학"
+  },
+  {
+    "id": 24,
+    "q": "문서에 적힌 요닝의 평균 APM 범위는?",
+    "answer": "180~250",
+    "wrong": [
+      "80~150",
+      "280~350",
+      "380~450"
+    ],
+    "explanation": "플레이 스타일 항목에는 평균 APM이 180~250으로 나와요.",
+    "category": "스타"
+  },
+  {
+    "id": 25,
+    "q": "요닝이 후반 물량전에 주로 앞세운다고 설명된 유닛은?",
+    "answer": "저글링",
+    "wrong": [
+      "드라군",
+      "벌처",
+      "질럿"
+    ],
+    "explanation": "저글링을 앞세운 물량전이 플레이 특징으로 설명돼요.",
+    "category": "스타"
+  },
+  {
+    "id": 26,
+    "q": "문서가 요닝의 플레이를 요약한 표현은?",
+    "answer": "운영을 잘하는 방어형 저그",
+    "wrong": [
+      "초반 올인형 테란",
+      "컨트롤 중심 공격형 프로토스",
+      "랜덤 종족 전문 선수"
+    ],
+    "explanation": "문서는 컨트롤의 아쉬움과 운영의 강점을 가진 방어형 저그로 요약해요.",
+    "category": "스타"
+  },
+  {
+    "id": 27,
+    "q": "요닝의 운영 중 강점으로 언급된 테크 단계는?",
+    "answer": "하이브",
+    "wrong": [
+      "레어만 고집하는 운영",
+      "스타게이트",
+      "팩토리"
+    ],
+    "explanation": "높은 하이브 운영 실력이 강점으로 언급돼요.",
+    "category": "스타"
+  },
+  {
+    "id": 28,
+    "q": "바스포드에서 저그 교수진으로 함께 언급된 두 사람은?",
+    "answer": "배병우·이제동",
+    "wrong": [
+      "이영호·이제동",
+      "배병우·김택용",
+      "홍구·도재욱"
+    ],
+    "explanation": "문서에는 배병우와 이제동이 교수진으로 언급돼요.",
+    "category": "대학"
+  },
+  {
+    "id": 29,
+    "q": "2021년 7월 13일 신규 배정된 CK 티어는?",
+    "answer": "5티어",
+    "wrong": [
+      "3티어",
+      "4티어",
+      "6티어"
+    ],
+    "explanation": "제공된 티어 변동표의 신규 배정은 5티어예요.",
+    "category": "기록"
+  },
+  {
+    "id": 30,
+    "q": "2023년 12월 12일 승급한 CK 티어는?",
+    "answer": "4티어",
+    "wrong": [
+      "2티어",
+      "3티어",
+      "5티어"
+    ],
+    "explanation": "해당 날짜에는 5티어에서 4티어로 승급했어요.",
+    "category": "기록"
+  },
+  {
+    "id": 31,
+    "q": "2026년 3월 22일 승급한 CK 티어는?",
+    "answer": "3티어",
+    "wrong": [
+      "1티어",
+      "2티어",
+      "4티어"
+    ],
+    "explanation": "제공된 변동표에는 3티어 승급으로 기재되어 있어요.",
+    "category": "기록"
+  },
+  {
+    "id": 32,
+    "q": "승리 세리머니에서 따라 한 축구 선수는?",
+    "answer": "제시 린가드",
+    "wrong": [
+      "손흥민",
+      "크리스티아누 호날두",
+      "킬리안 음바페"
+    ],
+    "explanation": "린가드의 피리 부는 세리머니를 따라 했어요.",
+    "category": "별명"
+  },
+  {
+    "id": 33,
+    "q": "린가드 세리머니로 생긴 요닝의 별명은?",
+    "answer": "닝가드",
+    "wrong": [
+      "피닉닝",
+      "닝두기",
+      "닝시코기"
+    ],
+    "explanation": "린가드에서 따온 닝가드라는 별명이 생겼어요.",
+    "category": "별명"
+  },
+  {
+    "id": 34,
+    "q": "“저그의 송곳니가 없다”는 평가를 한 사람은?",
+    "answer": "이제동",
+    "wrong": [
+      "감스트",
+      "박성진",
+      "배병우"
+    ],
+    "explanation": "이제동의 평가 이후 송곳니 없는 저그라는 표현이 쓰였어요.",
+    "category": "별명"
+  },
+  {
+    "id": 35,
+    "q": "좋은 찌르기와 전투를 보여줄 때 쓰인 표현은?",
+    "answer": "송곳니 임플란트 했다",
+    "wrong": [
+      "날개를 접었다",
+      "해처리를 잠갔다",
+      "피리를 잃어버렸다"
+    ],
+    "explanation": "송곳니 없는 저그라는 별명에서 이어진 표현이에요.",
+    "category": "별명"
+  },
+  {
+    "id": 36,
+    "q": "요닝문학은 처음에 어떤 이름으로 불렸을까?",
+    "answer": "닝피셜",
+    "wrong": [
+      "요닝일보",
+      "닝가드 문집",
+      "피닉닝 실록"
+    ],
+    "explanation": "처음에는 닝피셜이었다가 요닝문학이 되었다고 소개돼요.",
+    "category": "방송"
+  },
+  {
+    "id": 37,
+    "q": "문서에 따르면 요닝문학의 드립을 주로 만드는 쪽은?",
+    "answer": "시청자들",
+    "wrong": [
+      "게임 해설위원들",
+      "스타대학 교수들",
+      "광고 제작사들"
+    ],
+    "explanation": "요닝이 이름을 빌려주고 시청자들이 드립치는 형태라고 설명해요.",
+    "category": "방송"
+  },
+  {
+    "id": 38,
+    "q": "닝시코기라는 별명은 어떤 동물에서 따왔을까?",
+    "answer": "웰시코기",
+    "wrong": [
+      "시베리안 허스키",
+      "스코티시 폴드",
+      "레서판다"
+    ],
+    "explanation": "귀여운 웰시코기 느낌에서 붙은 별명이에요.",
+    "category": "별명"
+  },
+  {
+    "id": 39,
+    "q": "닝두기는 누구를 모티브로 한 별명일까?",
+    "answer": "드림즈 강두기",
+    "wrong": [
+      "제시 린가드",
+      "바스포드 감스트",
+      "JSA 이제동"
+    ],
+    "explanation": "제공된 각주에는 드림즈 강두기를 모티브로 했다고 적혀 있어요.",
+    "category": "별명"
+  },
+  {
+    "id": 40,
+    "q": "철와대와의 주먹이 운다에서 맞붙은 상대는?",
+    "answer": "보혜",
+    "wrong": [
+      "디임",
+      "기룡이",
+      "무찌"
+    ],
+    "explanation": "문서에는 보혜와 대결해 승리했다고 기록되어 있어요.",
+    "category": "경기"
+  },
+  {
+    "id": 41,
+    "q": "2025년 JPL 시즌2에서 기록한 성적은?",
+    "answer": "준우승",
+    "wrong": [
+      "우승",
+      "4강",
+      "8강"
+    ],
+    "explanation": "커리어 목록에는 2025 JPL 시즌2 준우승으로 나와요.",
+    "category": "기록"
+  },
+  {
+    "id": 42,
+    "q": "2026년 정선숲퍼컵에서 기록한 성적은?",
+    "answer": "우승",
+    "wrong": [
+      "준우승",
+      "4강",
+      "8강"
+    ],
+    "explanation": "제공된 커리어에 2026 정선숲퍼컵 우승이 기재되어 있어요.",
+    "category": "기록"
+  },
+  {
+    "id": 43,
+    "q": "2023년 HOT6 스타멸망전 대학대전 성적은?",
+    "answer": "4강",
+    "wrong": [
+      "우승",
+      "준우승",
+      "16강"
+    ],
+    "explanation": "제공된 커리어에는 4강으로 기록되어 있어요.",
+    "category": "기록"
+  },
+  {
+    "id": 44,
+    "q": "2022년 조용히사라배2 대학대전 성적은?",
+    "answer": "준우승",
+    "wrong": [
+      "우승",
+      "4강",
+      "8강"
+    ],
+    "explanation": "첫 조용히사라배는 우승, 조용히사라배2는 준우승으로 기록되어 있어요.",
+    "category": "기록"
+  }
+]</script><script>
+'use strict';
+const BANK=JSON.parse(document.getElementById('questionData').textContent),$=id=>document.getElementById(id);const KEY='yoning_quiz_v1';let deck=[],round=[],index=0,answers=[],locked=false,reviewMode=false,best=0;
+function randomInt(n){if(globalThis.crypto?.getRandomValues){const a=new Uint32Array(1),limit=4294967296-4294967296%n;do{crypto.getRandomValues(a)}while(a[0]>=limit);return a[0]%n}return Math.floor(Math.random()*n)}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=randomInt(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+try{const saved=JSON.parse(localStorage.getItem(KEY)||'{}');best=Number.isFinite(saved.best)?Math.max(0,Math.min(100,saved.best)):0;deck=Array.isArray(saved.deck)?[...new Set(saved.deck)].filter(id=>BANK.some(q=>q.id===id)):[]}catch(_){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({best,deck}))}catch(_){}}
+function setView(id){for(const v of ['intro','play','result'])$(v).hidden=v!==id;$('best').textContent=best?'최고 기록 '+best+'점':''}
+function sample(n){const ids=[];while(ids.length<n){if(!deck.length)deck=shuffle(BANK.map(q=>q.id).filter(id=>!ids.includes(id)));const id=deck.pop();if(!ids.includes(id))ids.push(id)}save();return ids.map(id=>BANK.find(q=>q.id===id))}
+function begin(qs,isReview=false){reviewMode=isReview;round=qs.map(q=>({...q,options:shuffle([q.answer,...q.wrong])}));index=0;answers=[];setView('play');showQuestion()}
+function showQuestion(){locked=false;const q=round[index];$('category').textContent=(reviewMode?'오답 복습 · ':'')+q.category;$('counter').textContent=String(index+1).padStart(2,'0')+' / '+round.length;$('question').textContent=q.q;$('bar').style.width=(index/round.length*100)+'%';$('progress').setAttribute('aria-valuenow',String(Math.round(index/round.length*100)));$('feedback').hidden=true;$('options').replaceChildren();q.options.forEach((text,i)=>{const b=document.createElement('button');b.className='option';const letter=document.createElement('span');letter.className='letter';letter.textContent='ABCD'[i];const label=document.createElement('span');label.textContent=text;b.append(letter,label);b.onclick=()=>choose(text);$('options').appendChild(b)});$('question').focus({preventScroll:true})}
+function choose(value){if(locked)return;locked=true;const q=round[index],correct=value===q.answer;answers.push({q,value,correct});Array.from($('options').children).forEach((b,i)=>{b.disabled=true;const t=q.options[i];if(t===q.answer)b.classList.add('correct');else if(t===value)b.classList.add('wrong')});$('verdict').textContent=correct?'정답이에요!':'정답은 '+q.answer;$('explanation').textContent=q.explanation;$('feedback').hidden=false;$('next').textContent=index===round.length-1?'결과 확인하기 →':'다음 문제 →';$('bar').style.width=((index+1)/round.length*100)+'%';$('progress').setAttribute('aria-valuenow',String(Math.round((index+1)/round.length*100)))}
+function getRating(right,total){const rate=right/total;return rate===1?{title:'닝잘알 만렙',message:'요닝 본인도 인정할 지식!'}:rate>=.9?{title:'찐 닝잘알',message:'이 정도면 요닝 백과사전.'}:rate>=.7?{title:'제법 닝잘알',message:'요닝 이야기, 꽤 많이 알고 있네요!'}:rate>=.4?{title:'닝잘알 성장 중',message:'아는 이야기 반, 알아갈 이야기 반!'}:right>0?{title:'새싹 닝잘알',message:'이제 요닝을 알아가는 중이에요.'}:{title:'오늘부터 요닝 입문',message:'오늘 새로 알게 된 이야기부터 기억해 봐요!'}}
+function finish(){const right=answers.filter(a=>a.correct).length,score=Math.round(right/round.length*100);if(!reviewMode){best=Math.max(best,score);save()}setView('result');$('score').textContent=score;const rating=getRating(right,round.length);$('resultTitle').textContent=rating.title;$('resultText').textContent=(reviewMode?'오답 복습 · ':'')+round.length+'문제 중 '+right+'문제 정답 · '+rating.message;const wrong=answers.filter(a=>!a.correct);$('retry').hidden=wrong.length===0;$('review').replaceChildren();$('review').hidden=!wrong.length;if(wrong.length){const h=document.createElement('h3');h.textContent='놓친 이야기 '+wrong.length;$('review').appendChild(h);for(const a of wrong){const article=document.createElement('article'),title=document.createElement('b'),detail=document.createElement('p');title.textContent=a.q.q;detail.textContent='내 답: '+a.value+' · 정답: '+a.q.answer+'\n'+a.q.explanation;article.append(title,detail);$('review').appendChild(article)}}}
+$('start').onclick=()=>begin(sample(Number($('count').value)));$('next').onclick=()=>{if(!locked)return;if(index+1===round.length)finish();else{index++;showQuestion()}};$('again').onclick=()=>begin(sample(Number($('count').value)));$('retry').onclick=()=>begin(shuffle(answers.filter(a=>!a.correct).map(a=>a.q)),true);$('home').onclick=$('quit').onclick=()=>setView('intro');setView('intro');
+</script></body></html>
