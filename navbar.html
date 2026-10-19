@@ -22,18 +22,26 @@ a:focus-visible{outline:2px solid #fff;outline-offset:-5px}
 <nav aria-label="방송도구 메뉴"><div class="inner"><div class="links">
 <a data-page="pubg" href="pubg.html" target="_top">배틀그라운드</a>
 <a data-page="starcraft" href="starcraft.html" target="_top">티어표</a>
+<a data-page="notices" href="notices.html" target="_top">공지</a>
 </div></div></nav>
 <script>
 (()=>{
 let path='';
 try{path=window.parent.location.pathname}catch(_){try{path=new URL(document.referrer).pathname}catch(_){}}
 const file=path.split('/').pop().toLowerCase();
-const current=file==='pubg.html'?'pubg':file==='starcraft.html'?'starcraft':'';
+const current=file==='pubg.html'?'pubg':file==='starcraft.html'?'starcraft':file==='notices.html'?'notices':'';
 for(const link of document.querySelectorAll('[data-page]')){
 const active=link.dataset.page===current;
 link.classList.toggle('active',active);
 if(active)link.setAttribute('aria-current','page');
 }
+try{
+ const host=window.parent;
+ if(host!==window && !new URLSearchParams(host.location.search).has('overlay') && !host.document.getElementById('notice-client-script')){
+  const script=host.document.createElement('script');script.id='notice-client-script';
+  script.src=new URL('notice-client.js',location.href).href;host.document.head.appendChild(script);
+ }
+}catch(_){}
 })();
 </script>
 </body>
