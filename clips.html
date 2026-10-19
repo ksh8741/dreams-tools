@@ -19,7 +19,7 @@ function valid(c){return c&&/^\d+$/.test(c.id)&&typeof c.title==='string'}
 function command(data){if(frame?.contentWindow)frame.contentWindow.postMessage(data,ORIGIN)}
 function configure(){
  const clip=clips[active];if(!ready||!clip)return;
- command({cmd:'Pload',id:clip.id,no:null,mutePlay:true,showChat:false,autoPlay:!document.hidden,isAdShow:true,isAdPause:false,isViewCnt:true,isRecommendShow:false,isEndRecommendShow:false,showQualityBox:true,startVideoSeconds:currentTime,endVideoSeconds:0,fromApi:1,apiKey:''});
+ command({cmd:'Pload',id:clip.id,no:null,mutePlay:false,showChat:false,autoPlay:!document.hidden,isAdShow:true,isAdPause:false,isViewCnt:true,isRecommendShow:false,isEndRecommendShow:false,showQualityBox:true,startVideoSeconds:currentTime,endVideoSeconds:0,fromApi:1,apiKey:''});
 }
 function updateProgress(){
  const bar=feed.children[active]?.querySelector('.clipProgress');
