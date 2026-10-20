@@ -1594,13 +1594,32 @@ html body{font-family:"Griun Yeeun","Malgun Gothic",sans-serif!important}
 html body *:not(#tierRail):not(#tierRail *){font-family:"Griun Yeeun","Malgun Gothic",sans-serif!important;font-weight:400!important}
 /* Keep the fixed remote's original typography, including its popup filters. */
 #tierRail{font-family:Inter,Arial,"Noto Sans KR",sans-serif}
-/* Promotion-soon halo follows each player's race color. */
-.playerCard.soon .profileCore{animation:promotionGlow 1.6s ease-in-out infinite alternate!important}
-@keyframes promotionGlow{
- from{box-shadow:0 0 0 3px var(--race),0 0 10px color-mix(in srgb,var(--race) 55%,transparent),0 0 23px color-mix(in srgb,var(--race) 28%,transparent)}
- to{box-shadow:0 0 0 4px var(--race),0 0 17px color-mix(in srgb,var(--race) 80%,transparent),0 0 31px color-mix(in srgb,var(--race) 46%,transparent)}
+/* Promotion-soon: race-colored orbit and expanding outer ring. */
+.playerCard.soon .profileCore{animation:promotionGlow 1.3s ease-in-out infinite alternate!important}
+.playerCard.soon .portrait:before{
+ content:"";position:absolute;inset:-7px;border-radius:50%;pointer-events:none;
+ border:2px solid var(--race);opacity:0;animation:promotionWave 2s ease-out infinite;z-index:0;
 }
-@media(prefers-reduced-motion:reduce){.playerCard.soon .profileCore{animation:none!important;box-shadow:0 0 0 4px var(--race),0 0 16px color-mix(in srgb,var(--race) 60%,transparent)!important}}
+.playerCard.soon .portrait:after{
+ content:"";position:absolute;inset:-6px;border-radius:50%;pointer-events:none;z-index:3;
+ padding:4px;background:conic-gradient(from 0deg,transparent 0deg 40deg,var(--race) 90deg,transparent 145deg 220deg,var(--race) 270deg,transparent 325deg);
+ -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+ -webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;
+ animation:promotionOrbit 2.6s linear infinite;
+}
+@keyframes promotionOrbit{to{transform:rotate(360deg)}}
+@keyframes promotionWave{
+ 0%{transform:scale(1);opacity:.85}
+ 85%,100%{transform:scale(1.18);opacity:0}
+}
+@keyframes promotionGlow{
+ from{box-shadow:0 0 0 3px var(--race),0 0 10px color-mix(in srgb,var(--race) 45%,transparent)}
+ to{box-shadow:0 0 0 4px var(--race),0 0 21px color-mix(in srgb,var(--race) 75%,transparent)}
+}
+@media(prefers-reduced-motion:reduce){
+ .playerCard.soon .profileCore,.playerCard.soon .portrait:before,.playerCard.soon .portrait:after{animation:none!important}
+ .playerCard.soon .portrait:before{opacity:.65}
+}
 </style>
 </head>
 <body>
