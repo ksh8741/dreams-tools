@@ -1587,6 +1587,21 @@ html{overflow-y:scroll!important;scrollbar-gutter:stable!important}
 
 
 
+
+<style id="yeeun-page-font">
+@font-face{font-family:"Griun Yeeun";src:url("https://d26ciffk7xlrlz.cloudfront.net/free-fonts/yeeun/Griun_Yeeun-Rg.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+html body{font-family:"Griun Yeeun","Malgun Gothic",sans-serif!important}
+html body *:not(#tierRail):not(#tierRail *){font-family:"Griun Yeeun","Malgun Gothic",sans-serif!important;font-weight:400!important}
+/* Keep the fixed remote's original typography, including its popup filters. */
+#tierRail{font-family:Inter,Arial,"Noto Sans KR",sans-serif}
+/* Promotion-soon halo: a clear warm ring with a gentle pulse. */
+.playerCard.soon .profileCore{animation:promotionGlow 1.6s ease-in-out infinite alternate!important}
+@keyframes promotionGlow{
+ from{box-shadow:0 0 0 3px #ff9a28,0 0 10px rgba(255,130,25,.48),0 0 23px rgba(255,111,20,.22)}
+ to{box-shadow:0 0 0 4px #ff6b20,0 0 17px rgba(255,119,20,.72),0 0 31px rgba(255,143,32,.4)}
+}
+@media(prefers-reduced-motion:reduce){.playerCard.soon .profileCore{animation:none!important;box-shadow:0 0 0 4px #ff8b25,0 0 16px rgba(255,130,25,.5)!important}}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
