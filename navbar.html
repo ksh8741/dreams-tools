@@ -24,6 +24,7 @@ a:focus-visible{outline:2px solid #fff;outline-offset:-5px}
 <nav aria-label="방송도구 메뉴"><div class="inner"><div class="links">
 <a data-page="pubg" href="pubg.html" target="_top">배틀그라운드</a>
 <a data-page="starcraft" href="starcraft.html" target="_top">티어표</a>
+<a data-page="elo" href="elo.html" target="_top">전적</a>
 <a data-page="notices" href="notices.html" target="_top">공지</a>
 <a data-page="clips" href="clips.html" target="_top">클립</a>
 <a data-page="quiz" href="quiz.html" target="_top">닝잘알</a>
@@ -36,7 +37,7 @@ try{const host=window.parent;if(host!==window&&!host.document.getElementById('yo
 let path='';
 try{path=window.parent.location.pathname}catch(_){try{path=new URL(document.referrer).pathname}catch(_){}}
 const file=path.split('/').pop().toLowerCase();
-const current=file==='pubg.html'?'pubg':file==='starcraft.html'?'starcraft':file==='notices.html'?'notices':file==='clips.html'?'clips':file==='quiz.html'?'quiz':file==='menu.html'?'menu':file==='sig.html'?'sig':'';
+const current=file==='pubg.html'?'pubg':file==='starcraft.html'?'starcraft':file==='notices.html'?'notices':file==='clips.html'?'clips':file==='quiz.html'?'quiz':file==='menu.html'?'menu':file==='sig.html'?'sig':file==='elo.html'?'elo':'';
 for(const link of document.querySelectorAll('[data-page]')){
 const active=link.dataset.page===current;
 link.classList.toggle('active',active);
