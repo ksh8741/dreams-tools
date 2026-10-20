@@ -7,23 +7,23 @@
 <base target="_top">
 <style>
 @font-face {
-  font-family: 'Gamja Flower';
+  font-family: 'Dongle';
   font-style: normal;
-  font-weight: 400;
+  font-weight: 700;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/gamjaflower/v26/6NUR8FiKJg-Pa0rM6uN40Z4kyQ.ttf) format('truetype');
+  src: url(https://fonts.gstatic.com/s/dongle/v16/sJoG3Ltdjt6VPkqeActrYg.ttf) format('truetype');
 }
 
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;width:100%;height:58px;overflow:hidden;background:#0c0e11;font-family:"Gamja Flower","Malgun Gothic",sans-serif}
+html,body{margin:0;padding:0;width:100%;height:58px;overflow:hidden;background:#0c0e11;font-family:"Dongle","Malgun Gothic",sans-serif}
 nav{height:58px;border-bottom:1px solid rgba(255,255,255,.08)}
 .inner{width:min(1180px,calc(100% - 32px));height:58px;margin:0 auto;display:flex;align-items:center;justify-content:flex-start}
 .links{display:flex;height:58px;align-items:center;max-width:100%;overflow-x:auto;scrollbar-width:none}.links::-webkit-scrollbar{display:none}
-a{position:relative;height:58px;display:flex;align-items:center;justify-content:center;padding:0 16px;border:0;background:transparent;color:#9ea5ad;text-decoration:none;font-size:18px;font-weight:400;line-height:1;white-space:nowrap}
+a{position:relative;height:58px;display:flex;align-items:center;justify-content:center;padding:0 16px;border:0;background:transparent;color:#9ea5ad;text-decoration:none;font-size:26px;font-weight:700;line-height:1;white-space:nowrap}
 a:hover,a.active{color:#fff}
 a.active::after{content:"";position:absolute;left:16px;right:16px;bottom:0;height:2px;background:#edbdd4}
 a:focus-visible{outline:2px solid #fff;outline-offset:-5px}
-@media(max-width:700px){.inner{width:calc(100% - 18px)}a{padding:0 10px;font-size:17px}a.active::after{left:10px;right:10px}}
+@media(max-width:700px){.inner{width:calc(100% - 18px)}a{padding:0 10px;font-size:24px}a.active::after{left:10px;right:10px}}
 </style>
 </head>
 <body>
@@ -34,11 +34,11 @@ a:focus-visible{outline:2px solid #fff;outline-offset:-5px}
 <a data-page="clips" href="clips.html" target="_top">클립</a>
 <a data-page="quiz" href="quiz.html" target="_top">닝잘알</a>
 <a data-page="menu" href="menu.html" target="_top">모먹지</a>
-<a data-page="sig" href="sig.html" target="_top">시그표</a>
+<a data-page="sig" href="sig.html" target="_top">시그표제작</a>
 </div></div></nav>
 <script>
 (()=>{
-try{const host=window.parent;if(host!==window&&!host.document.getElementById('yoning-title-font')){const style=host.document.createElement('style');style.id='yoning-title-font';style.textContent="@font-face {\n  font-family: 'Gamja Flower';\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(https://fonts.gstatic.com/s/gamjaflower/v26/6NUR8FiKJg-Pa0rM6uN40Z4kyQ.ttf) format('truetype');\n}\nh1,h2,h3,h4,h5,h6,[role=\"heading\"],.pageTitle,.page-title,.sectionTitle,.section-title,.cardTitle,.card-title{font-family:\"Gamja Flower\",\"Malgun Gothic\",sans-serif!important;font-weight:400!important;}";host.document.head.appendChild(style)}}catch(_){}
+try{const host=window.parent;if(host!==window&&!host.document.getElementById('yoning-title-font')){const style=host.document.createElement('style');style.id='yoning-title-font';style.textContent="@font-face {\n  font-family: 'Dongle';\n  font-style: normal;\n  font-weight: 700;\n  font-display: swap;\n  src: url(https://fonts.gstatic.com/s/dongle/v16/sJoG3Ltdjt6VPkqeActrYg.ttf) format('truetype');\n}\nh1,h2,h3,h4,h5,h6,[role=\"heading\"],.pageTitle,.page-title,.sectionTitle,.section-title,.cardTitle,.card-title{font-family:\"Dongle\",\"Malgun Gothic\",sans-serif!important;font-weight:700!important;}";host.document.head.appendChild(style)}}catch(_){}
 let path='';
 try{path=window.parent.location.pathname}catch(_){try{path=new URL(document.referrer).pathname}catch(_){}}
 const file=path.split('/').pop().toLowerCase();
