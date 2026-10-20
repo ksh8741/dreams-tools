@@ -1,0 +1,62 @@
+name: 전적 자동 갱신
+on:
+  workflow_dispatch:
+    inputs:
+      full:
+        description: 전체 기록 다시 수집
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/elo-sync.yml'
+      - 'scripts/elo-sync.cjs'
+      - 'elo-data.js'
+  schedule:
+    - cron: '3-58/5 * * * *'
+permissions:
+  contents: write
+concurrency:
+  group: yoning-elo-shared-data
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 이전 공용 기록 가져오기
+        shell: bash
+        run: |
+          if git ls-remote --exit-code --heads origin elo-data >/dev/null 2>&1; then
+            git fetch origin elo-data
+            git show FETCH_HEAD:data/elo.json > "$RUNNER_TEMP/elo-previous.json"
+          fi
+      - name: 최초 전체 수집 또는 추가분 갱신
+        env:
+          ELO_PREVIOUS_FILE: ${{ runner.temp }}/elo-previous.json
+          ELO_OUTPUT_FILE: ${{ runner.temp }}/elo-next.json
+          ELO_FULL_SYNC: ${{ inputs.full == true && 'true' || 'false' }}
+        run: node scripts/elo-sync.cjs
+      - name: 검증된 공용 기록 저장
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git ls-remote --exit-code --heads origin elo-data >/dev/null 2>&1; then
+            git fetch origin elo-data
+            git checkout --detach FETCH_HEAD
+          else
+            git checkout --orphan elo-data
+            git rm -rf .
+          fi
+          mkdir -p data
+          cp "$RUNNER_TEMP/elo-next.json" data/elo.json
+          echo '{"git":{"deploymentEnabled":false}}' > vercel.json
+          git add data/elo.json vercel.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Update shared ELO records'
+          git push origin HEAD:refs/heads/elo-data
