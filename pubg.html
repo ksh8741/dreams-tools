@@ -10016,6 +10016,10 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
 #combinedScoreTooltip.is-visible{opacity:1;transform:translateY(0)}
 @media(prefers-reduced-motion:reduce){#combinedScoreTooltip{transition:none}}
 </style>
+<style id="placement-player-centering">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.placementOnly .team .plist .slot{grid-template-columns:24px 32px !important;justify-content:center !important;column-gap:4px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.placementOnly .team .plist .slot .playerInline{width:32px !important;min-width:32px !important;max-width:32px !important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
