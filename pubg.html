@@ -9722,6 +9722,12 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #captureStage #scoreStatusRow.killCompareRow,
 html.mainScoreOverlay #broadcastScoreRoot #captureStage #scoreStatusRow.killCompareRow{background:#070605 !important}
 </style>
+<style id="settings-icons-refined">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scoreSettingsGrid .settingField>span{display:flex !important;align-items:center !important;gap:4px !important;white-space:nowrap !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingEmoji{display:inline-flex !important;width:17px !important;height:18px !important;align-items:center !important;justify-content:center !important;font-family:"Segoe UI Emoji","Apple Color Emoji",sans-serif !important;font-size:14px !important;line-height:1 !important;filter:saturate(.8) !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #scoreViewMode::before{content:"+" !important;font-family:Arial,sans-serif !important;font-size:23px !important;font-weight:400 !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #saveResult::before{content:"" !important;background:#211d15 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c6ad73' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 3h12l3 3v15H4V3z'/%3E%3Cpath d='M7 3v6h9V3M7 21v-8h10v8'/%3E%3C/svg%3E") center / 19px 19px no-repeat !important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -9749,9 +9755,9 @@ html.mainScoreOverlay #broadcastScoreRoot #captureStage #scoreStatusRow.killComp
                     <section class="settingCard">
                         <div class="settingCardTitle"><span>점수 설정</span></div>
                         <div class="scoreSettingsGrid">
-                            <label class="settingField"><span>🎯 목표 킬</span><input id="goalKills" type="number" min="0" max="9999" value="50"></label>
-                            <label class="settingField"><span>🍗 일반 치킨</span><input id="ck" type="number" min="0"></label>
-                            <label class="settingField"><span>🌴 사녹 치킨</span><input id="sk" type="number" min="0"></label>
+                            <label class="settingField"><span><span class="settingEmoji" aria-hidden="true">🎯</span> 목표 킬</span><input id="goalKills" type="number" min="0" max="9999" value="50"></label>
+                            <label class="settingField"><span><span class="settingEmoji" aria-hidden="true">🍗</span> 일반 치킨</span><input id="ck" type="number" min="0"></label>
+                            <label class="settingField"><span><span class="settingEmoji" aria-hidden="true">🍗</span> 사녹 치킨</span><input id="sk" type="number" min="0"></label>
                         </div>
                     </section>
                     <section class="settingCard penaltyCard">
