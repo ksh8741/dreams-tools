@@ -10020,6 +10020,10 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.placementOnly .team .plist .slot{grid-template-columns:24px 32px !important;justify-content:center !important;column-gap:4px !important}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.placementOnly .team .plist .slot .playerInline{width:32px !important;min-width:32px !important;max-width:32px !important}
 </style>
+<style id="placement-score-width">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.placementOnly #scoreboard{grid-template-columns:repeat(var(--score-columns),100px) !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.placementOnly #scoreboard .team{box-sizing:border-box !important;width:100px !important;min-width:100px !important;max-width:100px !important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -10391,7 +10395,7 @@ function applyScoreWidth(){
   if(!cur)return;
   const w=Math.max(202,scoreColumns(cur.team_count)*202);
   document.documentElement.style.setProperty('--score-width',w+'px');
-  document.documentElement.style.setProperty('--score-pane-width',Math.max(300,scoreColumns(cur.team_count)*134+28)+'px');
+  document.documentElement.style.setProperty('--score-pane-width',Math.max(300,scoreColumns(cur.team_count)*scoreTeamWidth()+28)+'px');
 }
 function overlayUrlForRoom(){
   if(!cur)return '';
@@ -10400,12 +10404,13 @@ function overlayUrlForRoom(){
   return u.toString();
 }
 function isMainScoreOverlay(){return document.documentElement.classList.contains('mainScoreOverlay')}
+function scoreTeamWidth(){return cur && !battleIncludesKills()?100:134}
 function alignScoreFrame(frame,teamCount){
   if(!frame)return;
-  const columns=scoreColumns(teamCount),width=(134*columns)+'px';
+  const columns=scoreColumns(teamCount),width=(scoreTeamWidth()*columns)+'px';
   frame.style.setProperty('--home-team-count',String(teamCount));
   frame.style.setProperty('--score-columns',String(columns));
-  for(const name of ['width','min-width','max-width'])frame.style.setProperty(name,(134*columns+2)+'px','important');
+  for(const name of ['width','min-width','max-width'])frame.style.setProperty(name,(scoreTeamWidth()*columns+2)+'px','important');
   frame.style.setProperty('box-sizing','border-box','important');
   for(const box of frame.querySelectorAll('.score,.totalBar,.scoreStatusRow')){
     for(const name of ['width','min-width','max-width'])box.style.setProperty(name,width,'important');
@@ -11394,7 +11399,7 @@ document.addEventListener('scroll',event=>{if(openMapPicker&&!openMapPicker.menu
 function fitMainScore(){
  if(!cur||isMainScoreOverlay()||document.documentElement.classList.contains('broadcastOverlay'))return;
  const stage=document.querySelector('#roomView .scoreStage'),pane=document.querySelector('#roomView .scoreAndSettings'),frame=document.querySelector('#captureStage .scoreFrame');if(!stage||!pane||!frame)return;
- const w=scoreColumns(cur.team_count)*134+2,room=Math.max(1,stage.clientWidth-26),availableHeight=Math.max(80,pane.clientHeight*.65-54),baseHeight=frame.offsetHeight||1;
+ const w=scoreColumns(cur.team_count)*scoreTeamWidth()+2,room=Math.max(1,stage.clientWidth-26),availableHeight=Math.max(80,pane.clientHeight*.65-54),baseHeight=frame.offsetHeight||1;
  const scale=Math.max(.1,Math.min(1,room/w,availableHeight/baseHeight));frame.style.zoom=String(scale);
  const tools=document.querySelector('#roomView .scorePanel .captureTools');if(tools)tools.style.width=(w*scale)+'px';
 }
