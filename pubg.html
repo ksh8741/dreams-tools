@@ -9529,6 +9529,43 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .name{font-size:13px !important;color:#f8edda !important}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .detail{font-size:13px !important;color:#ffe8a8 !important}
 </style>
+<style id="scoreboard-redesign-one-line">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame{background:#090807 !important;color:#f7f2e7 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team{background:#0c0b09 !important;border:1px solid #6d5b37 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .teamSummary{box-sizing:border-box !important;min-height:32px !important;padding:3px 6px !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;background:#211b10 !important;color:#f5df9e !important;border-bottom:1px solid #806942 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .miniScore{font-size:18px !important;color:#ffe6a2 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .miniChicken{font-size:13px !important;color:#d8c7a2 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot{display:grid !important;grid-template-columns:20px minmax(0,1fr) !important;gap:3px !important;align-items:center !important;box-sizing:border-box !important;min-height:29px !important;padding:2px 4px !important;border-bottom:1px solid #332b1d !important;background:#0c0b09 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot:nth-child(even){background:#14110c !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .avatar,html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .avatarEmpty{width:20px !important;height:20px !important;object-fit:cover !important;border-radius:2px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .playerInline{display:grid !important;grid-template-columns:minmax(0,1fr) max-content !important;align-items:center !important;gap:4px !important;min-width:0 !important;background:transparent !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .name{display:block !important;box-sizing:border-box !important;width:100% !important;min-width:0 !important;max-width:none !important;padding:0 !important;margin:0 !important;font-size:12px !important;color:#f6efe2 !important;background:transparent !important;overflow:hidden !important;text-overflow:clip !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .detail{min-width:0 !important;padding:0 !important;margin:0 !important;text-align:right !important;white-space:nowrap !important;font-size:11px !important;color:#f5db91 !important;background:transparent !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .scoreDelta{white-space:nowrap}
+</style>
+<style id="penalty-compact-score">html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot.hasPenalty .detail{font-size:10px !important;letter-spacing:-.3px !important}</style>
+<style id="scoreboard-profile-size">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard{grid-template-columns:repeat(var(--score-columns),150px) !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team{width:150px !important;min-width:150px !important;max-width:150px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot{grid-template-columns:28px minmax(0,1fr) !important;gap:4px !important;min-height:34px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .avatar,
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .avatarEmpty{width:28px !important;height:28px !important}
+</style>
+<style id="scoreboard-uniform-rows">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot,
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot:nth-child(even),
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .playerInline,
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot:nth-child(even) .playerInline{background:#100e0b !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .teamSummary,
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreStatusRow.killCompareRow{background:#302514 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .avatar,
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .avatarEmpty{border-radius:5px !important;object-fit:cover !important}
+</style>
+<style id="subtle-frame-corners">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #lobby>.windowCorner,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView>.windowCorner{width:58px !important;height:58px !important;opacity:.58 !important}
+@media(max-width:700px){html:not(.broadcastOverlay):not(.mainScoreOverlay) #lobby>.windowCorner,html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView>.windowCorner{width:44px !important;height:44px !important}}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -9786,6 +9823,7 @@ function updatePlayerScoreText(playerId){
   const slot=scoreboard.querySelector('[data-slot="'+CSS.escape(String(playerId))+'"]');
   const detail=slot?.querySelector('.detail');
   if(detail)detail.textContent=scoreText(a);
+  if(slot)slot.classList.toggle('hasPenalty',a.minus>0);
 }
 const scoreCueListeners=new Set();
 function playScoreCue(slot,delta){
@@ -9883,7 +9921,7 @@ function applyScoreWidth(){
   if(!cur)return;
   const w=Math.max(202,scoreColumns(cur.team_count)*202);
   document.documentElement.style.setProperty('--score-width',w+'px');
-  document.documentElement.style.setProperty('--score-pane-width',Math.max(300,scoreColumns(cur.team_count)*134+28)+'px');
+  document.documentElement.style.setProperty('--score-pane-width',Math.max(300,scoreColumns(cur.team_count)*150+28)+'px');
 }
 function overlayUrlForRoom(){
   if(!cur)return '';
@@ -9894,7 +9932,7 @@ function overlayUrlForRoom(){
 function isMainScoreOverlay(){return document.documentElement.classList.contains('mainScoreOverlay')}
 function alignScoreFrame(frame,teamCount){
   if(!frame)return;
-  const columns=scoreColumns(teamCount),width=(134*columns)+'px';
+  const columns=scoreColumns(teamCount),width=(150*columns)+'px';
   frame.style.setProperty('--home-team-count',String(teamCount));
   frame.style.setProperty('--score-columns',String(columns));
   for(const box of [frame,...frame.querySelectorAll('.score,.totalBar,.scoreStatusRow')]){
@@ -10428,7 +10466,7 @@ function renderScore(){
     RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
     teamScores.push(teamScore);
     out+='<div class="team" data-score-column="'+(((t-1)%scoreColumns(cur.team_count))+1)+'" data-score-row="'+(Math.floor((t-1)/scoreColumns(cur.team_count))+1)+'"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span>'+(cur.team_count===1?'<span class="miniGoal">🎯 '+(cur.goal_kills??50)+'</span>':'')+'</div><div class="plist">'+
-      ps.map(p=>{let a=totals(p);return '<div class="slot" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
+      ps.map(p=>{let a=totals(p);return '<div class="slot'+(a.minus>0?' hasPenalty':'')+'" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<img class="avatar" src="'+pic(p.soop_user_id)+'">':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름✎">'+
       '<div class="detail">'+e(scoreText(a))+'</div></div></div>'}).join('')+
@@ -10832,7 +10870,7 @@ document.addEventListener('scroll',event=>{if(openMapPicker&&!openMapPicker.menu
 function fitMainScore(){
  if(!cur||isMainScoreOverlay()||document.documentElement.classList.contains('broadcastOverlay'))return;
  const stage=document.querySelector('#roomView .scoreStage'),pane=document.querySelector('#roomView .scoreAndSettings'),frame=document.querySelector('#captureStage .scoreFrame');if(!stage||!pane||!frame)return;
- const w=scoreColumns(cur.team_count)*134,room=Math.max(1,stage.clientWidth-26),availableHeight=Math.max(80,pane.clientHeight*.65-54),baseHeight=frame.offsetHeight||1;
+ const w=scoreColumns(cur.team_count)*150,room=Math.max(1,stage.clientWidth-26),availableHeight=Math.max(80,pane.clientHeight*.65-54),baseHeight=frame.offsetHeight||1;
  const scale=Math.min(1,room/w,availableHeight/baseHeight);frame.style.zoom=String(Math.max(.1,scale));
 }
 function board(){
