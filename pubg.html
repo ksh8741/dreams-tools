@@ -9580,6 +9580,38 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .detail{font-size:15px !important}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot.hasPenalty .detail{font-size:9px !important;letter-spacing:-.3px !important}
 </style>
+<style id="score-photo-row-compact">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot{grid-template-columns:24px minmax(0,1fr) !important;min-height:28px !important;padding:1px 4px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .avatarFrame,
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .avatarEmpty{width:24px !important;height:24px !important;min-width:24px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .avatarFrame img.avatar{width:100% !important;height:100% !important}
+</style>
+<style id="square-eight-scoreboard">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.squareEightScore #scoreboard .team{box-sizing:border-box !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.squareEightScore #scoreboard .team .teamSummary{box-sizing:border-box !important;height:24px !important;min-height:24px !important;max-height:24px !important;padding:0 6px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.squareEightScore #scoreboard .team .plist{padding:0 !important;margin:0 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.squareEightScore #scoreboard .team .plist .slot{box-sizing:border-box !important;height:26.5px !important;min-height:26.5px !important;max-height:26.5px !important;padding:1px 4px !important}
+</style>
+<style id="sheet-player-and-toolbar">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView>.top{padding-left:52px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scorePanel .scoreToolbarSect{display:flex !important;justify-content:center !important;width:100% !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scorePanel .captureTools{display:flex !important;flex-wrap:nowrap !important;max-width:100% !important;box-sizing:border-box !important;gap:4px !important;padding:2px 0 8px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scorePanel .captureTools>.btn,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scorePanel .captureTools>#scoreViewMode{flex:1 1 0 !important;min-width:0 !important;max-width:none !important;padding-left:3px !important;padding-right:3px !important;text-align:center !important;font-size:12px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .sheetPlayer{display:flex !important;align-items:center !important;gap:6px !important;width:100% !important;min-width:0 !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .sheetPlayerPhoto{box-sizing:border-box !important;display:block !important;flex:0 0 30px !important;width:30px !important;height:30px !important;object-fit:cover !important;border-radius:4px !important;background:#211a10 !important;border:1px solid #735e33 !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .sheetPlayerName{box-sizing:border-box !important;width:100% !important;min-width:0 !important;height:36px !important;margin:0 !important;padding:0 4px !important;font-size:16px !important;color:#f4e6c5 !important;background:transparent !important;border:1px solid transparent !important;outline:none !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .sheetPlayerName:focus{background:#18130b !important;border-color:#b99a55 !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .sheetPlayerName::placeholder{color:#a6936e !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker .modal{max-height:min(45vh,340px) !important;scrollbar-color:#b08a3e #14110c !important;scrollbar-width:thin !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker .modal::-webkit-scrollbar{width:12px}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker .modal::-webkit-scrollbar-track{background:#14110c}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker .modal::-webkit-scrollbar-thumb{background:linear-gradient(#e6c56a,#8a6428);border:1px solid #3a2c12;border-radius:0}
+@media(max-width:700px){html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView>.top{padding-left:42px !important}}
+</style>
+<style id="dialog-meta-dark-background">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) .overlay .modal .meta{background:transparent !important;color:#c8baa0 !important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -10467,6 +10499,7 @@ function renderScore(){
       homeScoreFrame.style.setProperty('--home-team-count',String(Math.max(1,cur?.team_count||1)));
       homeScoreFrame.style.setProperty('--score-columns',String(scoreColumns(cur.team_count)));
       homeScoreFrame.classList.toggle('twoRowScoreFrame',cur.team_count>=5);
+      homeScoreFrame.classList.toggle('squareEightScore',cur.team_count===4&&cur.players_per_team===4&&scoreMode()==='2v2');
     }
   }
 
@@ -10885,7 +10918,8 @@ function fitMainScore(){
  if(!cur||isMainScoreOverlay()||document.documentElement.classList.contains('broadcastOverlay'))return;
  const stage=document.querySelector('#roomView .scoreStage'),pane=document.querySelector('#roomView .scoreAndSettings'),frame=document.querySelector('#captureStage .scoreFrame');if(!stage||!pane||!frame)return;
  const w=scoreColumns(cur.team_count)*150,room=Math.max(1,stage.clientWidth-26),availableHeight=Math.max(80,pane.clientHeight*.65-54),baseHeight=frame.offsetHeight||1;
- const scale=Math.min(1,room/w,availableHeight/baseHeight);frame.style.zoom=String(Math.max(.1,scale));
+ const scale=Math.max(.1,Math.min(1,room/w,availableHeight/baseHeight));frame.style.zoom=String(scale);
+ const tools=document.querySelector('#roomView .scorePanel .captureTools');if(tools)tools.style.width=(w*scale)+'px';
 }
 function board(){
   const scrollBox=killBoard.closest('.killUnifiedWrap'),oldScrollTop=scrollBox?.scrollTop||0,oldScrollLeft=scrollBox?.scrollLeft||0;
@@ -10898,7 +10932,7 @@ function board(){
   for(let tt=1;tt<=cur.team_count;tt++){
     const ps=teamPlayersList[tt-1],span=1+ps.length*2+1;
     colHeader+='<th class="mapCol">맵</th>';
-    ps.forEach(p=>colHeader+='<th class="playerHead">'+e(p.nickname||'이름')+'</th><th class="deathHead">데스</th>');
+    ps.forEach(p=>colHeader+='<th class="playerHead"><div class="sheetPlayer">'+(p.soop_user_id?'<img class="sheetPlayerPhoto" src="'+e(pic(p.soop_user_id))+'" alt="">':'')+'<input class="sheetPlayerName" type="text" data-sheet-name="'+e(p.id)+'" value="'+e(p.nickname||'')+'" placeholder="이름✎" aria-label="선수 이름 수정"></div></th><th class="deathHead">데스</th>');
     colHeader+='<th class="chickenCol">🍗</th>';
   }
   colHeader+='</tr>';
@@ -10954,6 +10988,15 @@ function board(){
     scheduleTeamMapSave(rid,team,name);
   });
   setupMapPickers();
+  killBoard.querySelectorAll('[data-sheet-name]').forEach(input=>{
+    input.onfocus=()=>{editing=true};
+    input.onkeydown=event=>{if(event.key==='Enter'){event.preventDefault();input.blur()}};
+    input.onblur=()=>{
+      const player=P.find(p=>String(p.id)===String(input.dataset.sheetName));
+      if(!player||input.value.trim()===(player.nickname||'')){editing=false;return}
+      saveName({value:input.value,dataset:{name:input.dataset.sheetName}}).catch(console.error);
+    };
+  });
   document.querySelectorAll('[data-chicken]').forEach(x=>x.onchange=()=>{
     touchLocal();
     const rid=x.dataset.chicken,team=x.checked?+x.dataset.team:null;
