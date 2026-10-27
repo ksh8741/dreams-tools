@@ -9566,6 +9566,14 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #lobby>.windowCorner,
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView>.windowCorner{width:58px !important;height:58px !important;opacity:.58 !important}
 @media(max-width:700px){html:not(.broadcastOverlay):not(.mainScoreOverlay) #lobby>.windowCorner,html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView>.windowCorner{width:44px !important;height:44px !important}}
 </style>
+<style id="scoreboard-short-names">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .playerInline{grid-template-columns:minmax(0,2em) minmax(0,1fr) !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .name{max-width:2em !important;overflow:hidden !important}
+</style>
+<style id="profile-cropped-square">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .avatarFrame{display:block !important;position:relative !important;width:28px !important;height:28px !important;min-width:28px !important;overflow:hidden !important;border-radius:5px !important;background:#1c1914 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .avatarFrame img.avatar{display:block !important;position:absolute !important;width:142% !important;height:142% !important;max-width:none !important;max-height:none !important;left:50% !important;top:50% !important;transform:translate(-50%,-50%) !important;object-fit:cover !important;border:0 !important;border-radius:0 !important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -10467,7 +10475,7 @@ function renderScore(){
     teamScores.push(teamScore);
     out+='<div class="team" data-score-column="'+(((t-1)%scoreColumns(cur.team_count))+1)+'" data-score-row="'+(Math.floor((t-1)/scoreColumns(cur.team_count))+1)+'"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span><span class="miniChicken">🍗 '+ch+'</span>'+(cur.team_count===1?'<span class="miniGoal">🎯 '+(cur.goal_kills??50)+'</span>':'')+'</div><div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot'+(a.minus>0?' hasPenalty':'')+'" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
-      (p.soop_user_id?'<img class="avatar" src="'+pic(p.soop_user_id)+'">':'<span class="avatarEmpty"></span>')+
+      (p.soop_user_id?'<span class="avatarFrame"><img class="avatar" src="'+pic(p.soop_user_id)+'" alt=""></span>':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름✎">'+
       '<div class="detail">'+e(scoreText(a))+'</div></div></div>'}).join('')+
       '</div></div>';
