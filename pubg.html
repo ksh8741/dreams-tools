@@ -9712,6 +9712,16 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUni
 html:not(.broadcastOverlay):not(.mainScoreOverlay) body>.ghost{z-index:2147483647 !important}
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActionCard{border-bottom:0 !important;padding-bottom:0 !important}
 </style>
+<style id="scoreboard-shared-font-size">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot.hasPenalty .detail,
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .detail{font-family:Galmuri11,sans-serif !important;font-size:15px !important;font-weight:400 !important;letter-spacing:normal !important;line-height:1 !important;white-space:nowrap !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .name{font-family:Galmuri11,sans-serif !important;font-size:14px !important;font-weight:400 !important;letter-spacing:normal !important;line-height:1 !important}
+</style>
+<style id="score-penalty-and-overlay-match">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .detail .penaltyBreakdown{font-size:10px !important;line-height:1 !important;letter-spacing:normal !important;color:inherit !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #captureStage #scoreStatusRow.killCompareRow,
+html.mainScoreOverlay #broadcastScoreRoot #captureStage #scoreStatusRow.killCompareRow{background:#070605 !important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -9966,12 +9976,13 @@ function refreshScoreTextOnly(){
 function scoreText(a){
   return a.minus>0 ? a.score+'('+a.raw+'-'+a.minus+')' : a.score+'킬';
 }
+function scoreMarkup(a){return a.minus>0?e(a.score)+'<span class="penaltyBreakdown">('+e(a.raw)+'-'+e(a.minus)+')</span>':e(a.score)+'킬'}
 function updatePlayerScoreText(playerId){
   const p=P.find(x=>String(x.id)===String(playerId));if(!p)return;
   const a=totals(p);
   const slot=scoreboard.querySelector('[data-slot="'+CSS.escape(String(playerId))+'"]');
   const detail=slot?.querySelector('.detail');
-  if(detail)detail.textContent=scoreText(a);
+  if(detail)detail.innerHTML=scoreMarkup(a);
   if(slot)slot.classList.toggle('hasPenalty',a.minus>0);
 }
 const scoreCueListeners=new Set();
@@ -10619,7 +10630,7 @@ function renderScore(){
       ps.map(p=>{let a=totals(p);return '<div class="slot'+(a.minus>0?' hasPenalty':'')+'" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<span class="avatarFrame"><img class="avatar" src="'+pic(p.soop_user_id)+'" alt=""></span>':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름✎">'+
-      '<div class="detail">'+e(scoreText(a))+'</div></div></div>'}).join('')+
+      '<div class="detail">'+scoreMarkup(a)+'</div></div></div>'}).join('')+
       '</div></div>';
   }
   scoreboard.innerHTML=out;
