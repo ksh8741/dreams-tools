@@ -9975,11 +9975,24 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .sheetPl
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #battleRoyaleBtn::before{content:"★"}
 #balanceOverlay.battleRoyaleMode .balanceChicken,#balanceOverlay.battleRoyaleMode .balanceNote{display:none !important}
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #battleRoyaleBtn.active{background:#272012 !important;border-color:#b49551 !important;color:#f7dfa0 !important}
-html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard.battleRoyaleMode .killUnified .chickenCol,html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard.battleRoyaleMode col.fixedChickenCol{width:82px !important;min-width:82px !important;max-width:82px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard.battleRoyaleMode .killUnified .chickenCol,html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard.battleRoyaleMode col.fixedChickenCol{width:132px !important;min-width:132px !important;max-width:132px !important}
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard.battleRoyaleMode .killUnified th.chickenCol::before{content:none !important;display:none !important}
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard.battleRoyaleMode .killUnified th.chickenCol{font-size:14px !important;white-space:nowrap !important}
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard.battleRoyaleMode .placementInput{box-sizing:border-box !important;width:62px !important;height:44px !important;background:#0e0d0b !important;color:#f5efdf !important;border:1px solid #796440 !important;text-align:center !important;font:18px Galmuri11,sans-serif !important}
 #gameSettingsBody .settingField[hidden]{display:none !important}
+</style>
+<style id="battle-layout-fix">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #battleRoyaleBtn::before{content:"" !important;background:#211d15 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c6ad73' d='m12 2.6 2.75 5.58 6.16.9-4.46 4.35 1.05 6.14L12 16.67l-5.5 2.9 1.05-6.14-4.46-4.35 6.16-.9z'/%3E%3C/svg%3E") center / 18px 18px no-repeat !important}
+</style>
+<style id="battle-trophy-and-controls">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard.battleRoyaleMode .killUnified th.chickenCol::before{content:"" !important;display:inline-block !important;width:23px !important;height:23px !important;margin:0 !important;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20fill%3D%22%23e8a829%22%20d%3D%22M8%204h16v6c0%207-3.5%2011-8%2011s-8-4-8-11z%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23f7c453%22%20stroke-width%3D%222.8%22%20d%3D%22M8%207H3v2c0%205%203%207%207%207M24%207h5v2c0%205-3%207-7%207%22%2F%3E%3Cpath%20fill%3D%22%23f6c04a%22%20d%3D%22M14%2020h4v5h5v3H9v-3h5z%22%2F%3E%3Cpath%20fill%3D%22%23ffe59a%22%20d%3D%22M11%206h3v9h-2c-1-2-1-5-1-9%22%20opacity%3D%22.65%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat !important;vertical-align:middle !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team .teamSummary .miniTrophy{display:inline-flex !important;align-items:center !important;justify-content:center !important;color:#fff !important;font-family:"Nanum Square Round","Noto Sans KR",system-ui,sans-serif !important;font-size:15px !important;font-weight:900 !important;line-height:1 !important;white-space:nowrap !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team .teamSummary .miniTrophy::before{content:"" !important;display:inline-block !important;width:21px !important;height:21px !important;margin-right:3px !important;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20fill%3D%22%23e8a829%22%20d%3D%22M8%204h16v6c0%207-3.5%2011-8%2011s-8-4-8-11z%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23f7c453%22%20stroke-width%3D%222.8%22%20d%3D%22M8%207H3v2c0%205%203%207%207%207M24%207h5v2c0%205-3%207-7%207%22%2F%3E%3Cpath%20fill%3D%22%23f6c04a%22%20d%3D%22M14%2020h4v5h5v3H9v-3h5z%22%2F%3E%3Cpath%20fill%3D%22%23ffe59a%22%20d%3D%22M11%206h3v9h-2c-1-2-1-5-1-9%22%20opacity%3D%22.65%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard.battleRoyaleMode .killUnified .killCtrl .killSquare input.placementInput{width:100% !important;min-width:0 !important;max-width:none !important;height:100% !important;min-height:0 !important;max-height:none !important;border:1px solid #806b40 !important;background:#10100e !important}
+</style>
+<style id="score-setting-icon-alignment">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scoreSettingsGrid .settingField > span { min-height:20px !important; align-items:center !important; }
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scoreSettingsGrid .settingEmoji:is(.iconTarget,.iconChicken) { box-sizing:border-box !important; width:18px !important; min-width:18px !important; max-width:18px !important; height:18px !important; min-height:18px !important; max-height:18px !important; flex:0 0 18px !important; margin:0 !important; background-size:contain !important; background-position:center !important; }
 </style>
 </head>
 <body>
@@ -10213,9 +10226,10 @@ function refreshScoreTextOnly(){
   const scores=calcTeamScores();
   const summaries=[...scoreboard.querySelectorAll('.teamSummary')];
   summaries.forEach((el,i)=>{
-    const scoreEl=el.querySelector('.miniScore'),chEl=el.querySelector('.miniChicken');
+    const scoreEl=el.querySelector('.miniScore'),chEl=el.querySelector('.miniChicken'),trophyEl=el.querySelector('.miniTrophy');
     if(scoreEl)scoreEl.textContent=scores[i]??0;
     if(chEl)chEl.textContent=''+RO.filter(r=>r.chicken_team===i+1).length;
+    if(trophyEl)trophyEl.textContent=String(teamPlacementTotal(i+1));
     const goalEl=el.querySelector('.miniGoal');
     if(goalEl)goalEl.textContent=''+(cur.goal_kills??50);
   });
@@ -10943,11 +10957,11 @@ function renderScore(){
     ps.forEach(p=>{teamScore+=totals(p).score});
     if(isBattleRoyale())teamScore+=teamPlacementTotal(t);else RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
     teamScores.push(teamScore);
-    out+='<div class="team" data-score-column="'+(((t-1)%scoreColumns(cur.team_count))+1)+'" data-score-row="'+(Math.floor((t-1)/scoreColumns(cur.team_count))+1)+'"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span>'+(isBattleRoyale()?'':'<span class="miniChicken">'+ch+'</span>')+(cur.team_count===1?'<span class="miniGoal">'+(cur.goal_kills??50)+'</span>':'')+'</div><div class="plist">'+
+    out+='<div class="team" data-score-column="'+(((t-1)%scoreColumns(cur.team_count))+1)+'" data-score-row="'+(Math.floor((t-1)/scoreColumns(cur.team_count))+1)+'"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span>'+(isBattleRoyale()?'<span class="miniTrophy">'+teamPlacementTotal(t)+'</span>':'<span class="miniChicken">'+ch+'</span>')+(cur.team_count===1?'<span class="miniGoal">'+(cur.goal_kills??50)+'</span>':'')+'</div><div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot'+(a.minus>0?' hasPenalty':'')+'" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<span class="avatarFrame"><img class="avatar" src="'+pic(p.soop_user_id)+'" alt=""></span>':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" maxlength="2" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름">'+
-      '<div class="detail">'+scoreMarkup(a)+'</div></div></div>'}).join('')+
+      '<div class="detail">'+scoreMarkup(a)+'</div>'+'</div></div>'}).join('')+
       '</div></div>';
   }
   scoreboard.innerHTML=out;
@@ -11263,7 +11277,7 @@ function showSelectedKillTeam(){
  if(!cur)return;selectedKillTeam=Math.max(1,Math.min(selectedKillTeam,cur.team_count));
  killBoard.querySelectorAll('[data-team-no]').forEach(cell=>{cell.hidden=Number(cell.dataset.teamNo)!==selectedKillTeam});
  const players=teamPlayers(selectedKillTeam).length;
- killBoard.style.setProperty('--kill-table-width',(56+174+players*(132+56)+(isBattleRoyale()?82:50))+'px');
+ killBoard.style.setProperty('--kill-table-width',(56+174+players*(132+56)+(isBattleRoyale()?132:50))+'px');
  const nav=document.getElementById('teamNavigation');
  nav?.querySelectorAll('button').forEach((button,i)=>{const active=i+1===selectedKillTeam;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active))});
 }
@@ -11366,7 +11380,7 @@ function board(){
     const ps=teamPlayersList[tt-1],span=1+ps.length*2+1;
     colHeader+='<th class="mapCol">맵</th>';
     ps.forEach(p=>colHeader+='<th class="playerHead"><div class="sheetPlayer">'+(p.soop_user_id?'<img class="sheetPlayerPhoto" src="'+e(pic(p.soop_user_id))+'" alt="">':'')+'<input class="sheetPlayerName" type="text" maxlength="2" data-sheet-name="'+e(p.id)+'" value="'+e(p.nickname||'')+'" placeholder="이름" aria-label="선수 이름 수정"></div></th><th class="deathHead">데스</th>');
-    colHeader+='<th class="chickenCol">'+(isBattleRoyale()?'순위 점수':'')+'</th>';
+    colHeader+='<th class="chickenCol"'+(isBattleRoyale()?' aria-label="순위 점수"':'')+'></th>';
   }
   colHeader+='</tr>';
 
@@ -11388,12 +11402,12 @@ function board(){
           '</div>'+
           '</div></td><td class="deathCell"><input class="deathBtn" data-d="'+key+'" type="checkbox" '+(s.died?'checked':'')+' title="데스 체크" aria-label="'+e(p.nickname||'선수')+' 데스 체크"></td>';
       });
-      body+=isBattleRoyale()?'<td class="chickenCol"><input class="placementInput" data-placement="'+r.id+'|'+tt+'" type="number" min="0" max="2147483647" placeholder="–" aria-label="순위 점수" value="'+(placementState[teamMapKey(r.id,tt)]??'')+'"></td>':'<td class="chickenCol"><input class="chickenCheck" data-chicken="'+r.id+'" data-team="'+tt+'" type="checkbox" '+(r.chicken_team===tt?'checked':'')+'></td>';
+      body+=isBattleRoyale()?'<td class="chickenCol"><div class="killCtrl"><div class="killSquare"><input class="killInput placementInput" data-placement="'+r.id+'|'+tt+'" type="number" min="0" max="2147483647" placeholder="–" aria-label="순위 점수" value="'+(placementState[teamMapKey(r.id,tt)]??'')+'"></div><div class="killSideStack"><button type="button" class="ctrlBtn" data-placement-step="'+r.id+'|'+tt+'" data-dir="1" aria-label="순위 점수 더하기">+</button><button type="button" class="ctrlBtn" data-placement-step="'+r.id+'|'+tt+'" data-dir="-1" aria-label="순위 점수 빼기">−</button></div></div></td>':'<td class="chickenCol"><input class="chickenCheck" data-chicken="'+r.id+'" data-team="'+tt+'" type="checkbox" '+(r.chicken_team===tt?'checked':'')+'></td>';
     }
     body+='</tr>';
   });
 
-  const playerCellWidth=132,deathCellWidth=56,mapCellWidth=174,chickenCellWidth=isBattleRoyale()?82:50,roundCellWidth=56;
+  const playerCellWidth=132,deathCellWidth=56,mapCellWidth=174,chickenCellWidth=isBattleRoyale()?132:50,roundCellWidth=56;
   const tableWidth=roundCellWidth+teamPlayersList.reduce((sum,ps)=>sum+mapCellWidth+ps.length*(playerCellWidth+deathCellWidth)+chickenCellWidth,0);
   let columns='<col class="fixedRoundCol" style="width:56px">';
   teamPlayersList.forEach((ps,index)=>{
@@ -11434,6 +11448,11 @@ function board(){
   document.querySelectorAll('[data-placement]').forEach(x=>{
     x.addEventListener('wheel',()=>{if(x===document.activeElement)x.blur()},{passive:true});
     x.oninput=()=>{const [rid,team]=x.dataset.placement.split('|');const score=Math.min(2147483647,n(x.value));if(x.value!==''&&Number(x.value)!==score)x.value=String(score);touchLocal();schedulePlacementSave(rid,Number(team),score);refreshScoreTextOnly()};
+  });
+  document.querySelectorAll('[data-placement-step]').forEach(btn=>btn.onclick=()=>{
+    const key=btn.dataset.placementStep,inp=document.querySelector('[data-placement="'+CSS.escape(key)+'"]');if(!inp)return;
+    inp.value=Math.min(2147483647,Math.max(0,n(inp.value)+(btn.dataset.dir==='1'?1:-1)));
+    inp.dispatchEvent(new Event('input',{bubbles:true}));inp.focus();
   });
   document.querySelectorAll('[data-chicken]').forEach(x=>x.onchange=()=>{
     touchLocal();
