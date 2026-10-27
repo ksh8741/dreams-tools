@@ -10011,6 +10011,11 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.placementOnly .team .plist .slot .playerInline{grid-template-columns:minmax(0,1fr) !important;justify-items:center !important}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.placementOnly .team .plist .slot .playerInline .name{text-align:center !important;width:100% !important;max-width:none !important}
 </style>
+<style id="combined-score-tooltip-style">
+#combinedScoreTooltip{position:fixed;z-index:2147483000;max-width:calc(100vw - 24px);padding:10px 14px;border:1px solid #897342;border-radius:4px;background:#17140f;color:#f5ecd8;font:500 13px/1.45 "Noto Sans KR",sans-serif;white-space:nowrap;box-shadow:0 6px 18px #0008;pointer-events:none;opacity:0;transform:translateY(3px);transition:opacity .15s ease,transform .15s ease}
+#combinedScoreTooltip.is-visible{opacity:1;transform:translateY(0)}
+@media(prefers-reduced-motion:reduce){#combinedScoreTooltip{transition:none}}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -10029,7 +10034,7 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
                 <div id="gameSettingsBody" class="settingsDeck">
                     <section class="settingCard settingsActionCard">
                         <div class="settingsActions">
-                            <button id="scoreViewMode" type="button" class="btn" aria-pressed="true">합산킬 ON</button>
+                            <button id="scoreViewMode" type="button" class="btn" aria-pressed="true" aria-describedby="combinedScoreTooltip">합산킬 ON</button>
                             <button id="battleRoyaleBtn" type="button" class="btn" aria-pressed="false">배틀로얄</button>
                             <button id="openTimerSettings" type="button" class="btn">타이머</button>
                             <button id="saveResult" type="button" class="btn resultSaveBtn">결과 저장</button>
@@ -11655,6 +11660,13 @@ if(battleRoyaleBtn)battleRoyaleBtn.onclick=()=>{if(!cur)return;refreshBattleChoi
 if(battleChoiceClose)battleChoiceClose.onclick=hideBattleChoice;
 if(battleChoiceOff)battleChoiceOff.onclick=()=>setBattleMode(false,true);
 if(battleChoiceOverlay){battleChoiceOverlay.querySelectorAll('[data-battle-kills]').forEach(button=>button.onclick=()=>setBattleMode(true,button.dataset.battleKills==='true'));battleChoiceOverlay.addEventListener('click',event=>{if(event.target===battleChoiceOverlay)hideBattleChoice()});document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!battleChoiceOverlay.classList.contains('hidden'))hideBattleChoice()})}
+if(scoreViewMode){
+ const tooltip=document.createElement('div');tooltip.id='combinedScoreTooltip';tooltip.setAttribute('role','tooltip');tooltip.textContent='윗팀 VS 아랫팀 합산점수 표기';document.body.appendChild(tooltip);
+ function positionCombinedTooltip(){const b=scoreViewMode.getBoundingClientRect(),t=tooltip.getBoundingClientRect(),x=Math.max(8,Math.min(window.innerWidth-t.width-8,b.left+(b.width-t.width)/2)),y=b.top-t.height-8>=8?b.top-t.height-8:Math.min(window.innerHeight-t.height-8,b.bottom+8);tooltip.style.left=x+'px';tooltip.style.top=y+'px'}
+ function showCombinedTooltip(){positionCombinedTooltip();tooltip.classList.add('is-visible')}
+ function hideCombinedTooltip(){tooltip.classList.remove('is-visible')}
+ scoreViewMode.addEventListener('mouseenter',showCombinedTooltip);scoreViewMode.addEventListener('mouseleave',hideCombinedTooltip);scoreViewMode.addEventListener('focus',showCombinedTooltip);scoreViewMode.addEventListener('blur',hideCombinedTooltip);window.addEventListener('resize',hideCombinedTooltip);document.addEventListener('scroll',hideCombinedTooltip,true);
+}
 if(scoreViewMode)scoreViewMode.onclick=()=>{
   if(!cur)return;
   const next=scoreMode()==='2v2'?'separate':'2v2';scoreViewMode.value=next;
