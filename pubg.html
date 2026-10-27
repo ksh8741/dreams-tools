@@ -9994,6 +9994,23 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard.battleRo
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scoreSettingsGrid .settingField > span { min-height:20px !important; align-items:center !important; }
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scoreSettingsGrid .settingEmoji:is(.iconTarget,.iconChicken) { box-sizing:border-box !important; width:18px !important; min-width:18px !important; max-width:18px !important; height:18px !important; min-height:18px !important; max-height:18px !important; flex:0 0 18px !important; margin:0 !important; background-size:contain !important; background-position:center !important; }
 </style>
+<style id="battle-choice-layout">
+#battleChoiceOverlay .battleChoicePanel{width:min(560px,calc(100vw - 40px));box-sizing:border-box;background:#100e0b;border:1px solid #ae9047;box-shadow:inset 0 0 0 4px #100e0b,inset 0 0 0 5px #6c582d,0 18px 60px #000b;padding:24px;color:#f2df9e}
+#battleChoiceOverlay .battleChoiceHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+#battleChoiceOverlay .battleChoiceHead h2{margin:0;font-size:21px;color:#f2df9e}
+#battleChoiceOverlay .battleChoiceClose{border:0;background:transparent;color:#eee;font-size:26px;cursor:pointer}
+#battleChoiceOverlay .battleChoiceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#battleChoiceOverlay .battleChoiceOption{min-height:88px;background:#111;border:1px solid #756037;color:#eee;font-size:19px;cursor:pointer}
+#battleChoiceOverlay .battleChoiceOption.selected{background:#291f13;border-color:#d1af55;color:#ffe19a;box-shadow:inset 0 0 0 1px #d1af55}
+#battleChoiceOverlay .battleChoiceOption:hover{border-color:#f3d175}
+#battleChoiceOverlay .battleChoiceOff{display:block;margin:16px auto 0;background:transparent;border:1px solid #756037;color:#ded4bb;padding:9px 18px;cursor:pointer}
+#battleChoiceOverlay .battleChoiceOff[hidden]{display:none}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.placementOnly #scoreStatusRow .combinedGoal{display:none !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.placementOnly #scoreStatusRow{display:flex !important;justify-content:center !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.placementOnly .team .teamSummary .miniScore,html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.placementOnly .team .teamSummary .miniGoal{display:none !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.placementOnly .team .plist .slot .playerInline{grid-template-columns:minmax(0,1fr) !important;justify-items:center !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.placementOnly .team .plist .slot .playerInline .name{text-align:center !important;width:100% !important;max-width:none !important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -10045,6 +10062,7 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scoreSettingsGrid 
               <p class="balanceNote">점수 비율은 최고 점수 기준입니다. 치킨 확률은 현재 소속 팀의 기록된 판 중 치킨을 획득한 비율입니다.</p>
               <div id="balanceList" class="balanceList"></div>
             </section></div>
+            <div id="battleChoiceOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="battleChoiceTitle"><section class="battleChoicePanel"><div class="battleChoiceHead"><h2 id="battleChoiceTitle">배틀로얄 · 킬점수</h2><button type="button" id="battleChoiceClose" class="battleChoiceClose" aria-label="닫기">×</button></div><div class="battleChoiceGrid"><button type="button" class="battleChoiceOption" data-battle-kills="true">킬점수 포함</button><button type="button" class="battleChoiceOption" data-battle-kills="false">킬점수 제거</button></div><button type="button" id="battleChoiceOff" class="battleChoiceOff">배틀로얄 해제</button></section></div>
             <div id="timerSettingsOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="timerSettingsTitle"><section class="modal timerSettingsPanel"><div class="timerDialogHead"><h2 id="timerSettingsTitle">타이머 설정</h2><button type="button" id="closeTimerSettings" class="btn" aria-label="타이머 설정 닫기">×</button></div>                    <section class="settingCard">
                         <div class="settingCardTitle"><span>타이머</span></div>
                         <div class="timerCleanGrid">
@@ -10199,7 +10217,7 @@ let lastAppliedSignature='';
 function touchLocal(){localRevision++;lastLocalEditAt=Date.now()}
 function stateSignature(room,p,ro,s,tm){
   const rp=room?{
-    id:room.id,chicken_kills:room.chicken_kills,sanhok_chicken_kills:room.sanhok_chicken_kills,battle_royale:room.battle_royale,
+    id:room.id,chicken_kills:room.chicken_kills,sanhok_chicken_kills:room.sanhok_chicken_kills,battle_royale:room.battle_royale,battle_royale_kills:room.battle_royale_kills,
     top10_no_death_penalty:room.top10_no_death_penalty,goal_kills:room.goal_kills,score_mode:room.score_mode,
     timer_mode:room.timer_mode,timer_seconds:room.timer_seconds,timer_started_at:room.timer_started_at,timer_end_at:room.timer_end_at
   }:null;
@@ -10214,7 +10232,7 @@ function calcTeamScores(){
   const scores=[];
   for(let tt=1;tt<=cur.team_count;tt++){
     let score=0;
-    teamPlayers(tt).forEach(p=>score+=totals(p).score);
+    if(battleIncludesKills())teamPlayers(tt).forEach(p=>score+=totals(p).score);
     if(isBattleRoyale())score+=teamPlacementTotal(tt);else RO.filter(r=>r.chicken_team===tt).forEach(r=>score+=getTeamMap(r,tt)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills));
     scores.push(score);
   }
@@ -10271,6 +10289,7 @@ function playScoreCue(slot,delta){
   clearTimeout(slot._flashTimer);slot._flashTimer=setTimeout(()=>slot.classList.remove('scoreFlash'),850);
 }
 function flashPlayerScore(playerId,delta){
+  if(!battleIncludesKills())return;
   const slot=scoreboard.querySelector('[data-slot="'+CSS.escape(String(playerId))+'"]');
   if(slot)playScoreCue(slot,delta);
   scoreCueListeners.forEach(listener=>listener(playerId,delta));
@@ -10455,6 +10474,7 @@ let teamMapState={},placementState={},placementCache={};
 const placementTimers=new Map(),placementDesired=new Map(),placementSaving=new Set();
 const placementCacheKey='pubg_placement_cache_v1';
 function isBattleRoyale(){return !!cur?.battle_royale}
+function battleIncludesKills(){return !isBattleRoyale() || cur?.battle_royale_kills !== false}
 function loadPlacementCache(){try{placementCache=JSON.parse(localStorage.getItem(placementCacheKey)||'{}')[String(cur?.id)]||{}}catch(_){placementCache={}}}
 function persistPlacementCache(){try{const all=JSON.parse(localStorage.getItem(placementCacheKey)||'{}');all[String(cur?.id)]=placementCache;localStorage.setItem(placementCacheKey,JSON.stringify(all))}catch(_){syncStorageError=true}}
 function teamPlacementTotal(team){return RO.reduce((sum,r)=>sum+(placementState[teamMapKey(r.id,team)]??0),0)}
@@ -10934,6 +10954,7 @@ async function saveName(x){
 function renderScore(){
   renderBalanceIfOpen();
   if(scoreboard){
+    scoreboard.classList.toggle('placementOnly',!battleIncludesKills());
     scoreboard.classList.toggle('fourTeamWindow',cur?.team_count===4);
     scoreboard.classList.toggle('twoRowTeams',cur?.team_count>=5);
     scoreboard.style.setProperty('--score-columns',String(scoreColumns(cur.team_count)));
@@ -10941,6 +10962,7 @@ function renderScore(){
   {
     const homeScoreFrame=document.querySelector('#captureStage .scoreFrame');
     if(homeScoreFrame){
+      homeScoreFrame.classList.toggle('placementOnly',!battleIncludesKills());
       homeScoreFrame.style.setProperty('--home-team-count',String(Math.max(1,cur?.team_count||1)));
       homeScoreFrame.style.setProperty('--score-columns',String(scoreColumns(cur.team_count)));
       homeScoreFrame.classList.toggle('twoRowScoreFrame',cur.team_count>=5);
@@ -10954,14 +10976,14 @@ function renderScore(){
   let teamScores=[],out='';
   for(let t=1;t<=cur.team_count;t++){
     let ps=P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===t),teamScore=0,ch=0;
-    ps.forEach(p=>{teamScore+=totals(p).score});
+    if(battleIncludesKills())ps.forEach(p=>{teamScore+=totals(p).score});
     if(isBattleRoyale())teamScore+=teamPlacementTotal(t);else RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
     teamScores.push(teamScore);
     out+='<div class="team" data-score-column="'+(((t-1)%scoreColumns(cur.team_count))+1)+'" data-score-row="'+(Math.floor((t-1)/scoreColumns(cur.team_count))+1)+'"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span>'+(isBattleRoyale()?'<span class="miniTrophy">'+teamPlacementTotal(t)+'</span>':'<span class="miniChicken">'+ch+'</span>')+(cur.team_count===1?'<span class="miniGoal">'+(cur.goal_kills??50)+'</span>':'')+'</div><div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot'+(a.minus>0?' hasPenalty':'')+'" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<span class="avatarFrame"><img class="avatar" src="'+pic(p.soop_user_id)+'" alt=""></span>':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" maxlength="2" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름">'+
-      '<div class="detail">'+scoreMarkup(a)+'</div>'+'</div></div>'}).join('')+
+      (battleIncludesKills()?'<div class="detail">'+scoreMarkup(a)+'</div>':'')+'</div></div>'}).join('')+
       '</div></div>';
   }
   scoreboard.innerHTML=out;
@@ -11047,7 +11069,7 @@ function teamKillTotals(){
     out.push({
       team,
       name:(ps[0]?.nickname||('TEAM '+team)).slice(0,2),
-      score:playerScore+(isBattleRoyale()?teamPlacementTotal(team):chickenBonus),
+      score:(battleIncludesKills()?playerScore:0)+(isBattleRoyale()?teamPlacementTotal(team):chickenBonus),
       chicken:chickenRounds.length
     });
   }
@@ -11614,11 +11636,25 @@ addRound.onclick=async()=>{
 };
 
 const battleRoyaleBtn=document.getElementById('battleRoyaleBtn');
-if(battleRoyaleBtn)battleRoyaleBtn.onclick=()=>{
- if(!cur)return;const next=!isBattleRoyale();touchLocal();cur.battle_royale=next;
- syncScoreModeControl();renderScore();board();
- q('/pubg_rooms?id=eq.'+encodeURIComponent(cur.id),{method:'PATCH',body:JSON.stringify({battle_royale:next})}).catch(console.error);
-};
+const battleChoiceOverlay=document.getElementById('battleChoiceOverlay');
+const battleChoiceClose=document.getElementById('battleChoiceClose');
+const battleChoiceOff=document.getElementById('battleChoiceOff');
+let battleModeWrite=Promise.resolve();
+function refreshBattleChoice(){
+ battleChoiceOverlay.querySelectorAll('[data-battle-kills]').forEach(button=>{const selected=isBattleRoyale()&&String(cur.battle_royale_kills!==false)===button.dataset.battleKills;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected))});
+ battleChoiceOff.hidden=!isBattleRoyale();
+}
+function hideBattleChoice(){battleChoiceOverlay.classList.add('hidden');battleRoyaleBtn.focus()}
+function setBattleMode(active,includeKills){
+ if(!cur)return;const id=cur.id;const patch={battle_royale:active};if(active)patch.battle_royale_kills=includeKills;
+ touchLocal();Object.assign(cur,patch);syncScoreModeControl();renderScore();board();hideBattleChoice();
+ pendingWrites++;
+ battleModeWrite=battleModeWrite.catch(()=>{}).then(()=>q('/pubg_rooms?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(patch)})).then(()=>{localRevision++}).catch(err=>{console.error('[battle mode save]',err);alert('배틀로얄 설정을 저장하지 못했습니다. 다시 시도해주세요.');if(cur&&cur.id===id){lastAppliedSignature='';load()}}).finally(()=>{pendingWrites--});
+}
+if(battleRoyaleBtn)battleRoyaleBtn.onclick=()=>{if(!cur)return;refreshBattleChoice();battleChoiceOverlay.classList.remove('hidden');battleChoiceOverlay.querySelector('[data-battle-kills]').focus()};
+if(battleChoiceClose)battleChoiceClose.onclick=hideBattleChoice;
+if(battleChoiceOff)battleChoiceOff.onclick=()=>setBattleMode(false,true);
+if(battleChoiceOverlay){battleChoiceOverlay.querySelectorAll('[data-battle-kills]').forEach(button=>button.onclick=()=>setBattleMode(true,button.dataset.battleKills==='true'));battleChoiceOverlay.addEventListener('click',event=>{if(event.target===battleChoiceOverlay)hideBattleChoice()});document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!battleChoiceOverlay.classList.contains('hidden'))hideBattleChoice()})}
 if(scoreViewMode)scoreViewMode.onclick=()=>{
   if(!cur)return;
   const next=scoreMode()==='2v2'?'separate':'2v2';scoreViewMode.value=next;
