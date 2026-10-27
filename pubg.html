@@ -10276,8 +10276,14 @@ function queueSafeRender(){
   renderQueued=true;
   requestAnimationFrame(()=>{
     renderQueued=false;if(!cur)return;
-    if(dragId){pendingRemoteRender=true;return;}
     const active=document.activeElement;
+    const editingField=active?.matches?.('input, select, textarea, [contenteditable="true"]') && document.getElementById('roomView')?.contains(active);
+    if(dragId||openMapPicker||editingField){
+      pendingRemoteRender=true;
+      refreshScoreTextOnly();
+      return;
+    }
+    pendingRemoteRender=false;
     const attrs=['data-k','data-d','data-name','data-map','data-chicken'];
     const attr=attrs.find(a=>active?.hasAttribute?.(a));
     const value=attr?active.getAttribute(attr):null;
@@ -10312,6 +10318,8 @@ async function q(p,o={}){
     const previous=syncChains.get(p)||Promise.resolve();
     const work=previous.catch(()=>{}).then(()=>syncRequest(p,o,retryable));syncChains.set(p,work);
     const result=await work;
+    // Invalidate reads started before a local write was acknowledged.
+    if(method!=='GET'&&String(cur?.id)===String(timelineWriteRoom))localRevision++;
     try{recordTimelineWrite(p,o,result,timelineWriteRoom)}catch(error){console.error('[timeline]',error)}
     if(syncChains.get(p)===work)syncChains.delete(p);
     if(entry){const ix=syncOutbox.findIndex(x=>x.id===entry.id);syncOutbox=syncOutbox.filter((x,i)=>!(x.p===p&&i<=ix));persistOutbox();}
@@ -10532,10 +10540,7 @@ document.addEventListener('focusout',ev=>{
   setTimeout(()=>{
     if(!hasEditableFocus() && picker.classList.contains('hidden')){
       editing=false;
-      if(cur && pendingRemoteRender && pendingWrites===0 && Date.now()-lastLocalEditAt>700){
-        pendingRemoteRender=false;
-        load(true);
-      }
+      if(cur && pendingRemoteRender && !openMapPicker)queueSafeRender();
     }
   },180);
 });
@@ -11275,6 +11280,7 @@ function setupKillScroll(){
 let openMapPicker=null;
 function closeMapPicker(){
  if(!openMapPicker)return;openMapPicker.wrapper.classList.remove('open');openMapPicker.trigger.setAttribute('aria-expanded','false');openMapPicker.menu.remove();openMapPicker=null;
+ if(pendingRemoteRender)setTimeout(()=>{if(cur&&pendingRemoteRender&&!openMapPicker)queueSafeRender()},0);
 }
 function mapPickerIcon(name){
  const el=document.createElement('span');el.className='mapPickerIcon';const path=MAP_IMAGES[name];
@@ -11625,7 +11631,7 @@ setInterval(async()=>{
       if(String(entry.room)!==String(cur.id)||syncActive.has(entry.id)||syncChains.has(entry.p))continue;
       syncActive.add(entry.id);
       const work=syncRequest(entry.p,entry.o,true);syncChains.set(entry.p,work);
-      try{const result=await work;try{recordTimelineWrite(entry.p,entry.o,result,entry.room)}catch(error){console.error('[timeline]',error)}syncOutbox=syncOutbox.filter(x=>x.id!==entry.id);persistOutbox();syncWriteError='';}
+      try{const result=await work;if(String(cur?.id)===String(entry.room))localRevision++;try{recordTimelineWrite(entry.p,entry.o,result,entry.room)}catch(error){console.error('[timeline]',error)}syncOutbox=syncOutbox.filter(x=>x.id!==entry.id);persistOutbox();syncWriteError='';}
       catch(err){syncWriteError='저장 오류 · '+err.message;}
       finally{syncActive.delete(entry.id);if(syncChains.get(entry.p)===work)syncChains.delete(entry.p);}
     }
