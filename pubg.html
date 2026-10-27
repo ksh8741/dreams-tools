@@ -9692,6 +9692,16 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) .overlay .modal,
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #timelineOverlay .timelinePanel,
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #balanceOverlay .balancePanel{background:rgba(16,13,9,.90) !important}
 </style>
+<style id="translucent-sheet-repair">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified colgroup,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified col[data-team-no],
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified col.fixedRoundCol,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified tbody,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified tbody tr{background:transparent !important;background-color:transparent !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified thead .colHeadRow th,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified thead .colHeadRow th[data-team-no],
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified thead .colHeadRow th.roundCol{background:#100d09 !important;background-color:#100d09 !important;color:#f6e27a !important;position:sticky !important;top:0 !important;z-index:10 !important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
