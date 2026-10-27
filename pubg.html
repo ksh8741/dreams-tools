@@ -10015,7 +10015,7 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
               <div class="killUnifiedWrap"><div id="killBoard"></div></div><button id="addRound" class="btn add">추가</button></div>
             <div id="balanceOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="balanceTitle"><section class="balancePanel">
               <div class="balanceHeading"><h2 id="balanceTitle">밸런스 비교</h2><button type="button" id="closeBalance" class="btn" aria-label="밸런스 비교 닫기">×</button></div>
-              <p class="balanceNote">점수 비율은 최고 점수 기준입니다. 치킨 확률은 기록이 입력된 판 중 현재 소속 팀의 치킨 비율입니다.</p>
+              <p class="balanceNote">점수 비율은 최고 점수 기준입니다. 치킨 확률은 현재 소속 팀의 기록된 판 중 치킨을 획득한 비율입니다.</p>
               <div id="balanceList" class="balanceList"></div>
             </section></div>
             <div id="timerSettingsOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="timerSettingsTitle"><section class="modal timerSettingsPanel"><div class="timerDialogHead"><h2 id="timerSettingsTitle">타이머 설정</h2><button type="button" id="closeTimerSettings" class="btn" aria-label="타이머 설정 닫기">×</button></div>                    <section class="settingCard">
@@ -11670,7 +11670,10 @@ function renderBalanceIfOpen(){
   const choices=all.map(p=>'<option value="'+e(String(p.id))+'" '+(chosen&&String(p.id)===String(chosen.id)?'selected':'')+'>'+e(p.nickname)+'</option>').join('');
   const score=row.record?row.value.score:null;
   const playerTeam=chosen?Math.floor((chosen.position-1)/cur.players_per_team)+1:null;
-  const recordedRounds=RO.filter(r=>r.chicken_team!=null||S.some(x=>String(x.round_id)===String(r.id)));
+  // A team has a recorded round only when that team's map, chicken, or a team member's stat is recorded.
+  const teamPlayerIds=new Set(playerTeam?teamPlayers(playerTeam).map(p=>String(p.id)):[]);
+  const teamStatRounds=new Set(S.filter(x=>teamPlayerIds.has(String(x.player_id))).map(x=>String(x.round_id)));
+  const recordedRounds=playerTeam?RO.filter(r=>Number(r.chicken_team)===playerTeam || !!teamMapState[teamMapKey(r.id,playerTeam)] || teamStatRounds.has(String(r.id))):[];
   const chickens=playerTeam?recordedRounds.filter(r=>Number(r.chicken_team)===playerTeam).length:0;
   const chickenRate=playerTeam&&recordedRounds.length?Math.round(chickens/recordedRounds.length*1000)/10:null;
   const pct=score!==null&&score>=0&&maxScore>0?Math.round(score/maxScore*1000)/10:null;
