@@ -9612,6 +9612,31 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker .modal::-webkit-scrol
 <style id="dialog-meta-dark-background">
 html:not(.broadcastOverlay):not(.mainScoreOverlay) .overlay .modal .meta{background:transparent !important;color:#c8baa0 !important}
 </style>
+<style id="toolbar-buttons-and-picker">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .sheetPlayerName{text-align:center !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scorePanel .captureTools .btn{height:38px !important;background:#15120e !important;border:1px solid #69542d !important;border-radius:2px !important;color:#eee4d0 !important;font-size:12px !important;white-space:nowrap !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scorePanel .captureTools .btn:hover{background:#292116 !important;border-color:#b69750 !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scorePanel .captureTools #scoreViewMode.active{background:#493919 !important;border-color:#d4b15f !important;color:#f8e6ae !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #timerSettingsOverlay{position:fixed !important;inset:0 !important;z-index:50000 !important;display:grid !important;place-items:center !important;background:#000c !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #timerSettingsOverlay.hidden{display:none !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #timerSettingsOverlay .timerSettingsPanel{width:min(440px,calc(100vw - 32px)) !important;background:#100d09 !important;color:#f1e4c7 !important;border:1px solid #a4884b !important;border-radius:0 !important;box-shadow:inset 0 0 0 3px #100d09,inset 0 0 0 4px #66502a !important;padding:20px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #timerSettingsOverlay .timerDialogHead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #timerSettingsOverlay .timerDialogHead h2{margin:0;color:#e6cc86;font-size:19px}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #timerSettingsOverlay .settingCard{background:transparent !important;border:0 !important;box-shadow:none !important;padding:8px 0 0 !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #timerSettingsOverlay .settingField{display:grid;gap:6px;color:#dfc99c}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #timerSettingsOverlay .settingField select,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #timerSettingsOverlay .settingField input{box-sizing:border-box;width:100%;height:38px;background:#090806 !important;color:#f5e9cc !important;border:1px solid #7d663a !important;padding:4px 8px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker .modal{display:flex !important;flex-direction:column !important;max-height:calc(100vh - 24px) !important;overflow:hidden !important;padding:16px 20px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker #pt{flex:none !important;margin:0 0 5px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker #ph{flex:none !important;margin:0 0 6px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker #cands{flex:0 1 auto !important;overflow-y:auto !important;max-height:255px !important;min-height:0 !important;scrollbar-color:#b08a3e #14110c !important;scrollbar-width:thin !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker #cands .cand{box-sizing:border-box !important;height:47px !important;min-height:47px !important;margin:0 0 4px !important;padding:3px 7px !important;grid-template-columns:38px minmax(0,1fr) auto !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker #cands .cand img{width:38px !important;height:38px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker .actions{flex:none !important;margin-top:8px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker #cands::-webkit-scrollbar{width:12px}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker #cands::-webkit-scrollbar-track{background:#14110c}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker #cands::-webkit-scrollbar-thumb{background:linear-gradient(#e6c56a,#8a6428);border:1px solid #3a2c12}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -9624,8 +9649,8 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) .overlay .modal .meta{backgro
                 <div class="panel sec scorePanel">
                     <div class="sect scoreToolbarSect">
                         <div class="captureTools">
-                            <select id="scoreViewMode"><option value="2v2">합산킬 표시</option><option value="separate">합산 미표시</option></select>
-                            <button id="saveResult" class="btn resultSaveBtn">결과 저장</button><button id="overlayUrlBtn" class="btn overlayUrlBtn">방송 URL</button>
+                            <button id="scoreViewMode" type="button" class="btn" aria-pressed="true">합산킬 표시</button>
+                            <button id="openTimerSettings" type="button" class="btn">타이머</button><button id="saveResult" class="btn resultSaveBtn">결과 저장</button><button id="overlayUrlBtn" class="btn overlayUrlBtn">방송 URL</button>
                         </div>
                     </div>
                     <div id="captureStage" class="scoreWrap"><div class="scoreFrame"><div id="totalBar" class="totalBar"></div><div id="scoreboard" class="score"></div></div></div>
@@ -9640,22 +9665,6 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) .overlay .modal .meta{backgro
                             <label class="settingField"><span>목표 킬</span><input id="goalKills" type="number" min="0" max="9999" value="50"></label>
                             <label class="settingField"><span>일반 치킨</span><input id="ck" type="number" min="0"></label>
                             <label class="settingField"><span>사녹 치킨</span><input id="sk" type="number" min="0"></label>
-                        </div>
-                    </section>
-                    <section class="settingCard">
-                        <div class="settingCardTitle"><span>타이머</span></div>
-                        <div class="timerCleanGrid">
-                            <label class="settingField timerModeField">
-                                <span>방식</span><select id="timerMode">
-                                    <option value="off">OFF</option>
-                                    <option value="uptime">설정 시간부터 업타임</option>
-                                    <option value="countdown">설정 시간 카운트다운</option>
-                                    <option value="endtime">종료시간까지 남은 시간</option>
-                                </select>
-                            </label>
-                            <label class="settingField" id="timerSecondsWrap"><span>설정 시간 (분)</span><input id="timerMinutes" type="number" min="0" max="14400" value="0"></label>
-                            <label class="settingField" id="timerEndWrap"><span>종료 시간</span><input id="timerEndAt" type="time"></label>
-                            <button id="timerStart" class="btn timerStartBtn">시작 / 재시작</button>
                         </div>
                     </section>
                     <section class="settingCard penaltyCard">
@@ -9676,6 +9685,23 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) .overlay .modal .meta{backgro
               <p class="balanceNote">점수 비율은 최고 점수 기준입니다. 치킨 확률은 기록이 입력된 판 중 현재 소속 팀의 치킨 비율입니다.</p>
               <div id="balanceList" class="balanceList"></div>
             </section></div>
+            <div id="timerSettingsOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="timerSettingsTitle"><section class="modal timerSettingsPanel"><div class="timerDialogHead"><h2 id="timerSettingsTitle">타이머 설정</h2><button type="button" id="closeTimerSettings" class="btn" aria-label="타이머 설정 닫기">×</button></div>                    <section class="settingCard">
+                        <div class="settingCardTitle"><span>타이머</span></div>
+                        <div class="timerCleanGrid">
+                            <label class="settingField timerModeField">
+                                <span>방식</span><select id="timerMode">
+                                    <option value="off">OFF</option>
+                                    <option value="uptime">설정 시간부터 업타임</option>
+                                    <option value="countdown">설정 시간 카운트다운</option>
+                                    <option value="endtime">종료시간까지 남은 시간</option>
+                                </select>
+                            </label>
+                            <label class="settingField" id="timerSecondsWrap"><span>설정 시간 (분)</span><input id="timerMinutes" type="number" min="0" max="14400" value="0"></label>
+                            <label class="settingField" id="timerEndWrap"><span>종료 시간</span><input id="timerEndAt" type="time"></label>
+                            <button id="timerStart" class="btn timerStartBtn">시작 / 재시작</button>
+                        </div>
+                    </section>
+</section></div>
             <div id="timelineOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="timelineDialogTitle"><section id="timelinePanel" class="panel timelinePanel">
               <div class="sect"><h2 id="timelineDialogTitle">타임라인</h2><button type="button" id="closeTimeline" class="btn" aria-label="타임라인 닫기">×</button></div>
               <div id="timelineList" class="timelineList"><div class="timelineEmpty">아직 변경 기록이 없습니다.</div></div>
@@ -10081,8 +10107,7 @@ function syncScoreModeControl(){
   if(!scoreViewMode||!cur)return;
   scoreViewMode.style.display=canCombineTeams()?'':'none';
   scoreViewMode.value=scoreMode();
-  const option=scoreViewMode.querySelector('option[value="2v2"]');
-  if(option)option.textContent='합산킬 표시';
+  const on=scoreMode()==='2v2';scoreViewMode.setAttribute('aria-pressed',String(on));scoreViewMode.classList.toggle('active',on);scoreViewMode.textContent='합산킬 '+(on?'ON':'OFF');
 }
 function pic(id){return 'https://stimg.sooplive.com/LOGO/'+id.slice(0,2)+'/'+id+'/m/'+id+'.webp'}
 
@@ -11156,9 +11181,10 @@ addRound.onclick=async()=>{
   cur=null;clearInterval(poll);clearInterval(timerTick);roomView.classList.add('hidden');lobby.classList.remove('hidden');rooms();
 };
 
-if(scoreViewMode)scoreViewMode.onchange=()=>{
+if(scoreViewMode)scoreViewMode.onclick=()=>{
   if(!cur)return;
-  touchLocal();cur.score_mode=scoreViewMode.value;renderScore();
+  const next=scoreMode()==='2v2'?'separate':'2v2';scoreViewMode.value=next;
+  touchLocal();cur.score_mode=next;renderScore();
   if(document.documentElement.classList.contains('broadcastVertical'))restartRankModeCycle();
   q('/pubg_rooms?id=eq.'+cur.id,{method:'PATCH',body:JSON.stringify({score_mode:scoreViewMode.value})}).catch(console.error);
 };
@@ -11292,6 +11318,13 @@ function renderBalanceIfOpen(){
  document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&!overlay.classList.contains('hidden'))hide()});
 })();
 
+(function initTimerDialog(){
+ const overlay=document.getElementById('timerSettingsOverlay'),open=document.getElementById('openTimerSettings'),close=document.getElementById('closeTimerSettings');if(!overlay||!open||!close)return;
+ const hide=()=>{overlay.classList.add('hidden');open.focus()};
+ open.addEventListener('click',()=>{syncTimerControls();overlay.classList.remove('hidden');close.focus()});
+ close.addEventListener('click',hide);overlay.addEventListener('click',event=>{if(event.target===overlay)hide()});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!overlay.classList.contains('hidden'))hide()});
+})();
 initSettingsToggle();
 (function initTimelineDialog(){
  const dialog=document.getElementById('timelineOverlay'),open=document.getElementById('openTimeline'),close=document.getElementById('closeTimeline');
