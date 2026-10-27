@@ -9637,6 +9637,61 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker #cands::-webkit-scrol
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker #cands::-webkit-scrollbar-track{background:#14110c}
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker #cands::-webkit-scrollbar-thumb{background:linear-gradient(#e6c56a,#8a6428);border:1px solid #3a2c12}
 </style>
+<style id="settings-action-reference">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActionCard{margin-bottom:0 !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:7px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions .btn{box-sizing:border-box !important;display:flex !important;align-items:center !important;justify-content:flex-start !important;gap:8px !important;min-width:0 !important;min-height:42px !important;height:auto !important;padding:4px 7px !important;background:#11100e !important;border:1px solid #574728 !important;border-radius:2px !important;color:#f0e8d8 !important;text-align:left !important;font-size:14px !important;white-space:normal !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions .btn::before{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border:1px solid #393126;background:#211d15;color:#c6ad73;font-size:18px;line-height:1}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #scoreViewMode::before{content:"∑"}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #openTimerSettings::before{content:"◷"}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #saveResult::before{content:"▣"}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #overlayUrlBtn::before{content:"↗"}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions .btn:hover{background:#221b10 !important;border-color:#b49551 !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #scoreViewMode.active{background:#272012 !important;border-color:#b49551 !important;color:#f7dfa0 !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .sheetPlayer{justify-content:center !important;gap:4px !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .sheetPlayerPhoto{border:0 !important;background:transparent !important;object-fit:contain !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .sheetPlayerName{flex:0 0 auto !important;width:2.4em !important;max-width:2.4em !important;min-width:0 !important;padding:0 2px !important;text-align:center !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .avatarFrame{background:transparent !important;border-radius:4px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .slot .avatarFrame img.avatar{width:100% !important;height:100% !important;object-fit:contain !important;border-radius:0 !important}
+</style>
+<style>html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions .btn[hidden]{display:none !important}</style>
+<style id="scoreboard-seam-and-button-refinement">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #openTimerSettings.active{background:#272012 !important;border-color:#b49551 !important;color:#f7dfa0 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team .teamSummary{box-sizing:border-box !important;height:28px !important;min-height:28px !important;max-height:28px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.squareEightScore #scoreboard .team .teamSummary{height:26.5px !important;min-height:26.5px !important;max-height:26.5px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team .plist .slot{border-top:0 !important;border-bottom:0 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #totalBar.timerOnlyLine{border-bottom:0 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreStatusRow.killCompareRow{border-bottom:0 !important}
+</style>
+<style id="translucent-page-surfaces">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #lobby,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView{background:rgba(7,6,5,.72) !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #lobby .rooms,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #lobby .room,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #lobby .rh,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsInline,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsPanel,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsDeck,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingCard,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView>.kill,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .killUnifiedWrap,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified tbody tr td,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified tbody tr td[data-team-no],
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified tbody tr:nth-child(even) td,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified tbody tr:hover td{background:transparent !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killUnified thead .colHeadRow th{background:rgba(10,8,5,.9) !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #gameSettingsOverlay .penaltyCard .di{background:rgba(24,20,14,.48) !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #gameSettingsOverlay .penaltyCard .di input,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingField input,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingField select,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .killInput,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #killBoard .mapPickerTrigger{background:rgba(15,12,8,.60) !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) .overlay .modal,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #timelineOverlay .timelinePanel,
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #balanceOverlay .balancePanel{background:rgba(16,13,9,.90) !important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -9647,18 +9702,21 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #picker #cands::-webkit-scrol
             <div class="top"><div><h1 id="insideTitle" style="margin:0;font-size:20px"></h1><div id="insideMeta" class="meta"></div></div><div class="roomTopActions"><button type="button" id="openBalance" class="btn" aria-haspopup="dialog">밸런스 비교</button> <button type="button" id="openTimeline" class="btn" aria-haspopup="dialog">타임라인</button> <button id="back" class="btn">← 방 목록</button></div></div>
             <div class="scoreAndSettings"><div class="scoreStage">
                 <div class="panel sec scorePanel">
-                    <div class="sect scoreToolbarSect">
-                        <div class="captureTools">
-                            <button id="scoreViewMode" type="button" class="btn" aria-pressed="true">합산킬 표시</button>
-                            <button id="openTimerSettings" type="button" class="btn">타이머</button><button id="saveResult" class="btn resultSaveBtn">결과 저장</button><button id="overlayUrlBtn" class="btn overlayUrlBtn">방송 URL</button>
-                        </div>
-                    </div>
                     <div id="captureStage" class="scoreWrap"><div class="scoreFrame"><div id="totalBar" class="totalBar"></div><div id="scoreboard" class="score"></div></div></div>
                 </div>
             </div>
             <div id="gameSettingsOverlay" class="settingsInline"><div class="panel sec settingsPanel">
                 <div class="sect"><h2 id="settingsDialogTitle">게임 세팅</h2><button id="settingsToggle" class="btn settingsToggle" type="button" aria-controls="gameSettingsBody" aria-expanded="true">접기 ▴</button></div>
                 <div id="gameSettingsBody" class="settingsDeck">
+                    <section class="settingCard settingsActionCard">
+                        <div class="settingCardTitle"><span>공통</span></div>
+                        <div class="settingsActions">
+                            <button id="scoreViewMode" type="button" class="btn" aria-pressed="true">합산킬 ON</button>
+                            <button id="openTimerSettings" type="button" class="btn">타이머</button>
+                            <button id="saveResult" type="button" class="btn resultSaveBtn">결과 저장</button>
+                            <button id="overlayUrlBtn" type="button" class="btn overlayUrlBtn">방송 URL</button>
+                        </div>
+                    </section>
                     <section class="settingCard">
                         <div class="settingCardTitle"><span>점수 설정</span></div>
                         <div class="scoreSettingsGrid">
@@ -10105,9 +10163,9 @@ function combinedScores(scores){const half=scores.length/2;return [scores.slice(
 function combinedLabel(count){const half=count/2;return Array.from({length:half},(_,i)=>teamLetter(i+1)).join('+')+' vs '+Array.from({length:half},(_,i)=>teamLetter(i+half+1)).join('+')}
 function syncScoreModeControl(){
   if(!scoreViewMode||!cur)return;
-  scoreViewMode.style.display=canCombineTeams()?'':'none';
+  scoreViewMode.hidden=!canCombineTeams();
   scoreViewMode.value=scoreMode();
-  const on=scoreMode()==='2v2';scoreViewMode.setAttribute('aria-pressed',String(on));scoreViewMode.classList.toggle('active',on);scoreViewMode.textContent='합산킬 '+(on?'ON':'OFF');
+  const on=scoreMode()==='2v2';scoreViewMode.setAttribute('aria-pressed',String(on));scoreViewMode.classList.toggle('active',on);scoreViewMode.textContent='합산킬';
 }
 function pic(id){return 'https://stimg.sooplive.com/LOGO/'+id.slice(0,2)+'/'+id+'/m/'+id+'.webp'}
 
@@ -10149,6 +10207,8 @@ function refreshStatusRow(){
   }
 }
 function refreshTimerBadge(){
+  const timerButton=document.getElementById('openTimerSettings');
+  if(timerButton){const enabled=!!cur && !!cur.timer_mode && cur.timer_mode!=='off';timerButton.classList.toggle('active',enabled);timerButton.setAttribute('aria-pressed',String(enabled))}
   const el=document.getElementById('timerBadge');
   if(el){el.style.display='none';el.textContent='';}
   refreshStatusRow();
