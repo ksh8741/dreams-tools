@@ -9995,6 +9995,11 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scoreSettingsGrid 
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .scoreSettingsGrid .settingEmoji:is(.iconTarget,.iconChicken) { box-sizing:border-box !important; width:18px !important; min-width:18px !important; max-width:18px !important; height:18px !important; min-height:18px !important; max-height:18px !important; flex:0 0 18px !important; margin:0 !important; background-size:contain !important; background-position:center !important; }
 </style>
 <style id="battle-choice-layout">
+#roomView #gameSettingsBody #scoreSettingsCard[hidden]{display:none !important}
+/* Keep the battle-mode dialog above navigation and outside room stacking contexts. */
+#battleChoiceOverlay{position:fixed !important;inset:0 !important;z-index:2147483647 !important;display:grid !important;place-items:center !important;box-sizing:border-box;padding:20px;background:rgba(0,0,0,.78) !important;overflow:auto;isolation:isolate}
+#battleChoiceOverlay.hidden{display:none !important}
+#battleChoiceOverlay .battleChoicePanel{max-height:calc(100dvh - 40px);overflow-y:auto}
 #battleChoiceOverlay .battleChoicePanel{width:min(560px,calc(100vw - 40px));box-sizing:border-box;background:#100e0b;border:1px solid #ae9047;box-shadow:inset 0 0 0 4px #100e0b,inset 0 0 0 5px #6c582d,0 18px 60px #000b;padding:24px;color:#f2df9e}
 #battleChoiceOverlay .battleChoiceHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
 #battleChoiceOverlay .battleChoiceHead h2{margin:0;font-size:21px;color:#f2df9e}
@@ -10065,7 +10070,7 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #captureStage .scor
                             <button id="overlayUrlBtn" type="button" class="btn overlayUrlBtn">방송 URL</button>
                         </div>
                     </section>
-                    <section class="settingCard">
+                    <section id="scoreSettingsCard" class="settingCard">
                         <div class="settingCardTitle"><span>점수 설정</span></div>
                         <div class="scoreSettingsGrid">
                             <label class="settingField"><span><span class="settingEmoji iconTarget" aria-hidden="true"></span> 목표 킬</span><input id="goalKills" type="number" min="0" max="9999" value="50"></label>
@@ -10548,7 +10553,8 @@ function syncScoreModeControl(){
   const battleButton=document.getElementById('battleRoyaleBtn');
   if(battleButton){battleButton.classList.toggle('active',isBattleRoyale());battleButton.setAttribute('aria-pressed',String(isBattleRoyale()))}
   document.getElementById('balanceOverlay')?.classList.toggle('battleRoyaleMode',isBattleRoyale());
-  document.querySelectorAll('#gameSettingsBody .scoreSettingsGrid .settingField').forEach((el,i)=>{if(i>0)el.hidden=isBattleRoyale()});
+  const scoreSettingsCard=document.getElementById('scoreSettingsCard');
+  if(scoreSettingsCard)scoreSettingsCard.hidden=isBattleRoyale();
   scoreViewMode.hidden=!canCombineTeams();
   scoreViewMode.value=scoreMode();
   const on=scoreMode()==='2v2';scoreViewMode.setAttribute('aria-pressed',String(on));scoreViewMode.classList.toggle('active',on);scoreViewMode.textContent='합산킬';
@@ -11009,7 +11015,7 @@ function renderScore(){
     if(battleIncludesKills())ps.forEach(p=>{teamScore+=totals(p).score});
     if(isBattleRoyale())teamScore+=teamPlacementTotal(t);else RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
     teamScores.push(teamScore);
-    out+='<div class="team" data-score-column="'+(((t-1)%scoreColumns(cur.team_count))+1)+'" data-score-row="'+(Math.floor((t-1)/scoreColumns(cur.team_count))+1)+'"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span>'+(isBattleRoyale()?'<span class="miniTrophy">'+teamPlacementTotal(t)+'</span>':'<span class="miniChicken">'+ch+'</span>')+(cur.team_count===1?'<span class="miniGoal">'+(cur.goal_kills??50)+'</span>':'')+'</div><div class="plist">'+
+    out+='<div class="team" data-score-column="'+(((t-1)%scoreColumns(cur.team_count))+1)+'" data-score-row="'+(Math.floor((t-1)/scoreColumns(cur.team_count))+1)+'"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span>'+(isBattleRoyale()?'<span class="miniTrophy">'+teamPlacementTotal(t)+'</span>':'<span class="miniChicken">'+ch+'</span>')+(cur.team_count===1&&!isBattleRoyale()?'<span class="miniGoal">'+(cur.goal_kills??50)+'</span>':'')+'</div><div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot'+(a.minus>0?' hasPenalty':'')+'" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
       (p.soop_user_id?'<span class="avatarFrame"><img class="avatar" src="'+pic(p.soop_user_id)+'" alt=""></span>':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" maxlength="2" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름">'+
@@ -11034,7 +11040,7 @@ function renderScore(){
   const showCombined=(mode==='2v2' && canCombineTeams());
   if(showCombined){
     const [left,right]=combinedScores(teamScores);
-    totalBar.insertAdjacentHTML('afterend','<div id="scoreStatusRow" class="scoreStatusRow killCompareRow"><span class="statusLeft combinedGoal">'+goal+'</span><span class="statusCenter">'+left+' : '+right+'</span><span class="statusRight"></span></div>');
+    totalBar.insertAdjacentHTML('afterend','<div id="scoreStatusRow" class="scoreStatusRow killCompareRow"><span class="statusLeft'+(isBattleRoyale()?'':' combinedGoal')+'">'+(isBattleRoyale()?'':goal)+'</span><span class="statusCenter">'+left+' : '+right+'</span><span class="statusRight"></span></div>');
   }
   deathItems.innerHTML=P.map(p=>'<div class="di"><span>'+e(p.nickname||'PLAYER '+p.position)+'</span><input data-death="'+p.id+'" type="number" value="'+n(p.death_penalty)+'"></div>').join('');
   document.querySelectorAll('[data-name]').forEach(x=>{x.onfocus=()=>editing=true;x.oninput=()=>{if(!x.matches(':invalid'))prefetchProfile(x.value)};x.onkeydown=a=>{if(a.key==='Enter'){a.preventDefault();x.blur()}};x.onblur=()=>saveName(x)});
@@ -11667,6 +11673,7 @@ addRound.onclick=async()=>{
 
 const battleRoyaleBtn=document.getElementById('battleRoyaleBtn');
 const battleChoiceOverlay=document.getElementById('battleChoiceOverlay');
+if(battleChoiceOverlay)document.body.appendChild(battleChoiceOverlay);
 const battleChoiceClose=document.getElementById('battleChoiceClose');
 const battleChoiceOff=document.getElementById('battleChoiceOff');
 let battleModeWrite=Promise.resolve();
