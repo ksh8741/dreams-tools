@@ -10026,8 +10026,8 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.placementOnly .team .plist .slot .playerInline{width:32px !important;min-width:32px !important;max-width:32px !important}
 </style>
 <style id="placement-score-width">
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.placementOnly #scoreboard{grid-template-columns:repeat(var(--score-columns),100px) !important}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.placementOnly #scoreboard .team{box-sizing:border-box !important;width:100px !important;min-width:100px !important;max-width:100px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.placementOnly #scoreboard{grid-template-columns:repeat(var(--score-columns),88px) !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.placementOnly #scoreboard .team{box-sizing:border-box !important;width:88px !important;min-width:88px !important;max-width:88px !important}
 </style>
 <style id="score-cue-above-profile">
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team .plist .slot.scoreFlash{z-index:20 !important}
@@ -10411,7 +10411,7 @@ function cfg(a,b){return Array.from({length:a},()=>b).join(':')}
 function teamLetter(i){return String.fromCharCode(64+i)}
 function teamPlayers(team){return P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===team)}
 
-function scoreColumns(count){return count>=4?Math.ceil(count/2):count}
+function scoreColumns(count){return count>=(cur && !battleIncludesKills()?6:4)?Math.ceil(count/2):count}
 function applyScoreWidth(){
   if(!cur)return;
   const w=Math.max(202,scoreColumns(cur.team_count)*202);
@@ -10425,7 +10425,7 @@ function overlayUrlForRoom(){
   return u.toString();
 }
 function isMainScoreOverlay(){return document.documentElement.classList.contains('mainScoreOverlay')}
-function scoreTeamWidth(){return cur && !battleIncludesKills()?100:134}
+function scoreTeamWidth(){return cur && !battleIncludesKills()?88:134}
 function alignScoreFrame(frame,teamCount){
   if(!frame)return;
   const columns=scoreColumns(teamCount),width=(scoreTeamWidth()*columns)+'px';
@@ -10991,8 +10991,8 @@ function renderScore(){
   renderBalanceIfOpen();
   if(scoreboard){
     scoreboard.classList.toggle('placementOnly',!battleIncludesKills());
-    scoreboard.classList.toggle('fourTeamWindow',cur?.team_count===4);
-    scoreboard.classList.toggle('twoRowTeams',cur?.team_count>=5);
+    scoreboard.classList.toggle('fourTeamWindow',battleIncludesKills()&&cur?.team_count===4);
+    scoreboard.classList.toggle('twoRowTeams',cur?.team_count>=(!battleIncludesKills()?6:5));
     scoreboard.style.setProperty('--score-columns',String(scoreColumns(cur.team_count)));
   }
   {
@@ -11001,8 +11001,8 @@ function renderScore(){
       homeScoreFrame.classList.toggle('placementOnly',!battleIncludesKills());
       homeScoreFrame.style.setProperty('--home-team-count',String(Math.max(1,cur?.team_count||1)));
       homeScoreFrame.style.setProperty('--score-columns',String(scoreColumns(cur.team_count)));
-      homeScoreFrame.classList.toggle('twoRowScoreFrame',cur.team_count>=5);
-      homeScoreFrame.classList.toggle('squareEightScore',cur.team_count===4&&cur.players_per_team===4&&scoreMode()==='2v2');
+      homeScoreFrame.classList.toggle('twoRowScoreFrame',cur.team_count>=(!battleIncludesKills()?6:5));
+      homeScoreFrame.classList.toggle('squareEightScore',battleIncludesKills()&&cur.team_count===4&&cur.players_per_team===4&&scoreMode()==='2v2');
     }
   }
 
