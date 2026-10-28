@@ -10029,6 +10029,17 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team .plist .slot.scoreFlash::before{z-index:10 !important}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team .plist .slot .scoreDelta{z-index:11 !important}
 </style>
+<style id="scoreboard-slightly-medium-text">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team .plist .slot :is(.name,.detail,.penaltyBreakdown){font-weight:500 !important;-webkit-text-stroke:0.12px currentColor !important}
+</style>
+<style id="scoreboard-compact-rows-and-capture-guide">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.scoreFrame #scoreboard .team .plist .slot{height:26px !important;min-height:26px !important;max-height:26px !important;padding-top:1px !important;padding-bottom:1px !important}
+/* Block layout removes the inline-block baseline gap below the scoreboard. */
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame{display:block !important;vertical-align:top !important;margin-bottom:0 !important}
+html.mainScoreOverlay #broadcastScoreRoot #captureStage{background:transparent !important;border:0 !important;box-shadow:none !important;min-height:0 !important}
+/* The outline marks the capture bounds without changing the broadcast image. */
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #captureStage .scoreFrame{outline:2px solid #d3b56b !important;outline-offset:3px !important;box-shadow:0 0 0 5px #090909 !important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
