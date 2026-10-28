@@ -10024,6 +10024,11 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.placementOnly #scoreboard{grid-template-columns:repeat(var(--score-columns),100px) !important}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.placementOnly #scoreboard .team{box-sizing:border-box !important;width:100px !important;min-width:100px !important;max-width:100px !important}
 </style>
+<style id="score-cue-above-profile">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team .plist .slot.scoreFlash{z-index:20 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team .plist .slot.scoreFlash::before{z-index:10 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard .team .plist .slot .scoreDelta{z-index:11 !important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
