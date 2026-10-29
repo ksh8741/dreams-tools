@@ -10045,6 +10045,19 @@ html.mainScoreOverlay #broadcastScoreRoot #captureStage{background:transparent !
 /* The outline marks the capture bounds without changing the broadcast image. */
 html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #captureStage .scoreFrame{outline:2px solid #d3b56b !important;outline-offset:3px !important;box-shadow:0 0 0 5px #090909 !important}
 </style>
+<style id="individual-scoreboard-style">
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #individualModeBtn::before{content:"1" !important;font-family:Arial,sans-serif !important;font-weight:700 !important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #individualModeBtn.active{background:#272012 !important;border-color:#b49551 !important;color:#f7dfa0 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.individualScore #scoreboard{display:grid !important;grid-template-columns:170px !important;grid-auto-flow:row !important;gap:0 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.individualScore #scoreboard .team{width:170px !important;min-width:170px !important;max-width:170px !important;border-left:0 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.individualScore #scoreboard .team .plist .slot{grid-template-columns:20px 24px minmax(0,1fr) !important;column-gap:4px !important;justify-content:normal !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.individualScore #scoreboard .team .plist .slot .playerInline{width:auto !important;min-width:0 !important;max-width:none !important;grid-template-columns:32px minmax(0,1fr) !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.individualScore .individualRank{font-family:"Nanum Square Round","Noto Sans KR",sans-serif !important;font-size:12px !important;font-weight:800 !important;text-align:center !important;color:#777 !important;line-height:1 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.individualScore .slot:first-child .individualRank{color:#111 !important}
+</style>
+<style id="individual-sheet-navigation">
+#roomView #teamNavigation[hidden]{display:none !important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -10065,6 +10078,7 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView #captureStage .scor
                         <div class="settingsActions">
                             <button id="scoreViewMode" type="button" class="btn" aria-pressed="true" aria-describedby="combinedScoreTooltip">합산킬 ON</button>
                             <button id="battleRoyaleBtn" type="button" class="btn" aria-pressed="false">배틀로얄</button>
+                            <button id="individualModeBtn" type="button" class="btn" aria-pressed="false">개인전</button>
                             <button id="openTimerSettings" type="button" class="btn">타이머</button>
                             <button id="saveResult" type="button" class="btn resultSaveBtn">결과 저장</button>
                             <button id="overlayUrlBtn" type="button" class="btn overlayUrlBtn">방송 URL</button>
@@ -10251,7 +10265,7 @@ let lastAppliedSignature='';
 function touchLocal(){localRevision++;lastLocalEditAt=Date.now()}
 function stateSignature(room,p,ro,s,tm){
   const rp=room?{
-    id:room.id,chicken_kills:room.chicken_kills,sanhok_chicken_kills:room.sanhok_chicken_kills,battle_royale:room.battle_royale,battle_royale_kills:room.battle_royale_kills,
+    id:room.id,chicken_kills:room.chicken_kills,sanhok_chicken_kills:room.sanhok_chicken_kills,battle_royale:room.battle_royale,battle_royale_kills:room.battle_royale_kills,individual_mode:room.individual_mode,
     top10_no_death_penalty:room.top10_no_death_penalty,goal_kills:room.goal_kills,score_mode:room.score_mode,
     timer_mode:room.timer_mode,timer_seconds:room.timer_seconds,timer_started_at:room.timer_started_at,timer_end_at:room.timer_end_at
   }:null;
@@ -10274,6 +10288,7 @@ function calcTeamScores(){
 }
 function refreshScoreTextOnly(){
   if(!cur)return;
+  if(isIndividualMode()&&scoreboard.classList.contains('individualScore')){refreshIndividualRank();refreshStatusRow();return;}
   renderBalanceIfOpen();
   const scores=calcTeamScores();
   const summaries=[...scoreboard.querySelectorAll('.teamSummary')];
@@ -10411,7 +10426,7 @@ function cfg(a,b){return Array.from({length:a},()=>b).join(':')}
 function teamLetter(i){return String.fromCharCode(64+i)}
 function teamPlayers(team){return P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===team)}
 
-function scoreColumns(count){return count>=(cur && !battleIncludesKills()?6:4)?Math.ceil(count/2):count}
+function scoreColumns(count){if(isIndividualMode())return 1;return count>=(cur && !battleIncludesKills()?6:4)?Math.ceil(count/2):count}
 function applyScoreWidth(){
   if(!cur)return;
   const w=Math.max(202,scoreColumns(cur.team_count)*202);
@@ -10425,7 +10440,7 @@ function overlayUrlForRoom(){
   return u.toString();
 }
 function isMainScoreOverlay(){return document.documentElement.classList.contains('mainScoreOverlay')}
-function scoreTeamWidth(){return cur && !battleIncludesKills()?88:134}
+function scoreTeamWidth(){if(isIndividualMode())return 170;return cur && !battleIncludesKills()?88:134}
 function alignScoreFrame(frame,teamCount){
   if(!frame)return;
   const columns=scoreColumns(teamCount),width=(scoreTeamWidth()*columns)+'px';
@@ -10508,7 +10523,8 @@ const MAP_IMAGES={"에란겔":"data:image/webp;base64,UklGRuoYAABXRUJQVlA4IN4YAA
 let teamMapState={},placementState={},placementCache={};
 const placementTimers=new Map(),placementDesired=new Map(),placementSaving=new Set();
 const placementCacheKey='pubg_placement_cache_v1';
-function isBattleRoyale(){return !!cur?.battle_royale}
+function isIndividualMode(){return !!cur?.individual_mode}
+function isBattleRoyale(){return !!cur?.battle_royale&&!isIndividualMode()}
 function battleIncludesKills(){return !isBattleRoyale() || cur?.battle_royale_kills !== false}
 function loadPlacementCache(){try{placementCache=JSON.parse(localStorage.getItem(placementCacheKey)||'{}')[String(cur?.id)]||{}}catch(_){placementCache={}}}
 function persistPlacementCache(){try{const all=JSON.parse(localStorage.getItem(placementCacheKey)||'{}');all[String(cur?.id)]=placementCache;localStorage.setItem(placementCacheKey,JSON.stringify(all))}catch(_){syncStorageError=true}}
@@ -10544,12 +10560,14 @@ function normalizeMapName(r){
 }
 
 function defaultScoreMode(count){return count>=2&&count<=10&&count%2===0?'2v2':'separate'}
-function canCombineTeams(room=cur){return !!room&&room.team_count>=2&&room.team_count<=10&&room.team_count%2===0}
+function canCombineTeams(room=cur){return !!room&&!room.individual_mode&&room.team_count>=2&&room.team_count<=10&&room.team_count%2===0}
 function scoreMode(){return canCombineTeams()&&cur.score_mode==='2v2'?'2v2':'separate'}
 function combinedScores(scores){const half=scores.length/2;return [scores.slice(0,half).reduce((a,b)=>a+b,0),scores.slice(half).reduce((a,b)=>a+b,0)]}
 function combinedLabel(count){const half=count/2;return Array.from({length:half},(_,i)=>teamLetter(i+1)).join('+')+' vs '+Array.from({length:half},(_,i)=>teamLetter(i+half+1)).join('+')}
 function syncScoreModeControl(){
   if(!scoreViewMode||!cur)return;
+  const individualButton=document.getElementById('individualModeBtn');
+  if(individualButton){individualButton.classList.toggle('active',isIndividualMode());individualButton.setAttribute('aria-pressed',String(isIndividualMode()))}
   const battleButton=document.getElementById('battleRoyaleBtn');
   if(battleButton){battleButton.classList.toggle('active',isBattleRoyale());battleButton.setAttribute('aria-pressed',String(isBattleRoyale()))}
   document.getElementById('balanceOverlay')?.classList.toggle('battleRoyaleMode',isBattleRoyale());
@@ -10987,22 +11005,45 @@ async function saveName(x){
     editing=false;await load();
   }
 }
+function individualRankData(){
+ return P.map(player=>({player,...totals(player)})).sort((a,b)=>b.score-a.score||n(a.player.position)-n(b.player.position)||String(a.player.id).localeCompare(String(b.player.id)));
+}
+function individualScoreMarkup(){
+ return '<div class="team individualTeam" data-score-column="1" data-score-row="1"><div class="teamSummary"><span>개인전</span></div><div class="plist">'+individualRankData().map((row,index)=>{
+  const p=row.player;
+  return '<div class="slot'+(row.minus>0?' hasPenalty':'')+'" data-slot="'+e(p.id)+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'"><span class="individualRank">'+(index+1)+'</span>'+(p.soop_user_id?'<span class="avatarFrame"><img class="avatar" src="'+e(pic(p.soop_user_id))+'" alt=""></span>':'<span class="avatarEmpty"></span>')+'<div class="playerInline"><input class="name" maxlength="2" data-name="'+e(p.id)+'" value="'+e(p.nickname||'')+'" placeholder="이름"><div class="detail">'+scoreMarkup(row)+'</div></div></div>';
+ }).join('')+'</div></div>';
+}
+function refreshIndividualRank(){
+ const list=scoreboard.querySelector('.individualTeam .plist');if(!list)return;
+ const rows=individualRankData(),nodes=new Map([...list.children].map(node=>[String(node.dataset.slot),node]));
+ if(rows.length!==nodes.size||rows.some(row=>!nodes.has(String(row.player.id)))){renderScore();return;}
+ const oldTops=new Map([...nodes.values()].map(node=>[node,node.getBoundingClientRect().top]));
+ rows.forEach((row,index)=>{
+  const node=nodes.get(String(row.player.id));node.querySelector('.individualRank').textContent=String(index+1);node.querySelector('.detail').innerHTML=scoreMarkup(row);node.classList.toggle('hasPenalty',row.minus>0);
+  if(list.children[index]!==node)list.insertBefore(node,list.children[index]||null);
+ });
+ if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)nodes.forEach(node=>{const dy=oldTops.get(node)-node.getBoundingClientRect().top;if(dy&&node.animate){node._rankMove?.cancel();node._rankMove=node.animate([{translate:'0 '+dy+'px'},{translate:'0 0'}],{duration:220,easing:'ease-out'})}});
+}
+
 function renderScore(){
   renderBalanceIfOpen();
   if(scoreboard){
+    scoreboard.classList.toggle('individualScore',isIndividualMode());
     scoreboard.classList.toggle('placementOnly',!battleIncludesKills());
-    scoreboard.classList.toggle('fourTeamWindow',battleIncludesKills()&&cur?.team_count===4);
-    scoreboard.classList.toggle('twoRowTeams',cur?.team_count>=(!battleIncludesKills()?6:5));
+    scoreboard.classList.toggle('fourTeamWindow',!isIndividualMode()&&battleIncludesKills()&&cur?.team_count===4);
+    scoreboard.classList.toggle('twoRowTeams',!isIndividualMode()&&cur?.team_count>=(!battleIncludesKills()?6:5));
     scoreboard.style.setProperty('--score-columns',String(scoreColumns(cur.team_count)));
   }
   {
     const homeScoreFrame=document.querySelector('#captureStage .scoreFrame');
     if(homeScoreFrame){
+      homeScoreFrame.classList.toggle('individualScore',isIndividualMode());
       homeScoreFrame.classList.toggle('placementOnly',!battleIncludesKills());
       homeScoreFrame.style.setProperty('--home-team-count',String(Math.max(1,cur?.team_count||1)));
       homeScoreFrame.style.setProperty('--score-columns',String(scoreColumns(cur.team_count)));
-      homeScoreFrame.classList.toggle('twoRowScoreFrame',cur.team_count>=(!battleIncludesKills()?6:5));
-      homeScoreFrame.classList.toggle('squareEightScore',battleIncludesKills()&&cur.team_count===4&&cur.players_per_team===4&&scoreMode()==='2v2');
+      homeScoreFrame.classList.toggle('twoRowScoreFrame',!isIndividualMode()&&cur.team_count>=(!battleIncludesKills()?6:5));
+      homeScoreFrame.classList.toggle('squareEightScore',!isIndividualMode()&&battleIncludesKills()&&cur.team_count===4&&cur.players_per_team===4&&scoreMode()==='2v2');
     }
   }
 
@@ -11010,7 +11051,8 @@ function renderScore(){
   syncScoreModeControl();
   ck.value=cur.chicken_kills;sk.value=cur.sanhok_chicken_kills;
   let teamScores=[],out='';
-  for(let t=1;t<=cur.team_count;t++){
+  if(isIndividualMode())out=individualScoreMarkup();
+  for(let t=1;!isIndividualMode()&&t<=cur.team_count;t++){
     let ps=P.filter(p=>Math.floor((p.position-1)/cur.players_per_team)+1===t),teamScore=0,ch=0;
     if(battleIncludesKills())ps.forEach(p=>{teamScore+=totals(p).score});
     if(isBattleRoyale())teamScore+=teamPlacementTotal(t);else RO.filter(r=>r.chicken_team===t).forEach(r=>{ch++;teamScore+=getTeamMap(r,t)==='사녹'?n(cur.sanhok_chicken_kills):n(cur.chicken_kills)});
@@ -11327,12 +11369,14 @@ function colorKillTeams(teamLists){
   rows.forEach((row,rowIndex)=>{
     const cells=[...row.children];
     let index=1;
-    teamLists.forEach((ps,team)=>{for(let k=0;k<ps.length*2+2;k++)markTeamCell(cells[index++],team+1,k===0)});
+    teamLists.forEach((ps,team)=>{for(let k=0;k<ps.length*2+(isIndividualMode()?1:2);k++)markTeamCell(cells[index++],team+1,k===0)});
   });
 }
 let selectedKillTeam=1;
 function showSelectedKillTeam(){
- if(!cur)return;selectedKillTeam=Math.max(1,Math.min(selectedKillTeam,cur.team_count));
+ if(!cur)return;
+ if(isIndividualMode()){killBoard.querySelectorAll('[data-team-no]').forEach(cell=>cell.hidden=false);killBoard.style.setProperty('--kill-table-width',(56+174+P.length*(132+56))+'px');return;}
+ selectedKillTeam=Math.max(1,Math.min(selectedKillTeam,cur.team_count));
  killBoard.querySelectorAll('[data-team-no]').forEach(cell=>{cell.hidden=Number(cell.dataset.teamNo)!==selectedKillTeam});
  const players=teamPlayers(selectedKillTeam).length;
  killBoard.style.setProperty('--kill-table-width',(56+174+players*(132+56)+(isBattleRoyale()?132:50))+'px');
@@ -11341,6 +11385,7 @@ function showSelectedKillTeam(){
 }
 function renderTeamNavigation(){
  const nav=document.getElementById('teamNavigation');if(!nav||!cur)return;
+ nav.hidden=isIndividualMode();if(isIndividualMode()){nav.replaceChildren();showSelectedKillTeam();return;}
  const names=Array.from({length:cur.team_count},(_,i)=>captainName(i+1));nav.replaceChildren();
  names.forEach((name,i)=>{const button=document.createElement('button');button.type='button';button.className='btn teamJump';button.textContent=name;button.setAttribute('aria-label',name+' 킬 기록 표시');button.onclick=()=>{selectedKillTeam=i+1;showSelectedKillTeam();const box=killBoard.closest('.killUnifiedWrap');if(box)box.scrollLeft=0};nav.appendChild(button)});
  showSelectedKillTeam();
@@ -11429,23 +11474,24 @@ function board(){
   const scrollBox=killBoard.closest('.killUnifiedWrap'),oldScrollTop=scrollBox?.scrollTop||0,oldScrollLeft=scrollBox?.scrollLeft||0;
   killBoard.classList.toggle('battleRoyaleMode',isBattleRoyale());
   killBoard.style.setProperty('--room-team-count',String(cur.team_count));
-  const teamPlayersList=[];
-  for(let tt=1;tt<=cur.team_count;tt++)teamPlayersList.push(teamPlayers(tt));
+  const individual=isIndividualMode(),sheetTeamCount=individual?1:cur.team_count;
+  const teamPlayersList=individual?[[...P].sort((a,b)=>n(a.position)-n(b.position))]:[];
+  if(!individual)for(let tt=1;tt<=sheetTeamCount;tt++)teamPlayersList.push(teamPlayers(tt));
 
   // Build colspans: each team => map + each player + chicken(rightmost)
   let colHeader='<tr class="colHeadRow"><th class="roundCol">#</th>';
-  for(let tt=1;tt<=cur.team_count;tt++){
+  for(let tt=1;tt<=sheetTeamCount;tt++){
     const ps=teamPlayersList[tt-1],span=1+ps.length*2+1;
     colHeader+='<th class="mapCol">맵</th>';
     ps.forEach(p=>colHeader+='<th class="playerHead"><div class="sheetPlayer">'+(p.soop_user_id?'<img class="sheetPlayerPhoto" src="'+e(pic(p.soop_user_id))+'" alt="">':'')+'<input class="sheetPlayerName" type="text" maxlength="2" data-sheet-name="'+e(p.id)+'" value="'+e(p.nickname||'')+'" placeholder="이름" aria-label="선수 이름 수정"></div></th><th class="deathHead">데스</th>');
-    colHeader+='<th class="chickenCol"'+(isBattleRoyale()?' aria-label="순위 점수"':'')+'></th>';
+    if(!individual)colHeader+='<th class="chickenCol"'+(isBattleRoyale()?' aria-label="순위 점수"':'')+'></th>';
   }
   colHeader+='</tr>';
 
   let body='';
   RO.forEach(r=>{
     body+='<tr><td class="roundCol">'+r.round_no+'</td>';
-    for(let tt=1;tt<=cur.team_count;tt++){
+    for(let tt=1;tt<=sheetTeamCount;tt++){
       const ps=teamPlayersList[tt-1],mapName=getTeamMap(r,tt);
       body+='<td class="mapCol"><select class="mapSelect" data-map="'+r.id+'" data-map-team="'+tt+'">'+
         '<option value="" '+(!mapName?'selected':'')+'>맵 선택</option>'+MAPS.map(name=>'<option value="'+e(name)+'" '+(name===mapName?'selected':'')+'>'+e(name)+'</option>').join('')+
@@ -11460,19 +11506,19 @@ function board(){
           '</div>'+
           '</div></td><td class="deathCell"><input class="deathBtn" data-d="'+key+'" type="checkbox" '+(s.died?'checked':'')+' title="데스 체크" aria-label="'+e(p.nickname||'선수')+' 데스 체크"></td>';
       });
-      body+=isBattleRoyale()?'<td class="chickenCol"><div class="killCtrl"><div class="killSquare"><input class="killInput placementInput" data-placement="'+r.id+'|'+tt+'" type="number" min="0" max="2147483647" placeholder="–" aria-label="순위 점수" value="'+(placementState[teamMapKey(r.id,tt)]??'')+'"></div><div class="killSideStack"><button type="button" class="ctrlBtn" data-placement-step="'+r.id+'|'+tt+'" data-dir="1" aria-label="순위 점수 더하기">+</button><button type="button" class="ctrlBtn" data-placement-step="'+r.id+'|'+tt+'" data-dir="-1" aria-label="순위 점수 빼기">−</button></div></div></td>':'<td class="chickenCol"><input class="chickenCheck" data-chicken="'+r.id+'" data-team="'+tt+'" type="checkbox" '+(r.chicken_team===tt?'checked':'')+'></td>';
+      if(!individual)body+=isBattleRoyale()?'<td class="chickenCol"><div class="killCtrl"><div class="killSquare"><input class="killInput placementInput" data-placement="'+r.id+'|'+tt+'" type="number" min="0" max="2147483647" placeholder="–" aria-label="순위 점수" value="'+(placementState[teamMapKey(r.id,tt)]??'')+'"></div><div class="killSideStack"><button type="button" class="ctrlBtn" data-placement-step="'+r.id+'|'+tt+'" data-dir="1" aria-label="순위 점수 더하기">+</button><button type="button" class="ctrlBtn" data-placement-step="'+r.id+'|'+tt+'" data-dir="-1" aria-label="순위 점수 빼기">−</button></div></div></td>':'<td class="chickenCol"><input class="chickenCheck" data-chicken="'+r.id+'" data-team="'+tt+'" type="checkbox" '+(r.chicken_team===tt?'checked':'')+'></td>';
     }
     body+='</tr>';
   });
 
-  const playerCellWidth=132,deathCellWidth=56,mapCellWidth=174,chickenCellWidth=isBattleRoyale()?132:50,roundCellWidth=56;
+  const playerCellWidth=132,deathCellWidth=56,mapCellWidth=174,chickenCellWidth=individual?0:(isBattleRoyale()?132:50),roundCellWidth=56;
   const tableWidth=roundCellWidth+teamPlayersList.reduce((sum,ps)=>sum+mapCellWidth+ps.length*(playerCellWidth+deathCellWidth)+chickenCellWidth,0);
   let columns='<col class="fixedRoundCol" style="width:56px">';
   teamPlayersList.forEach((ps,index)=>{
     const team=index+1;
     columns+='<col data-team-no="'+team+'" class="fixedMapCol" style="width:174px">';
     ps.forEach(()=>columns+='<col data-team-no="'+team+'" class="fixedPlayerCol" style="width:132px"><col data-team-no="'+team+'" class="fixedDeathCol" style="width:56px">');
-    columns+='<col data-team-no="'+team+'" class="fixedChickenCol" style="width:'+chickenCellWidth+'px">';
+    if(!individual)columns+='<col data-team-no="'+team+'" class="fixedChickenCol" style="width:'+chickenCellWidth+'px">';
   });
   killBoard.style.setProperty('--kill-table-width',tableWidth+'px');
   killBoard.innerHTML='<table class="killUnified"><colgroup>'+columns+'</colgroup><thead>'+colHeader+'</thead><tbody>'+body+'</tbody></table>';
@@ -11683,11 +11729,17 @@ function refreshBattleChoice(){
 }
 function hideBattleChoice(){battleChoiceOverlay.classList.add('hidden');battleRoyaleBtn.focus()}
 function setBattleMode(active,includeKills){
- if(!cur)return;const id=cur.id;const patch={battle_royale:active};if(active)patch.battle_royale_kills=includeKills;
+ if(!cur)return;const id=cur.id;const patch={battle_royale:active};if(active){patch.battle_royale_kills=includeKills;patch.individual_mode=false;}
  touchLocal();Object.assign(cur,patch);syncScoreModeControl();renderScore();board();hideBattleChoice();
  pendingWrites++;
  battleModeWrite=battleModeWrite.catch(()=>{}).then(()=>q('/pubg_rooms?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(patch)})).then(()=>{localRevision++}).catch(err=>{console.error('[battle mode save]',err);alert('배틀로얄 설정을 저장하지 못했습니다. 다시 시도해주세요.');if(cur&&cur.id===id){lastAppliedSignature='';load()}}).finally(()=>{pendingWrites--});
 }
+const individualModeBtn=document.getElementById('individualModeBtn');
+if(individualModeBtn)individualModeBtn.onclick=()=>{
+ if(!cur)return;const id=cur.id,patch={individual_mode:!isIndividualMode()};if(patch.individual_mode)patch.battle_royale=false;
+ touchLocal();Object.assign(cur,patch);renderScore();board();pendingWrites++;
+ battleModeWrite=battleModeWrite.catch(()=>{}).then(()=>q('/pubg_rooms?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(patch)})).then(()=>{localRevision++}).catch(err=>{console.error('[individual mode save]',err);alert('개인전 설정을 저장하지 못했습니다. 다시 시도해주세요.');if(cur&&cur.id===id){lastAppliedSignature='';load()}}).finally(()=>{pendingWrites--});
+};
 if(battleRoyaleBtn)battleRoyaleBtn.onclick=()=>{if(!cur)return;refreshBattleChoice();battleChoiceOverlay.classList.remove('hidden');battleChoiceOverlay.querySelector('[data-battle-kills]').focus()};
 if(battleChoiceClose)battleChoiceClose.onclick=hideBattleChoice;
 if(battleChoiceOff)battleChoiceOff.onclick=()=>setBattleMode(false,true);
