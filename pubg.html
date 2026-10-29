@@ -10578,7 +10578,7 @@ function syncScoreModeControl(){
   const on=scoreMode()==='2v2';scoreViewMode.setAttribute('aria-pressed',String(on));scoreViewMode.classList.toggle('active',on);scoreViewMode.textContent='합산킬';
 }
 function pic(id){return 'https://stimg.sooplive.com/LOGO/'+id.slice(0,2)+'/'+id+'/m/'+id+'.webp'}
-const knownProfiles=Object.freeze({'윤중':'jk890202','용태':'dbsdydx','병영':'hby0724','윤수':'djdbstn','수식':'kss33325','제민':'wjswpalssla1','탱크':'dkwkal','구열':'kuyol','요닝':'tjgpdus97','민지':'alaelddl97','서리':'ys9024','모리':'moguleave','효짱':'queen030','리꿍':'imducko3o','핑핑':'nreupne','땅콩':'wlswn6565','요괴':'j4141h','럭키':'viwi05','위키':'viwi05'});
+const knownProfiles=Object.freeze({'윤중':'jk890202','용태':'dbsdydx','병영':'hby0724','윤수':'djdbstn','수식':'kss33325','제민':'wjswpalssla1','탱크':'dkwkal','구열':'kuyol','요닝':'tjgpdus97','민지':'alaelddl97','서리':'ys9024','모리':'moguleave','효짱':'queen030','리꿍':'imducko3o','핑핑':'nreupne','땅콩':'wlswn6565','요괴':'j4141h','수정':'j4141h','럭키':'viwi05','위키':'viwi05'});
 const profileSearchCache=new Map();
 function searchProfiles(name){
  const key=name.trim(),old=profileSearchCache.get(key);
