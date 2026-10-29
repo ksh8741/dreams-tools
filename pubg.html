@@ -10065,13 +10065,16 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #g
 </style>
 <style id="general-hide-death-settings">#roomView #gameSettingsBody .penaltyCard[hidden]{display:none !important}</style>
 <style id="general-compact-scoreboard">
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.generalGameScore #scoreboard{grid-template-columns:repeat(var(--score-columns),100px) !important}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.generalGameScore #scoreboard .team{width:100px !important;min-width:100px !important;max-width:100px !important}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.generalGameScore #scoreboard .team .plist .slot{grid-template-columns:24px minmax(0,1fr) !important;column-gap:2px !important;padding-left:2px !important;padding-right:2px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.generalGameScore #scoreboard{grid-template-columns:repeat(var(--score-columns),126px) !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.generalGameScore #scoreboard .team{width:126px !important;min-width:126px !important;max-width:126px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.generalGameScore #scoreboard .team .plist .slot{grid-template-columns:22px 24px minmax(0,1fr) !important;column-gap:2px !important;padding-left:2px !important;padding-right:2px !important}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.generalGameScore #scoreboard .team .plist .slot .playerInline{grid-template-columns:30px minmax(0,1fr) !important;gap:1px !important}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.generalGameScore #scoreboard .team .plist .slot .name{width:30px !important;max-width:30px !important;padding:0 !important}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.generalGameScore #scoreboard .team .plist .slot .detail{width:auto !important;min-width:0 !important;padding-right:1px !important}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.generalGameScore #scoreStatusRow.killCompareRow{grid-template-columns:46px minmax(0,1fr) 46px !important}
+</style>
+<style id="general-player-round-number">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.generalGameScore .nextPlayerRound{display:flex !important;align-items:center !important;justify-content:center !important;min-width:0 !important;height:100% !important;color:#555 !important;font-family:"Nanum Square Round","Noto Sans KR",sans-serif !important;font-size:12px !important;font-weight:800 !important;font-variant-numeric:tabular-nums !important;line-height:1 !important}
 </style>
 </head>
 <body>
@@ -10306,6 +10309,7 @@ function refreshScoreTextOnly(){
   if(!cur)return;
   if(isIndividualMode()&&scoreboard.classList.contains('individualScore')){refreshIndividualRank();refreshStatusRow();return;}
   renderBalanceIfOpen();
+  if(isGeneralGame())scoreboard.querySelectorAll('[data-slot]').forEach(slot=>{const round=slot.querySelector('.nextPlayerRound');if(round)round.textContent=String(nextPlayerRound(slot.dataset.slot))});
   const scores=calcTeamScores();
   const summaries=[...scoreboard.querySelectorAll('.teamSummary')];
   summaries.forEach((el,i)=>{
@@ -10334,12 +10338,18 @@ function scoreText(a){
   return a.minus>0 ? a.score+'('+a.raw+'-'+a.minus+')' : a.score+scoreUnit();
 }
 function scoreMarkup(a){return a.minus>0?e(a.score)+'<span class="penaltyBreakdown">('+e(a.raw)+'-'+e(a.minus)+')</span>':e(a.score)+scoreUnit()}
+function nextPlayerRound(playerId){
+ const rounds=new Map(RO.map(round=>[String(round.id),n(round.round_no)]));
+ let last=0;for(const stat of S)if(String(stat.player_id)===String(playerId)&&stat.kills!=null)last=Math.max(last,rounds.get(String(stat.round_id))||0);
+ return last+1;
+}
 function updatePlayerScoreText(playerId){
   const p=P.find(x=>String(x.id)===String(playerId));if(!p)return;
   const a=totals(p);
   const slot=scoreboard.querySelector('[data-slot="'+CSS.escape(String(playerId))+'"]');
   const detail=slot?.querySelector('.detail');
   if(detail)detail.innerHTML=scoreMarkup(a);
+  const round=slot?.querySelector('.nextPlayerRound');if(round)round.textContent=String(nextPlayerRound(playerId));
   if(slot)slot.classList.toggle('hasPenalty',a.minus>0);
 }
 const scoreCueListeners=new Set();
@@ -10456,7 +10466,7 @@ function overlayUrlForRoom(){
   return u.toString();
 }
 function isMainScoreOverlay(){return document.documentElement.classList.contains('mainScoreOverlay')}
-function scoreTeamWidth(){if(isGeneralGame())return 100;if(isIndividualMode())return 170;return cur && !battleIncludesKills()?88:134}
+function scoreTeamWidth(){if(isGeneralGame())return 126;if(isIndividualMode())return 170;return cur && !battleIncludesKills()?88:134}
 function alignScoreFrame(frame,teamCount){
   if(!frame)return;
   const columns=scoreColumns(teamCount),width=(scoreTeamWidth()*columns)+'px';
@@ -11086,6 +11096,7 @@ function renderScore(){
     teamScores.push(teamScore);
     out+='<div class="team" data-score-column="'+(((t-1)%scoreColumns(cur.team_count))+1)+'" data-score-row="'+(Math.floor((t-1)/scoreColumns(cur.team_count))+1)+'"><div class="teamSummary"><span class="miniScore">'+teamScore+'</span>'+(isBattleRoyale()?'<span class="miniTrophy">'+teamPlacementTotal(t)+'</span>':(isGeneralGame()?'':'<span class="miniChicken">'+ch+'</span>'))+(cur.team_count===1&&!isBattleRoyale()?'<span class="miniGoal">'+(cur.goal_kills??50)+'</span>':'')+'</div><div class="plist">'+
       ps.map(p=>{let a=totals(p);return '<div class="slot'+(a.minus>0?' hasPenalty':'')+'" draggable="true" data-slot="'+p.id+'" data-accent="'+((Math.max(1,n(p.position))-1)%16)+'">'+
+      (isGeneralGame()?'<span class="nextPlayerRound" aria-label="다음 판">'+nextPlayerRound(p.id)+'</span>':'')+
       (p.soop_user_id?'<span class="avatarFrame"><img class="avatar" src="'+pic(p.soop_user_id)+'" alt=""></span>':'<span class="avatarEmpty"></span>')+
       '<div class="playerInline"><input class="name" maxlength="2" data-name="'+p.id+'" value="'+e(p.nickname||'')+'" placeholder="이름">'+
       (battleIncludesKills()?'<div class="detail">'+scoreMarkup(a)+'</div>':'')+'</div></div>'}).join('')+
