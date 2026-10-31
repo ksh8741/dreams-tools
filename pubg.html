@@ -4,7 +4,7 @@
     <script>if(new URLSearchParams(location.search).has("overlay"))document.documentElement.classList.add("mainScoreOverlay");</script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>배그 · 요닝 방송도구함</title>
+    <title>시트 · 요닝 방송도구함</title>
     <style>
              * {
                  box-sizing: border-box
@@ -10271,6 +10271,13 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .sc
 body>.starHistoryOverlay:not([hidden]){display:flex!important;position:fixed!important;inset:0!important;z-index:2147483647!important}
 .doosanDreamsLogo{display:block!important;width:32px!important;height:36px!important;object-fit:contain!important;flex:0 0 32px!important;transform:rotate(-12deg)!important;filter:drop-shadow(0 2px 2px #0003)}
 </style>
+<style id="star-fixed-preview-donor-font">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanDonor{font-family:"Nanum Square Round",sans-serif!important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView.starFixedPreview{--score-pane-width:340px!important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView.starFixedPreview .scoreAndSettings>.scoreStage{height:clamp(240px,58vh,640px)!important;min-height:0!important;max-height:clamp(240px,58vh,640px)!important;flex:0 0 clamp(240px,58vh,640px)!important;width:100%!important;overflow:auto!important;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#9b814f #19150f}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView.starFixedPreview .scoreStage .scorePanel{width:max-content!important;min-width:100%!important;max-width:none!important;align-items:flex-start!important;box-sizing:border-box!important}
+html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView.starFixedPreview .scoreAndSettings #captureStage{width:max-content!important;max-width:none!important;flex:none!important;overflow:visible!important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -10654,7 +10661,7 @@ function applyScoreWidth(){
   if(!cur)return;
   const w=Math.max(202,scoreColumns(cur.team_count)*202);
   document.documentElement.style.setProperty('--score-width',w+'px');
-  document.documentElement.style.setProperty('--score-pane-width',Math.max(300,scoreColumns(cur.team_count)*scoreTeamWidth()*(isDoosan()?doosanScale()/100:1)+28)+'px');
+  document.documentElement.style.setProperty('--score-pane-width',(isStarRank()?340:Math.max(300,scoreColumns(cur.team_count)*scoreTeamWidth()+28))+'px');
 }
 function overlayUrlForRoom(){
   if(!cur)return '';
@@ -11358,6 +11365,7 @@ function refreshIndividualRank(){
 }
 
 function renderScore(){
+  document.getElementById("roomView")?.classList.toggle("starFixedPreview",isStarRank());
   renderBalanceIfOpen();
   if(scoreboard){
     scoreboard.classList.toggle('generalGameScore',isGeneralGame());
@@ -11802,7 +11810,7 @@ document.addEventListener('scroll',event=>{if(openMapPicker&&!openMapPicker.menu
 function fitMainScore(){
  if(!cur||isMainScoreOverlay()||document.documentElement.classList.contains('broadcastOverlay'))return;
  const stage=document.querySelector('#roomView .scoreStage'),pane=document.querySelector('#roomView .scoreAndSettings'),frame=document.querySelector('#captureStage .scoreFrame');if(!stage||!pane||!frame)return;
- if(isDoosan()){frame.style.zoom=String(doosanScale()/100);const tools=document.querySelector('#roomView .scorePanel .captureTools');if(tools)tools.style.width=((doosanCardWidth()+2)*doosanScale()/100)+'px';return;}
+ if(isStarRank()){frame.style.zoom=String(isDoosan()?doosanScale()/100:1);const tools=document.querySelector('#roomView .scorePanel .captureTools');if(tools)tools.style.width='100%';return;}
  const w=scoreColumns(cur.team_count)*scoreTeamWidth()+2,room=Math.max(1,stage.clientWidth-26),availableHeight=Math.max(80,pane.clientHeight*.65-54),baseHeight=frame.offsetHeight||1;
  const scale=Math.max(.1,Math.min(1,room/w,availableHeight/baseHeight));frame.style.zoom=String(scale);
  const tools=document.querySelector('#roomView .scorePanel .captureTools');if(tools)tools.style.width=(w*scale)+'px';
