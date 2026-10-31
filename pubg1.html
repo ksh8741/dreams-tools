@@ -10086,21 +10086,28 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView .settingsActions #s
 </style>
 <style>.starCaptureState{font:10px/1 system-ui,sans-serif !important;color:#d9c999 !important;white-space:nowrap !important}</style>
 <style id="doosan-score-style">
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.doosanScore #scoreboard{grid-template-columns:310px !important}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.doosanScore #scoreboard .team{width:310px !important;min-width:310px !important;max-width:310px !important}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.doosanScore #scoreboard .team .plist .slot{display:grid !important;grid-template-columns:88px minmax(0,1fr) 70px !important;column-gap:6px !important;padding:1px 7px !important}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanColumns{display:grid;grid-template-columns:88px minmax(0,1fr) 70px;gap:6px;padding:7px;background:#181818;color:#ddd;font:11px/1.3 "Nanum Square Round",sans-serif;text-align:center}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanMember{display:flex;align-items:center;gap:5px;min-width:0;font:500 15px/1 "Nanum Square Round",sans-serif;color:#111}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanDonor{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;font:500 13px/1.3 "Nanum Square Round",sans-serif;color:#333}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .detail{min-width:0 !important;width:70px !important;max-width:70px !important;text-align:right !important;font-size:15px !important}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanSummary{display:flex !important;align-items:center !important;justify-content:space-between !important;padding:9px 12px !important;height:38px !important;background:#101010 !important;color:#fff !important;font:600 13px/1 "Nanum Square Round",sans-serif !important}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanTotal{font:800 20px/1 "Nanum Square Round",sans-serif !important;color:#fff !important;font-variant-numeric:tabular-nums}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.doosanScore{background:linear-gradient(135deg,#28272a,#131316 65%,#242227) !important;border:1px solid #b4a17e !important;border-radius:14px !important;overflow:hidden !important;box-shadow:0 12px 30px #0005,inset 0 1px 0 #ffffff30 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.doosanScore #scoreboard{grid-template-columns:var(--doosan-width,364px) !important;background:transparent !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.doosanScore #scoreboard .team{width:var(--doosan-width,364px) !important;min-width:var(--doosan-width,364px) !important;max-width:var(--doosan-width,364px) !important;background:transparent !important;border:0 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.scoreFrame #scoreboard.doosanScore .team .plist .slot{display:grid !important;grid-template-columns:calc(var(--doosan-font)*5) minmax(0,1fr) calc(var(--doosan-font)*4.2) !important;column-gap:calc(var(--doosan-font)*.4) !important;padding:calc(var(--doosan-font)*.55) calc(var(--doosan-font)*.7) !important;height:calc(var(--doosan-font)*3.1) !important;min-height:calc(var(--doosan-font)*3.1) !important;max-height:none !important;background:transparent !important;color:#f5f1eb !important;border:0 !important;box-shadow:none !important;align-items:center !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .plist{background:transparent !important;padding:5px 0 8px !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanColumns{display:grid;grid-template-columns:calc(var(--doosan-font)*5) minmax(0,1fr) calc(var(--doosan-font)*4.2);gap:calc(var(--doosan-font)*.4);padding:10px calc(var(--doosan-font)*.7);background:#ffffff05;color:#aca59c;font:500 calc(var(--doosan-font)*.57)/1.4 "Nanum Square Round",sans-serif;letter-spacing:.02em;text-align:center;border-top:1px solid #c8b79625;border-bottom:1px solid #c8b79618}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanMember{display:flex;align-items:center;gap:calc(var(--doosan-font)*.4);min-width:0;font:600 calc(var(--doosan-font)*.84)/1.2 "Nanum Square Round",sans-serif;color:#f4f1ec !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanMember .avatarFrame{width:calc(var(--doosan-font)*1.65) !important;height:calc(var(--doosan-font)*1.65) !important;min-width:calc(var(--doosan-font)*1.65) !important;background:transparent !important;border:0 !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanMember .avatar{width:100% !important;height:100% !important;object-fit:contain !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanDonor{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;font:500 calc(var(--doosan-font)*.75)/1.3 "Nanum Square Round",sans-serif;color:#bdb6aa !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .detail{min-width:0 !important;width:auto !important;max-width:none !important;text-align:right !important;font:700 var(--doosan-font)/1 "Nanum Square Round",sans-serif !important;color:#e6d4ad !important;-webkit-text-stroke:0 !important;letter-spacing:-.04em !important;font-variant-numeric:tabular-nums}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanSummary{position:relative;display:flex !important;align-items:center !important;justify-content:space-between !important;gap:16px !important;padding:calc(var(--doosan-font)*1.3) calc(var(--doosan-font)*.9) !important;height:auto !important;min-height:calc(var(--doosan-font)*5) !important;background:linear-gradient(110deg,#ffffff08,transparent) !important;color:#e7ded0 !important;font:500 calc(var(--doosan-font)*.72)/1.5 "Nanum Square Round",sans-serif !important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanCardTitle{max-width:48%;overflow-wrap:anywhere;text-align:left;letter-spacing:.06em}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanTotal{font:700 calc(var(--doosan-font)*1.55)/1.1 "Nanum Square Round",sans-serif !important;letter-spacing:-.04em;color:#f3e3bf !important;font-variant-numeric:tabular-nums;white-space:nowrap}
 .starRankActions{flex-wrap:wrap}
 </style>
 <style id="doosan-editor-style">
 .doosanEditor{padding:14px;color:#eee2c8;font:15px/1.5 "Noto Sans KR",sans-serif}.doosanAdminBar{display:flex;align-items:end;gap:12px;flex-wrap:wrap}.doosanAdminBar label{display:grid;gap:6px;font-size:13px}.doosanAdminBar input{background:#17140f;color:#eee2c8;border:1px solid #736346;padding:10px;width:250px;max-width:100%}.doosanEditHelp{font-size:13px;color:#bbb2a2}.doosanEditTable{width:100%;border-collapse:collapse;table-layout:fixed}.doosanEditTable th{padding:12px;text-align:left;font-size:13px;color:#bbaa87}.doosanEditTable td{padding:12px;border-top:1px solid #ffffff18;overflow-wrap:anywhere}.doosanEditTable th:first-child{width:100px}.doosanEditTable th:nth-child(3){width:130px}.doosanEditTable th:last-child{width:88px}.doosanEditTable input{box-sizing:border-box;width:100%;padding:10px;border:1px solid #736346;background:#17140f;color:#fff;font:18px/1.4 "Nanum Square Round",sans-serif}.doosanEditMember{display:flex;gap:8px;align-items:center}.doosanEditMember img{width:28px;height:28px;object-fit:contain}#doosanEditStatus{min-height:24px;color:#f0c581;font-size:13px}
 </style>
-</head>
+<style id="doosan-appearance-style">
+.doosanAppearance{display:flex;align-items:start;gap:12px;flex-wrap:wrap;margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid #ffffff16}.doosanAppearance label{display:grid;gap:6px;font:13px/1.4 "Noto Sans KR",sans-serif;color:#bcb3a3}.doosanAppearance input{box-sizing:border-box;width:210px;padding:10px 12px;border:1px solid #736346;background:#17140f;color:#f3e8d4;font:15px/1.4 "Noto Sans KR",sans-serif}.doosanAppearance #doosanFontInput{width:90px}.doosanAppearance small{color:#8f877a;font-size:11px}.doosanAppearance button{margin-top:23px}
+</style></head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
 
@@ -10310,7 +10317,7 @@ let lastAppliedSignature='';
 function touchLocal(){localRevision++;lastLocalEditAt=Date.now()}
 function stateSignature(room,p,ro,s,tm){
   const rp=room?{
-    id:room.id,chicken_kills:room.chicken_kills,sanhok_chicken_kills:room.sanhok_chicken_kills,battle_royale:room.battle_royale,battle_royale_kills:room.battle_royale_kills,individual_mode:room.individual_mode,general_game:room.general_game,star_rank:room.star_rank,star_doosan:room.star_doosan,
+    id:room.id,chicken_kills:room.chicken_kills,sanhok_chicken_kills:room.sanhok_chicken_kills,battle_royale:room.battle_royale,battle_royale_kills:room.battle_royale_kills,individual_mode:room.individual_mode,general_game:room.general_game,star_rank:room.star_rank,star_doosan:room.star_doosan,star_title:room.star_title,star_font:room.star_font,
     top10_no_death_penalty:room.top10_no_death_penalty,goal_kills:room.goal_kills,score_mode:room.score_mode,
     timer_mode:room.timer_mode,timer_seconds:room.timer_seconds,timer_started_at:room.timer_started_at,timer_end_at:room.timer_end_at
   }:null;
@@ -10426,7 +10433,7 @@ function queueSafeRender(){
     renderQueued=false;if(!cur)return;
     const active=document.activeElement;
     const editingField=active?.matches?.('input, select, textarea, [contenteditable="true"]') && document.getElementById('roomView')?.contains(active);
-    if(dragId||openMapPicker||editingField){
+    if(dragId||openMapPicker||editingField||doosanAdminBusy||active?.closest?.('.doosanEditor')){
       pendingRemoteRender=true;
       refreshScoreTextOnly();
       return;
@@ -10492,7 +10499,7 @@ function overlayUrlForRoom(){
   return u.toString();
 }
 function isMainScoreOverlay(){return document.documentElement.classList.contains('mainScoreOverlay')}
-function scoreTeamWidth(){if(isDoosan())return 310;if(isGeneralGame())return 126;if(isIndividualMode())return 170;return cur && !battleIncludesKills()?88:134}
+function scoreTeamWidth(){if(isDoosan())return doosanCardWidth();if(isGeneralGame())return 126;if(isIndividualMode())return 170;return cur && !battleIncludesKills()?88:134}
 function alignScoreFrame(frame,teamCount){
   if(!frame)return;
   const columns=scoreColumns(teamCount),width=(scoreTeamWidth()*columns)+'px';
@@ -10626,7 +10633,7 @@ function syncScoreModeControl(){
   const starButton=document.getElementById('starRankBtn');if(starButton){starButton.classList.toggle('active',isStarRank());starButton.setAttribute('aria-pressed',String(isStarRank()))}
   const generalButton=document.getElementById('generalGameBtn');
   if(generalButton){generalButton.classList.toggle('active',isGeneralGame());generalButton.setAttribute('aria-pressed',String(isGeneralGame()))}
-  document.querySelector('#roomView .panel.kill h2').textContent=isGeneralGame()?'점수 기록':'킬 기록';
+  document.querySelector('#roomView .panel.kill h2').textContent=isStarRank()?'두산 관리':isGeneralGame()?'점수 기록':'킬 기록';
   const goalLabel=document.getElementById('goalKills')?.previousElementSibling;if(goalLabel?.lastChild?.nodeType===3)goalLabel.lastChild.nodeValue=isGeneralGame()?' 목표 점수':' 목표 킬';
   document.querySelectorAll('#scoreSettingsCard .settingField').forEach((field,i)=>field.hidden=isGeneralGame()&&i>0);
   const penaltyCard=document.querySelector('#gameSettingsBody .penaltyCard');if(penaltyCard)penaltyCard.hidden=isGeneralGame()||isStarRank();
@@ -11073,10 +11080,12 @@ function individualRankData(){
  return P.filter(player=>!isStarRank()||starTotals.has(String(player.id))).map(player=>({player,...totals(player)})).sort((a,b)=>b.score-a.score||n(a.player.position)-n(b.player.position)||String(a.player.id).localeCompare(String(b.player.id)));
 }
 
+function doosanFont(){return Math.min(32,Math.max(12,Number(cur?.star_font)||18));}
+function doosanCardWidth(){return Math.round(364*doosanFont()/18);}
 function doosanPlayer(player){const row=starTotals.get(String(player.id));return row&&row.streamer_id===String(player.soop_user_id||'').toLowerCase()?row:null;}
 function doosanBalloonTotal(){return [...starTotals.values()].reduce((sum,row)=>sum+Number(row.all_balloons??row.balloons??0),0);}
 function doosanScoreMarkup(){
- return '<div class="team individualTeam" data-score-column="1" data-score-row="1"><div class="teamSummary doosanSummary"><span>총 별풍선</span><strong class="doosanTotal">'+doosanBalloonTotal().toLocaleString('ko-KR')+'개</strong></div><div class="doosanColumns"><span>멤버</span><span>최근 두산 후원자</span><span>두산</span></div><div class="plist">'+individualRankData().map(row=>{
+ return '<div class="team individualTeam" data-score-column="1" data-score-row="1"><div class="teamSummary doosanSummary"><span class="doosanCardTitle">'+e(cur.star_title||'총 별풍선')+'</span><strong class="doosanTotal">'+doosanBalloonTotal().toLocaleString('ko-KR')+'개</strong></div><div class="doosanColumns"><span>멤버</span><span>최근 두산 후원자</span><span>두산</span></div><div class="plist">'+individualRankData().map(row=>{
  const p=row.player,gift=doosanPlayer(p);
  return '<div class="slot" data-slot="'+e(p.id)+'"><span class="doosanMember">'+(p.soop_user_id?'<span class="avatarFrame"><img class="avatar" src="'+e(pic(p.soop_user_id))+'" alt=""></span>':'')+'<span>'+e(p.nickname||'이름')+'</span></span><span class="doosanDonor" title="'+e(gift?.last_donor||'')+'">'+e(gift?.last_donor||'—')+'</span><div class="detail">'+scoreMarkup(row)+'</div></div>';
  }).join('')+'</div></div>';
@@ -11106,7 +11115,7 @@ function renderScore(){
   renderBalanceIfOpen();
   if(scoreboard){
     scoreboard.classList.toggle('generalGameScore',isGeneralGame());
-    scoreboard.classList.toggle('individualScore',isIndividualMode());scoreboard.classList.toggle('doosanScore',isDoosan());
+    scoreboard.classList.toggle('individualScore',isIndividualMode());scoreboard.classList.toggle('doosanScore',isDoosan());scoreboard.style.setProperty('--doosan-font',doosanFont()+'px');scoreboard.style.setProperty('--doosan-width',doosanCardWidth()+'px');
     scoreboard.classList.toggle('placementOnly',!battleIncludesKills());
     scoreboard.classList.toggle('fourTeamWindow',!isIndividualMode()&&battleIncludesKills()&&cur?.team_count===4);
     scoreboard.classList.toggle('twoRowTeams',!isIndividualMode()&&cur?.team_count>=(!battleIncludesKills()?6:5));
@@ -11116,7 +11125,7 @@ function renderScore(){
     const homeScoreFrame=document.querySelector('#captureStage .scoreFrame');
     if(homeScoreFrame){
       homeScoreFrame.classList.toggle('generalGameScore',isGeneralGame());
-      homeScoreFrame.classList.toggle('individualScore',isIndividualMode());homeScoreFrame.classList.toggle('doosanScore',isDoosan());
+      homeScoreFrame.classList.toggle('individualScore',isIndividualMode());homeScoreFrame.classList.toggle('doosanScore',isDoosan());homeScoreFrame.style.setProperty('--doosan-font',doosanFont()+'px');homeScoreFrame.style.setProperty('--doosan-width',doosanCardWidth()+'px');
       homeScoreFrame.classList.toggle('placementOnly',!battleIncludesKills());
       homeScoreFrame.style.setProperty('--home-team-count',String(Math.max(1,cur?.team_count||1)));
       homeScoreFrame.style.setProperty('--score-columns',String(scoreColumns(cur.team_count)));
@@ -11550,12 +11559,25 @@ function fitMainScore(){
  const tools=document.querySelector('#roomView .scorePanel .captureTools');if(tools)tools.style.width=(w*scale)+'px';
 }
 
+async function saveDoosanAppearance(key,value){
+ if(!cur)return;const room=cur.id,previous=cur[key];touchLocal();cur[key]=value;renderScore();
+ try{await q('/pubg_rooms?id=eq.'+room,{method:'PATCH',body:JSON.stringify({[key]:value})});}
+ catch{if(cur?.id===room){cur[key]=previous;renderScore();const status=killBoard.querySelector('#doosanEditStatus');if(status)status.textContent='디자인 설정을 저장하지 못했습니다.';}}
+}
+
 function renderDoosanEditor(){
  const oldPassword=killBoard.querySelector('#doosanAdminPassword')?.value||'';
+ const drafts=new Map([...killBoard.querySelectorAll('[data-doosan-edit][data-dirty]')].map(input=>[input.dataset.doosanEdit,input.value]));
  addRound.hidden=true;addRound.style.setProperty('display','none','important');
- const title=document.querySelector('#roomView .panel.kill h2');if(title)title.textContent='두산 기록';
- killBoard.innerHTML='<div class="doosanEditor"><div class="doosanAdminBar"><label>관리자 비밀번호<input id="doosanAdminPassword" type="password" autocomplete="off" placeholder="기존 사이트 관리자 비밀번호"></label><button class="btn danger" type="button" id="resetDoosan">전체 초기화</button></div><p class="doosanEditHelp">두산을 수정하고 각 멤버의 적용 버튼을 누르세요. 다음 숫자부터 이어서 집계합니다. 전체 초기화는 두산과 별풍선 총합을 모두 0으로 만듭니다.</p><div id="doosanEditStatus" role="status"></div><table class="doosanEditTable"><thead><tr><th>멤버</th><th>최근 두산 후원자</th><th>두산</th><th></th></tr></thead><tbody>'+P.filter(p=>starTotals.has(String(p.id))).sort((a,b)=>n(a.position)-n(b.position)).map(p=>{const row=doosanPlayer(p);return '<tr><td><span class="doosanEditMember">'+(p.soop_user_id?'<img src="'+e(pic(p.soop_user_id))+'" alt="">':'')+e(p.nickname||'이름')+'</span></td><td>'+e(row?.last_donor||'—')+'</td><td><input type="number" min="0" max="1000000000" step="1" data-doosan-edit="'+e(p.id)+'" value="'+Number(row?.doosan||0)+'" aria-label="'+e(p.nickname||'멤버')+' 두산 수정"></td><td><button class="btn" type="button" data-doosan-apply="'+e(p.id)+'">적용</button></td></tr>';}).join('')+'</tbody></table></div>';
+ const title=document.querySelector('#roomView .panel.kill h2');if(title)title.textContent='두산 관리';
+ killBoard.innerHTML='<div class="doosanEditor"><div class="doosanAppearance"><label>상단 제목<input id="doosanTitleInput" maxlength="32" value="'+e(cur.star_title||'총 별풍선')+'"></label><label>글씨 크기<input id="doosanFontInput" type="number" min="12" max="32" step="1" value="'+doosanFont()+'"><small>12–32px</small></label><button class="btn" type="button" id="openDoosanCard">두산 점수표 표시</button></div><div class="doosanAdminBar"><label>관리자 비밀번호<input id="doosanAdminPassword" type="password" autocomplete="off" placeholder="기존 사이트 관리자 비밀번호"></label><button class="btn danger" type="button" id="resetDoosan">전체 초기화</button></div><p class="doosanEditHelp">두산을 수정하고 각 멤버의 적용 버튼을 누르세요. 다음 숫자부터 이어서 집계합니다. 전체 초기화는 두산과 별풍선 총합을 모두 0으로 만듭니다.</p><div id="doosanEditStatus" role="status"></div><table class="doosanEditTable"><thead><tr><th>멤버</th><th>최근 두산 후원자</th><th>두산</th><th></th></tr></thead><tbody>'+P.filter(p=>starTotals.has(String(p.id))).sort((a,b)=>n(a.position)-n(b.position)).map(p=>{const row=doosanPlayer(p);return '<tr><td><span class="doosanEditMember">'+(p.soop_user_id?'<img src="'+e(pic(p.soop_user_id))+'" alt="">':'')+e(p.nickname||'이름')+'</span></td><td>'+e(row?.last_donor||'—')+'</td><td><input type="number" min="0" max="1000000000" step="1" data-doosan-edit="'+e(p.id)+'" value="'+Number(row?.doosan||0)+'" aria-label="'+e(p.nickname||'멤버')+' 두산 수정"></td><td><button class="btn" type="button" data-doosan-apply="'+e(p.id)+'">적용</button></td></tr>';}).join('')+'</tbody></table></div>';
  killBoard.querySelector('#doosanAdminPassword').value=oldPassword;
+ killBoard.querySelectorAll('[data-doosan-edit]').forEach(input=>{if(drafts.has(input.dataset.doosanEdit)){input.value=drafts.get(input.dataset.doosanEdit);input.dataset.dirty='1';}input.oninput=()=>{input.dataset.dirty='1';};input.addEventListener('wheel',event=>event.preventDefault(),{passive:false});});
+ // Keep focus and the clicked button alive while deferred remote renders are pending.
+ killBoard.querySelectorAll('button').forEach(button=>button.addEventListener('pointerdown',event=>event.preventDefault()));
+ killBoard.querySelector('#openDoosanCard').onclick=()=>{if(!isDoosan())selectStarDisplay(true);};
+ killBoard.querySelector('#doosanTitleInput').onchange=event=>saveDoosanAppearance('star_title',event.target.value);
+ killBoard.querySelector('#doosanFontInput').onchange=event=>saveDoosanAppearance('star_font',Math.min(32,Math.max(12,Math.round(Number(event.target.value)||18))));
  killBoard.querySelector('#resetDoosan').onclick=()=>submitDoosanAdmin('reset');
  killBoard.querySelectorAll('[data-doosan-apply]').forEach(button=>button.onclick=()=>submitDoosanAdmin('adjust',button.dataset.doosanApply));
  renderTeamNavigation();
@@ -11574,13 +11596,13 @@ async function submitDoosanAdmin(action,playerId=null){
  try{
   const response=await fetch('https://llqikrcqavwfbuajykig.supabase.co/functions/v1/pubg-star-admin',{method:'POST',headers:{'Content-Type':'application/json',apikey:STAR_ANON,Authorization:'Bearer '+STAR_ANON},body:JSON.stringify({action,room_id:room,session_id:session,password,player_id:playerId,doosan:value})});
   const result=await response.json();if(!response.ok)throw Error(result.error||'변경하지 못했습니다.');
-  if(cur?.id!==room)return;touchLocal();await loadStarState(room,false);renderScore();board();killBoard.querySelector('#doosanEditStatus').textContent=action==='reset'?'전체 초기화했습니다.':'적용했습니다. 다음 후원부터 이어서 집계합니다.';
- }catch(error){if(cur?.id===room&&status.isConnected)status.textContent=error.message||'변경하지 못했습니다.';}
+  if(cur?.id!==room)return;if(action==='reset')killBoard.querySelectorAll('[data-doosan-edit]').forEach(i=>i.removeAttribute('data-dirty'));else input?.removeAttribute('data-dirty');touchLocal();await loadStarState(room,false);renderScore();board();killBoard.querySelector('#doosanEditStatus').textContent=action==='reset'?'전체 초기화했습니다.':'적용했습니다. 다음 후원부터 이어서 집계합니다.';
+ }catch(error){if(cur?.id===room&&status.isConnected)status.textContent=error.message==='Failed to fetch'?'서버에 연결할 수 없습니다. yoning.vercel.app에 배포된 페이지인지 확인해주세요.':error.message||'변경하지 못했습니다.';}
  finally{doosanAdminBusy=false;if(cur?.id===room)killBoard.querySelectorAll('button').forEach(b=>b.disabled=false);}
 }
 
 function board(){
-  if(isDoosan()){renderDoosanEditor();return;}
+  if(isStarRank()){renderDoosanEditor();return;}
   addRound.hidden=false;addRound.style.removeProperty('display');
   const scrollBox=killBoard.closest('.killUnifiedWrap'),oldScrollTop=scrollBox?.scrollTop||0,oldScrollLeft=scrollBox?.scrollLeft||0;
   killBoard.classList.toggle('battleRoyaleMode',isBattleRoyale());
@@ -12039,10 +12061,10 @@ const STAR_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 async function loadStarState(roomId,refresh=true){
  if(starLoading){starReloadPending=true;return}starLoading=true;const revision=localRevision;
  try{
-  const [sessions,totalsRows,roomsRows]=await Promise.all([q('/pubg_star_sessions?room_id=eq.'+encodeURIComponent(roomId)),q('/pubg_star_totals?room_id=eq.'+encodeURIComponent(roomId)),q('/pubg_rooms?id=eq.'+encodeURIComponent(roomId)+'&select=star_rank,star_doosan')]);
+  const [sessions,totalsRows,roomsRows]=await Promise.all([q('/pubg_star_sessions?room_id=eq.'+encodeURIComponent(roomId)),q('/pubg_star_totals?room_id=eq.'+encodeURIComponent(roomId)),q('/pubg_rooms?id=eq.'+encodeURIComponent(roomId)+'&select=star_rank,star_doosan,star_title,star_font')]);
   if(!cur||String(cur.id)!==String(roomId)||revision!==localRevision)return;
-  const next=sessions[0]||null,rows=totalsRows.filter(row=>row.session_id===next?.id);const changed=starSession?.id!==next?.id||rows.length!==starTotals.size||rows.some(row=>{const old=starTotals.get(String(row.player_id));return !old||Number(old.balloons)!==Number(row.balloons)||Number(old.all_balloons)!==Number(row.all_balloons)||Number(old.doosan)!==Number(row.doosan)||old.last_donor!==row.last_donor||old.streamer_id!==row.streamer_id})||cur.star_rank!==roomsRows[0]?.star_rank||cur.star_doosan!==roomsRows[0]?.star_doosan;
-  starSession=next;starTotals=new Map(rows.map(row=>[String(row.player_id),row]));cur.star_rank=!!roomsRows[0]?.star_rank;cur.star_doosan=!!roomsRows[0]?.star_doosan;starReadError='';scoreboard.querySelectorAll('.starCaptureState').forEach(el=>el.textContent=starCollectionState());updateStarDialog();
+  const next=sessions[0]||null,rows=totalsRows.filter(row=>row.session_id===next?.id);const changed=starSession?.id!==next?.id||rows.length!==starTotals.size||rows.some(row=>{const old=starTotals.get(String(row.player_id));return !old||Number(old.balloons)!==Number(row.balloons)||Number(old.all_balloons)!==Number(row.all_balloons)||Number(old.doosan)!==Number(row.doosan)||old.last_donor!==row.last_donor||old.streamer_id!==row.streamer_id})||cur.star_rank!==roomsRows[0]?.star_rank||cur.star_doosan!==roomsRows[0]?.star_doosan||cur.star_title!==roomsRows[0]?.star_title||cur.star_font!==roomsRows[0]?.star_font;
+  starSession=next;starTotals=new Map(rows.map(row=>[String(row.player_id),row]));cur.star_rank=!!roomsRows[0]?.star_rank;cur.star_doosan=!!roomsRows[0]?.star_doosan;cur.star_title=roomsRows[0]?.star_title??'총 별풍선';cur.star_font=roomsRows[0]?.star_font??18;starReadError='';scoreboard.querySelectorAll('.starCaptureState').forEach(el=>el.textContent=starCollectionState());updateStarDialog();
   if(refresh&&changed)queueSafeRender();
  }catch(err){starReadError='별풍선 집계 서버에 연결하지 못했습니다.';updateStarDialog()}finally{starLoading=false;if(starReloadPending&&cur){starReloadPending=false;queueMicrotask(()=>loadStarState(cur.id))}}
 }
