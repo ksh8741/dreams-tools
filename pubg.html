@@ -4,7 +4,7 @@
     <script>if(new URLSearchParams(location.search).has("overlay"))document.documentElement.classList.add("mainScoreOverlay");</script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>시트지 · 요닝 방송도구함</title>
+    <title>배그 · 요닝 방송도구함</title>
     <style>
              * {
                  box-sizing: border-box
@@ -11395,9 +11395,14 @@ function animateDoosanRankJump(root,before){
  doc.querySelectorAll('.doosanFrogFlight').forEach(el=>{el._jump?.cancel();el.remove();});
  const size=Math.max(34,Math.min(76,target.height*1.12)),x=Math.max(0,target.right-size-4),y=target.top+(target.height-size)/2,start=from.top-target.top;
  const sprite=doc.createElement('img');sprite.className='doosanFrogFlight';sprite.src=DOOSAN_FROG_SPRITE;sprite.alt='';sprite.setAttribute('aria-hidden','true');
- sprite.style.cssText='position:fixed!important;pointer-events:none!important;z-index:2147483647!important;width:'+size+'px!important;height:'+size+'px!important;object-fit:contain!important;left:'+x+'px!important;top:'+y+'px!important;filter:drop-shadow(0 3px 2px #0003)!important;';doc.body.appendChild(sprite);
- const arc=Math.min(70,24+winner.gain*6),duration=Math.min(1400,850+winner.gain*70);
- const frames=[{transform:'translate(0,'+start+'px) scale(1.08,.78)',opacity:0,offset:0},{transform:'translate(0,'+start+'px) scale(1.08,.78)',opacity:1,offset:.1},{transform:'translate('+(-arc)+'px,'+(start*.5-24)+'px) scale(.93,1.12) rotate(-13deg)',opacity:1,offset:.47},{transform:'translate(0,0) scale(1.18,.74)',opacity:1,offset:.78},{transform:'translate(0,-4px) scale(.97,1.04)',opacity:1,offset:.87},{transform:'translate(0,0) scale(1)',opacity:1,offset:.93},{transform:'translate(0,0) scale(.9)',opacity:0,offset:1}];
+ sprite.style.cssText='position:fixed!important;pointer-events:none!important;z-index:2147483647!important;width:'+size+'px!important;height:'+size+'px!important;object-fit:contain!important;left:'+x+'px!important;top:'+y+'px!important;filter:drop-shadow(0 3px 2px #0003)!important;';const portal=doc.documentElement.classList.contains('mainScoreOverlay')?doc.getElementById('broadcastScoreRoot'):doc.body;(portal||doc.body).appendChild(sprite);
+ const arc=Math.min(45,18+winner.gain*4),height=Math.min(105,38+Math.abs(start)*.14),duration=Math.min(1550,1050+winner.gain*55);
+ sprite.style.setProperty('transform-origin','50% 85%','important');
+ const frames=[{transform:'translate(0,'+start+'px) scale(1)',opacity:0,offset:0},{transform:'translate(0,'+start+'px) scale(1)',opacity:1,offset:.045},{transform:'translate(0,'+(start+3)+'px) scale(1.14,.73)',opacity:1,offset:.15}];
+ // Sample the actual ballistic arc, rather than interpolating between three straight segments.
+ for(let i=0;i<=30;i++){const t=i/30,x=-arc*Math.sin(Math.PI*t),y=start*(1-t)-4*height*t*(1-t),tilt=-12*Math.sin(Math.PI*t),sx=1-.08*Math.sin(Math.PI*t),sy=1+.1*Math.sin(Math.PI*t);frames.push({transform:'translate('+x+'px,'+y+'px) rotate('+tilt+'deg) scale('+sx+','+sy+')',opacity:1,offset:.18+t*.58});}
+ frames.push({transform:'translate(0,3px) scale(1.17,.76)',opacity:1,offset:.81},{transform:'translate(0,-3px) scale(.97,1.04)',opacity:1,offset:.87},{transform:'translate(0,0) scale(1)',opacity:1,offset:.92},{transform:'translate(0,0) scale(1)',opacity:1,offset:.96},{transform:'translate(0,0) scale(.96)',opacity:0,offset:1});
+
  if(sprite.animate){sprite._jump=sprite.animate(frames,{duration,easing:'linear',fill:'forwards'});sprite._jump.onfinish=()=>sprite.remove();sprite._jump.oncancel=()=>sprite.remove();}else sprite.remove();
  win.setTimeout(()=>sprite.remove(),duration+250);
 }
