@@ -10280,16 +10280,16 @@ html:not(.broadcastOverlay):not(.mainScoreOverlay) #roomView.starFixedPreview .s
 </style>
 <style id="doosan-broadcast-readable-type">
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore{text-rendering:optimizeLegibility!important;-webkit-text-size-adjust:100%!important;}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.scoreFrame #scoreboard.doosanScore .team .plist .slot{grid-template-columns:20px 40px 50px minmax(0,1fr) 80px!important;height:54px!important;min-height:54px!important;max-height:54px!important;column-gap:6px!important;padding:5px 7px!important;}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.scoreFrame #scoreboard.doosanScore .team .plist .slot{grid-template-columns:18px 38px 48px minmax(0,1fr) 66px!important;height:48px!important;min-height:48px!important;max-height:48px!important;column-gap:4px!important;padding:4px 6px!important;}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanMember{font-size:22px!important;font-weight:700!important;letter-spacing:-.035em!important;line-height:1.3!important;color:#242b35!important;text-shadow:none!important;-webkit-text-stroke:0!important;}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanDonor{font-size:16px!important;font-weight:700!important;letter-spacing:0!important;line-height:1.4!important;color:#343d49!important;text-shadow:none!important;-webkit-text-stroke:0!important;}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanDonor{font-size:16px!important;font-weight:800!important;letter-spacing:0!important;line-height:1.4!important;color:#111820!important;text-shadow:none!important;-webkit-text-stroke:0!important;}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanCount{font-weight:800!important;color:#29323e!important;text-shadow:none!important;-webkit-text-stroke:0!important;font-variant-numeric:tabular-nums!important;}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanUnit{font-size:13px!important;font-weight:700!important;color:#525b68!important;text-shadow:none!important;}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .doosanHeader :is(.doosanCardTitle,.doosanTotal){font-size:22px!important;font-weight:800!important;letter-spacing:-.035em!important;text-shadow:none!important;}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.doosanScore #totalBar .fixedTimer{font-size:22px!important;font-weight:800!important;letter-spacing:.02em!important;text-shadow:none!important;}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanPhoto{width:40px!important;height:40px!important;}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanPhoto .avatarFrame{width:40px!important;height:40px!important;min-width:40px!important;}
-html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanPhoto .avatar{max-width:40px!important;max-height:40px!important;}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanPhoto{width:38px!important;height:38px!important;}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanPhoto .avatarFrame{width:38px!important;height:38px!important;min-width:38px!important;}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanPhoto .avatar{max-width:38px!important;max-height:38px!important;}
 </style>
 </head>
 <body>
@@ -11345,7 +11345,7 @@ function playDoosanValueChange(node,previous,next){
 function doosanFont(){return 18;}
 function doosanScale(){return Math.min(200,Math.max(50,Number(cur?.star_scale)||100));}
 function doosanTitle(){const value=String(cur?.star_title||'').trim();return !value||['총 별풍선','두산CK'].includes(value)?'드림즈 두산CK':value;}
-function doosanCardWidth(){return Math.round(336*doosanFont()/18);}
+function doosanCardWidth(){return Math.round(296*doosanFont()/18);}
 function doosanCountMarkup(value){const text=String(value);return '<strong class="doosanCount" style="font-size:'+Math.max(20,30-Math.max(0,text.length-3)*3)+'px">'+e(text)+'</strong><small class="doosanUnit">두산</small>';}
 function doosanPlayer(player){const row=starTotals.get(String(player.id));return row&&row.streamer_id===String(player.soop_user_id||'').toLowerCase()?row:null;}
 function doosanBalloonTotal(){return starParticipants().reduce((sum,p)=>{const row=doosanPlayer(p);return sum+Number(row?.all_balloons??row?.balloons??0);},0);}
