@@ -10132,7 +10132,9 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .doosanDonor{font-size:calc(var(--doosan-font)*.61) !important;color:#aba6a2 !important;font-weight:400 !important;position:relative;z-index:1}
 html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .detail{display:flex !important;align-items:baseline !important;justify-content:flex-end !important;gap:3px !important;white-space:nowrap;position:relative;z-index:1;letter-spacing:-.03em !important}
 .doosanCount{font-weight:800;line-height:1;font-variant-numeric:tabular-nums;color:#f5e6c9}.doosanUnit{font-size:calc(var(--doosan-font)*.55);font-weight:500;color:#bdb5a7;letter-spacing:0}.doosanSweep{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(105deg,transparent 15%,#f7e0ab16 45%,#fff4dc27 50%,transparent 80%);z-index:0}
-</style></head>
+</style><style id="star-participant-style">
+.participantOverlay{position:fixed;inset:0;z-index:2147483600;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px}.participantOverlay[hidden]{display:none !important}.participantPanel{display:flex;flex-direction:column;width:min(740px,100%);max-height:90vh;padding:24px;border:1px solid #9c8c70;border-radius:14px;background:#17171b;color:#eee8dd;box-shadow:0 24px 90px #0008;font:14px/1.5 "Noto Sans KR",sans-serif}.participantPanel header{display:flex;justify-content:space-between;align-items:center}.participantPanel h2{font-size:22px;margin:0}.participantClose{font-size:28px;border:0;background:transparent;color:#ddd;cursor:pointer}.participantPanel p{color:#b0aaa0;font-size:13px}.participantCount{display:flex;align-items:center;gap:8px;margin-bottom:16px}.participantCount input{width:72px}.participantRows{overflow:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;min-height:0;padding-right:4px}.participantRow{display:grid;grid-template-columns:24px 72px minmax(0,1fr);gap:6px;align-items:center}.participantRow>span{color:#766e60;font-size:11px}.participantPanel input{box-sizing:border-box;min-width:0;padding:9px 8px;border:1px solid #4a4338;border-radius:6px;background:#0e0e11;color:#f5eee2;font:13px/1.4 "Noto Sans KR",sans-serif}.participantRow input{width:100%}.participantPanel footer{display:flex;align-items:center;gap:14px;margin-top:14px}.participantPanel footer small{font-size:11px;color:#9a9388}.participantPanel .participantError{min-height:20px;color:#e3c382;margin:10px 0 0}.doosanAppearance .starRosterOpen{margin-top:23px}@media(max-width:600px){.participantRows{grid-template-columns:1fr}}
+</style><style>.doosanMember>span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}</style></head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
 
@@ -10186,7 +10188,7 @@ html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #sc
               <p class="balanceNote">점수 비율은 최고 점수 기준입니다. 치킨 확률은 현재 소속 팀의 기록된 판 중 치킨을 획득한 비율입니다.</p>
               <div id="balanceList" class="balanceList"></div>
             </section></div>
-            <div id="starRankOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="starRankTitle"><section class="starRankPanel"><div class="starRankHead"><h2 id="starRankTitle">별풍선 실시간 순위</h2><button id="closeStarRank" type="button" aria-label="닫기">×</button></div><p class="starRankHelp">수집기에서 집계를 시작하면 연결된 SOOP 방송의 별풍선 수가 자동 반영됩니다.</p><label class="starRankCodeLabel">방 연결 코드<input id="starRoomCode" readonly></label><div class="starRankActions"><button class="btn" id="copyStarRoomCode" type="button">방 연결 코드 복사</button><button class="btn" id="toggleStarDisplay" type="button">별풍선 순위표</button><button class="btn" id="showDoosanDisplay" type="button">두산 순위표</button></div><p id="starRankState" role="status"></p><div id="starChannelList"></div><p class="starRankHelp">별풍선_실시간수집기.zip을 풀고 start.cmd를 실행한 뒤 위 코드를 입력하세요. 수집기와 실행 창을 켜둬야 합니다. 연결이 끊긴 동안의 별풍선은 자동 복구되지 않습니다.</p></section></div>
+            <div id="starRankOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="starRankTitle"><section class="starRankPanel"><div class="starRankHead"><h2 id="starRankTitle">별풍선 실시간 순위</h2><button id="closeStarRank" type="button" aria-label="닫기">×</button></div><p class="starRankHelp">수집기에서 집계를 시작하면 연결된 SOOP 방송의 별풍선 수가 자동 반영됩니다.</p><label class="starRankCodeLabel">방 연결 코드<input id="starRoomCode" readonly></label><div class="starRankActions"><button class="btn" id="copyStarRoomCode" type="button">방 연결 코드 복사</button><button class="btn" id="toggleStarDisplay" type="button">별풍선 순위표</button><button class="btn" id="showDoosanDisplay" type="button">두산 순위표</button><button class="btn" id="manageStarMembers" type="button">집계 참가자 관리</button></div><p id="starRankState" role="status"></p><div id="starChannelList"></div><p class="starRankHelp">별풍선_실시간수집기.zip을 풀고 start.cmd를 실행한 뒤 위 코드를 입력하세요. 수집기와 실행 창을 켜둬야 합니다. 연결이 끊긴 동안의 별풍선은 자동 복구되지 않습니다.</p></section></div>
 <div id="battleChoiceOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="battleChoiceTitle"><section class="battleChoicePanel"><div class="battleChoiceHead"><h2 id="battleChoiceTitle">배틀로얄 · 킬점수</h2><button type="button" id="battleChoiceClose" class="battleChoiceClose" aria-label="닫기">×</button></div><div class="battleChoiceGrid"><button type="button" class="battleChoiceOption" data-battle-kills="true">킬점수 포함</button><button type="button" class="battleChoiceOption" data-battle-kills="false">킬점수 제거</button></div><button type="button" id="battleChoiceOff" class="battleChoiceOff">배틀로얄 해제</button></section></div>
             <div id="timerSettingsOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="timerSettingsTitle"><section class="modal timerSettingsPanel"><div class="timerDialogHead"><h2 id="timerSettingsTitle">타이머 설정</h2><button type="button" id="closeTimerSettings" class="btn" aria-label="타이머 설정 닫기">×</button></div>                    <section class="settingCard">
                         <div class="settingCardTitle"><span>타이머</span></div>
@@ -10342,7 +10344,7 @@ let lastAppliedSignature='';
 function touchLocal(){localRevision++;lastLocalEditAt=Date.now()}
 function stateSignature(room,p,ro,s,tm){
   const rp=room?{
-    id:room.id,chicken_kills:room.chicken_kills,sanhok_chicken_kills:room.sanhok_chicken_kills,battle_royale:room.battle_royale,battle_royale_kills:room.battle_royale_kills,individual_mode:room.individual_mode,general_game:room.general_game,star_rank:room.star_rank,star_doosan:room.star_doosan,star_title:room.star_title,star_font:room.star_font,
+    id:room.id,chicken_kills:room.chicken_kills,sanhok_chicken_kills:room.sanhok_chicken_kills,battle_royale:room.battle_royale,battle_royale_kills:room.battle_royale_kills,individual_mode:room.individual_mode,general_game:room.general_game,star_rank:room.star_rank,star_doosan:room.star_doosan,star_title:room.star_title,star_font:room.star_font,star_members:room.star_members,
     top10_no_death_penalty:room.top10_no_death_penalty,goal_kills:room.goal_kills,score_mode:room.score_mode,
     timer_mode:room.timer_mode,timer_seconds:room.timer_seconds,timer_started_at:room.timer_started_at,timer_end_at:room.timer_end_at
   }:null;
@@ -11102,14 +11104,61 @@ async function saveName(x){
   }
 }
 function individualRankData(){
- return P.filter(player=>!isStarRank()||starTotals.has(String(player.id))).map(player=>({player,...totals(player)})).sort((a,b)=>b.score-a.score||n(a.player.position)-n(b.player.position)||String(a.player.id).localeCompare(String(b.player.id)));
+ return (isStarRank()?starParticipants():P).map(player=>({player,...totals(player)})).sort((a,b)=>b.score-a.score||n(a.player.position)-n(b.player.position)||String(a.player.id).localeCompare(String(b.player.id)));
+}
+
+
+function starParticipants(){
+ if(Array.isArray(cur?.star_members))return cur.star_members.map((member,index)=>({id:member.player_id,nickname:member.nickname,soop_user_id:member.streamer_id,position:index+1}));
+ return P.filter(player=>player.soop_user_id);
+}
+function starRosterPending(){
+ if(!Array.isArray(cur?.star_members)||!starSession)return false;
+ const current=starSession.channels||[];return JSON.stringify(current.map(c=>[c.player_id,c.streamer_id,c.nickname]))!==JSON.stringify(cur.star_members.map(c=>[c.player_id,c.streamer_id,c.nickname]));
+}
+let participantDraft=[],participantRoom=null,participantOverlay=null,participantSaving=false;
+function collectParticipantDraft(){
+ if(!participantOverlay)return;participantDraft=[...participantOverlay.querySelectorAll('[data-member-row]')].map(row=>({player_id:row.dataset.id,nickname:row.querySelector('[data-member-name]').value.trim(),streamer_id:row.querySelector('[data-member-account]').value.trim().toLowerCase()}));
+}
+function renderParticipantRows(count){
+ const grid=participantOverlay.querySelector('.participantRows');
+ participantDraft=Array.from({length:count},(_,i)=>participantDraft[i]||{player_id:crypto.randomUUID(),nickname:'',streamer_id:''});
+ grid.innerHTML=participantDraft.map((member,index)=>'<div class="participantRow" data-member-row="'+index+'" data-id="'+e(member.player_id)+'"><span>'+String(index+1).padStart(2,'0')+'</span><input data-member-name maxlength="20" placeholder="닉네임" aria-label="'+(index+1)+'번 닉네임" value="'+e(member.nickname)+'"><input data-member-account placeholder="SOOP 아이디" aria-label="'+(index+1)+'번 SOOP 아이디" value="'+e(member.streamer_id)+'"></div>').join('');
+ grid.querySelectorAll('[data-member-name]').forEach(input=>input.oninput=()=>{const account=input.closest('[data-member-row]').querySelector('[data-member-account]');const mapped=knownProfiles[input.value.trim()];if(mapped&&(!account.value||account.dataset.auto==='1')){account.value=mapped;account.dataset.auto='1';}});
+ grid.querySelectorAll('[data-member-account]').forEach(input=>input.oninput=()=>{input.dataset.auto='0';});
+}
+function openStarParticipants(){
+ if(!cur)return;participantRoom=cur.id;participantDraft=starParticipants().map(p=>({player_id:p.id,nickname:p.nickname||'',streamer_id:p.soop_user_id||''}));
+ if(!participantOverlay){participantOverlay=document.createElement('div');participantOverlay.className='participantOverlay';document.body.appendChild(participantOverlay);participantOverlay.addEventListener('keydown',event=>{if(event.key==='Escape'&&!participantSaving){participantOverlay.hidden=true;event.stopPropagation();}});}
+ participantOverlay.hidden=false;participantOverlay.innerHTML='<section class="participantPanel" role="dialog" aria-modal="true" aria-label="집계 참가자"><header><h2>집계 참가자</h2><button type="button" class="participantClose" aria-label="닫기">×</button></header><p>배그 팀 구성과 별도로, 여기에 등록한 방송만 집계합니다. 등록된 닉네임은 SOOP 아이디가 자동 입력됩니다.</p><label class="participantCount">참가 인원 <input id="starParticipantCount" type="number" min="1" max="40" value="'+(Array.isArray(cur.star_members)?cur.star_members.length:18)+'">명</label><div class="participantRows"></div><p class="participantError" role="status"></p><footer><button class="btn" type="button" id="saveStarParticipants">명단 저장</button><small>저장 후 수집기의 ‘집계 시작 · 이어받기’를 누르면 새 명단으로 연결됩니다. 기존 참가자의 집계는 유지됩니다.</small></footer></section>';
+ renderParticipantRows(Array.isArray(cur.star_members)?cur.star_members.length:18);
+ participantOverlay.querySelector('.participantClose').onclick=()=>{if(!participantSaving)participantOverlay.hidden=true;};
+ participantOverlay.querySelector('#starParticipantCount').onchange=event=>{collectParticipantDraft();const count=Math.max(1,Math.min(40,Math.round(Number(event.target.value)||18)));event.target.value=count;renderParticipantRows(count);};
+ participantOverlay.querySelector('#saveStarParticipants').onclick=saveStarParticipants;
+ participantOverlay.onclick=event=>{if(event.target===participantOverlay&&!participantSaving)participantOverlay.hidden=true;};
+ participantOverlay.querySelector('[data-member-name]')?.focus();
+}
+async function saveStarParticipants(){
+ if(participantSaving||!cur||cur.id!==participantRoom)return;collectParticipantDraft();const error=participantOverlay.querySelector('.participantError');error.textContent='';
+ const seen=new Set();const members=[];
+ for(let i=0;i<participantDraft.length;i++){
+  const row=participantDraft[i],id=row.streamer_id.toLowerCase();
+  if(!row.nickname||!row.nickname.trim()||! /^[a-z0-9_]{1,50}$/.test(id)){error.textContent=(i+1)+'번 참가자의 닉네임과 SOOP 아이디를 입력하세요.';return;}
+  if(seen.has(id)){error.textContent='같은 SOOP 계정이 중복되어 있습니다: '+id;return;}seen.add(id);
+  const existing=starTotals.size?[...starTotals.values()].find(total=>total.streamer_id===id):null;
+  members.push({player_id:existing?.player_id||(starTotals.has(String(row.player_id))?crypto.randomUUID():row.player_id),nickname:row.nickname,streamer_id:id});
+ }
+ participantSaving=true;const button=participantOverlay.querySelector('#saveStarParticipants');button.disabled=true;button.textContent='저장 중…';const room=cur.id;
+ try{await q('/pubg_rooms?id=eq.'+room,{method:'PATCH',body:JSON.stringify({star_members:members})});if(cur?.id!==room)return;touchLocal();cur.star_members=members;renderScore();board();updateStarDialog();error.textContent=members.length+'명 저장했습니다. 수집기에서 집계 시작 · 이어받기를 눌러주세요.';}
+ catch{error.textContent='명단을 저장하지 못했습니다. 다시 시도해주세요.';}
+ finally{participantSaving=false;button.disabled=false;button.textContent='명단 저장';}
 }
 
 function doosanFont(){return Math.min(32,Math.max(12,Number(cur?.star_font)||18));}
 function doosanCardWidth(){return Math.round(296*doosanFont()/18);}
 function doosanCountMarkup(value){const text=String(value);return '<strong class="doosanCount" style="font-size:calc(var(--doosan-font)*'+Math.max(.7,1.3-Math.max(0,text.length-3)*.12)+')">'+e(text)+'</strong><small class="doosanUnit">두산</small>';}
 function doosanPlayer(player){const row=starTotals.get(String(player.id));return row&&row.streamer_id===String(player.soop_user_id||'').toLowerCase()?row:null;}
-function doosanBalloonTotal(){return [...starTotals.values()].reduce((sum,row)=>sum+Number(row.all_balloons??row.balloons??0),0);}
+function doosanBalloonTotal(){return starParticipants().reduce((sum,p)=>{const row=doosanPlayer(p);return sum+Number(row?.all_balloons??row?.balloons??0);},0);}
 function doosanScoreMarkup(){
  return '<div class="team individualTeam" data-score-column="1" data-score-row="1"><div class="teamSummary doosanSummary"><span class="doosanEmblem" role="img" aria-label="드림즈"></span><div class="doosanHeading"><span class="doosanCardTitle">'+e(cur.star_title||'총 별풍선')+'</span><strong class="doosanTotal">'+doosanBalloonTotal().toLocaleString('ko-KR')+'개</strong></div></div><div class="doosanColumns"><span></span><span>멤버</span><span>최다 후원자</span><span>두산</span></div><div class="plist">'+individualRankData().map((row,index)=>{
  const p=row.player,gift=doosanPlayer(p);
@@ -11599,11 +11648,12 @@ function renderDoosanEditor(){
  const drafts=new Map([...killBoard.querySelectorAll('[data-doosan-edit][data-dirty]')].map(input=>[input.dataset.doosanEdit,input.value]));
  addRound.hidden=true;addRound.style.setProperty('display','none','important');
  const title=document.querySelector('#roomView .panel.kill h2');if(title)title.textContent='두산 관리';
- killBoard.innerHTML='<div class="doosanEditor"><div class="doosanAppearance"><label>상단 제목<input id="doosanTitleInput" maxlength="32" value="'+e(cur.star_title||'총 별풍선')+'"></label><label>글씨 크기<input id="doosanFontInput" type="number" min="12" max="32" step="1" value="'+doosanFont()+'"><small>12–32px</small></label></div><div class="doosanAdminBar"><label>초기화용 관리자 비밀번호<input id="doosanAdminPassword" type="password" autocomplete="off" placeholder="기존 사이트 관리자 비밀번호"></label><button class="btn danger" type="button" id="resetDoosan">전체 초기화</button></div><p class="doosanEditHelp">두산을 수정하고 각 멤버의 적용 버튼을 누르세요. 다음 숫자부터 이어서 집계합니다. 전체 초기화는 두산과 별풍선 총합을 모두 0으로 만듭니다.</p><div id="doosanEditStatus" role="status"></div><div class="doosanEditList">'+P.filter(p=>starTotals.has(String(p.id))).sort((a,b)=>n(a.position)-n(b.position)).map(p=>{const row=doosanPlayer(p);return '<div class="doosanEditRow"><span class="doosanEditMember">'+(p.soop_user_id?'<img src="'+e(pic(p.soop_user_id))+'" alt="">':'')+e(p.nickname||'이름')+'</span><input type="number" min="0" max="1000000000" step="1" data-doosan-edit="'+e(p.id)+'" value="'+Number(row?.doosan||0)+'" aria-label="'+e(p.nickname||'멤버')+' 두산 수정"><button class="btn" type="button" data-doosan-apply="'+e(p.id)+'">적용</button><span class="doosanEditDonor">'+e(row?.top_donor||'후원 기록 없음')+'</span></div>';}).join('')+'</div></div>';
+ killBoard.innerHTML='<div class="doosanEditor"><div class="doosanAppearance"><button class="btn starRosterOpen" type="button">집계 참가자 '+starParticipants().length+'명 관리</button><label>상단 제목<input id="doosanTitleInput" maxlength="32" value="'+e(cur.star_title||'총 별풍선')+'"></label><label>글씨 크기<input id="doosanFontInput" type="number" min="12" max="32" step="1" value="'+doosanFont()+'"><small>12–32px</small></label></div><div class="doosanAdminBar"><label>초기화용 관리자 비밀번호<input id="doosanAdminPassword" type="password" autocomplete="off" placeholder="기존 사이트 관리자 비밀번호"></label><button class="btn danger" type="button" id="resetDoosan">전체 초기화</button></div><p class="doosanEditHelp">두산을 수정하고 각 멤버의 적용 버튼을 누르세요. 다음 숫자부터 이어서 집계합니다. 전체 초기화는 두산과 별풍선 총합을 모두 0으로 만듭니다.</p><div id="doosanEditStatus" role="status">'+(starRosterPending()?'명단 저장 후 수집기에서 집계 시작 · 이어받기를 눌러주세요.':'')+'</div><div class="doosanEditList">'+starParticipants().sort((a,b)=>n(a.position)-n(b.position)).map(p=>{const row=doosanPlayer(p);return '<div class="doosanEditRow"><span class="doosanEditMember">'+(p.soop_user_id?'<img src="'+e(pic(p.soop_user_id))+'" alt="">':'')+e(p.nickname||'이름')+'</span><input type="number" min="0" max="1000000000" step="1" data-doosan-edit="'+e(p.id)+'" value="'+Number(row?.doosan||0)+'" aria-label="'+e(p.nickname||'멤버')+' 두산 수정"><button class="btn" type="button" data-doosan-apply="'+e(p.id)+'">적용</button><span class="doosanEditDonor">'+e(row?.top_donor||'후원 기록 없음')+'</span></div>';}).join('')+'</div></div>';
  killBoard.querySelector('#doosanAdminPassword').value=oldPassword;
  killBoard.querySelectorAll('[data-doosan-edit]').forEach(input=>{if(drafts.has(input.dataset.doosanEdit)){input.value=drafts.get(input.dataset.doosanEdit);input.dataset.dirty='1';}input.oninput=()=>{input.dataset.dirty='1';};input.addEventListener('wheel',event=>event.preventDefault(),{passive:false});});
  // Keep focus and the clicked button alive while deferred remote renders are pending.
  killBoard.querySelectorAll('button').forEach(button=>button.addEventListener('pointerdown',event=>event.preventDefault()));
+ killBoard.querySelector('.starRosterOpen').onclick=openStarParticipants;
  killBoard.querySelector('#doosanTitleInput').onchange=event=>saveDoosanAppearance('star_title',event.target.value);
  killBoard.querySelector('#doosanFontInput').onchange=event=>saveDoosanAppearance('star_font',Math.min(32,Math.max(12,Math.round(Number(event.target.value)||18))));
  killBoard.querySelector('#resetDoosan').onclick=()=>submitDoosanAdmin('reset');
@@ -11875,7 +11925,7 @@ addRound.onclick=async()=>{
   tasks.push(...[...placementDesired.keys()].map(k=>flushPlacementSave(k)),...[...teamMapDesired.keys()].map(k=>flushTeamMapSave(k)),...[...roundPatchDesired.keys()].map(k=>flushRoundPatch(k)));
   await Promise.allSettled(tasks);
   document.getElementById('rosterToastStack')?.remove();rosterToastBaseline=null;
-  const doosanPassword=killBoard.querySelector('#doosanAdminPassword');if(doosanPassword)doosanPassword.value='';cur=null;stopStarRealtime();document.getElementById('starRankOverlay')?.classList.add('hidden');document.documentElement.classList.remove('generalGameTheme');clearInterval(poll);clearInterval(timerTick);roomView.classList.add('hidden');lobby.classList.remove('hidden');rooms();
+  const doosanPassword=killBoard.querySelector('#doosanAdminPassword');if(doosanPassword)doosanPassword.value='';if(participantOverlay)participantOverlay.hidden=true;participantRoom=null;cur=null;stopStarRealtime();document.getElementById('starRankOverlay')?.classList.add('hidden');document.documentElement.classList.remove('generalGameTheme');clearInterval(poll);clearInterval(timerTick);roomView.classList.add('hidden');lobby.classList.remove('hidden');rooms();
 };
 
 const battleRoyaleBtn=document.getElementById('battleRoyaleBtn');
@@ -12089,10 +12139,10 @@ const STAR_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 async function loadStarState(roomId,refresh=true){
  if(starLoading){starReloadPending=true;return}starLoading=true;const revision=localRevision;
  try{
-  const [sessions,totalsRows,roomsRows]=await Promise.all([q('/pubg_star_sessions?room_id=eq.'+encodeURIComponent(roomId)),q('/pubg_star_totals?room_id=eq.'+encodeURIComponent(roomId)),q('/pubg_rooms?id=eq.'+encodeURIComponent(roomId)+'&select=star_rank,star_doosan,star_title,star_font')]);
+  const [sessions,totalsRows,roomsRows]=await Promise.all([q('/pubg_star_sessions?room_id=eq.'+encodeURIComponent(roomId)),q('/pubg_star_totals?room_id=eq.'+encodeURIComponent(roomId)),q('/pubg_rooms?id=eq.'+encodeURIComponent(roomId)+'&select=star_rank,star_doosan,star_title,star_font,star_members')]);
   if(!cur||String(cur.id)!==String(roomId)||revision!==localRevision)return;
-  const next=sessions[0]||null,rows=totalsRows.filter(row=>row.session_id===next?.id);const changed=starSession?.id!==next?.id||rows.length!==starTotals.size||rows.some(row=>{const old=starTotals.get(String(row.player_id));return !old||Number(old.balloons)!==Number(row.balloons)||Number(old.all_balloons)!==Number(row.all_balloons)||Number(old.doosan)!==Number(row.doosan)||old.last_donor!==row.last_donor||old.top_donor!==row.top_donor||Number(old.top_donor_amount)!==Number(row.top_donor_amount)||old.streamer_id!==row.streamer_id})||cur.star_rank!==roomsRows[0]?.star_rank||cur.star_doosan!==roomsRows[0]?.star_doosan||cur.star_title!==roomsRows[0]?.star_title||cur.star_font!==roomsRows[0]?.star_font;
-  starSession=next;starTotals=new Map(rows.map(row=>[String(row.player_id),row]));cur.star_rank=!!roomsRows[0]?.star_rank;cur.star_doosan=!!roomsRows[0]?.star_doosan;cur.star_title=roomsRows[0]?.star_title??'총 별풍선';cur.star_font=roomsRows[0]?.star_font??18;starReadError='';scoreboard.querySelectorAll('.starCaptureState').forEach(el=>el.textContent=starCollectionState());updateStarDialog();
+  const next=sessions[0]||null,rows=totalsRows.filter(row=>row.session_id===next?.id);const changed=starSession?.id!==next?.id||rows.length!==starTotals.size||rows.some(row=>{const old=starTotals.get(String(row.player_id));return !old||Number(old.balloons)!==Number(row.balloons)||Number(old.all_balloons)!==Number(row.all_balloons)||Number(old.doosan)!==Number(row.doosan)||old.last_donor!==row.last_donor||old.top_donor!==row.top_donor||Number(old.top_donor_amount)!==Number(row.top_donor_amount)||old.streamer_id!==row.streamer_id})||cur.star_rank!==roomsRows[0]?.star_rank||cur.star_doosan!==roomsRows[0]?.star_doosan||cur.star_title!==roomsRows[0]?.star_title||cur.star_font!==roomsRows[0]?.star_font||JSON.stringify(cur.star_members)!==JSON.stringify(roomsRows[0]?.star_members);
+  starSession=next;starTotals=new Map(rows.map(row=>[String(row.player_id),row]));cur.star_rank=!!roomsRows[0]?.star_rank;cur.star_doosan=!!roomsRows[0]?.star_doosan;cur.star_title=roomsRows[0]?.star_title??'총 별풍선';cur.star_font=roomsRows[0]?.star_font??18;cur.star_members=roomsRows[0]?.star_members??null;starReadError='';scoreboard.querySelectorAll('.starCaptureState').forEach(el=>el.textContent=starCollectionState());updateStarDialog();
   if(refresh&&changed)queueSafeRender();
  }catch(err){starReadError='별풍선 집계 서버에 연결하지 못했습니다.';updateStarDialog()}finally{starLoading=false;if(starReloadPending&&cur){starReloadPending=false;queueMicrotask(()=>loadStarState(cur.id))}}
 }
@@ -12111,8 +12161,8 @@ function starCollectionState(){
 function updateStarDialog(){
  const overlay=document.getElementById('starRankOverlay');if(!overlay||overlay.classList.contains('hidden')||!cur)return;
  document.getElementById('starRoomCode').value=cur.id;const status=document.getElementById('starRankState'),toggle=document.getElementById('toggleStarDisplay');toggle.disabled=!starSession;toggle.textContent=isStarRank()&&!isDoosan()?'별풍선 순위표 닫기':'별풍선 순위표';const doosanButton=document.getElementById('showDoosanDisplay');doosanButton.disabled=!starSession;doosanButton.textContent=isDoosan()?'두산 순위표 닫기':'두산 순위표';doosanButton.classList.toggle('active',isDoosan());
- let message=starSession?(starSession.active?'집계 실행 중':'집계 중지 · 누적값 유지'):'수집기 연결 대기';if(starSession?.active&&(!starSession.heartbeat_at||Date.now()-new Date(starSession.heartbeat_at).getTime()>35000))message='수집기 응답 없음 · 실행 창을 확인하세요';if(starReadError)message=starReadError;else if(starRealtimeError)message+=' · 실시간 연결 재연결 중';status.textContent=message;
- const labels={connected:'수신 중',connecting:'연결 중',offline:'방송 꺼짐',reconnecting:'재연결 중',error:'연결 오류'};const list=document.getElementById('starChannelList');list.replaceChildren(...(starSession?.channels||[]).map(channel=>{const div=document.createElement('div');div.className='starChannel';const name=document.createElement('span'),state=document.createElement('span');name.textContent=channel.nickname||channel.streamer_id;const record=starSession.statuses?.[channel.streamer_id];state.textContent=(labels[record?.state]||'연결 대기')+(record?.gap?' · 누락 확인 필요':'');if(record?.gap)state.className='gap';const p=P.find(p=>String(p.id)===String(channel.player_id));if(p&&String(p.soop_user_id||'').toLowerCase()!==channel.streamer_id){state.textContent='계정 변경됨 · 새 집계 필요';state.className='gap'}div.append(name,state);return div}));
+ let message=starSession?(starSession.active?'집계 실행 중':'집계 중지 · 누적값 유지'):'수집기 연결 대기';if(starSession?.active&&(!starSession.heartbeat_at||Date.now()-new Date(starSession.heartbeat_at).getTime()>35000))message='수집기 응답 없음 · 실행 창을 확인하세요';if(starReadError)message=starReadError;else if(starRealtimeError)message+=' · 실시간 연결 재연결 중';if(starRosterPending())message+=' · 참가자 변경됨: 수집기에서 집계 시작 · 이어받기를 눌러주세요';status.textContent=message;
+ const labels={connected:'수신 중',connecting:'연결 중',offline:'방송 꺼짐',reconnecting:'재연결 중',error:'연결 오류'};const list=document.getElementById('starChannelList');list.replaceChildren(...(starSession?.channels||[]).map(channel=>{const div=document.createElement('div');div.className='starChannel';const name=document.createElement('span'),state=document.createElement('span');name.textContent=channel.nickname||channel.streamer_id;const record=starSession.statuses?.[channel.streamer_id];state.textContent=(labels[record?.state]||'연결 대기')+(record?.gap?' · 누락 확인 필요':'');if(record?.gap)state.className='gap';const p=starParticipants().find(p=>String(p.id)===String(channel.player_id));if(p&&String(p.soop_user_id||'').toLowerCase()!==channel.streamer_id){state.textContent='계정 변경됨 · 새 집계 필요';state.className='gap'}div.append(name,state);return div}));
 }
 const starRankOverlay=document.getElementById('starRankOverlay');if(starRankOverlay)document.body.appendChild(starRankOverlay);
 const starRankBtn=document.getElementById('starRankBtn');if(starRankBtn)starRankBtn.onclick=()=>{if(!cur)return;starRankOverlay.classList.remove('hidden');updateStarDialog();loadStarState(cur.id);document.getElementById('closeStarRank').focus()};
@@ -12125,6 +12175,7 @@ async function selectStarDisplay(doosan){
 }
 document.getElementById('toggleStarDisplay').onclick=()=>selectStarDisplay(false);
 document.getElementById('showDoosanDisplay').onclick=()=>selectStarDisplay(true);
+document.getElementById('manageStarMembers').onclick=openStarParticipants;
 
 
 const overlayParams=new URLSearchParams(location.search);
