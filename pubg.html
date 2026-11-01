@@ -10305,6 +10305,11 @@ html :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .t
 html :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanMember{font-weight:700!important;-webkit-text-stroke:0!important;text-shadow:none!important;font-synthesis:none!important}
 html :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanDonor{font-weight:700!important;-webkit-text-stroke:0!important;text-shadow:none!important;font-synthesis:none!important}
 </style>
+<style id="doosan-three-digit-spacing">
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage .scoreFrame.scoreFrame #scoreboard.doosanScore .team .plist .slot{grid-template-columns:22px 38px 48px minmax(0,1fr) 94px!important;column-gap:6px!important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .doosanDonor{min-width:0!important;max-width:100%!important;overflow:hidden!important;white-space:nowrap!important;text-overflow:ellipsis!important}
+html:not(.broadcastOverlay) :is(#roomView,#broadcastScoreRoot) #captureStage #scoreboard.doosanScore .team .plist .slot .detail{min-width:0!important;width:100%!important;box-sizing:border-box!important;gap:3px!important}
+</style>
 </head>
 <body>
     <iframe class="globalNavbarFrame" src="navbar.html" title="상단 메뉴" scrolling="no"></iframe>
@@ -11361,7 +11366,7 @@ function playDoosanValueChange(node,previous,next){
 function doosanFont(){return 18;}
 function doosanScale(){return Math.min(200,Math.max(50,Number(cur?.star_scale)||100));}
 function doosanTitle(){const value=String(cur?.star_title||'').trim();return !value||['총 별풍선','두산CK'].includes(value)?'드림즈 두산CK':value;}
-function doosanCardWidth(){return Math.round(296*doosanFont()/18);}
+function doosanCardWidth(){return Math.round(360*doosanFont()/18);}
 function doosanCountMarkup(value){const text=String(value);return '<strong class="doosanCount" style="font-size:'+Math.max(20,30-Math.max(0,text.length-3)*3)+'px">'+e(text)+'</strong><small class="doosanUnit">두산</small>';}
 function doosanPlayer(player){const row=starTotals.get(String(player.id));return row&&row.streamer_id===String(player.soop_user_id||'').toLowerCase()?row:null;}
 function doosanBalloonTotal(){return starParticipants().reduce((sum,p)=>{const row=doosanPlayer(p);return sum+Number(row?.all_balloons??row?.balloons??0);},0);}
